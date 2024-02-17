@@ -6,12 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COPILER "msvc")
 
-set(CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int)
-set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
 add_subdirectory(SphynxEngine)
 add_subdirectory(Sandbox)
 add_subdirectory(dependencies)
@@ -20,4 +14,9 @@ add_subdirectory(dependencies)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Set StartUp project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SphynxEngine)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Sandbox)
+
+if (WIN32)
+	target_compile_definitions(SphynxEngine PUBLIC SPX_PLATFORM_WINDOWS)
+	target_compile_definitions(Sandbox PUBLIC SPX_PLATFORM_WINDOWS)
+endif()

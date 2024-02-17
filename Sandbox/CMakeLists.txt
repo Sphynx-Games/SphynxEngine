@@ -12,15 +12,30 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COPILER "msvc")
 
-# Get all my .cpp files and create variable CPPSOURCES
-file(GLOB_RECURSE CPPSOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+set(CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/Sandbox/$<CONFIG>)
+set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/Sandbox/$<CONFIG>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Sandbox/$<CONFIG>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Sandbox/$<CONFIG>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Sandbox/$<CONFIG>)
+
+# Get all my .cpp files and create variable SNBSOURCES 
+file(GLOB_RECURSE SNBSOURCES CONFIGURE_DEPENDS
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp" 
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 
 # Set the excutable name and the main.cpp to be compiled
-add_executable(Sandbox "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp")
+add_executable(Sandbox "${SNBSOURCES}")
 
 # Set target sources
 target_sources(Sandbox PRIVATE ${CPPSOURCES})
 target_include_directories(Sandbox PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+
+# Set target link libs
+target_link_libraries(Sandbox SphynxEngine)
+
+# Post build command (copy .dll to bin folder)
+add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SphynxEngine> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(Sandbox PUBLIC SPX_DEBUG) 

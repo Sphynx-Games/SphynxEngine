@@ -12,20 +12,33 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COPILER "msvc")
 
-# Get all my .cpp files and create variable CPPSOURCES
-file(GLOB_RECURSE CPPSOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+set(CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/SphynxEngine/$<CONFIG>)
+set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/SphynxEngine/$<CONFIG>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/SphynxEngine/$<CONFIG>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/SphynxEngine/$<CONFIG>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/SphynxEngine/$<CONFIG>)
 
-# Set the excutable name and the main.cpp to be compiled
-add_executable(SphynxEngine "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp")
+# Get all my .cpp files and create variable SPXSOURCES 
+file(GLOB_RECURSE SPXSOURCES CONFIGURE_DEPENDS
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp" 
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
+
+# Set the library name and the sources to be compiled
+add_library(SphynxEngine SHARED ${SPXSOURCES})
 
 # Set target sources
-target_sources(SphynxEngine PRIVATE ${CPPSOURCES})
+target_sources(SphynxEngine PRIVATE ${SPXSOURCES})
 target_include_directories(SphynxEngine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(SphynxEngine PUBLIC SPX_DEBUG) 
 else()
 	target_compile_definitions(SphynxEngine PUBLIC SPX_RELEASE) 
+endif()
+
+if (WIN32)
+	target_compile_definitions(SphynxEngine PUBLIC SPX_BUILD_DLL)
 endif()
 
 # Add a library folder
