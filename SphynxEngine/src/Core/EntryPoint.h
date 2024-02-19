@@ -1,8 +1,6 @@
 #pragma once
 
 
-
-
 #ifdef SPX_PLATFORM_WINDOWS
 
 extern Sphynx::Application* CreateApplication();
