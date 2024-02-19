@@ -7,7 +7,7 @@ class SandboxApplication : public Sphynx::Application
 {
 
 public:
-	virtual void Init() override { printf("Application Initialized\n"); }
+	virtual void Init() override { Sphynx::Application::Init();  printf("Application Initialized\n"); }
 	virtual void Run() override { printf("Application Run\n"); }
 	virtual void Shutdown() override { printf("Application Shutdown\n"); }
 

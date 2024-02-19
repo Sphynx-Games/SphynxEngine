@@ -1,3 +1,6 @@
+# ---------------------------------------------------
+# Workspace CMake Setup
+# ---------------------------------------------------
 cmake_minimum_required(VERSION 3.6)
 
 project(SphynxEngine)
@@ -8,7 +11,7 @@ set(CMAKE_CXX_COPILER "msvc")
 
 add_subdirectory(SphynxEngine)
 add_subdirectory(Sandbox)
-add_subdirectory(dependencies)
+add_subdirectory(vendor)
 
 # Hide CMake Generated Projects in a folder
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

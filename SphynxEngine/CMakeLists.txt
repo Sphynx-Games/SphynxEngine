@@ -1,3 +1,6 @@
+# ---------------------------------------------------
+# Sphynx Engine Project CMake Setup
+# ---------------------------------------------------
 cmake_minimum_required(VERSION 3.6)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -12,11 +15,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COPILER "msvc")
 
-set(CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/SphynxEngine/$<CONFIG>)
-set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/SphynxEngine/$<CONFIG>)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/SphynxEngine/$<CONFIG>)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/SphynxEngine/$<CONFIG>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/SphynxEngine/$<CONFIG>)
+set(CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/${PROJECT_NAME}/$<CONFIG>)
+set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/${PROJECT_NAME}/$<CONFIG>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}/$<CONFIG>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}/$<CONFIG>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}/$<CONFIG>)
 
 # Get all my .cpp files and create variable SPXSOURCES 
 file(GLOB_RECURSE SPXSOURCES CONFIGURE_DEPENDS
@@ -25,20 +28,21 @@ file(GLOB_RECURSE SPXSOURCES CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 
 # Set the library name and the sources to be compiled
-add_library(SphynxEngine SHARED ${SPXSOURCES})
+add_library(${PROJECT_NAME} SHARED ${SPXSOURCES})
 
 # Set target sources
-target_sources(SphynxEngine PRIVATE ${SPXSOURCES})
-target_include_directories(SphynxEngine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+target_sources(${PROJECT_NAME} PRIVATE ${SPXSOURCES})
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+target_link_libraries(${PROJECT_NAME} PRIVATE vendor)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	target_compile_definitions(SphynxEngine PUBLIC SPX_DEBUG) 
+	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_DEBUG) 
 else()
-	target_compile_definitions(SphynxEngine PUBLIC SPX_RELEASE) 
+	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_RELEASE) 
 endif()
 
 if (WIN32)
-	target_compile_definitions(SphynxEngine PUBLIC SPX_BUILD_DLL)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_BUILD_DLL)
 endif()
 
 # Add a library folder
