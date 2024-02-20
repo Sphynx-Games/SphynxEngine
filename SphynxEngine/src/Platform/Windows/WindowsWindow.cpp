@@ -27,11 +27,9 @@ namespace Sphynx
 		{
 			if (m_CallbackFunction == nullptr) continue;
 
-			if (event.type == SDL_EventType::SDL_EVENT_QUIT)
-			{
-				WindowClosedEvent windowClosedEvent;
-				m_CallbackFunction(windowClosedEvent);
-			}
+			TryProcessWindowEvent(event);
+			TryProcessKeyboardEvent(event);
+			TryProcessMouseEvent(event);
 		}
 	}
 
@@ -81,7 +79,7 @@ namespace Sphynx
 				printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 			}
 			// Create window
-			uint32_t flags = (m_Params.IsFullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+			uint32_t flags = (m_Params.IsFullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_RESIZABLE;
 
 			m_Window = SDL_CreateWindow(m_Params.Title, m_Params.Width, m_Params.Height, flags);
 			if (m_Window == nullptr)
@@ -118,5 +116,156 @@ namespace Sphynx
 		{
 			SDL_Quit();
 		}
+	}
+	void WindowsWindow::TryProcessWindowEvent(SDL_Event& event)
+	{
+		switch (event.type)
+		{
+		case SDL_EventType::SDL_EVENT_QUIT:
+		{
+			WindowClosedEvent windowClosedEvent;
+			m_CallbackFunction(windowClosedEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_SHOWN:
+		{
+			WindowShownEvent windowShownEvent;
+			m_CallbackFunction(windowShownEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_HIDDEN:
+		{
+			WindowHiddenEvent windowHiddenEvent;
+			m_CallbackFunction(windowHiddenEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_EXPOSED:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_MOVED:
+		{
+			WindowMovedEvent windowMovedEvent(event.window.data1, event.window.data2);
+			m_CallbackFunction(windowMovedEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_RESIZED:
+		{
+			WindowResizedEvent windowResizedEvent(event.window.data1, event.window.data2);
+			m_CallbackFunction(windowResizedEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_MINIMIZED:
+		{
+			WindowMinimizedEvent windowMinimizedEvent;
+			m_CallbackFunction(windowMinimizedEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_MAXIMIZED:
+		{
+			WindowMaximizedEvent windowMaximizedEvent;
+			m_CallbackFunction(windowMaximizedEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_RESTORED:
+		{
+			WindowRestoredEvent windowRestoredEvent;
+			m_CallbackFunction(windowRestoredEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_MOUSE_ENTER:
+		{
+			WindowMouseEnterEvent windowMouseEnterEvent;
+			m_CallbackFunction(windowMouseEnterEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_MOUSE_LEAVE:
+		{
+			WindowMouseExitEvent windowMouseExitEvent;
+			m_CallbackFunction(windowMouseExitEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_FOCUS_GAINED:
+		{
+			WindowFocusGainedEvent windowFocusGainedEvent;
+			m_CallbackFunction(windowFocusGainedEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_FOCUS_LOST:
+		{
+			WindowFocusLostEvent windowFocusLostEvent;
+			m_CallbackFunction(windowFocusLostEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+		{
+			// not supported
+			// NOTE: this might be important to look
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_TAKE_FOCUS:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_HIT_TEST:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_ICCPROF_CHANGED:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_DISPLAY_CHANGED:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_OCCLUDED:
+		{
+			// not supported
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_ENTER_FULLSCREEN:
+		{
+			WindowFullscreenChangedEvent windowFullscreenEvent(true);
+			m_CallbackFunction(windowFullscreenEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_LEAVE_FULLSCREEN:
+		{
+			WindowFullscreenChangedEvent windowFullscreenEvent(false);
+			m_CallbackFunction(windowFullscreenEvent);
+		}
+		break;
+		case SDL_EventType::SDL_EVENT_WINDOW_DESTROYED:
+		{
+			// not supported
+		}
+		break;
+		}
+	}
+
+	void WindowsWindow::TryProcessKeyboardEvent(SDL_Event& event)
+	{
+		// TODO: process keyboard events
+	}
+
+	void WindowsWindow::TryProcessMouseEvent(SDL_Event& event)
+	{
+		// TODO: process mouse events
 	}
 }

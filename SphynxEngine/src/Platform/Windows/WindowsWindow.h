@@ -27,6 +27,10 @@ namespace Sphynx
 		void Init(const WindowParams& params);
 		void Shutdown();
 
+		void TryProcessWindowEvent(SDL_Event& event);
+		void TryProcessKeyboardEvent(SDL_Event& event);
+		void TryProcessMouseEvent(SDL_Event& event);
+
 	private:
 		WindowParams m_Params;
 		EventCallbackFunction m_CallbackFunction;

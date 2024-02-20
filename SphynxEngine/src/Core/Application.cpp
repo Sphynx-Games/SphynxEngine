@@ -29,6 +29,13 @@ void Sphynx::Application::Init()
 					m_IsRunning = false;
 					return true;
 				});
+			dispatcher.Dispatch<WindowResizedEvent>([](WindowResizedEvent& windowResizeEvent)
+				{
+					// TODO: tell the renderer that the windows was resized
+					return false;
+				});
+
+			HandleEvent(event);
 		});
 
 }

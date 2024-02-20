@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <type_traits>
 
 #define EVENT_CLASS_CATEGORY(categories)	virtual int GetCategory() const override { return categories; }
 #define EVENT_CLASS_TYPE(type)				virtual EventType GetType() const override { return type; };\
@@ -10,7 +11,10 @@ namespace Sphynx
 	enum class EventType
 	{
 		None,
-		WindowResize, WindowFocusGained, WindowFocusLost, WindowClosed,
+		WindowResized, WindowFocusGained, WindowFocusLost, WindowClosed,
+		WindowShown, WindowHidden, WindowMoved,
+		WindowMinimized, WindowMaximized, WindowRestored, WindowFullcreenChanged,
+		WindowMouseEnter, WindowMouseExit,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseScrolled, MouseMoved
 	};
@@ -48,12 +52,14 @@ namespace Sphynx
 		EventDispatcher(Event& event) : m_Event(event) {};
 		~EventDispatcher() {};
 
-		template<typename T>
-		void Dispatch(std::function<bool(T&)> func)
+		template<typename TEvent>
+		void Dispatch(std::function<bool(TEvent&)> func)
 		{
-			if (m_Event.GetType() == T::GetStaticType())
+			static_assert(std::is_base_of_v<Event, TEvent>, "TEvent should be an event class");
+
+			if (m_Event.GetType() == TEvent::GetStaticType())
 			{
-				m_Event.m_IsHandled = func((T&)m_Event);
+				m_Event.m_IsHandled = func((TEvent&)m_Event);
 			}
 		}
 
