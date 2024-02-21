@@ -1,7 +1,7 @@
 #include "Application.h"
-#include <SDL.h>
 
 #include "Renderer/Window.h"
+#include "Input/Input.h"
 #include "Events/Event.h"
 #include "Events/WindowEvent.h"
 
@@ -38,6 +38,9 @@ void Sphynx::Application::Init()
 			HandleEvent(event);
 		});
 
+	// initialize input 
+	Input::Init();
+
 }
 
 void Sphynx::Application::Run()
@@ -45,12 +48,17 @@ void Sphynx::Application::Run()
 	m_IsRunning = true;
 	while (m_IsRunning)
 	{
+		// update state before window processes the events
+		Input::Update();
+
+		// update window
 		m_Window->Update();
 	}
 }
 
 void Sphynx::Application::Shutdown()
 {
+	Input::Shutdown();
 	m_Window.reset();
 }
 
