@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Core.h"
 #include <cstdint>
 #include <functional>
 
@@ -7,7 +8,7 @@ namespace Sphynx
 {
     typedef std::function<void(class Event&)> EventCallbackFunction;
 
-    struct WindowParams
+    struct SPHYNX_API WindowParams
     {
         const char* Title;
         uint32_t Width;
@@ -16,7 +17,7 @@ namespace Sphynx
         bool IsVSync;
     };
 
-    class Window
+    class SPHYNX_API Window
     {
     public:
         virtual ~Window() = default;

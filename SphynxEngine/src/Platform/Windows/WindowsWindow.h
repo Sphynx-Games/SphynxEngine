@@ -1,7 +1,11 @@
 #pragma once
 #include "Renderer/Window.h"
 #include <memory>
-#include <SDL.h>
+
+
+union SDL_Event;
+struct SDL_Window;
+struct SDL_Surface;
 
 namespace Sphynx
 {
@@ -27,9 +31,10 @@ namespace Sphynx
 		void Init(const WindowParams& params);
 		void Shutdown();
 
-		void TryProcessWindowEvent(SDL_Event& event);
-		void TryProcessKeyboardEvent(SDL_Event& event);
-		void TryProcessMouseEvent(SDL_Event& event);
+		void ProcessEvent(SDL_Event& event);
+		bool TryProcessWindowEvent(SDL_Event& event);
+		bool TryProcessKeyboardEvent(SDL_Event& event);
+		bool TryProcessMouseEvent(SDL_Event& event);
 
 	private:
 		WindowParams m_Params;

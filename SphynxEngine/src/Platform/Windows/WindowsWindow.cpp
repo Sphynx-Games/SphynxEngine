@@ -1,5 +1,8 @@
 #include "WindowsWindow.h"
+#include <SDL.h>
+
 #include "Events/WindowEvent.h"
+#include "Events/InputEvent.h"
 
 
 namespace Sphynx
@@ -21,15 +24,11 @@ namespace Sphynx
 
 	void WindowsWindow::Update()
 	{
-		// TODO: Process the rest of the events too
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
 			if (m_CallbackFunction == nullptr) continue;
-
-			TryProcessWindowEvent(event);
-			TryProcessKeyboardEvent(event);
-			TryProcessMouseEvent(event);
+			ProcessEvent(event);
 		}
 	}
 
@@ -117,7 +116,15 @@ namespace Sphynx
 			SDL_Quit();
 		}
 	}
-	void WindowsWindow::TryProcessWindowEvent(SDL_Event& event)
+
+	void WindowsWindow::ProcessEvent(SDL_Event& event)
+	{
+		if (TryProcessWindowEvent(event)) return;
+		if (TryProcessKeyboardEvent(event)) return;
+		if (TryProcessMouseEvent(event)) return;
+	}
+
+	bool WindowsWindow::TryProcessWindowEvent(SDL_Event& event)
 	{
 		switch (event.type)
 		{
@@ -125,20 +132,20 @@ namespace Sphynx
 		{
 			WindowClosedEvent windowClosedEvent;
 			m_CallbackFunction(windowClosedEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_SHOWN:
 		{
 			WindowShownEvent windowShownEvent;
 			m_CallbackFunction(windowShownEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_HIDDEN:
 		{
 			WindowHiddenEvent windowHiddenEvent;
 			m_CallbackFunction(windowHiddenEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_EXPOSED:
 		{
 			// not supported
@@ -148,14 +155,14 @@ namespace Sphynx
 		{
 			WindowMovedEvent windowMovedEvent(event.window.data1, event.window.data2);
 			m_CallbackFunction(windowMovedEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_RESIZED:
 		{
 			WindowResizedEvent windowResizedEvent(event.window.data1, event.window.data2);
 			m_CallbackFunction(windowResizedEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
 		{
 			// not supported
@@ -165,44 +172,44 @@ namespace Sphynx
 		{
 			WindowMinimizedEvent windowMinimizedEvent;
 			m_CallbackFunction(windowMinimizedEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_MAXIMIZED:
 		{
 			WindowMaximizedEvent windowMaximizedEvent;
 			m_CallbackFunction(windowMaximizedEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_RESTORED:
 		{
 			WindowRestoredEvent windowRestoredEvent;
 			m_CallbackFunction(windowRestoredEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_MOUSE_ENTER:
 		{
 			WindowMouseEnterEvent windowMouseEnterEvent;
 			m_CallbackFunction(windowMouseEnterEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_MOUSE_LEAVE:
 		{
 			WindowMouseExitEvent windowMouseExitEvent;
 			m_CallbackFunction(windowMouseExitEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_FOCUS_GAINED:
 		{
 			WindowFocusGainedEvent windowFocusGainedEvent;
 			m_CallbackFunction(windowFocusGainedEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_FOCUS_LOST:
 		{
 			WindowFocusLostEvent windowFocusLostEvent;
 			m_CallbackFunction(windowFocusLostEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 		{
 			// not supported
@@ -243,29 +250,92 @@ namespace Sphynx
 		{
 			WindowFullscreenChangedEvent windowFullscreenEvent(true);
 			m_CallbackFunction(windowFullscreenEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_LEAVE_FULLSCREEN:
 		{
 			WindowFullscreenChangedEvent windowFullscreenEvent(false);
 			m_CallbackFunction(windowFullscreenEvent);
+			return true;
 		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_DESTROYED:
 		{
 			// not supported
 		}
 		break;
 		}
+
+		return false;
 	}
 
-	void WindowsWindow::TryProcessKeyboardEvent(SDL_Event& event)
+	bool WindowsWindow::TryProcessKeyboardEvent(SDL_Event& event)
 	{
-		// TODO: process keyboard events
+		switch (event.type)
+		{
+		case SDL_EVENT_KEY_DOWN:
+		{
+			KeyPressedEvent keyPressedEvent(event.key.keysym.sym, event.key.repeat != 0);
+			m_CallbackFunction(keyPressedEvent);
+			return true;
+		}
+		case SDL_EVENT_KEY_UP:
+		{
+			KeyReleasedEvent keyReleasedEvent(event.key.keysym.sym);
+			m_CallbackFunction(keyReleasedEvent);
+			return true;
+		}
+		case SDL_EVENT_TEXT_EDITING:
+		{
+			KeyTypedEvent keyTypedEvent(event.key.keysym.sym);
+			m_CallbackFunction(keyTypedEvent);
+			return true;
+		}
+		case SDL_EVENT_TEXT_INPUT:
+		{
+			KeyTypedEvent keyTypedEvent(event.key.keysym.sym);
+			m_CallbackFunction(keyTypedEvent);
+			return true;
+		}
+		case SDL_EVENT_KEYMAP_CHANGED:
+		{
+			// not supported
+		}
+		break;
+		}
+
+		return false;
 	}
 
-	void WindowsWindow::TryProcessMouseEvent(SDL_Event& event)
+	bool WindowsWindow::TryProcessMouseEvent(SDL_Event& event)
 	{
-		// TODO: process mouse events
+		switch (event.type)
+		{
+		case SDL_EVENT_MOUSE_MOTION:
+		{
+			MouseMovedEvent mouseMovedEvent(event.motion.x, event.motion.y);
+			m_CallbackFunction(mouseMovedEvent);
+			return true;
+		}
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		{
+			MouseButtonPressedEvent mouseButtonPressedEvent(event.button.button);
+			m_CallbackFunction(mouseButtonPressedEvent);
+			return true;
+		}
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+		{
+			MouseButtonReleasedEvent mouseButtonReleasedEvent(event.button.button);
+			m_CallbackFunction(mouseButtonReleasedEvent);
+			return true;
+		}
+		case SDL_EVENT_MOUSE_WHEEL:
+		{
+			MouseScrolledEvent mouseScrolledEvent(event.wheel.x, event.wheel.y);
+			m_CallbackFunction(mouseScrolledEvent);
+			return true;
+		}
+		}
+
+		return false;
 	}
 }
