@@ -45,6 +45,7 @@ add_custom_target(SandboxCopyBinaries
 	COMMENT "Copying dependency binaries to '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'" VERBATIM
 )
 add_dependencies(Sandbox SandboxCopyBinaries)
+set_target_properties(SandboxCopyBinaries PROPERTIES FOLDER __internal__)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(Sandbox PUBLIC SPX_DEBUG) 
