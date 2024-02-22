@@ -38,8 +38,13 @@ target_include_directories(Sandbox PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 target_link_libraries(Sandbox SphynxEngine)
 
 # Post build command (copy .dll to bin folder)
-add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SphynxEngine> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SDL3::SDL3> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+add_custom_target(SandboxCopyBinaries 
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SphynxEngine> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SDL3::SDL3> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+
+	COMMENT "Copying dependency binaries to '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'" VERBATIM
+)
+add_dependencies(Sandbox SandboxCopyBinaries)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(Sandbox PUBLIC SPX_DEBUG) 
