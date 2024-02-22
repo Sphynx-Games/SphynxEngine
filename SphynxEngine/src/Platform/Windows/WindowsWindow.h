@@ -1,6 +1,6 @@
 #pragma once
+
 #include "Renderer/Window.h"
-#include <memory>
 
 
 union SDL_Event;

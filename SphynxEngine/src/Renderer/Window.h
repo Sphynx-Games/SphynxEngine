@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
-#include <cstdint>
-#include <functional>
+
 
 namespace Sphynx
 {

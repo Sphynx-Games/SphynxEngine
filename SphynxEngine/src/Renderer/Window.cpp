@@ -4,9 +4,12 @@
 
 #include "Platform/Windows/WindowsWindow.h"
 
-Sphynx::Window* Sphynx::Window::Create(const WindowParams& params)
+namespace Sphynx
 {
-	return new WindowsWindow(params);
+	Window* Window::Create(const WindowParams& params)
+	{
+		return new WindowsWindow(params);
+	}
 }
 
 #endif
