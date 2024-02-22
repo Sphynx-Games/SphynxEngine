@@ -41,7 +41,7 @@ namespace Sphynx
 		EventCallbackFunction m_CallbackFunction;
 
 		SDL_Window* m_Window;
-		SDL_Surface* m_Surface;
+		//SDL_Surface* m_Surface;
 	};
 }
 

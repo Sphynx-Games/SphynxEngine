@@ -11,8 +11,8 @@ namespace Sphynx
 
 	WindowsWindow::WindowsWindow(const WindowParams& params) :
 		m_Params(),
-		m_Window(nullptr),
-		m_Surface(nullptr)
+		m_Window(nullptr)//,
+		//m_Surface(nullptr)
 	{
 		Init(params);
 	}
@@ -91,14 +91,14 @@ namespace Sphynx
 		{
 			++s_SDLWindowCount;
 
-			// Get window surface
-			m_Surface = SDL_GetWindowSurface(m_Window);
+			//// Get window surface
+			//m_Surface = SDL_GetWindowSurface(m_Window);
 
-			// Fill the surface white
-			SDL_FillSurfaceRect(m_Surface, NULL, SDL_MapRGB(m_Surface->format, 0xFF, 0xFF, 0xFF));
+			//// Fill the surface white
+			//SDL_FillSurfaceRect(m_Surface, NULL, SDL_MapRGB(m_Surface->format, 0xFF, 0xFF, 0xFF));
 
-			// Update the surface
-			SDL_UpdateWindowSurface(m_Window);
+			//// Update the surface
+			//SDL_UpdateWindowSurface(m_Window);
 		}
 
 		SetVSync(true);
