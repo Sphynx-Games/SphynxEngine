@@ -2,7 +2,7 @@
 
 #include "Renderer/Window.h"
 #include "Input/Input.h"
-#include "Renderer/RendererAPI.h"
+#include "Renderer/Renderer2D.h"
 #include "Events/Event.h"
 #include "Events/WindowEvent.h"
 #include <SDL.h>
@@ -32,15 +32,10 @@ namespace Sphynx
 		return m_Window.get();
 	}
 
-	const RendererAPI* Application::GetRenderer()
-	{
-		return m_Renderer.get();
-	}
-
 	void Application::Init()
 	{
 		m_Window.reset(Window::Create({ "Sphynx Application", 1280, 720 }));
-		m_Renderer.reset(RendererAPI::Create());
+		Renderer2D::Init();
 
 		// event dispatcher
 		m_Window->SetEventCallbackFunction([&](Event& event)
@@ -60,14 +55,15 @@ namespace Sphynx
 		m_IsRunning = true;
 		while (m_IsRunning)
 		{
-			m_Renderer->Clear();
+			Renderer2D::Begin();
+			
+			//Renderer2D::DrawPoint({0, 0}, {255, 0, 0, 255});
+			Renderer2D::DrawLine({ 0,0 }, { 100,50 }, { 206, 16, 236, 255 });
+			//Renderer2D::DrawQuad({0, 0}, {1280/2, 720/2}, {255, 0, 0, 255});
+			//Renderer2D::DrawTriangle({50, 50}, {100, 50}, {10, 0}, {255, 0, 0, 255});
+			Renderer2D::DrawCircle({ 400,400 }, 200, 50, { 206, 16, 236, 255 });
 
-			//m_Renderer->DrawPoint(0, 0, 255, 0, 0, 255);
-			//m_Renderer->DrawLine(0, 0, 50, 50, 255, 0, 0, 255);
-			//m_Renderer->DrawQuad(0, 0, 1280/2, 720/2, 255, 0, 0, 255);
-			m_Renderer->DrawTriangle(50, 50, 100, 50, 10, 0, 255, 0, 0, 255);
-
-			m_Renderer->Present();
+			Renderer2D::End();
 
 			m_Window->Update();
 		}
@@ -75,7 +71,7 @@ namespace Sphynx
 
 	void Application::Shutdown()
 	{
-		m_Renderer.reset();
+		Renderer2D::Shutdown();
 		m_Window.reset();
 	}
 

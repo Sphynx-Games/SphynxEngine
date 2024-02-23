@@ -14,15 +14,15 @@ namespace Sphynx
 		virtual ~SDLRendererAPI();
 
 		virtual void Init() override;
-		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
-		virtual void Clear(uint8_t R = 0, uint8_t G = 0, uint8_t B = 0, uint8_t A = 255) override;
+		virtual void SetViewport(glm::vec2 position, uint32_t width, uint32_t height) override;
+		virtual void Clear(glm::vec4 color) override;
 		virtual void Present() override;
 
-		virtual void DrawPoint(uint32_t x, uint32_t y, uint8_t R, uint8_t G, uint8_t B, uint8_t A) override;
-		virtual void DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint8_t R, uint8_t G, uint8_t B, uint8_t A) override;
-		virtual void DrawQuad(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint8_t R, uint8_t G, uint8_t B, uint8_t A) override;
-		virtual void DrawTriangle(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t x3, uint32_t y3, uint8_t R, uint8_t G, uint8_t B, uint8_t A) override;
-		virtual void DrawCircle(uint32_t x, uint32_t y, float radius, uint32_t numSegments, uint8_t R, uint8_t G, uint8_t B, uint8_t A) override;
+		virtual void DrawPoint(glm::vec2 point, glm::vec4 color) override;
+		virtual void DrawLine(glm::vec2 point1, glm::vec2 point2, glm::vec4 color) override;
+		virtual void DrawQuad(glm::vec2 point, uint32_t width, uint32_t height, glm::vec4 color) override;
+		virtual void DrawTriangle(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color) override;
+		virtual void DrawCircle(glm::vec2 point, float radius, uint32_t numSegments, glm::vec4 color) override;
 
 		//virtual void SetLineWidth(float width) override;
 

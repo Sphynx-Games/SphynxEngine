@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <glm/glm.hpp>
 
 namespace Sphynx 
 {
@@ -16,15 +16,15 @@ namespace Sphynx
 		virtual ~RendererAPI() = default;
 
 		virtual void Init() = 0;
-		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
-		virtual void Clear(uint8_t R = 0, uint8_t G = 0, uint8_t B = 0, uint8_t A = 255) = 0;
+		virtual void SetViewport(glm::vec2 position, uint32_t width, uint32_t height) = 0;
+		virtual void Clear(glm::vec4 color) = 0;
 		virtual void Present() = 0;
-		
-		virtual void DrawPoint(uint32_t x, uint32_t y, uint8_t R, uint8_t G, uint8_t B, uint8_t A) = 0;
-		virtual void DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint8_t R, uint8_t G, uint8_t B, uint8_t A) = 0;
-		virtual void DrawQuad(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint8_t R, uint8_t G, uint8_t B, uint8_t A) = 0;
-		virtual void DrawTriangle(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t x3, uint32_t y3, uint8_t R, uint8_t G, uint8_t B, uint8_t A) = 0;
-		virtual void DrawCircle(uint32_t x, uint32_t y, float radius, uint32_t numSegments, uint8_t R, uint8_t G, uint8_t B, uint8_t A) = 0;
+
+		virtual void DrawPoint(glm::vec2 point, glm::vec4 color) = 0;
+		virtual void DrawLine(glm::vec2 point1, glm::vec2 point2, glm::vec4 color) = 0;
+		virtual void DrawQuad(glm::vec2 point, uint32_t width, uint32_t height, glm::vec4 color) = 0;
+		virtual void DrawTriangle(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color) = 0;
+		virtual void DrawCircle(glm::vec2 point, float radius, uint32_t numSegments, glm::vec4 color) = 0;
 
 		//virtual void SetLineWidth(float width) = 0;
 

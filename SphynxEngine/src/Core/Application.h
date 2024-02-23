@@ -2,8 +2,6 @@
 
 #include "Core.h"
 
-
-
 namespace Sphynx
 {
 	class Window;
@@ -20,7 +18,6 @@ namespace Sphynx
 		void operator=(const Application&) = delete;
 
 		const Window* GetWindow();
-		const RendererAPI* GetRenderer();
 
 		virtual void Init();
 		virtual void Run();
@@ -37,7 +34,6 @@ namespace Sphynx
 	private:
 		bool m_IsRunning;
 		std::unique_ptr<Window> m_Window;
-		std::unique_ptr<RendererAPI> m_Renderer;
 	};
 
 	// Should be defined in client

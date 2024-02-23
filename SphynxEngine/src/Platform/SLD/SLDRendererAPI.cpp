@@ -8,7 +8,7 @@ namespace Sphynx
 {
 	SDLRendererAPI::SDLRendererAPI() : m_Window(nullptr), m_Renderer(nullptr)
 	{
-		Init();
+		//Init();
 	}
 
 	SDLRendererAPI::~SDLRendererAPI()
@@ -34,15 +34,15 @@ namespace Sphynx
 		}
 	}
 
-	void SDLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	void SDLRendererAPI::SetViewport(glm::vec2 position, uint32_t width, uint32_t height)
 	{
-		SDL_Rect rect = { x, y, width, height };
+		SDL_Rect rect = { position.x, position.y, width, height };
 		SDL_SetRenderViewport(m_Renderer, &rect);
 	}
 
-	void SDLRendererAPI::Clear(uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+	void SDLRendererAPI::Clear(glm::vec4 color)
 	{
-		SDL_SetRenderDrawColor(m_Renderer, R, G, B, A);
+		SDL_SetRenderDrawColor(m_Renderer, color.x, color.y, color.z, color.t);
 		SDL_RenderClear(m_Renderer);
 	}
 
@@ -51,47 +51,47 @@ namespace Sphynx
 		SDL_RenderPresent(m_Renderer);
 	}
 
-	void SDLRendererAPI::DrawPoint(uint32_t x, uint32_t y, uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+	void SDLRendererAPI::DrawPoint(glm::vec2 point, glm::vec4 color)
 	{
-		SDL_SetRenderDrawColor(m_Renderer, R, G, B, A);
+		SDL_SetRenderDrawColor(m_Renderer, color.x, color.y, color.z, color.t);
 
-		ChangeToSphynxCoords(x, y, m_Window);
-		SDL_RenderPoint(m_Renderer, x, y);
+		ChangeToSphynxCoords(point, m_Window);
+		SDL_RenderPoint(m_Renderer, point.x, point.y);
 	}
 
-	void SDLRendererAPI::DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+	void SDLRendererAPI::DrawLine(glm::vec2 point1, glm::vec2 point2, glm::vec4 color)
 	{
-		SDL_SetRenderDrawColor(m_Renderer, R, G, B, A);
+		SDL_SetRenderDrawColor(m_Renderer, color.x, color.y, color.z, color.t);
 
-		ChangeToSphynxCoords(x1, y1, m_Window);
-		ChangeToSphynxCoords(x2, y2, m_Window);
-		SDL_RenderLine(m_Renderer, x1, y1, x2, y2);
+		ChangeToSphynxCoords(point1, m_Window);
+		ChangeToSphynxCoords(point2, m_Window);
+		SDL_RenderLine(m_Renderer, point1.x, point1.y, point2.x, point2.y);
 	}
 
-	void SDLRendererAPI::DrawQuad(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+	void SDLRendererAPI::DrawQuad(glm::vec2 point, uint32_t width, uint32_t height, glm::vec4 color)
 	{
-		SDL_SetRenderDrawColor(m_Renderer, R, G, B, A);
+		SDL_SetRenderDrawColor(m_Renderer, color.x, color.y, color.z, color.t);
 
-		ChangeToSphynxCoords(x, y, m_Window);
-		SDL_FRect rect = { x, y, width, height };
+		ChangeToSphynxCoords(point, m_Window);
+		SDL_FRect rect = { point.x, point.y, width, height };
 		SDL_RenderRect(m_Renderer, &rect);
 	}
 
-	void SDLRendererAPI::DrawTriangle(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t x3, uint32_t y3, uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+	void SDLRendererAPI::DrawTriangle(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color)
 	{
-		SDL_SetRenderDrawColor(m_Renderer, R, G, B, A);
+		SDL_SetRenderDrawColor(m_Renderer, color.x, color.y, color.z, color.t);
 
-		ChangeToSphynxCoords(x1, y1, m_Window);
-		ChangeToSphynxCoords(x2, y2, m_Window);
-		ChangeToSphynxCoords(x3, y3, m_Window);
-		SDL_RenderLine(m_Renderer, x1, y1, x2, y2);
-		SDL_RenderLine(m_Renderer, x1, y1, x3, y3);
-		SDL_RenderLine(m_Renderer, x2, y2, x3, y3);
+		ChangeToSphynxCoords(point1, m_Window);
+		ChangeToSphynxCoords(point2, m_Window);
+		ChangeToSphynxCoords(point3, m_Window);
+		SDL_RenderLine(m_Renderer, point1.x, point1.y, point2.x, point2.y);
+		SDL_RenderLine(m_Renderer, point1.x, point1.y, point3.x, point3.y);
+		SDL_RenderLine(m_Renderer, point2.x, point2.y, point3.x, point3.y);
 	}
 
-	void SDLRendererAPI::DrawCircle(uint32_t x, uint32_t y, float radius, uint32_t numSegments, uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+	void SDLRendererAPI::DrawCircle(glm::vec2 point, float radius, uint32_t numSegments, glm::vec4 color)
 	{
-		SDL_SetRenderDrawColor(m_Renderer, R, G, B, A);
+		SDL_SetRenderDrawColor(m_Renderer, color.x, color.y, color.z, color.t);
 
 		float PI = 3.14;
 		float circumference = radius * 2 * PI;
@@ -100,10 +100,10 @@ namespace Sphynx
 		for (int i = 0; i < numSegments; ++i)
 		{
 			float x0, y0, x1, y1;
-			x0 = radius * cos(alpha * i) + x;
-			y0 = radius * sin(alpha * i) + y;
-			x1 = radius * cos(alpha * ((i + 1) % numSegments)) + x;
-			y1 = radius * sin(alpha * ((i + 1) % numSegments)) + y;
+			x0 = radius * cos(alpha * i) + point.x;
+			y0 = radius * sin(alpha * i) + point.y;
+			x1 = radius * cos(alpha * ((i + 1) % numSegments)) + point.x;
+			y1 = radius * sin(alpha * ((i + 1) % numSegments)) + point.y;
 
 			SDL_RenderLine(m_Renderer, x0, y0, x1, y1);
 		}
