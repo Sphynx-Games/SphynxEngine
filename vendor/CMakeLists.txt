@@ -17,17 +17,17 @@ add_library(vendor INTERFACE)
 
 # Set definitions
 set(SDL_TESTS OFF)
-set(GLM_BUILD_TESTS OFF)
+set(GLM_ENABLE_CXX_17 ON)
 
 # Add directories of the different libraries
 add_subdirectory(SDL SDL/build)
 add_subdirectory(glm glm/build)
 
 set_all_targets_in_folder(SDL vendor/SDL)
-set_all_targets_in_folder(glm vendor/glm)
+# set in folder (function is not working propertly)
+set_property(TARGET glm PROPERTY FOLDER vendor/glm)
 
 # Link to the diferent libraries
 target_link_libraries(vendor INTERFACE
-	SDL3::SDL3)
-target_link_libraries(vendor INTERFACE
+	SDL3::SDL3
 	glm::glm)
