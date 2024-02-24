@@ -55,6 +55,7 @@ namespace Sphynx
 		m_IsRunning = true;
 		while (m_IsRunning)
 		{
+			//Renderer2D::SetClearColor({ 0, 255, 0, 255 });
 			Renderer2D::Begin();
 			
 			//Renderer2D::DrawPoint({0, 0}, {255, 0, 0, 255});

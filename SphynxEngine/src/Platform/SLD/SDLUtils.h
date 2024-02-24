@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Renderer/Window.h"
-#include <glm/glm.hpp>
+#include "Math/Vector.h"
 
 namespace Sphynx
 {
-	inline void ChangeToSphynxCoords(glm::vec2& point, const Window* window)
+	inline void ChangeToSphynxCoords(Vector2i& point, const Window* window)
 	{
-		point.y = window->GetHeight() - point.y;
+		point.Y = window->GetHeight() - point.Y;
 	}
 }

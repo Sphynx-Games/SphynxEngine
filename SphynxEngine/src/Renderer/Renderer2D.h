@@ -1,6 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "RendererTypes.h"
+#include "Math/Vector.h"
 
 namespace Sphynx
 {
@@ -9,42 +10,49 @@ namespace Sphynx
 	public:
 		static void Init();
 		static void Shutdown();
-		static void Begin(glm::vec4 clearColor = { 0, 0, 0, 255 });
+		static void Begin();
 		static void End();
 
-		static void SetViewport(glm::vec2 position, uint32_t width, uint32_t height);
+		static const RendererConfig& GetRendererConfig();
 
-		static void DrawPoint(glm::vec2 point, glm::vec4 color = { 255, 255, 255, 255 });
-		static void DrawLine(glm::vec2 point1, glm::vec2 point2, glm::vec4 color = { 255, 255, 255, 255 });
-		static void DrawQuad(glm::vec2 point, uint32_t width, uint32_t height, glm::vec4 color = { 255, 255, 255, 255 });
-		static void DrawTriangle(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color = { 255, 255, 255, 255 });
-		static void DrawCircle(glm::vec2 point, float radius, uint32_t numSegments, glm::vec4 color = { 255, 255, 255, 255 });
+		static void SetViewport(Vector2i position, uint32_t width, uint32_t height);
+		static void SetClearColor(Color color);
 
-		/*static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void DrawPoint(Vector2i point, Color color = Color::White);
+		static void DrawLine(Vector2i point1, Vector2i point2, Color color = Color::White);
+		static void DrawQuad(Vector2i point, uint32_t width, uint32_t height, Color color = Color::White);
+		static void DrawTriangle(Vector2i point1, Vector2i point2, Vector2i point3, Color color = Color::White);
+		static void DrawCircle(Vector2i point, float radius, uint32_t numSegments, Color color = Color::White);
 
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
-		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
+		static void DrawQuad(DrawMode drawMode, Vector2i point, uint32_t width, uint32_t height, Color color = Color::White);
+		static void DrawTriangle(DrawMode drawMode, Vector2i point1, Vector2i point2, Vector2i point3, Color color = Color::White);
+		static void DrawCircle(DrawMode drawMode, Vector2i point, float radius, uint32_t numSegments, Color color = Color::White);
 
-		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color);
-		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		/*static void DrawQuad(const Vector2i& position, const Vector2i& size, const const glm::vec4&& color);
+		static void DrawQuad(const glm::vec3& position, const Vector2i& size, const const glm::vec4&& color);
+		static void DrawQuad(const Vector2i& position, const Vector2i& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const const glm::vec4&& tintColor = const glm::vec4&(1.0f));
+		static void DrawQuad(const glm::vec3& position, const Vector2i& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const const glm::vec4&& tintColor = const glm::vec4&(1.0f));
 
-		static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f, int entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const const glm::vec4&& color, int entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const const glm::vec4&& tintColor = const glm::vec4&(1.0f), int entityID = -1);
 
-		static void DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID = -1);
+		static void DrawRotatedQuad(const Vector2i& position, const Vector2i& size, float rotation, const const glm::vec4&& color);
+		static void DrawRotatedQuad(const glm::vec3& position, const Vector2i& size, float rotation, const const glm::vec4&& color);
+		static void DrawRotatedQuad(const Vector2i& position, const Vector2i& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const const glm::vec4&& tintColor = const glm::vec4&(1.0f));
+		static void DrawRotatedQuad(const glm::vec3& position, const Vector2i& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const const glm::vec4&& tintColor = const glm::vec4&(1.0f));
 
-		static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID = -1);
-		static void DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);*/
+		static void DrawCircle(const glm::mat4& transform, const const glm::vec4&& color, float thickness = 1.0f, float fade = 0.005f, int entityID = -1);
+
+		static void DrawLine(const glm::vec3& p0, glm::vec3& p1, const const glm::vec4&& color, int entityID = -1);
+
+		static void DrawRect(const glm::vec3& position, const Vector2i& size, const const glm::vec4&& color, int entityID = -1);
+		static void DrawRect(const glm::mat4& transform, const const glm::vec4&& color, int entityID = -1);*/
 
 		//static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
 		/*struct TextParams
 		{
-			glm::vec4 Color{ 1.0f };
+			const glm::vec4& Color{ 1.0f };
 			float Kerning = 0.0f;
 			float LineSpacing = 0.0f;
 		};
@@ -52,7 +60,9 @@ namespace Sphynx
 		static void DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID = -1);*/
 
 		//static void SetLineWidth(float width);
+
 	private:
-		static class RendererAPI* m_RendererAPI;
+		static class RendererAPI* s_RendererAPI;
+		static RendererConfig s_RendererConfig;
 	};
 }

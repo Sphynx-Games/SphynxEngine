@@ -3,54 +3,86 @@
 
 namespace Sphynx
 {
-	RendererAPI* Renderer2D::m_RendererAPI = RendererAPI::Create();
+	RendererAPI* Renderer2D::s_RendererAPI = nullptr;
+	RendererConfig Renderer2D::s_RendererConfig;
 
 	void Renderer2D::Init()
 	{
-		m_RendererAPI->Init();
+		s_RendererAPI = RendererAPI::Create();
+		s_RendererAPI->Init();
+
+		s_RendererConfig.DrawMode = DrawMode::WIREFRAME;
+		s_RendererConfig.ClearColor = Color::FromHex(0x000000FF); // black
 	}
 
 	void Renderer2D::Shutdown()
 	{
+		delete s_RendererAPI;
+		s_RendererAPI = nullptr;
 	}
 
-	void Renderer2D::Begin(glm::vec4 clearColor)
+	void Renderer2D::Begin()
 	{
-		m_RendererAPI->Clear(clearColor);
+		s_RendererAPI->Clear(s_RendererConfig.ClearColor);
 	}
 
 	void Renderer2D::End()
 	{
-		m_RendererAPI->Present();
+		s_RendererAPI->Present();
 	}
 
-	void Renderer2D::SetViewport(glm::vec2 position, uint32_t width, uint32_t height)
+	const RendererConfig& Renderer2D::GetRendererConfig()
 	{
-		m_RendererAPI->SetViewport(position, width, height);
+		return s_RendererConfig;
 	}
 
-	void Renderer2D::DrawPoint(glm::vec2 point, glm::vec4 color)
+	void Renderer2D::SetViewport(Vector2i position, uint32_t width, uint32_t height)
 	{
-		m_RendererAPI->DrawPoint(point, color);
+		s_RendererAPI->SetViewport(position, width, height);
 	}
 
-	void Renderer2D::DrawLine(glm::vec2 point1, glm::vec2 point2, glm::vec4 color)
+	void Renderer2D::SetClearColor(Color color)
 	{
-		m_RendererAPI->DrawLine(point1, point2, color);
+		s_RendererConfig.ClearColor = color;
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 point, uint32_t width, uint32_t height, glm::vec4 color)
+	void Renderer2D::DrawPoint(Vector2i point, Color color)
 	{
-		m_RendererAPI->DrawQuad(point, width, height, color);
+		s_RendererAPI->DrawPoint(point, color);
 	}
 
-	void Renderer2D::DrawTriangle(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color)
+	void Renderer2D::DrawLine(Vector2i point1, Vector2i point2, Color color)
 	{
-		m_RendererAPI->DrawTriangle(point1, point2, point3, color);
+		s_RendererAPI->DrawLine(point1, point2, color);
 	}
 
-	void Renderer2D::DrawCircle(glm::vec2 point, float radius, uint32_t numSegments, glm::vec4 color)
+	void Renderer2D::DrawQuad(Vector2i point, uint32_t width, uint32_t height, Color color)
 	{
-		m_RendererAPI->DrawCircle(point, radius, numSegments, color);
+		s_RendererAPI->DrawQuad(point, width, height, color);
+	}
+
+	void Renderer2D::DrawTriangle(Vector2i point1, Vector2i point2, Vector2i point3, Color color)
+	{
+		s_RendererAPI->DrawTriangle(point1, point2, point3, color);
+	}
+
+	void Renderer2D::DrawCircle(Vector2i point, float radius, uint32_t numSegments, Color color)
+	{
+		s_RendererAPI->DrawCircle(point, radius, numSegments, color);
+	}
+
+	void Renderer2D::DrawQuad(DrawMode drawMode, Vector2i point, uint32_t width, uint32_t height, Color color)
+	{
+		s_RendererAPI->DrawQuad(point, width, height, color);
+	}
+
+	void Renderer2D::DrawTriangle(DrawMode drawMode, Vector2i point1, Vector2i point2, Vector2i point3, Color color)
+	{
+		s_RendererAPI->DrawTriangle(point1, point2, point3, color);
+	}
+
+	void Renderer2D::DrawCircle(DrawMode drawMode, Vector2i point, float radius, uint32_t numSegments, Color color)
+	{
+		s_RendererAPI->DrawCircle(point, radius, numSegments, color);
 	}
 }
