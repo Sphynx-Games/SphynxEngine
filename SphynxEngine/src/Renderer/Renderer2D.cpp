@@ -46,6 +46,11 @@ namespace Sphynx
 		s_RendererConfig.ClearColor = color;
 	}
 
+	void Renderer2D::SetDrawMode(DrawMode drawMode)
+	{
+		s_RendererConfig.DrawMode = drawMode;
+	}
+
 	void Renderer2D::DrawPoint(Vector2i point, Color color)
 	{
 		s_RendererAPI->DrawPoint(point, color);
@@ -66,23 +71,23 @@ namespace Sphynx
 		s_RendererAPI->DrawTriangle(point1, point2, point3, color);
 	}
 
-	void Renderer2D::DrawCircle(Vector2i point, float radius, uint32_t numSegments, Color color)
+	void Renderer2D::DrawCircle(Vector2i center, float radius, uint32_t numSegments, Color color)
 	{
-		s_RendererAPI->DrawCircle(point, radius, numSegments, color);
+		s_RendererAPI->DrawCircle(center, radius, numSegments, color);
 	}
 
 	void Renderer2D::DrawQuad(DrawMode drawMode, Vector2i point, uint32_t width, uint32_t height, Color color)
 	{
-		s_RendererAPI->DrawQuad(point, width, height, color);
+		s_RendererAPI->DrawQuad(drawMode, point, width, height, color);
 	}
 
 	void Renderer2D::DrawTriangle(DrawMode drawMode, Vector2i point1, Vector2i point2, Vector2i point3, Color color)
 	{
-		s_RendererAPI->DrawTriangle(point1, point2, point3, color);
+		s_RendererAPI->DrawTriangle(drawMode, point1, point2, point3, color);
 	}
 
-	void Renderer2D::DrawCircle(DrawMode drawMode, Vector2i point, float radius, uint32_t numSegments, Color color)
+	void Renderer2D::DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color)
 	{
-		s_RendererAPI->DrawCircle(point, radius, numSegments, color);
+		s_RendererAPI->DrawCircle(drawMode, center, radius, numSegments, color);
 	}
 }

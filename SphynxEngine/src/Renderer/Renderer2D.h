@@ -17,16 +17,17 @@ namespace Sphynx
 
 		static void SetViewport(Vector2i position, uint32_t width, uint32_t height);
 		static void SetClearColor(Color color);
+		static void SetDrawMode(DrawMode drawMode);
 
 		static void DrawPoint(Vector2i point, Color color = Color::White);
 		static void DrawLine(Vector2i point1, Vector2i point2, Color color = Color::White);
 		static void DrawQuad(Vector2i point, uint32_t width, uint32_t height, Color color = Color::White);
 		static void DrawTriangle(Vector2i point1, Vector2i point2, Vector2i point3, Color color = Color::White);
-		static void DrawCircle(Vector2i point, float radius, uint32_t numSegments, Color color = Color::White);
+		static void DrawCircle(Vector2i center, float radius, uint32_t numSegments, Color color = Color::White);
 
 		static void DrawQuad(DrawMode drawMode, Vector2i point, uint32_t width, uint32_t height, Color color = Color::White);
 		static void DrawTriangle(DrawMode drawMode, Vector2i point1, Vector2i point2, Vector2i point3, Color color = Color::White);
-		static void DrawCircle(DrawMode drawMode, Vector2i point, float radius, uint32_t numSegments, Color color = Color::White);
+		static void DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color = Color::White);
 
 		/*static void DrawQuad(const Vector2i& position, const Vector2i& size, const const glm::vec4&& color);
 		static void DrawQuad(const glm::vec3& position, const Vector2i& size, const const glm::vec4&& color);

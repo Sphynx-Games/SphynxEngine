@@ -6,7 +6,7 @@ namespace Sphynx
 {
 	enum DrawMode
 	{
-		WIREFRAME, 
+		WIREFRAME,
 		FILLED
 	};
 

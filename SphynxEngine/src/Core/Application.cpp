@@ -55,14 +55,15 @@ namespace Sphynx
 		m_IsRunning = true;
 		while (m_IsRunning)
 		{
-			//Renderer2D::SetClearColor({ 0, 255, 0, 255 });
+			//Renderer2D::SetClearColor(Color::White);
 			Renderer2D::Begin();
 			
 			//Renderer2D::DrawPoint({0, 0}, {255, 0, 0, 255});
-			Renderer2D::DrawLine({ 0,0 }, { 100,50 }, { 206, 16, 236, 255 });
+			//Renderer2D::DrawLine({ 0,0 }, { 100,50 }, { 206, 16, 236, 255 });
 			//Renderer2D::DrawQuad({0, 0}, {1280/2, 720/2}, {255, 0, 0, 255});
-			//Renderer2D::DrawTriangle({50, 50}, {100, 50}, {10, 0}, {255, 0, 0, 255});
-			Renderer2D::DrawCircle({ 400,400 }, 200, 50, { 206, 16, 236, 255 });
+			Renderer2D::DrawTriangle(DrawMode::FILLED, {50, 50}, {100, 50}, {10, 0}, {255, 0, 0, 255});
+			Renderer2D::DrawCircle(DrawMode::FILLED, { 400,400 }, 200, 50, { 206, 16, 236, 255 });
+			Renderer2D::DrawCircle(DrawMode::WIREFRAME, { 400,400 }, 200, 50, { 206, 255, 236, 255 });
 
 			Renderer2D::End();
 
