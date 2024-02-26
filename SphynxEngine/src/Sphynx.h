@@ -6,6 +6,10 @@
 // Entry point
 #include "Core/EntryPoint.h"
 
+// Logging
+#include "Logging/Log.h"
+#include "Logging/LogDefines.h"
+
 // Input
 #include "Input/Input.h"
 #include "Input/Keycode.h"

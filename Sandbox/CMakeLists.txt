@@ -36,6 +36,7 @@ target_include_directories(Sandbox PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 # Set target link libs
 target_link_libraries(Sandbox SphynxEngine)
+target_link_libraries(Sandbox spdlog::spdlog)
 
 # Post build command (copy .dll to bin folder)
 add_custom_target(SandboxCopyBinaries 
@@ -48,11 +49,11 @@ add_custom_target(SandboxCopyBinaries
 add_dependencies(Sandbox SandboxCopyBinaries)
 set_target_properties(SandboxCopyBinaries PROPERTIES FOLDER __internal__)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	target_compile_definitions(Sandbox PUBLIC SPX_DEBUG) 
-else()
-	target_compile_definitions(Sandbox PUBLIC SPX_RELEASE) 
-endif()
+target_compile_definitions(Sandbox PUBLIC
+	$<$<CONFIG:Debug>:SPX_DEBUG>
+	$<$<CONFIG:RelWithDebInfo>:SPX_DEBUG>
+	$<$<CONFIG:Release>:SPX_RELEASE>
+	$<$<CONFIG:MinSizeRel>:SPX_RELEASE>) 
 
 # Add a library folder
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/LIBRARY_FOLDER/)

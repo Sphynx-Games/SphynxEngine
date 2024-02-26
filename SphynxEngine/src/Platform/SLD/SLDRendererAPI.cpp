@@ -1,5 +1,6 @@
 #include "SLDRendererAPI.h"
 #include "Core/Application.h"
+#include "Logging/Log.h"
 #include "Renderer/Window.h"
 #include "Platform/Windows/WindowsWindow.h"
 #include "Renderer/Renderer2D.h"
@@ -26,7 +27,7 @@ namespace Sphynx
 		Application* app = Application::GetInstance();
 		m_Window = app->GetWindow();
 		if (m_Window == nullptr) {
-			printf("Window not initialized!\n");
+			SPX_LOG_CORE_ERROR("Window not initialized!");
 			return;
 		}
 		SDL_Window* window_SDL = reinterpret_cast<SDL_Window*>(m_Window->GetNativeWindow());
@@ -34,7 +35,7 @@ namespace Sphynx
 		// Create renderer
 		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (m_Renderer == nullptr) {
-			printf("SDL renderer could not initialize! SDL_Error: %s\n", SDL_GetError());
+			SPX_LOG_CORE_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
 		}
 	}
 

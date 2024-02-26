@@ -21,6 +21,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}/$<CON
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}/$<CONFIG>/)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}/$<CONFIG>/)
 
+option(SPX_BUILD_SHARED "Build as a dynamic library" OFF)
+set(BUILD_SHARED_LIBS ${SPX_BUILD_SHARED})
+
 # Get all my .cpp files and create variable SPXSOURCES 
 file(GLOB_RECURSE SPXSOURCES CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
@@ -28,7 +31,11 @@ file(GLOB_RECURSE SPXSOURCES CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 
 # Set the library name and the sources to be compiled
-add_library(${PROJECT_NAME} SHARED ${SPXSOURCES})
+if(BUILD_SHARED_LIBS)
+	add_library(${PROJECT_NAME} SHARED ${SPXSOURCES})
+else()
+	add_library(${PROJECT_NAME} STATIC ${SPXSOURCES})
+endif()
 
 # Set target sources
 target_sources(${PROJECT_NAME} PRIVATE ${SPXSOURCES})
@@ -38,14 +45,20 @@ target_link_libraries(${PROJECT_NAME} PRIVATE vendor)
 # Set Precompiled Header
 target_precompile_headers(${PROJECT_NAME} PRIVATE "src/spxpch.h")
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_DEBUG) 
-else()
-	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_RELEASE) 
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+	$<$<CONFIG:Debug>:SPX_DEBUG>
+	$<$<CONFIG:RelWithDebInfo>:SPX_DEBUG>
+	$<$<CONFIG:Release>:SPX_RELEASE>
+	$<$<CONFIG:MinSizeRel>:SPX_RELEASE>) 
+
+if (WIN32 AND BUILD_SHARED_LIBS)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_BUILD_SHARED)
 endif()
 
 if (WIN32)
-	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_BUILD_DLL)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC 
+		_CRT_SECURE_NO_WARNINGS
+		_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS)
 endif()
 
 # Add a library folder

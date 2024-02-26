@@ -1,4 +1,6 @@
 #include "WindowsWindow.h"
+#include "Logging/Log.h"
+
 #include <SDL.h>
 
 #include "Events/WindowEvent.h"
@@ -67,15 +69,14 @@ namespace Sphynx
 	{
 		m_Params = params;
 
-		// TODO: change printf when we have a LOG system
-		printf("Creating window %s (%d, %d)\n", m_Params.Title, m_Params.Width, m_Params.Height);
+		SPX_LOG_CORE_DISPLAY("Creating window {} ({}, {})", m_Params.Title, m_Params.Width, m_Params.Height);
 
 		if (s_SDLWindowCount == 0)
 		{
 			// Init SDL
 			if (SDL_Init(SDL_INIT_VIDEO) < 0)
 			{
-				printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+				SPX_LOG_CORE_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
 			}
 			// Create window
 			uint32_t flags = (m_Params.IsFullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_RESIZABLE;
@@ -83,22 +84,13 @@ namespace Sphynx
 			m_Window = SDL_CreateWindow(m_Params.Title, m_Params.Width, m_Params.Height, flags);
 			if (m_Window == nullptr)
 			{
-				printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+				SPX_LOG_CORE_ERROR("Window could not be created! SDL_Error: {}", SDL_GetError());
 			}
 		}
 
 		if (m_Window != nullptr)
 		{
 			++s_SDLWindowCount;
-
-			//// Get window surface
-			//m_Surface = SDL_GetWindowSurface(m_Window);
-
-			//// Fill the surface white
-			//SDL_FillSurfaceRect(m_Surface, NULL, SDL_MapRGB(m_Surface->format, 0xFF, 0xFF, 0xFF));
-
-			//// Update the surface
-			//SDL_UpdateWindowSurface(m_Window);
 		}
 
 		SetVSync(true);
