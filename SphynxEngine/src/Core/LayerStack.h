@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Layer.h"
 #include <vector>
 
 namespace Sphynx
 {
+	class Layer;
+
 	class LayerStack
 	{
 	public:

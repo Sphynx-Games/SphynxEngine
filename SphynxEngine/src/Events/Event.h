@@ -1,11 +1,10 @@
 #pragma once
 
+#include <functional>
 
 #define EVENT_CLASS_CATEGORY(categories)	virtual int GetCategory() const override { return categories; }
 #define EVENT_CLASS_TYPE(type)				virtual EventType GetType() const override { return type; };\
 											static EventType GetStaticType() { return type; }
-
-
 namespace Sphynx
 {
 	enum class EventType

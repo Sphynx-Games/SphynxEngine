@@ -7,12 +7,14 @@
 
 namespace Sphynx
 {
+	class OrthographicCamera;
+
 	class Renderer2D
 	{
 	public:
 		static void Init();
 		static void Shutdown();
-		static void Begin();
+		static void Begin(const OrthographicCamera* camera);
 		static void End();
 
 		static const RendererConfig& GetRendererConfig();
@@ -74,5 +76,6 @@ namespace Sphynx
 	private:
 		static class RendererAPI* s_RendererAPI;
 		static RendererConfig s_RendererConfig;
+		//static SceneData s_SceneData;
 	};
 }

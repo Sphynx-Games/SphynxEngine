@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core.h"
-#include "LayerStack.h"
 
 namespace Sphynx
 {
@@ -9,6 +8,7 @@ namespace Sphynx
 	class RendererAPI;
 	class Layer;
 	class LayerStack;
+	class OrthographicCamera;
 
 	class SPHYNX_API Application
 	{
@@ -41,6 +41,7 @@ namespace Sphynx
 		bool m_IsRunning;
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<LayerStack> m_LayerStack;
+		std::unique_ptr<OrthographicCamera> m_Camera;
 	};
 
 	// Should be defined in client

@@ -4,8 +4,9 @@ namespace Sphynx
 {
 	const Color Color::White = Color(255, 255, 255, 255);
 	const Color Color::Black = Color(0, 0, 0, 255);
-
-	Color::Color() : R(255), G(255), B(255), A(255) {}
+	const Color Color::Red = Color(255, 0, 0, 255);
+	const Color Color::Green = Color(0, 255, 0, 255);
+	const Color Color::Blue = Color(0, 0, 255, 255);
 
 	Color::Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A) : R(R), G(G), B(B), A(A) {}
 
@@ -23,6 +24,6 @@ namespace Sphynx
 
 	Color Color::FromHex(uint32_t color)
 	{
-		return color;
+		return Color(color);
 	}
 }

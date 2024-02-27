@@ -6,8 +6,6 @@ struct SDL_Renderer;
 
 namespace Sphynx
 {
-	class Window;
-
 	class SDLRendererAPI : public RendererAPI
 	{
 	public:
@@ -30,12 +28,10 @@ namespace Sphynx
 		virtual void DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2i point1, Vector2i point2, Vector2i point3, Vector2f pivot, Color color) override;
 		virtual void DrawCircle(DrawMode drawMode, const Transform& transform, float radius, uint32_t numSegments, Vector2f pivot, Color color) override;
 
-
 		//virtual void SetLineWidth(float width) override;
 
-
 	private:
-		const Window* m_Window;
+		const class Window* m_Window;
 		SDL_Renderer* m_Renderer;
 	};
 }

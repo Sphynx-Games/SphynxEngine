@@ -1,10 +1,12 @@
 #include "Application.h"
-
 #include "Renderer/Window.h"
 #include "Input/Input.h"
-#include "Renderer/Renderer2D.h"
 #include "Events/Event.h"
 #include "Events/WindowEvent.h"
+#include "Renderer/Renderer2D.h"
+#include "LayerStack.h"
+#include "Layer.h"
+#include "Renderer/OrthographicCamera.h"
 #include <SDL.h>
 
 namespace Sphynx 
@@ -14,7 +16,9 @@ namespace Sphynx
 	Application::Application() :
 		m_IsRunning(false),
 		m_Window(nullptr),
-		m_LayerStack(nullptr)
+		m_LayerStack(nullptr),
+		m_Camera(new OrthographicCamera())
+		//m_Camera(new OrthographicCamera(-2.0f, 2.0f, -2.0f, 2.0f))
 	{
 		s_Application = this;
 	}
@@ -59,19 +63,23 @@ namespace Sphynx
 		while (m_IsRunning)
 		{
 			//Renderer2D::SetClearColor(Color::White);
-			Renderer2D::Begin();
+
+			//m_Camera.get()->SetPosition({ -200.0f, 100.0f, 0.0f });
+			//m_Camera.get()->SetRotation(90.0f);
+
+			Renderer2D::Begin(m_Camera.get());
 
 			for (Layer* layer : m_LayerStack.get()->get()) 
 			{
 				layer->Update();
 			}
 
-			Transform trans = { {0.0f, 200.0f, 0.0f}, {1.0f,1.0f,1.0f}, {0.0f,0.0f,0.0f} };
+			Transform trans = { {200.0f, 100.0f, 0.0f}, {1.0f,1.0f,1.0f}, {0.0f,0.0f,0.0f} };
 			
 			//Renderer2D::DrawPoint({0, 0}, {255, 0, 0, 255});
 			//Renderer2D::DrawLine({ 0,0 }, { 100,50 }, { 206, 16, 236, 255 });
 			 
-			//Renderer2D::DrawQuad({ 300, 600 }, {1280/2, 720/2}, {255, 0, 0, 255});
+			//Renderer2D::DrawQuad({ 300, 600 }, {1280/2, 720/2}, Sphynx::Color{255, 0, 0, 255});
 			Renderer2D::DrawQuad(DrawMode::FILLED, trans, { 200, 100 }, { 0.5f, 0.5f }, Sphynx::Color{ 255, 0, 0, 255 });
 
 			//Renderer2D::DrawTriangle(DrawMode::FILLED, {50, 50}, {100, 50}, {10, 0}, trans, {255, 0, 0, 255});
@@ -97,13 +105,13 @@ namespace Sphynx
 	{
 		// TODO: propagate events to listeners (?)
 
-		/*for (auto it = m_LayerStack.get()->rbegin(); it != m_LayerStack.get()->rend(); ++it)
+		for (auto it = m_LayerStack.get()->rbegin(); it != m_LayerStack.get()->rend(); ++it)
 		{
 			if (event.IsHandled())
 				break;
 
 			(*it)->HandleEvent(event);
-		}*/
+		}
 	}
 
 	void Application::PushLayer(Layer* layer)

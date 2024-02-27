@@ -145,7 +145,7 @@ namespace Sphynx
 	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2i size, Vector2f pivot, Color color)
 	{
 		// multiply transformation matrices
-		glm::mat4 mat = MultTransformMatrices(transform);
+		glm::mat4 mat = MultTransformMatrices(Renderer2D::GetRendererConfig().ViewProjectionMatrix, transform);
 
 		// calculate rectangle corners with transformations applied
 		float midWidth = (size.X / 2.0f);
@@ -185,7 +185,7 @@ namespace Sphynx
 		ChangeToSphynxCoords(point2, m_Window);
 		ChangeToSphynxCoords(point3, m_Window);
 
-		glm::mat4 mat = MultTransformMatrices(transform);
+		glm::mat4 mat = MultTransformMatrices(Renderer2D::GetRendererConfig().ViewProjectionMatrix, transform);
 
 		glm::vec4 P1 = mat * glm::vec4{ point1.X, point1.Y, 0.0f, 1.0f };
 		glm::vec4 P2 = mat * glm::vec4{ point2.X, point2.Y, 0.0f, 1.0f };
@@ -207,7 +207,7 @@ namespace Sphynx
 	{
 		//ChangeToSphynxCoords(center, m_Window);
 
-		glm::mat4 mat = MultTransformMatrices(transform);
+		glm::mat4 mat = MultTransformMatrices(Renderer2D::GetRendererConfig().ViewProjectionMatrix, transform);
 
 		std::vector<SDL_FPoint> points; // reserve space for "numSegments" number of points
 		points.reserve(numSegments + 2);

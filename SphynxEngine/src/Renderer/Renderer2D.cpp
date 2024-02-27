@@ -1,5 +1,6 @@
 #include "Renderer2D.h"
 #include "RendererAPI.h"
+#include "OrthographicCamera.h"
 
 namespace Sphynx
 {
@@ -10,9 +11,6 @@ namespace Sphynx
 	{
 		s_RendererAPI = RendererAPI::Create();
 		s_RendererAPI->Init();
-
-		s_RendererConfig.DrawMode = DrawMode::WIREFRAME;
-		s_RendererConfig.ClearColor = Color::FromHex(0x000000FF); // black
 	}
 
 	void Renderer2D::Shutdown()
@@ -21,8 +19,9 @@ namespace Sphynx
 		s_RendererAPI = nullptr;
 	}
 
-	void Renderer2D::Begin()
+	void Renderer2D::Begin(const OrthographicCamera* camera)
 	{
+		s_RendererConfig.ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 		s_RendererAPI->Clear(s_RendererConfig.ClearColor);
 	}
 
