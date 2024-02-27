@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Math/Color.h"
-#include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
 
 namespace Sphynx
 {

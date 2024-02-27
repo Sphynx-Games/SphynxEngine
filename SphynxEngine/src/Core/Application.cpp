@@ -6,7 +6,7 @@
 #include "Renderer/Renderer2D.h"
 #include "LayerStack.h"
 #include "Layer.h"
-#include "Renderer/OrthographicCamera.h"
+#include "Renderer/OrthographicCameraController.h"
 #include <SDL.h>
 
 namespace Sphynx
@@ -17,8 +17,7 @@ namespace Sphynx
 		m_IsRunning(false),
 		m_Window(nullptr),
 		m_LayerStack(nullptr),
-		m_Camera(new OrthographicCamera())
-		//m_Camera(new OrthographicCamera(-2.0f, 2.0f, -2.0f, 2.0f))
+		m_CameraController(new OrthographicCameraController(1.0f, true))
 	{
 		s_Application = this;
 	}
@@ -40,9 +39,9 @@ namespace Sphynx
 	void Application::Init()
 	{
 		m_LayerStack.reset(new LayerStack());
-
 		m_Window.reset(Window::Create({ "Sphynx Application", 1280, 720 }));
-		Renderer2D::Init();
+		Input::Init();
+		Renderer2D::Init(); 
 
 		// event dispatcher
 		m_Window->SetEventCallbackFunction([&](Event& event)
@@ -53,6 +52,13 @@ namespace Sphynx
 						m_IsRunning = false;
 						return true;
 					});
+				dispatcher.Dispatch<WindowResizedEvent>([](WindowResizedEvent& windowResizeEvent)
+					{
+						// TODO: tell the renderer that the windows was resized
+						return false;
+					});
+
+				HandleEvent(event);
 			});
 
 	}
@@ -62,12 +68,16 @@ namespace Sphynx
 		m_IsRunning = true;
 		while (m_IsRunning)
 		{
+			// update camera
+			m_CameraController.get()->Update();
+
 			//Renderer2D::SetClearColor(Color::White);
 
-			m_Camera->SetPosition({ 200.0f, 200.0f, 0.0f });
+			//m_Camera->SetPosition({ 200.0f, 200.0f, 0.0f });
 			//m_Camera->SetRotation(180.0f);
 
-			Renderer2D::Begin(m_Camera.get());
+			// begin scene render
+			Renderer2D::Begin(&m_CameraController.get()->GetCamera());
 
 			for (Layer* layer : m_LayerStack.get()->get())
 			{
@@ -79,7 +89,7 @@ namespace Sphynx
 			Renderer2D::DrawQuad(DrawMode::FILLED, quadTransform, { 200, 100 }, { 0.5f, 0.5f }, Color::Blue);
 
 			Transform triangleTransform = { { 100.0f, 125.0f, 0.0f }, { 5.0f, 15.0f, 1.0f }, { 0.0f, 0.0f, 180.0f } };
-			Renderer2D::DrawTriangle(DrawMode::FILLED, triangleTransform, {-50.0f, 0.0f }, { 0.0f, 50.0f }, { 50.f, 0.0f }, {0.5f, 1.0f}, Color::Red);
+			Renderer2D::DrawTriangle(DrawMode::FILLED, triangleTransform, Vector2f{ -50.0f, 0.0f }, Vector2f{ 0.0f, 50.0f }, Vector2f{ 50.f, 0.0f }, Vector2f{0.5f, 1.0f}, Color::Red);
 
 			Transform circleTransform = { { 250.0f, 125.0f, 0.0f }, { 5.5f, 1.5f, 1.0f }, { 0.0f, 0.0f, 180.0f } };
 			Renderer2D::DrawCircle(DrawMode::FILLED, circleTransform, 10.f, 32, { 0.5f, 0.5f }, Color::Green);
@@ -94,6 +104,10 @@ namespace Sphynx
 
 			Renderer2D::End();
 
+			// update state before window processes the events
+			Input::Update();
+
+			// update window
 			m_Window->Update();
 		}
 	}
@@ -101,6 +115,7 @@ namespace Sphynx
 	void Application::Shutdown()
 	{
 		Renderer2D::Shutdown();
+		Input::Shutdown();
 		m_Window.reset();
 		m_LayerStack.reset();
 	}
@@ -108,6 +123,7 @@ namespace Sphynx
 	void Application::HandleEvent(Event& event)
 	{
 		// TODO: propagate events to listeners (?)
+		m_CameraController.get()->HandleEvent(event);
 
 		for (auto it = m_LayerStack.get()->rbegin(); it != m_LayerStack.get()->rend(); ++it)
 		{
