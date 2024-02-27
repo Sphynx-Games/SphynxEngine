@@ -1,5 +1,6 @@
 #include "OrthographicCamera.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace Sphynx
 {
@@ -15,10 +16,9 @@ namespace Sphynx
 
 	void OrthographicCamera::RecalculateViewMatrix()
 	{
-		glm::mat4 position = glm::translate(glm::mat4(1.0f), { m_Position.X, m_Position.Y, m_Position.Z });
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0, 0, 1));
-
-		glm::mat4 transform = position * rotation;
+		glm::mat4 transform =
+			glm::translate(glm::mat4(1.0f), { m_Position.X, m_Position.Y, m_Position.Z }) *
+			glm::mat4_cast(glm::quat({ 0.0f, 0.0f, glm::radians(m_Rotation) }));
 
 		m_ViewMatrix = glm::inverse(transform);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;

@@ -106,7 +106,7 @@ namespace Sphynx
 
 		std::vector<int32_t> indices({ 0, 1, 2 });
 
-		DrawPoligon(m_Renderer, drawMode, points, indices, color);
+		DrawPolygon(m_Renderer, drawMode, points, indices, color);
 	}
 
 	void SDLRendererAPI::DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color)
@@ -139,57 +139,51 @@ namespace Sphynx
 			indices.emplace_back(((i + 1) % numSegments) + 1);
 		}
 
-		DrawPoligon(m_Renderer, drawMode, points, indices, color, true);
+		DrawPolygon(m_Renderer, drawMode, points, indices, color, true);
 	}
 
-	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2i size, Vector2f pivot, Color color)
+	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		// multiply transformation matrices
-		glm::mat4 mat = MultTransformMatrices(Renderer2D::GetRendererConfig().ViewProjectionMatrix, transform);
+		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
 		// calculate rectangle corners with transformations applied
-		float midWidth = (size.X / 2.0f);
-		float midHeight = (size.Y / 2.0f);
+		float halfWidth = (size.X / 2.0f);
+		float halfHeight = (size.Y / 2.0f);
 
-		Vector2i ul = { - midWidth, + midHeight };
-		Vector2i ur = { + midWidth, + midHeight };
-		Vector2i dr = { + midWidth, - midHeight };
-		Vector2i dl = { - midWidth, - midHeight };
-		ChangeToSphynxCoords(ul, m_Window);
-		ChangeToSphynxCoords(ur, m_Window);
-		ChangeToSphynxCoords(dr, m_Window);
-		ChangeToSphynxCoords(dl, m_Window);
-
-		glm::vec4 UL = mat * glm::vec4{ ul.X, ul.Y, 0.0f, 1.0f };
-		glm::vec4 UR = mat * glm::vec4{ ur.X, ur.Y, 0.0f, 1.0f };
-		glm::vec4 DR = mat * glm::vec4{ dr.X, dr.Y, 0.0f, 1.0f };
-		glm::vec4 DL = mat * glm::vec4{ dl.X, dl.Y, 0.0f, 1.0f };
+		// Coordinates in screen space
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth,  halfHeight, 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  halfWidth,  halfHeight, 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  halfWidth, -halfHeight, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth, -halfHeight, 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
 		points.reserve(5);
-		points.emplace_back(SDL_FPoint{ (float)UL.x, (float)UL.y });
-		points.emplace_back(SDL_FPoint{ (float)UR.x, (float)UR.y });
-		points.emplace_back(SDL_FPoint{ (float)DR.x, (float)DR.y });
-		points.emplace_back(SDL_FPoint{ (float)DL.x, (float)DL.y });
-		points.emplace_back(SDL_FPoint{ (float)UL.x, (float)UL.y });
+		points.emplace_back(SDL_FPoint{ UL.x, UL.y });
+		points.emplace_back(SDL_FPoint{ UR.x, UR.y });
+		points.emplace_back(SDL_FPoint{ DR.x, DR.y });
+		points.emplace_back(SDL_FPoint{ DL.x, DL.y });
+		points.emplace_back(SDL_FPoint{ UL.x, UL.y });
+
+		SDL_COORDS_TO_SPHYNX_COORDS(points[0], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[1], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[2], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[3], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[4], m_Window);
 
 		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
 
-		DrawPoligon(m_Renderer, drawMode, points, indices, color);
+		DrawPolygon(m_Renderer, drawMode, points, indices, color);
 	}
 
-	void SDLRendererAPI::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2i point1, Vector2i point2, Vector2i point3, Vector2f pivot, Color color)
+	void SDLRendererAPI::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color)
 	{
-		ChangeToSphynxCoords(point1, m_Window);
-		ChangeToSphynxCoords(point2, m_Window);
-		ChangeToSphynxCoords(point3, m_Window);
+		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
-		glm::mat4 mat = MultTransformMatrices(Renderer2D::GetRendererConfig().ViewProjectionMatrix, transform);
-
-		glm::vec4 P1 = mat * glm::vec4{ point1.X, point1.Y, 0.0f, 1.0f };
-		glm::vec4 P2 = mat * glm::vec4{ point2.X, point2.Y, 0.0f, 1.0f };
-		glm::vec4 P3 = mat * glm::vec4{ point3.X, point3.Y, 0.0f, 1.0f };
+		glm::vec4 P1 = mvpMatrix * glm::vec4{ point1.X, point1.Y, 0.0f, 1.0f };
+		glm::vec4 P2 = mvpMatrix * glm::vec4{ point2.X, point2.Y, 0.0f, 1.0f };
+		glm::vec4 P3 = mvpMatrix * glm::vec4{ point3.X, point3.Y, 0.0f, 1.0f };
 
 		std::vector<SDL_FPoint> points;
 		points.reserve(4);
@@ -198,35 +192,43 @@ namespace Sphynx
 		points.emplace_back(SDL_FPoint{ (float)P3.x, (float)P3.y });
 		points.emplace_back(SDL_FPoint{ (float)P1.x, (float)P1.y });
 
+		SDL_COORDS_TO_SPHYNX_COORDS(points[0], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[1], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[2], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[3], m_Window);
+
 		std::vector<int32_t> indices({ 0, 1, 2 });
 
-		DrawPoligon(m_Renderer, drawMode, points, indices, color);
+		DrawPolygon(m_Renderer, drawMode, points, indices, color);
 	}
 
 	void SDLRendererAPI::DrawCircle(DrawMode drawMode, const Transform& transform, float radius, uint32_t numSegments, Vector2f pivot, Color color)
 	{
-		//ChangeToSphynxCoords(center, m_Window);
+		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
-		glm::mat4 mat = MultTransformMatrices(Renderer2D::GetRendererConfig().ViewProjectionMatrix, transform);
+		glm::vec4 center = mvpMatrix * glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+		SDL_COORDS_TO_SPHYNX_COORDS(center, m_Window);
 
 		std::vector<SDL_FPoint> points; // reserve space for "numSegments" number of points
 		points.reserve(numSegments + 2);
-		points.emplace_back(SDL_FPoint{ (float)transform.Position.X, (float)transform.Position.Y }); // push the center point
+		points.emplace_back(SDL_FPoint{ center.x, center.y }); // push the center point
 
 		std::vector<int32_t> indices;
 		indices.reserve((numSegments + 1) * 3); // plus one to count the center
 
 		// compute points and indices
-		float PI = 3.14;
+		float PI = 3.14f;
 		float circumference = radius * 2 * PI;
 		float alpha = (2 * PI) / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
 		{
 			// push segments' first point
-			float x = radius * std::cos(alpha * i) + transform.Position.X;
-			float y = radius * std::sin(alpha * i) + transform.Position.Y;
+			float x = radius * std::cos(alpha * i);
+			float y = radius * std::sin(alpha * i);
 
-			glm::vec4 P = mat * glm::vec4{ x, y, 0.0f, 1.0f };
+			glm::vec4 P = mvpMatrix * glm::vec4{ x, y, 0.0f, 1.0f };
+			SDL_COORDS_TO_SPHYNX_COORDS(P, m_Window);
+
 			points.emplace_back(SDL_FPoint{ P.x, P.y });
 			if (i == numSegments - 1) points.emplace_back(points[1]);
 
@@ -236,10 +238,6 @@ namespace Sphynx
 			indices.emplace_back(((i + 1) % numSegments) + 1);
 		}
 
-		DrawPoligon(m_Renderer, drawMode, points, indices, color, true);
+		DrawPolygon(m_Renderer, drawMode, points, indices, color, true);
 	}
-
-	/*void SDLRendererAPI::SetLineWidth(float width)
-	{
-	}*/
 }

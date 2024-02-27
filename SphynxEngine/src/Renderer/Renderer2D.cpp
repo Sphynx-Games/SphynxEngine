@@ -21,7 +21,7 @@ namespace Sphynx
 
 	void Renderer2D::Begin(const OrthographicCamera* camera)
 	{
-		s_RendererConfig.ViewProjectionMatrix = camera->GetViewProjectionMatrix();
+		s_RendererConfig.ViewProjectionMatrix = camera != nullptr ? camera->GetViewProjectionMatrix() : glm::mat4(1.0f);
 		s_RendererAPI->Clear(s_RendererConfig.ClearColor);
 	}
 
@@ -30,7 +30,7 @@ namespace Sphynx
 		s_RendererAPI->Present();
 	}
 
-	const RendererConfig& Renderer2D::GetRendererConfig()
+	const RendererConfig& Renderer2D::GetConfiguration()
 	{
 		return s_RendererConfig;
 	}
@@ -90,12 +90,12 @@ namespace Sphynx
 		s_RendererAPI->DrawCircle(drawMode, center, radius, numSegments, color);
 	}
 
-	void Renderer2D::DrawQuad(const Transform& transform, Vector2i size, Vector2f pivot, Color color)
+	void Renderer2D::DrawQuad(const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawQuad(s_RendererConfig.DrawMode, transform, size, pivot, color);
 	}
 
-	void Renderer2D::DrawTriangle(const Transform& transform, Vector2i point1, Vector2i point2, Vector2i point3, Vector2f pivot, Color color)
+	void Renderer2D::DrawTriangle(const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawTriangle(s_RendererConfig.DrawMode, transform, point1, point2, point3, pivot, color);
 	}
@@ -105,12 +105,12 @@ namespace Sphynx
 		s_RendererAPI->DrawCircle(s_RendererConfig.DrawMode, transform, radius, numSegments, pivot, color);
 	}
 
-	void Renderer2D::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2i size, Vector2f pivot, Color color)
+	void Renderer2D::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawQuad(drawMode, transform, size, pivot, color);
 	}
 
-	void Renderer2D::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2i point1, Vector2i point2, Vector2i point3, Vector2f pivot, Color color)
+	void Renderer2D::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawTriangle(drawMode, transform, point1, point2, point3, pivot, color);
 	}

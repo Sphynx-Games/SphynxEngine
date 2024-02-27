@@ -3,27 +3,42 @@
 #include <SDL3/SDL.h>
 #include <glm/ext/matrix_transform.hpp>
 
+// This is used in the world-space draw commands
+// so that screen coordinates starts in the center of the screen
+// to simulate correctly the cameras POV
+#define SDL_COORDS_TO_SPHYNX_COORDS(point, window) \
+{\
+	point.x += window->GetWidth() / 2.0f;\
+	point.y = (window->GetHeight() - point.y) - window->GetHeight() / 2.0f;\
+}
+
 namespace Sphynx
 {
-	inline void ChangeToSphynxCoords(Vector2i& point, const Window* window) 
+	inline void ChangeToSphynxCoords(Vector2i& point, const Window* window)
 	{
 		point.Y = window->GetHeight() - point.Y;
 	}
 
-	inline const glm::mat4 MultTransformMatrices(const glm::mat4& viewProjectionMatrix, const Transform& transform)
+	inline const glm::mat4 GetModelMatrixFromTransform(const Transform& transform)
 	{
-		glm::mat4 matTrans = glm::translate(glm::mat4(1.0f), { transform.Position.X, -transform.Position.Y, transform.Position.Z });
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), { transform.Position.X, transform.Position.Y, transform.Position.Z });
 
-		glm::mat4 matRotX = glm::rotate(glm::mat4(1.0f), glm::radians(transform.Rotation.X), glm::vec3(1, 0, 0));
-		glm::mat4 matRotY = glm::rotate(glm::mat4(1.0f), glm::radians(transform.Rotation.Y), glm::vec3(0, 1, 0));
-		glm::mat4 matRotZ = glm::rotate(glm::mat4(1.0f), glm::radians(transform.Rotation.Z), glm::vec3(0, 0, 1));
+		glm::mat4 rotationMatrix = 
+			glm::rotate(glm::mat4(1.0f), glm::radians(transform.Rotation.X), glm::vec3(1, 0, 0)) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(transform.Rotation.Y), glm::vec3(0, 1, 0)) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(transform.Rotation.Z), glm::vec3(0, 0, 1));
 
-		glm::mat4 matScale = glm::scale(glm::mat4(1.0f), glm::vec3(transform.Scale.X, transform.Scale.Y, transform.Scale.Z));
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(transform.Scale.X, transform.Scale.Y, transform.Scale.Z));
 
-		return viewProjectionMatrix * matTrans * matRotX * matRotY * matRotZ * matScale;
+		return translationMatrix * rotationMatrix * scaleMatrix;
 	}
 
-	inline void DrawPoligon(
+	inline const glm::mat4 GetMVPMatrix(const Transform& transform)
+	{
+		return Renderer2D::GetConfiguration().ViewProjectionMatrix * GetModelMatrixFromTransform(transform);
+	}
+
+	inline void DrawPolygon(
 		SDL_Renderer* renderer,
 		DrawMode drawMode,
 		const std::vector<SDL_FPoint>& points,

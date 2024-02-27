@@ -16,11 +16,8 @@ namespace Sphynx
 		DrawMode DrawMode = DrawMode::WIREFRAME;
 		Color ClearColor = Color::Black;
 
-		glm::mat4 ViewProjectionMatrix;  // POR QUÉ NO USAR UNA REFERENCIA DE LA PROPIA CÁMARA?
-	};
-
-	/*struct SceneData
-	{
+		// If scene data grows, then add this to a different struct
+		// such as: "SceneData"
 		glm::mat4 ViewProjectionMatrix;
-	};*/
+	};
 }
