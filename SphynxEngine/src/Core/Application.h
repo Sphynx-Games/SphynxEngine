@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Core.h"
+#include "LayerStack.h"
 
 namespace Sphynx
 {
 	class Window;
 	class RendererAPI;
+	class Layer;
+	class LayerStack;
 
 	class SPHYNX_API Application
 	{
@@ -25,6 +28,9 @@ namespace Sphynx
 
 		virtual void HandleEvent(class Event& event);
 
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
+
 	protected:
 		Application();
 
@@ -34,6 +40,7 @@ namespace Sphynx
 	private:
 		bool m_IsRunning;
 		std::unique_ptr<Window> m_Window;
+		std::unique_ptr<LayerStack> m_LayerStack;
 	};
 
 	// Should be defined in client

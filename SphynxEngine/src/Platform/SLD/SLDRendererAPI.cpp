@@ -6,7 +6,7 @@
 #include "Renderer/Renderer2D.h"
 #include "SDLUtils.h"
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_render.h>
+#include <glm/ext/matrix_transform.hpp>
 
 namespace Sphynx
 {
@@ -39,9 +39,9 @@ namespace Sphynx
 		}
 	}
 
-	void SDLRendererAPI::SetViewport(Vector2i position, uint32_t width, uint32_t height)
+	void SDLRendererAPI::SetViewport(Vector2i position, Vector2i size)
 	{
-		SDL_Rect rect = { position.X, position.Y, width, height };
+		SDL_Rect rect = { position.X, position.Y, size.X, size.Y };
 		SDL_SetRenderViewport(m_Renderer, &rect);
 	}
 
@@ -73,27 +73,12 @@ namespace Sphynx
 		SDL_RenderLine(m_Renderer, point1.X, point1.Y, point2.X, point2.Y);
 	}
 
-	void SDLRendererAPI::DrawQuad(Vector2i point, uint32_t width, uint32_t height, Color color)
-	{
-		DrawQuad(Renderer2D::GetRendererConfig().DrawMode, point, width, height, color);
-	}
-
-	void SDLRendererAPI::DrawTriangle(Vector2i point1, Vector2i point2, Vector2i point3, Color color)
-	{
-		DrawTriangle(Renderer2D::GetRendererConfig().DrawMode, point1, point2, point3, color);
-	}
-
-	void SDLRendererAPI::DrawCircle(Vector2i point, float radius, uint32_t numSegments, Color color)
-	{
-		DrawCircle(Renderer2D::GetRendererConfig().DrawMode, point, radius, numSegments, color);
-	}
-
-	void SDLRendererAPI::DrawQuad(DrawMode drawMode, Vector2i point, uint32_t width, uint32_t height, Color color)
+	void SDLRendererAPI::DrawQuad(DrawMode drawMode, Vector2i center, Vector2i size, Color color)
 	{
 		SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
 
-		ChangeToSphynxCoords(point, m_Window);
-		SDL_FRect rect = { point.X, point.Y, width, height };
+		ChangeToSphynxCoords(center, m_Window);
+		SDL_FRect rect = { center.X, center.Y, size.X, size.Y };
 
 		switch (drawMode) {
 		case DrawMode::WIREFRAME:
@@ -112,43 +97,23 @@ namespace Sphynx
 		ChangeToSphynxCoords(point2, m_Window);
 		ChangeToSphynxCoords(point3, m_Window);
 
-		switch (drawMode) {
-		case DrawMode::WIREFRAME:
-		{
-			SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
+		std::vector<SDL_FPoint> points;
+		points.reserve(4);
+		points.emplace_back(SDL_FPoint{ (float)point1.X, (float)point1.Y });
+		points.emplace_back(SDL_FPoint{ (float)point2.X, (float)point2.Y });
+		points.emplace_back(SDL_FPoint{ (float)point3.X, (float)point3.Y });
+		points.emplace_back(SDL_FPoint{ (float)point1.X, (float)point1.Y });
 
-			const SDL_FPoint points[] =
-			{
-				{point1.X, point1.Y},
-				{point2.X, point2.Y},
-				{point3.X, point3.Y},
-				{point1.X, point1.Y}
-			};
-			SDL_RenderLines(m_Renderer, points, sizeof(points) / sizeof(SDL_FPoint));
-		}
-		break;
+		std::vector<int32_t> indices({ 0, 1, 2 });
 
-		case DrawMode::FILLED:
-		{
-			const SDL_Vertex vertices[] =
-			{
-				{{point1.X, point1.Y}, {color.R, color.G, color.B, color.A}, {}},
-				{{point2.X, point2.Y}, {color.R, color.G, color.B, color.A}, {}},
-				{{point3.X, point3.Y}, {color.R, color.G, color.B, color.A}, {}}
-			};
-			const int32_t indices[] = { 0, 1, 2 };
-
-			SDL_RenderGeometry(m_Renderer, nullptr, vertices, 3, indices, 3);
-		}
-		break;
-		}
+		DrawPoligon(m_Renderer, drawMode, points, indices, color);
 	}
 
 	void SDLRendererAPI::DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color)
 	{
 		ChangeToSphynxCoords(center, m_Window);
 
-		std::vector<SDL_FPoint> points;   // reserve space for "numSegments" number of points
+		std::vector<SDL_FPoint> points; // reserve space for "numSegments" number of points
 		points.reserve(numSegments + 2);
 		points.emplace_back(SDL_FPoint{ (float)center.X, (float)center.Y }); // push the center point
 
@@ -174,28 +139,104 @@ namespace Sphynx
 			indices.emplace_back(((i + 1) % numSegments) + 1);
 		}
 
-		switch (drawMode) {
-		case DrawMode::WIREFRAME:
-		{
-			SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
-			SDL_RenderLines(m_Renderer, points.data() + 1, points.size() - 1);
-		}
-		break;
+		DrawPoligon(m_Renderer, drawMode, points, indices, color, true);
+	}
 
-		case DrawMode::FILLED:
+	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2i size, Vector2f pivot, Color color)
+	{
+		// multiply transformation matrices
+		glm::mat4 mat = MultTransformMatrices(transform);
+
+		// calculate rectangle corners with transformations applied
+		float midWidth = (size.X / 2.0f);
+		float midHeight = (size.Y / 2.0f);
+
+		Vector2i ul = { - midWidth, + midHeight };
+		Vector2i ur = { + midWidth, + midHeight };
+		Vector2i dr = { + midWidth, - midHeight };
+		Vector2i dl = { - midWidth, - midHeight };
+		ChangeToSphynxCoords(ul, m_Window);
+		ChangeToSphynxCoords(ur, m_Window);
+		ChangeToSphynxCoords(dr, m_Window);
+		ChangeToSphynxCoords(dl, m_Window);
+
+		glm::vec4 UL = mat * glm::vec4{ ul.X, ul.Y, 0.0f, 1.0f };
+		glm::vec4 UR = mat * glm::vec4{ ur.X, ur.Y, 0.0f, 1.0f };
+		glm::vec4 DR = mat * glm::vec4{ dr.X, dr.Y, 0.0f, 1.0f };
+		glm::vec4 DL = mat * glm::vec4{ dl.X, dl.Y, 0.0f, 1.0f };
+
+		// define points and indices to draw
+		std::vector<SDL_FPoint> points;
+		points.reserve(5);
+		points.emplace_back(SDL_FPoint{ (float)UL.x, (float)UL.y });
+		points.emplace_back(SDL_FPoint{ (float)UR.x, (float)UR.y });
+		points.emplace_back(SDL_FPoint{ (float)DR.x, (float)DR.y });
+		points.emplace_back(SDL_FPoint{ (float)DL.x, (float)DL.y });
+		points.emplace_back(SDL_FPoint{ (float)UL.x, (float)UL.y });
+
+		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
+
+		DrawPoligon(m_Renderer, drawMode, points, indices, color);
+	}
+
+	void SDLRendererAPI::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2i point1, Vector2i point2, Vector2i point3, Vector2f pivot, Color color)
+	{
+		ChangeToSphynxCoords(point1, m_Window);
+		ChangeToSphynxCoords(point2, m_Window);
+		ChangeToSphynxCoords(point3, m_Window);
+
+		glm::mat4 mat = MultTransformMatrices(transform);
+
+		glm::vec4 P1 = mat * glm::vec4{ point1.X, point1.Y, 0.0f, 1.0f };
+		glm::vec4 P2 = mat * glm::vec4{ point2.X, point2.Y, 0.0f, 1.0f };
+		glm::vec4 P3 = mat * glm::vec4{ point3.X, point3.Y, 0.0f, 1.0f };
+
+		std::vector<SDL_FPoint> points;
+		points.reserve(4);
+		points.emplace_back(SDL_FPoint{ (float)P1.x, (float)P1.y });
+		points.emplace_back(SDL_FPoint{ (float)P2.x, (float)P2.y });
+		points.emplace_back(SDL_FPoint{ (float)P3.x, (float)P3.y });
+		points.emplace_back(SDL_FPoint{ (float)P1.x, (float)P1.y });
+
+		std::vector<int32_t> indices({ 0, 1, 2 });
+
+		DrawPoligon(m_Renderer, drawMode, points, indices, color);
+	}
+
+	void SDLRendererAPI::DrawCircle(DrawMode drawMode, const Transform& transform, float radius, uint32_t numSegments, Vector2f pivot, Color color)
+	{
+		//ChangeToSphynxCoords(center, m_Window);
+
+		glm::mat4 mat = MultTransformMatrices(transform);
+
+		std::vector<SDL_FPoint> points; // reserve space for "numSegments" number of points
+		points.reserve(numSegments + 2);
+		points.emplace_back(SDL_FPoint{ (float)transform.Position.X, (float)transform.Position.Y }); // push the center point
+
+		std::vector<int32_t> indices;
+		indices.reserve((numSegments + 1) * 3); // plus one to count the center
+
+		// compute points and indices
+		float PI = 3.14;
+		float circumference = radius * 2 * PI;
+		float alpha = (2 * PI) / numSegments; // in radians
+		for (uint32_t i = 0; i < numSegments; ++i)
 		{
-			SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
-			SDL_RenderGeometryRaw(
-				m_Renderer,
-				nullptr,
-				(float*)points.data(), sizeof(float) * 2,
-				&sdlColor, 0,
-				nullptr, 0,
-				points.size() - 1,
-				indices.data(), indices.size(), sizeof(int32_t));
+			// push segments' first point
+			float x = radius * std::cos(alpha * i) + transform.Position.X;
+			float y = radius * std::sin(alpha * i) + transform.Position.Y;
+
+			glm::vec4 P = mat * glm::vec4{ x, y, 0.0f, 1.0f };
+			points.emplace_back(SDL_FPoint{ P.x, P.y });
+			if (i == numSegments - 1) points.emplace_back(points[1]);
+
+			// push segment indices
+			indices.emplace_back(0);
+			indices.emplace_back(i + 1);
+			indices.emplace_back(((i + 1) % numSegments) + 1);
 		}
-		break;
-		}
+
+		DrawPoligon(m_Renderer, drawMode, points, indices, color, true);
 	}
 
 	/*void SDLRendererAPI::SetLineWidth(float width)

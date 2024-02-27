@@ -2,6 +2,7 @@
 
 // Include all client headers
 #include "Core/Application.h"
+#include "Core/Layer.h"
 
 // Entry point
 #include "Core/EntryPoint.h"
