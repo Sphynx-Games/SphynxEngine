@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	Sphynx::Engine::Init();
 
 	Sphynx::Application* application = CreateApplication();
-	
+
 	application->Init();
 	application->Run();
 	application->Shutdown();

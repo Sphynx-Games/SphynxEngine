@@ -1,7 +1,7 @@
 #include "WindowsWindow.h"
 #include "Logging/Log.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "Events/WindowEvent.h"
 #include "Events/InputEvent.h"
@@ -13,8 +13,7 @@ namespace Sphynx
 
 	WindowsWindow::WindowsWindow(const WindowParams& params) :
 		m_Params(),
-		m_Window(nullptr)//,
-		//m_Surface(nullptr)
+		m_Window(nullptr)
 	{
 		Init(params);
 	}
@@ -78,9 +77,9 @@ namespace Sphynx
 			{
 				SPX_LOG_CORE_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
 			}
+
 			// Create window
 			uint32_t flags = (m_Params.IsFullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_RESIZABLE;
-
 			m_Window = SDL_CreateWindow(m_Params.Title, m_Params.Width, m_Params.Height, flags);
 			if (m_Window == nullptr)
 			{

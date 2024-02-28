@@ -16,11 +16,11 @@ namespace Sphynx
 	{
 	}
 
-	void OrthographicCameraController::Update()
+	void OrthographicCameraController::Update(float deltaTime)
 	{
 		float radRotation = glm::radians(m_Rotation);
-		float cosValue = cos(radRotation) * m_TranslationSpeed /** ts*/;
-		float sinValue = sin(radRotation) * m_TranslationSpeed /** ts*/;
+		float cosValue = cos(radRotation) * m_TranslationSpeed * deltaTime;
+		float sinValue = sin(radRotation) * m_TranslationSpeed * deltaTime;
 
 		if (Input::IsKeyDown(SPX_KEY_A))
 		{
@@ -48,11 +48,11 @@ namespace Sphynx
 		{
 			if (Input::IsKeyDown(SPX_KEY_Q))
 			{
-				m_Rotation += m_RotationSpeed /** ts*/;
+				m_Rotation += m_RotationSpeed * deltaTime;
 			}
 			if (Input::IsKeyDown(SPX_KEY_E))
 			{
-				m_Rotation -= m_RotationSpeed /** ts*/;
+				m_Rotation -= m_RotationSpeed * deltaTime;
 			}
 
 			if (m_Rotation > 180.0f)

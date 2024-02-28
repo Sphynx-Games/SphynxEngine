@@ -9,7 +9,7 @@ namespace Sphynx
 	class LayerStack
 	{
 	public:
-		LayerStack() = default;
+		LayerStack();;
 		~LayerStack();
 
 		void PushLayer(Layer* layer);
@@ -17,8 +17,8 @@ namespace Sphynx
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* overlay);
 
-		const std::vector<Layer*>& get() { return m_Layers; }
-		uint32_t size() { return m_Layers.size(); }
+		inline const std::vector<Layer*>& get() { return m_Layers; }
+		inline size_t size() { return m_Layers.size(); }
 
 		std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
 		std::vector<Layer*>::iterator end() { return m_Layers.end(); }
@@ -32,6 +32,6 @@ namespace Sphynx
 
 	private:
 		std::vector<Layer*> m_Layers;
-		unsigned int m_LayerInsertIndex = 0;
+		uint32_t m_LayerInsertIndex;
 	};
 }

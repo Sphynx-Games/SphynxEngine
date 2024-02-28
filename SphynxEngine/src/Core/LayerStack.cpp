@@ -3,6 +3,12 @@
 
 namespace Sphynx
 {
+	LayerStack::LayerStack() :
+		m_Layers(),
+		m_LayerInsertIndex(0)
+	{
+	}
+
 	LayerStack::~LayerStack()
 	{
 		for (Layer* layer : m_Layers)
@@ -15,7 +21,7 @@ namespace Sphynx
 	void LayerStack::PushLayer(Layer* layer)
 	{
 		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
-		m_LayerInsertIndex++;
+		++m_LayerInsertIndex;
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
@@ -30,7 +36,7 @@ namespace Sphynx
 		{
 			layer->Detach();
 			m_Layers.erase(it);
-			m_LayerInsertIndex--;
+			--m_LayerInsertIndex;
 		}
 	}
 

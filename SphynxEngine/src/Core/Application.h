@@ -5,10 +5,8 @@
 namespace Sphynx
 {
 	class Window;
-	class RendererAPI;
 	class Layer;
 	class LayerStack;
-	class OrthographicCameraController;
 
 	class SPHYNX_API Application
 	{
@@ -41,7 +39,9 @@ namespace Sphynx
 		bool m_IsRunning;
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<LayerStack> m_LayerStack;
-		std::unique_ptr<OrthographicCameraController> m_CameraController;
+
+		// This should not be here, only for testing purposes (move to Sandbox)
+		std::unique_ptr<class OrthographicCameraController> m_CameraController;
 	};
 
 	// Should be defined in client

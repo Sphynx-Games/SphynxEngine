@@ -13,7 +13,7 @@ namespace Sphynx
 	public:
 		OrthographicCameraController(float aspectRatio, bool allowRotation = false);
 
-		void Update();
+		void Update(float deltaTime);
 		void HandleEvent(Event& event);
 
 		const OrthographicCamera& GetCamera() const { return m_Camera; }

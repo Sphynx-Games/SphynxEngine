@@ -14,7 +14,7 @@ namespace Sphynx
 
 		virtual void Attach() {}
 		virtual void Detach() {}
-		virtual void Update() {}
+		virtual void Update(float deltaTime) {}
 		virtual void HandleEvent(Event& event) {}
 
 		const std::string& GetName() const { return m_DebugName; }
