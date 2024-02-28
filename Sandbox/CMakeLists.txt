@@ -36,7 +36,9 @@ target_include_directories(Sandbox PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 # Set target link libs
 target_link_libraries(Sandbox SphynxEngine)
+# TODO: remove this libraries below when possible
 target_link_libraries(Sandbox spdlog::spdlog)
+target_link_libraries(Sandbox glm::glm)
 
 # Post build command (copy .dll to bin folder)
 add_custom_target(SandboxCopyBinaries 

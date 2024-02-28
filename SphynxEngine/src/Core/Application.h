@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Core.h"
+#include "LayerStack.h"
 
 namespace Sphynx
 {
 	class Window;
 	class Layer;
-	class LayerStack;
 
 	class SPHYNX_API Application
 	{
@@ -38,10 +38,8 @@ namespace Sphynx
 	private:
 		bool m_IsRunning;
 		std::unique_ptr<Window> m_Window;
-		std::unique_ptr<LayerStack> m_LayerStack;
+		LayerStack m_LayerStack;
 
-		// This should not be here, only for testing purposes (move to Sandbox)
-		std::unique_ptr<class OrthographicCameraController> m_CameraController;
 	};
 
 	// Should be defined in client

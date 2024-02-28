@@ -11,7 +11,7 @@ namespace Sphynx
 		m_Camera(-m_AspectRatio * m_Zoom, m_AspectRatio* m_Zoom, -m_Zoom, m_Zoom),
 		m_Position({ 0.0f, 0.0f, 0.0f }),
 	    m_Rotation(0.0f),
-		m_TranslationSpeed(5.0f),
+		m_TranslationSpeed(50.0f),
 		m_RotationSpeed(1.0f)
 	{
 	}
@@ -68,7 +68,7 @@ namespace Sphynx
 		}
 
 		m_Camera.SetPosition(m_Position);
-		m_TranslationSpeed = m_Zoom;
+		//m_TranslationSpeed = m_Zoom;
 	}
 
 	void OrthographicCameraController::HandleEvent(Event& event)
