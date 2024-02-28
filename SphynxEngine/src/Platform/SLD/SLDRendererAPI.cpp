@@ -152,10 +152,10 @@ namespace Sphynx
 		float halfHeight = (size.Y / 2.0f);
 
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth,  halfHeight, 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{  halfWidth,  halfHeight, 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{  halfWidth, -halfHeight, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth, -halfHeight, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  halfWidth * (1.0f - pivot.X)	,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  halfWidth * (1.0f - pivot.X)	, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			, -halfHeight * pivot.Y			, 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
@@ -180,10 +180,16 @@ namespace Sphynx
 	void SDLRendererAPI::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color)
 	{
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
+		float width = std::max({ point1.X, point2.X, point3.X }) - std::min({ point1.X, point2.X, point3.X });
+		float height = std::max({ point1.Y, point2.Y, point3.Y }) - std::min({ point1.Y, point2.Y, point3.Y });
 
-		glm::vec4 P1 = mvpMatrix * glm::vec4{ point1.X, point1.Y, 0.0f, 1.0f };
-		glm::vec4 P2 = mvpMatrix * glm::vec4{ point2.X, point2.Y, 0.0f, 1.0f };
-		glm::vec4 P3 = mvpMatrix * glm::vec4{ point3.X, point3.Y, 0.0f, 1.0f };
+		// NOTE: maybe should be relative to the triangle center
+		float xDiff = pivot.X * (width / 2.0f) - (1.0f - pivot.X) * width / 2.0f;
+		float yDiff = pivot.Y * (height / 2.0f) - (1.0f - pivot.Y) * height / 2.0f;
+
+		glm::vec4 P1 = mvpMatrix * glm::vec4{ point1.X - xDiff, point1.Y - yDiff, 0.0f, 1.0f };
+		glm::vec4 P2 = mvpMatrix * glm::vec4{ point2.X - xDiff, point2.Y - yDiff, 0.0f, 1.0f };
+		glm::vec4 P3 = mvpMatrix * glm::vec4{ point3.X - xDiff, point3.Y - yDiff, 0.0f, 1.0f };
 
 		std::vector<SDL_FPoint> points;
 		points.reserve(4);
@@ -206,7 +212,10 @@ namespace Sphynx
 	{
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
-		glm::vec4 center = mvpMatrix * glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+		float xDiff = pivot.X * radius - (1.0f - pivot.X) * radius;
+		float yDiff = pivot.Y * radius - (1.0f - pivot.Y) * radius;
+
+		glm::vec4 center = mvpMatrix * glm::vec4{ -xDiff, -yDiff, 0.0f, 1.0f };
 		SDL_COORDS_TO_SPHYNX_COORDS(center, m_Window);
 
 		std::vector<SDL_FPoint> points; // reserve space for "numSegments" number of points
@@ -226,7 +235,7 @@ namespace Sphynx
 			float x = radius * std::cos(alpha * i);
 			float y = radius * std::sin(alpha * i);
 
-			glm::vec4 P = mvpMatrix * glm::vec4{ x, y, 0.0f, 1.0f };
+			glm::vec4 P = mvpMatrix * glm::vec4{ x - xDiff, y - yDiff, 0.0f, 1.0f };
 			SDL_COORDS_TO_SPHYNX_COORDS(P, m_Window);
 
 			points.emplace_back(SDL_FPoint{ P.x, P.y });
