@@ -18,3 +18,10 @@
 
 // Time
 #include "Core/Time.h"
+
+// Scene
+#include "Scene/Scene.h"
+#include "Scene/Actor.h"
+
+// Components
+#include "Component/Components.h"

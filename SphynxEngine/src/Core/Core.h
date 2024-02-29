@@ -15,3 +15,6 @@
 #else
 	#error Sphynx only supports Windows (for now)
 #endif
+
+// TODO: add log
+#define SPX_CORE_ASSERT(Condition, ...) if (!(Condition)) __debugbreak();

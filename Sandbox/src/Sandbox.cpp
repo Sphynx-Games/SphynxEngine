@@ -19,6 +19,7 @@ public:
 
 private:
 	std::unique_ptr<class Sphynx::OrthographicCameraController> m_CameraController;
+	Sphynx::Scene m_SandboxScene;
 
 };
 
@@ -43,6 +44,12 @@ Sphynx::Application* CreateApplication()
 
 void SandboxLayer::Attach()
 {
+	using namespace Sphynx;
+
+	Actor quad = m_SandboxScene.CreateActor();
+	quad.AddComponent<TransformComponent>(Transform{ { 200.0f, 300.0f, 0.0f }, { 200.0f, 100.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	quad.AddComponent<SpriteRendererComponent>(Color::Blue);
+
 }
 
 void SandboxLayer::Detach()
@@ -59,10 +66,8 @@ void SandboxLayer::Update(float deltaTime)
 	// begin scene render
 	Renderer2D::Begin(&m_CameraController->GetCamera());
 	{
+		m_SandboxScene.Update(deltaTime);
 		/* World space draw commands tests */
-		Transform quadTransform = { { 200.0f, 300.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } };
-		Renderer2D::DrawQuad(DrawMode::FILLED, quadTransform, { 200, 100 }, { 0.5f, 0.5f }, Color::Blue);
-
 		Transform triangleTransform = { { 100.0f, 125.0f, 0.0f }, { 5.0f, 10.0f, 1.0f }, { 0.0f, 0.0f, 180.0f } };
 		Renderer2D::DrawTriangle(DrawMode::FILLED, triangleTransform, Vector2f{ -50.0f, -25.0f }, Vector2f{ 0.0f, 25.0f }, Vector2f{ 50.f, -25.0f }, Vector2f{ 0.5f, 1.0f }, Color::Red);
 

@@ -23,14 +23,17 @@ set(GLM_ENABLE_CXX_17 ON)
 add_subdirectory(SDL SDL/build)
 add_subdirectory(glm glm/build)
 add_subdirectory(spdlog spdlog/build)
+add_subdirectory(entt entt/build)
 
 set_all_targets_in_folder(SDL vendor/SDL)
 # set in folder (function is not working propertly)
 set_property(TARGET glm PROPERTY FOLDER vendor/glm)
 set_all_targets_in_folder(spdlog vendor/spdlog)
+set_all_targets_in_folder(entt vendor/entt)
 
 # Link to the diferent libraries
 target_link_libraries(vendor INTERFACE
 	SDL3::SDL3
 	glm::glm
-	spdlog::spdlog)
+	spdlog::spdlog
+	EnTT::EnTT)
