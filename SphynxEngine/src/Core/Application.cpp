@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Renderer/Window.h"
 #include "Renderer/Renderer2D.h"
+#include "Core/Assets.h"
 #include "Input/Input.h"
 #include "Core/Time.h"
 

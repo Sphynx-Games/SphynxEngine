@@ -1,9 +1,12 @@
-#include "SLDRendererAPI.h"
+#include "SDLRendererAPI.h"
 #include "Core/Application.h"
 #include "Logging/Log.h"
 #include "Renderer/Window.h"
 #include "Platform/Windows/WindowsWindow.h"
+#include "Platform/SDL/SDLTexture.h"
 #include "Renderer/Renderer2D.h"
+#include "Renderer/Texture.h"
+#include "Math/Transform.h"
 #include "SDLUtils.h"
 #include <SDL3/SDL.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -12,13 +15,10 @@ namespace Sphynx
 {
 	SDLRendererAPI::SDLRendererAPI() : m_Window(nullptr), m_Renderer(nullptr)
 	{
-		//Init();
 	}
 
 	SDLRendererAPI::~SDLRendererAPI()
 	{
-		SDL_DestroyRenderer(m_Renderer);
-		m_Renderer = nullptr;
 	}
 
 	void SDLRendererAPI::Init()
@@ -37,6 +37,12 @@ namespace Sphynx
 		if (m_Renderer == nullptr) {
 			SPX_LOG_CORE_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
 		}
+	}
+
+	void SDLRendererAPI::Shutdown()
+	{
+		SDL_DestroyRenderer(m_Renderer);
+		m_Renderer = nullptr;
 	}
 
 	void SDLRendererAPI::SetViewport(Vector2i position, Vector2i size)
@@ -61,7 +67,7 @@ namespace Sphynx
 		SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
 
 		ChangeToSphynxCoords(point, m_Window);
-		SDL_RenderPoint(m_Renderer, point.X, point.Y);
+		SDL_RenderPoint(m_Renderer, (float)point.X, (float)point.Y);
 	}
 
 	void SDLRendererAPI::DrawLine(Vector2i point1, Vector2i point2, Color color)
@@ -70,7 +76,7 @@ namespace Sphynx
 
 		ChangeToSphynxCoords(point1, m_Window);
 		ChangeToSphynxCoords(point2, m_Window);
-		SDL_RenderLine(m_Renderer, point1.X, point1.Y, point2.X, point2.Y);
+		SDL_RenderLine(m_Renderer, (float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 	}
 
 	void SDLRendererAPI::DrawQuad(DrawMode drawMode, Vector2i center, Vector2i size, Color color)
@@ -78,7 +84,7 @@ namespace Sphynx
 		SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
 
 		ChangeToSphynxCoords(center, m_Window);
-		SDL_FRect rect = { center.X, center.Y, size.X, size.Y };
+		SDL_FRect rect = { (float)center.X, (float)center.Y, (float)size.X, (float)size.Y };
 
 		switch (drawMode) {
 		case DrawMode::WIREFRAME:
@@ -121,7 +127,7 @@ namespace Sphynx
 		indices.reserve((numSegments + 1) * 3); // plus one to count the center
 
 		// compute points and indices
-		float PI = 3.14;
+		float PI = 3.14f;
 		float circumference = radius * 2 * PI;
 		float alpha = (2 * PI) / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
@@ -140,6 +146,15 @@ namespace Sphynx
 		}
 
 		DrawPolygon(m_Renderer, drawMode, points, indices, color, true);
+	}
+
+	void SDLRendererAPI::DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color)
+	{
+		ChangeToSphynxCoords(position, m_Window);
+		SDL_FRect rect = { (float)position.X, (float)position.Y, (float)size.X, (float)size.Y };
+
+		const SDLTexture* texture_SDL = dynamic_cast<const SDLTexture*>(&texture);
+		SDL_RenderTexture(m_Renderer, texture_SDL->GetTexture(), nullptr, &rect);
 	}
 
 	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
@@ -248,5 +263,50 @@ namespace Sphynx
 		}
 
 		DrawPolygon(m_Renderer, drawMode, points, indices, color, true);
+	}
+
+	void SDLRendererAPI::DrawTexture(const Texture& texture, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
+	{
+		// multiply transformation matrices
+		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
+
+		// calculate rectangle corners with transformations applied
+		float halfWidth = (size.X / 2.0f);
+		float halfHeight = (size.Y / 2.0f);
+
+		// Coordinates in screen space
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+
+		// define points and indices to draw
+		std::vector<SDL_FPoint> points;
+		points.reserve(4);
+		points.emplace_back(SDL_FPoint{ UL.x, UL.y });
+		points.emplace_back(SDL_FPoint{ UR.x, UR.y });
+		points.emplace_back(SDL_FPoint{ DR.x, DR.y });
+		points.emplace_back(SDL_FPoint{ DL.x, DL.y });
+
+		SDL_COORDS_TO_SPHYNX_COORDS(points[0], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[1], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[2], m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(points[3], m_Window);
+
+		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
+		std::vector<float> uv({ 0.0f,0.0f,  1.0f,0.0f,  1.0f,1.0f,  0.0f,1.0f});  // example: 0,1 -> uv for UL
+
+		const SDLTexture* texture_SDL = dynamic_cast<const SDLTexture*>(&texture);
+
+		SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
+		SDL_RenderGeometryRaw(
+			m_Renderer,
+			texture_SDL->GetTexture(),
+			(float*)points.data(), sizeof(float) * 2,
+			&sdlColor, 0,
+			uv.data(), sizeof(float) * 2, // uv
+			(int32_t)points.size(),
+			indices.data(), (int32_t)indices.size(), sizeof(int32_t)
+		);
 	}
 }

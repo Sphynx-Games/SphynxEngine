@@ -19,6 +19,14 @@
 // Time
 #include "Core/Time.h"
 
+// Assets
+#include "Core/Assets.h"
+
+// Rendering
+#include "Renderer/Renderer2D.h"
+#include "Renderer/OrthographicCameraController.h"
+#include "Renderer/Texture.h"
+
 // Scene
 #include "Scene/Scene.h"
 #include "Scene/Actor.h"

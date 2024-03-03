@@ -1,6 +1,9 @@
 #include "Renderer2D.h"
 #include "RendererAPI.h"
 #include "OrthographicCamera.h"
+#include "Texture.h"
+#include "Math/Transform.h"
+#include "Core/Assets.h"
 
 namespace Sphynx
 {
@@ -15,8 +18,11 @@ namespace Sphynx
 
 	void Renderer2D::Shutdown()
 	{
+		s_RendererAPI->Shutdown();
 		delete s_RendererAPI;
 		s_RendererAPI = nullptr;
+
+		Assets::DeleteTextures();
 	}
 
 	void Renderer2D::Begin(const OrthographicCamera* camera)
@@ -28,6 +34,11 @@ namespace Sphynx
 	void Renderer2D::End()
 	{
 		s_RendererAPI->Present();
+	}
+
+	const RendererAPI* Renderer2D::GetRendererAPI()
+	{
+		return s_RendererAPI;
 	}
 
 	const RendererConfig& Renderer2D::GetConfiguration()
@@ -90,6 +101,11 @@ namespace Sphynx
 		s_RendererAPI->DrawCircle(drawMode, center, radius, numSegments, color);
 	}
 
+	void Renderer2D::DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color)
+	{
+		s_RendererAPI->DrawTexture(texture, position, size, color);
+	}
+
 	void Renderer2D::DrawQuad(const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawQuad(s_RendererConfig.DrawMode, transform, size, pivot, color);
@@ -118,5 +134,10 @@ namespace Sphynx
 	void Renderer2D::DrawCircle(DrawMode drawMode, const Transform& transform, float radius, uint32_t numSegments, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawCircle(drawMode, transform, radius, numSegments, pivot, color);
+	}
+
+	void Renderer2D::DrawTexture(const Texture& texture, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
+	{
+		s_RendererAPI->DrawTexture(texture, transform, size, pivot, color);
 	}
 }

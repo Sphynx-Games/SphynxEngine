@@ -1,6 +1,6 @@
 #include "RendererAPI.h"
 #include "Logging/Log.h"
-#include "Platform/SLD/SLDRendererAPI.h"
+#include "Platform/SDL/SDLRendererAPI.h"
 #include <stdio.h>
 
 namespace Sphynx

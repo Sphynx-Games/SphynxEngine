@@ -28,6 +28,8 @@ namespace Sphynx
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+		void AddTexture(const std::string& path);
+		void AddTextures(const std::vector<const std::string&> paths);
 
 	protected:
 		Application();

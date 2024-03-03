@@ -54,7 +54,7 @@ namespace Sphynx
 			SDL_RenderLines(
 				renderer,
 				(isCircle) ? points.data() + 1 : points.data(),
-				(isCircle) ? points.size() - 1 : points.size()
+				(isCircle) ? (int32_t)points.size() - 1 : (int32_t)points.size()
 			);
 		}
 		break;
@@ -68,8 +68,8 @@ namespace Sphynx
 				(float*)points.data(), sizeof(float) * 2,
 				&sdlColor, 0,
 				nullptr, 0,
-				(isCircle) ? points.size() - 1 : points.size(),
-				indices.data(), indices.size(), sizeof(int32_t)
+				(isCircle) ? (int32_t)points.size() - 1 : (int32_t)points.size(),
+				indices.data(), (int32_t)indices.size(), sizeof(int32_t)
 			);
 		}
 		break;
