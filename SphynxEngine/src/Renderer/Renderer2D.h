@@ -9,6 +9,7 @@ namespace Sphynx
 	class RendererAPI;
 	class OrthographicCamera;
 	class Texture;
+	class Sprite;
 
 	class Renderer2D
 	{
@@ -37,6 +38,7 @@ namespace Sphynx
 		static void DrawCircle(DrawMode drawMode, Vector2i center, float radius = 50.0f, uint32_t numSegments = 32u, Color color = Color::White);
 
 		static void DrawTexture(const Texture& texture, Vector2i position, Vector2i size = { 100, 100 }, Color color = Color::White);
+		static void DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size = { 100, 100 }, Color color = Color::White);
 
 		/* World space draw commands */
 		static void DrawQuad(const Transform& transform, Vector2f size = { 1.0f, 1.0f }, Vector2f pivot = { 0.5f, 0.5f }, Color color = Color::White);
@@ -48,6 +50,7 @@ namespace Sphynx
 		static void DrawCircle(DrawMode drawMode, const Transform& transform, float radius = 0.5f, uint32_t numSegments = 32u, Vector2f pivot = { 0.5f, 0.5f }, Color color = Color::White);
 
 		static void DrawTexture(const Texture& texture, const Transform& transform, Vector2f size = { 1.0f, 1.0f }, Vector2f pivot = { 0.5f, 0.5f }, Color color = Color::White);
+		static void DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size = { 1.0f, 1.0f }, Color color = Color::White);
 
 	private:
 		static RendererAPI* s_RendererAPI;

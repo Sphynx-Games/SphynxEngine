@@ -6,6 +6,7 @@
 #include "Platform/SDL/SDLTexture.h"
 #include "Renderer/Renderer2D.h"
 #include "Renderer/Texture.h"
+#include "Renderer/Sprite.h"
 #include "Math/Transform.h"
 #include "SDLUtils.h"
 #include <SDL3/SDL.h>
@@ -157,6 +158,19 @@ namespace Sphynx
 		SDL_RenderTexture(m_Renderer, texture_SDL->GetTexture(), nullptr, &rect);
 	}
 
+	void SDLRendererAPI::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
+	{
+		Vector2i spritePosition = sprite.GetPosition();
+		
+		ChangeToSphynxCoords(position, m_Window);
+
+		SDL_FRect dstRect = { (float)position.X, (float)position.Y, (float)size.X, (float)size.Y };
+		SDL_FRect srcRect = { (float)spritePosition.X, (float)spritePosition.Y, (float)sprite.GetSize().X, (float)sprite.GetSize().Y };
+
+		SDLTexture* texture_SDL = dynamic_cast<SDLTexture*>(sprite.GetTexture());
+		SDL_RenderTexture(m_Renderer, texture_SDL->GetTexture(), &srcRect, &dstRect);
+	}
+
 	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		// multiply transformation matrices
@@ -181,11 +195,10 @@ namespace Sphynx
 		points.emplace_back(SDL_FPoint{ DL.x, DL.y });
 		points.emplace_back(SDL_FPoint{ UL.x, UL.y });
 
-		SDL_COORDS_TO_SPHYNX_COORDS(points[0], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[1], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[2], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[3], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[4], m_Window);
+		for (int i = 0; i < points.size(); ++i)
+		{
+			SDL_COORDS_TO_SPHYNX_COORDS(points[i], m_Window);
+		}
 
 		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
 
@@ -213,10 +226,10 @@ namespace Sphynx
 		points.emplace_back(SDL_FPoint{ (float)P3.x, (float)P3.y });
 		points.emplace_back(SDL_FPoint{ (float)P1.x, (float)P1.y });
 
-		SDL_COORDS_TO_SPHYNX_COORDS(points[0], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[1], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[2], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[3], m_Window);
+		for (int i = 0; i < points.size(); ++i)
+		{
+			SDL_COORDS_TO_SPHYNX_COORDS(points[i], m_Window);
+		}
 
 		std::vector<int32_t> indices({ 0, 1, 2 });
 
@@ -288,15 +301,68 @@ namespace Sphynx
 		points.emplace_back(SDL_FPoint{ DR.x, DR.y });
 		points.emplace_back(SDL_FPoint{ DL.x, DL.y });
 
-		SDL_COORDS_TO_SPHYNX_COORDS(points[0], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[1], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[2], m_Window);
-		SDL_COORDS_TO_SPHYNX_COORDS(points[3], m_Window);
+		for (int i = 0; i < points.size(); ++i)
+		{
+			SDL_COORDS_TO_SPHYNX_COORDS(points[i], m_Window);
+		}
 
 		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
-		std::vector<float> uv({ 0.0f,0.0f,  1.0f,0.0f,  1.0f,1.0f,  0.0f,1.0f});  // example: 0,1 -> uv for UL
+		std::vector<float> uv({ 0.0f,0.0f,  1.0f,0.0f,  1.0f,1.0f,  0.0f,1.0f});  // example: 1,0 -> uv for UR
 
 		const SDLTexture* texture_SDL = dynamic_cast<const SDLTexture*>(&texture);
+
+		SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
+		SDL_RenderGeometryRaw(
+			m_Renderer,
+			texture_SDL->GetTexture(),
+			(float*)points.data(), sizeof(float) * 2,
+			&sdlColor, 0,
+			uv.data(), sizeof(float) * 2, // uv
+			(int32_t)points.size(),
+			indices.data(), (int32_t)indices.size(), sizeof(int32_t)
+		);
+	}
+	void SDLRendererAPI::DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size, Color color)
+	{
+		// multiply transformation matrices
+		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
+
+		// calculate rectangle corners with transformations applied
+		Vector2f pivot = sprite.GetPivot();
+		float halfWidth = (size.X / 2.0f);
+		float halfHeight = (size.Y / 2.0f);
+
+		// Coordinates in screen space
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+
+		// define points and indices to draw
+		std::vector<SDL_FPoint> points;
+		points.reserve(4);
+		points.emplace_back(SDL_FPoint{ UL.x, UL.y });
+		points.emplace_back(SDL_FPoint{ UR.x, UR.y });
+		points.emplace_back(SDL_FPoint{ DR.x, DR.y });
+		points.emplace_back(SDL_FPoint{ DL.x, DL.y });
+
+		for (int i = 0; i < points.size(); ++i)
+		{
+			SDL_COORDS_TO_SPHYNX_COORDS(points[i], m_Window);
+		}
+
+		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
+
+		float minU = (float)sprite.GetPosition().X / sprite.GetTexture()->GetWidth();
+		float minV = (float)sprite.GetPosition().Y / sprite.GetTexture()->GetHeight();
+		float maxU = (float)(sprite.GetPosition().X + sprite.GetSize().X) / sprite.GetTexture()->GetWidth();
+		float maxV = (float)(sprite.GetPosition().Y + sprite.GetSize().Y) / sprite.GetTexture()->GetHeight();
+
+		// example: uv for each corner of the sprite, in relation to the texture
+		// if the size of a texture is (200, 100) and a one of the corners
+		std::vector<float> uv({ minU,minV,  maxU,minV,  maxU,maxV,  minU,maxV });
+
+		SDLTexture* texture_SDL = dynamic_cast<SDLTexture*>(sprite.GetTexture());
 
 		SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
 		SDL_RenderGeometryRaw(

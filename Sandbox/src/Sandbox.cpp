@@ -1,9 +1,10 @@
 #include <iostream>
 
 #include <Sphynx.h>
-//#include <Renderer/Renderer2D.h>
-//#include <Renderer/OrthographicCameraController.h>
 
+
+Sphynx::Spritesheet* sheet = nullptr;
+Sphynx::Texture* enemyTexture = nullptr;
 
 class SandboxLayer : public Sphynx::Layer
 {
@@ -28,17 +29,22 @@ class SandboxApplication : public Sphynx::Application
 public:
 	SandboxApplication()
 	{
-		// layers
-		PushLayer(new SandboxLayer());
 	}
 
 public:
 	virtual void Init() override 
-	{ 
-		Sphynx::Application::Init();
+	{
+		using namespace Sphynx;
+
+		Application::Init();
 
 		// assets
-		Sphynx::Assets::AddTexture("..\\Assets\\Textures\\cat.jpg");
+		Assets::AddTexture("..\\Assets\\Textures\\cat.jpg");
+		enemyTexture = Assets::AddTexture("..\\Assets\\Textures\\enemy_scaled5x.png");
+		sheet = new Spritesheet(enemyTexture, 4, 3);
+
+		// layers
+		PushLayer(new SandboxLayer());
 	}
 
 	virtual void Run() override { Sphynx::Application::Run(); }
@@ -57,7 +63,8 @@ void SandboxLayer::Attach()
 
 	Actor quad = m_SandboxScene.CreateActor();
 	quad.AddComponent<TransformComponent>(Transform{ { 200.0f, 300.0f, 0.0f }, { 200.0f, 100.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	quad.AddComponent<SpriteRendererComponent>(Color::Blue);
+	//quad.AddComponent<SpriteRendererComponent>(nullptr, Color::Blue);
+	quad.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
 }
 
 void SandboxLayer::Detach()
@@ -94,10 +101,13 @@ void SandboxLayer::Update(float deltaTime)
 		rot += 5*deltaTime;
 		Transform textureTransform = { { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, rot, 0.0f } };
 		Texture* texture = Sphynx::Assets::GetTexture("..\\Assets\\Textures\\cat.jpg");
-		if (texture != nullptr)
+		/*if (texture != nullptr)
 		{
 			Renderer2D::DrawTexture(*texture, textureTransform, { 600, 600 });
-		}
+		}*/
+
+		Renderer2D::DrawSprite(*sheet->GetSprite(6), {600, 600});
+		Renderer2D::DrawSprite(*sheet->GetSprite(0), textureTransform, {600, 600});
 	}
 	Renderer2D::End();
 }

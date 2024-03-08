@@ -7,15 +7,18 @@
 
 namespace Sphynx
 {
+	class Sprite;
+
 	struct SPHYNX_API SpriteRendererComponent
 	{
 		COMPONENT_COMMON_BODY(SpriteRendererComponent);
 
 	public:
-		SpriteRendererComponent(Color tint) :
-			Tint(tint) {}
+		SpriteRendererComponent(Sprite* sprite, Color tint = Color::White) :
+			Sprite(sprite), Tint(tint) {}
 
 	public:
+		Sprite* Sprite;
 		Color Tint;
 
 	};

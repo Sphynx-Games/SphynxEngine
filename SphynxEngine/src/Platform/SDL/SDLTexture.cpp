@@ -42,6 +42,7 @@ namespace Sphynx
 			return false;
 		}
 		
+		SDL_QueryTexture(m_Texture, NULL, NULL, &m_Size.X, &m_Size.Y);
 		m_IsLoaded = true;
 		return true;
 	}

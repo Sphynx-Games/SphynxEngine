@@ -2,6 +2,7 @@
 #include "RendererAPI.h"
 #include "OrthographicCamera.h"
 #include "Texture.h"
+#include "Sprite.h"
 #include "Math/Transform.h"
 #include "Core/Assets.h"
 
@@ -106,6 +107,11 @@ namespace Sphynx
 		s_RendererAPI->DrawTexture(texture, position, size, color);
 	}
 
+	void Renderer2D::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
+	{
+		s_RendererAPI->DrawSprite(sprite, position, size, color);
+	}
+
 	void Renderer2D::DrawQuad(const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawQuad(s_RendererConfig.DrawMode, transform, size, pivot, color);
@@ -139,5 +145,10 @@ namespace Sphynx
 	void Renderer2D::DrawTexture(const Texture& texture, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
 		s_RendererAPI->DrawTexture(texture, transform, size, pivot, color);
+	}
+
+	void Renderer2D::DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size, Color color)
+	{
+		s_RendererAPI->DrawSprite(sprite, transform, size, color);
 	}
 }

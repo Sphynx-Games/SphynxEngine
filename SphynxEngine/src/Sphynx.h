@@ -26,6 +26,7 @@
 #include "Renderer/Renderer2D.h"
 #include "Renderer/OrthographicCameraController.h"
 #include "Renderer/Texture.h"
+#include "Renderer/Sprite.h"
 
 // Scene
 #include "Scene/Scene.h"

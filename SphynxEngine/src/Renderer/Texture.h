@@ -12,6 +12,7 @@ namespace Sphynx
 	public:
 		virtual ~Texture() = default;
 
+		virtual Vector2i GetSize() { return m_Size; }
 		virtual uint32_t GetWidth() { return m_Size.X; }
 		virtual uint32_t GetHeight() { return m_Size.Y; }
 
