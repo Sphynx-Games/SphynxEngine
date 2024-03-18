@@ -5,3 +5,5 @@
 #include "NameComponent.h"
 #include "TransformComponent.h"
 #include "SpriteRendererComponent.h"
+#include "BoxRendererComponent.h"
+#include "LineRendererComponent.h"

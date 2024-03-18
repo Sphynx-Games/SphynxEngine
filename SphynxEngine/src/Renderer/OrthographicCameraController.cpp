@@ -11,8 +11,8 @@ namespace Sphynx
 		m_Camera(-m_AspectRatio * m_Zoom, m_AspectRatio* m_Zoom, -m_Zoom, m_Zoom),
 		m_Position({ 0.0f, 0.0f, 0.0f }),
 	    m_Rotation(0.0f),
-		m_TranslationSpeed(50.0f),
-		m_RotationSpeed(1.0f)
+		m_TranslationSpeed(1.0f),
+		m_RotationSpeed(30.0f)
 	{
 	}
 
@@ -77,7 +77,7 @@ namespace Sphynx
 		dispatcher.Dispatch<MouseScrolledEvent>([&](MouseScrolledEvent& e)
 			{
 				m_Zoom -= e.GetY() * 0.25f;
-				m_Zoom = std::max(m_Zoom, 0.25f);
+				m_Zoom = std::max(m_Zoom, 10e-8f);
 				m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom);
 
 				return false;

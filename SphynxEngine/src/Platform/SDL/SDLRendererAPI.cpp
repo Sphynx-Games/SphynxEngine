@@ -34,6 +34,7 @@ namespace Sphynx
 		SDL_Window* window_SDL = reinterpret_cast<SDL_Window*>(m_Window->GetNativeWindow());
 
 		// Create renderer
+		SDL_SetHint(SDL_HINT_RENDER_LINE_METHOD, "3");
 		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (m_Renderer == nullptr) {
 			SPX_LOG_CORE_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
@@ -71,13 +72,24 @@ namespace Sphynx
 		SDL_RenderPoint(m_Renderer, (float)point.X, (float)point.Y);
 	}
 
-	void SDLRendererAPI::DrawLine(Vector2i point1, Vector2i point2, Color color)
+	void SDLRendererAPI::DrawLine(Vector2i point1, Vector2i point2, float lineWidth, Color color)
 	{
+		if (lineWidth <= 0.0f) return;
+
+		Vector2f scale;
+		SDL_GetRenderScale(m_Renderer, &scale.X, &scale.Y);
+		SDL_SetRenderScale(m_Renderer, lineWidth, lineWidth);
+
 		SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
 
 		ChangeToSphynxCoords(point1, m_Window);
 		ChangeToSphynxCoords(point2, m_Window);
-		SDL_RenderLine(m_Renderer, (float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
+		SDL_RenderLine(m_Renderer, 
+			(float)point1.X / lineWidth, (float)point1.Y / lineWidth, 
+			(float)point2.X / lineWidth, (float)point2.Y / lineWidth
+		);
+
+		SDL_SetRenderScale(m_Renderer, scale.X, scale.Y);
 	}
 
 	void SDLRendererAPI::DrawQuad(DrawMode drawMode, Vector2i center, Vector2i size, Color color)
@@ -169,6 +181,32 @@ namespace Sphynx
 
 		SDLTexture* texture_SDL = dynamic_cast<SDLTexture*>(sprite.GetTexture());
 		SDL_RenderTexture(m_Renderer, texture_SDL->GetTexture(), &srcRect, &dstRect);
+	}
+
+	void SDLRendererAPI::DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth, Color color)
+	{
+		if (lineWidth <= 0.0f) return;
+
+		// multiply transformation matrices
+		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
+
+		glm::vec4 P1 = mvpMatrix * glm::vec4{ point1.X, point1.Y, 0.0f, 1.0f };
+		glm::vec4 P2 = mvpMatrix * glm::vec4{ point2.X, point2.Y, 0.0f, 1.0f };
+
+		Vector2f scale;
+		SDL_GetRenderScale(m_Renderer, &scale.X, &scale.Y);
+		SDL_SetRenderScale(m_Renderer, lineWidth, lineWidth);
+
+		SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
+
+		SDL_COORDS_TO_SPHYNX_COORDS(P1, m_Window);
+		SDL_COORDS_TO_SPHYNX_COORDS(P2, m_Window);
+		SDL_RenderLine(m_Renderer,
+			(float)P1.x / lineWidth, (float)P1.y / lineWidth,
+			(float)P2.x / lineWidth, (float)P2.y / lineWidth
+		);
+
+		SDL_SetRenderScale(m_Renderer, scale.X, scale.Y);
 	}
 
 	void SDLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
@@ -322,6 +360,7 @@ namespace Sphynx
 			indices.data(), (int32_t)indices.size(), sizeof(int32_t)
 		);
 	}
+	
 	void SDLRendererAPI::DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size, Color color)
 	{
 		// multiply transformation matrices

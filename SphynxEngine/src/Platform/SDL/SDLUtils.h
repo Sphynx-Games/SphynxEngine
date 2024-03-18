@@ -8,6 +8,8 @@
 // to simulate correctly the cameras POV
 #define SDL_COORDS_TO_SPHYNX_COORDS(point, window) \
 {\
+	point.x *= window->GetWidth() / 2.0f;\
+	point.y *= window->GetHeight() / 2.0f;\
 	point.x += window->GetWidth() / 2.0f;\
 	point.y = (window->GetHeight() - point.y) - window->GetHeight() / 2.0f;\
 }

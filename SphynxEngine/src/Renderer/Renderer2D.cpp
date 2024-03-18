@@ -19,11 +19,11 @@ namespace Sphynx
 
 	void Renderer2D::Shutdown()
 	{
+		Assets::DeleteTextures();
+
 		s_RendererAPI->Shutdown();
 		delete s_RendererAPI;
 		s_RendererAPI = nullptr;
-
-		Assets::DeleteTextures();
 	}
 
 	void Renderer2D::Begin(const OrthographicCamera* camera)
@@ -67,9 +67,9 @@ namespace Sphynx
 		s_RendererAPI->DrawPoint(point, color);
 	}
 
-	void Renderer2D::DrawLine(Vector2i point1, Vector2i point2, Color color)
+	void Renderer2D::DrawLine(Vector2i point1, Vector2i point2, float lineWidth, Color color)
 	{
-		s_RendererAPI->DrawLine(point1, point2, color);
+		s_RendererAPI->DrawLine(point1, point2, lineWidth, color);
 	}
 
 	void Renderer2D::DrawQuad(Vector2i center, Vector2i size, Color color)
@@ -111,6 +111,12 @@ namespace Sphynx
 	{
 		s_RendererAPI->DrawSprite(sprite, position, size, color);
 	}
+
+	void Renderer2D::DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth, Color color)
+	{
+		s_RendererAPI->DrawLine(transform, point1, point2, lineWidth, color);
+	}
+
 
 	void Renderer2D::DrawQuad(const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{

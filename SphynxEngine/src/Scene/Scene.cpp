@@ -18,18 +18,34 @@ namespace Sphynx
 	void Scene::Update(float deltaTime)
 	{
 		// Draw every sprite renderer component in scene
-		auto group = m_Registry.group<TransformComponent, SpriteRendererComponent>();
-		for (entt::entity entity : group)
+		auto spriteGroup = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
+		for (entt::entity entity : spriteGroup)
 		{
-			auto [tranform, spriteRenderer] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+			auto [spriteRenderer, tranform] = spriteGroup.get<SpriteRendererComponent, TransformComponent>(entity);
 			if (spriteRenderer.Sprite != nullptr)
 			{
-				Renderer2D::DrawSprite(*spriteRenderer.Sprite, tranform.Transform, { 100.0f, 100.0f }, spriteRenderer.Tint);
+				Renderer2D::DrawSprite(*spriteRenderer.Sprite, tranform.Transform, { 1.0f, 1.0f }, spriteRenderer.Tint);
 			}
 			else
 			{
 				Renderer2D::DrawQuad(DrawMode::FILLED, tranform.Transform, { 1.0f, 1.0f }, { 0.5f, 0.5f }, spriteRenderer.Tint);
 			}
+		}
+
+		// Draw every box renderer component in scene
+		auto boxGroup = m_Registry.group<BoxRendererComponent>(entt::get<TransformComponent>);
+		for (entt::entity entity : boxGroup)
+		{
+			auto [boxRenderer, tranform] = boxGroup.get<BoxRendererComponent, TransformComponent>(entity);
+			Renderer2D::DrawQuad(boxRenderer.DrawMode, tranform.Transform, boxRenderer.Size, boxRenderer.Pivot, boxRenderer.Color);
+		}
+
+		// Draw every line renderer component in scene
+		auto lineGroup = m_Registry.group<LineRendererComponent>(entt::get<TransformComponent>);
+		for (entt::entity entity : lineGroup)
+		{
+			auto [lineRenderer, tranform] = lineGroup.get<LineRendererComponent, TransformComponent>(entity);
+			Renderer2D::DrawLine(tranform.Transform, lineRenderer.Point1, lineRenderer.Point2, lineRenderer.LineWidth, lineRenderer.Color);
 		}
 	}
 

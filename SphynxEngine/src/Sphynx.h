@@ -23,6 +23,7 @@
 #include "Core/Assets.h"
 
 // Rendering
+#include "Renderer/Window.h"
 #include "Renderer/Renderer2D.h"
 #include "Renderer/OrthographicCameraController.h"
 #include "Renderer/Texture.h"
