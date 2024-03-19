@@ -24,7 +24,7 @@ namespace Sphynx
 			auto [spriteRenderer, tranform] = spriteGroup.get<SpriteRendererComponent, TransformComponent>(entity);
 			if (spriteRenderer.Sprite != nullptr)
 			{
-				Renderer2D::DrawSprite(*spriteRenderer.Sprite, tranform.Transform, { 1.0f, 1.0f }, spriteRenderer.Tint);
+				Renderer2D::DrawSprite(*spriteRenderer.Sprite, tranform.Transform, spriteRenderer.Tint);
 			}
 			else
 			{

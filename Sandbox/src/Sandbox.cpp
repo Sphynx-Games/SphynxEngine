@@ -62,6 +62,7 @@ void SandboxLayer::Attach()
 	using namespace Sphynx;
 	Application* app = Application::GetInstance();
 
+	//sheet->GetSprite(0)->SetPixelsPerUnit(25);
 	Actor sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	//quad.AddComponent<SpriteRendererComponent>(nullptr, Color::Blue);

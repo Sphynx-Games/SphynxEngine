@@ -153,8 +153,8 @@ namespace Sphynx
 		s_RendererAPI->DrawTexture(texture, transform, size, pivot, color);
 	}
 
-	void Renderer2D::DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size, Color color)
+	void Renderer2D::DrawSprite(const Sprite& sprite, const Transform& transform, Color color)
 	{
-		s_RendererAPI->DrawSprite(sprite, transform, size, color);
+		s_RendererAPI->DrawSprite(sprite, transform, color);
 	}
 }

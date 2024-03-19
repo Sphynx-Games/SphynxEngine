@@ -52,7 +52,7 @@ namespace Sphynx
 		static void DrawCircle(DrawMode drawMode, const Transform& transform, float radius = 0.5f, uint32_t numSegments = 32u, Vector2f pivot = { 0.5f, 0.5f }, Color color = Color::White);
 
 		static void DrawTexture(const Texture& texture, const Transform& transform, Vector2f size = { 1.0f, 1.0f }, Vector2f pivot = { 0.5f, 0.5f }, Color color = Color::White);
-		static void DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size = { 1.0f, 1.0f }, Color color = Color::White);
+		static void DrawSprite(const Sprite& sprite, const Transform& transform, Color color = Color::White);
 
 	private:
 		static RendererAPI* s_RendererAPI;

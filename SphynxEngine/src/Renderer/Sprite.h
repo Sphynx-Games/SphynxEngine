@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "Math/Vector.h"
 #include <cstdint>
 #include <string>
@@ -20,9 +21,14 @@ namespace Sphynx
 		Vector2i GetPosition() const { return m_Position; }
 		Vector2i GetSize() const { return m_Size; }
 		Vector2f GetPivot() const { return m_Pivot; }
+		uint32_t GetPixelsPerUnit() const { return m_PixelsPerUnit; }
 
 		void SetPivot(Vector2f pivot) { m_Pivot = pivot; }
-		void SetPixelsPerUnit(uint32_t pixelsPerUnit) { m_PixelsPerUnit = pixelsPerUnit; }
+		void SetPixelsPerUnit(uint32_t pixelsPerUnit) 
+		{
+			SPX_CORE_ASSERT(pixelsPerUnit > 0, "Pixels per unit should be greater than 0!");
+			m_PixelsPerUnit = pixelsPerUnit;
+		}
 
 	private:
 		Texture* m_Texture;

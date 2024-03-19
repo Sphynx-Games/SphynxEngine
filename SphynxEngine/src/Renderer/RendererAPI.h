@@ -43,7 +43,7 @@ namespace Sphynx
 		virtual void DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color) = 0;
 		virtual void DrawCircle(DrawMode drawMode, const Transform& transform, float radius, uint32_t numSegments, Vector2f pivot, Color color) = 0;
 		virtual void DrawTexture(const Texture& texture, const Transform& transform, Vector2f size, Vector2f pivot, Color color) = 0;
-		virtual void DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size, Color color) = 0;
+		virtual void DrawSprite(const Sprite& sprite, const Transform& transform, Color color) = 0;
 
 		//virtual void SetLineWidth(float width) = 0;
 

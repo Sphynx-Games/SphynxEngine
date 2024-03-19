@@ -361,13 +361,15 @@ namespace Sphynx
 		);
 	}
 	
-	void SDLRendererAPI::DrawSprite(const Sprite& sprite, const Transform& transform, Vector2f size, Color color)
+	void SDLRendererAPI::DrawSprite(const Sprite& sprite, const Transform& transform, Color color)
 	{
 		// multiply transformation matrices
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
 		// calculate rectangle corners with transformations applied
 		Vector2f pivot = sprite.GetPivot();
+
+		Vector2f size = { (float)sprite.GetSize().X / sprite.GetPixelsPerUnit(), (float)sprite.GetSize().Y / sprite.GetPixelsPerUnit() };
 		float halfWidth = (size.X / 2.0f);
 		float halfHeight = (size.Y / 2.0f);
 
