@@ -8,10 +8,14 @@
 // to simulate correctly the cameras POV
 #define SDL_COORDS_TO_SPHYNX_COORDS(point, window) \
 {\
-	point.x *= window->GetWidth() / 2.0f;\
-	point.y *= window->GetHeight() / 2.0f;\
-	point.x += window->GetWidth() / 2.0f;\
-	point.y = (window->GetHeight() - point.y) - window->GetHeight() / 2.0f;\
+	float width = (float)window->GetWidth();\
+	float height = (float)window->GetHeight();\
+	float aspectRatio = width / height;\
+	point.x *= width / 2.0f; \
+	point.x /= aspectRatio;\
+	point.y *= height / 2.0f;\
+	point.x += width / 2.0f;\
+	point.y = (height - point.y) - height / 2.0f;\
 }
 
 namespace Sphynx
