@@ -6,12 +6,13 @@
 #include <algorithm>
 #include <functional>
 #include <type_traits>
-
+#include <cstdint>
 
 #include <cstdint>
 #include <string>
 #include <string_view>
 #include <sstream>
+#include <array>
 #include <vector>
 #include <unordered_map>
 #include <map>

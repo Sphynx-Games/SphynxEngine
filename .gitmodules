@@ -21,3 +21,7 @@
 [submodule "vendor/box2d"]
 	path = vendor/box2d
 	url = https://github.com/erincatto/box2d
+	
+[submodule "vendor/stduuid"]
+	path = vendor/stduuid
+	url = https://github.com/mariusbancila/stduuid

@@ -45,6 +45,9 @@ public:
 
 		// layers
 		PushLayer(new SandboxLayer());
+
+		SPX_LOG_DISPLAY("1. Esto es un UUID: {}", UUID::ToString(UUID::Generate()));
+		SPX_LOG_DISPLAY("2. Esto es un UUID: {}", UUID::ToString(UUID::Generate()));
 	}
 
 	virtual void Run() override { Sphynx::Application::Run(); }

@@ -21,8 +21,10 @@ set(SDL3IMAGE_VENDORED OFF)
 set(GLM_ENABLE_CXX_17 ON)
 set(BOX2D_BUILD_UNIT_TESTS OFF)
 set(BOX2D_BUILD_TESTBED OFF)
+set(UUID_BUILD_TESTS OFF)
 
 # Add directories of the different libraries
+add_subdirectory(stduuid stduuid/build)
 add_subdirectory(SDL SDL/build)
 add_subdirectory(SDL_image SDL_image/build)
 set(BUILD_SHARED_LIBS OFF)
@@ -31,9 +33,9 @@ add_subdirectory(spdlog spdlog/build)
 add_subdirectory(entt entt/build)
 add_subdirectory(box2d box2d/build)
 
+set_property(TARGET stduuid PROPERTY FOLDER vendor/stduuid)
 set_all_targets_in_folder(SDL vendor/SDL)
 set_all_targets_in_folder(SDL_image vendor/SDL)
-# set in folder (function is not working propertly)
 set_property(TARGET glm PROPERTY FOLDER vendor/glm)
 set_all_targets_in_folder(spdlog vendor/spdlog)
 set_all_targets_in_folder(entt vendor/entt)
@@ -41,6 +43,7 @@ set_property(TARGET box2d PROPERTY FOLDER vendor/box2d)
 
 # Link to the diferent libraries
 target_link_libraries(vendor INTERFACE
+	stduuid
 	SDL3::SDL3
 	SDL3_image::SDL3_image
 	glm::glm
