@@ -48,6 +48,9 @@ public:
 
 		SPX_LOG_DISPLAY("1. Esto es un UUID: {}", UUID::ToString(UUID::Generate()));
 		SPX_LOG_DISPLAY("2. Esto es un UUID: {}", UUID::ToString(UUID::Generate()));
+		UUID uuid = UUID::Generate();
+		SPX_LOG_DISPLAY("3. Esto es un UUID igual?: {}", uuid == uuid);
+
 	}
 
 	virtual void Run() override { Sphynx::Application::Run(); }
