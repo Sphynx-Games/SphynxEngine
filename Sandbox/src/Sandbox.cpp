@@ -39,8 +39,8 @@ public:
 		Application::Init();
 
 		// assets
-		Assets::AddTexture("..\\Assets\\Textures\\cat.jpg");
-		enemyTexture = Assets::AddTexture("..\\Assets\\Textures\\enemy_scaled5x.png");
+		AssetManager::Import("..\\Assets\\Textures\\cat.jpg");
+		enemyTexture = *AssetManager::Import<Texture>("..\\Assets\\Textures\\enemy_scaled5x.png");
 		sheet = new Spritesheet(enemyTexture, 4, 3);
 
 		// layers

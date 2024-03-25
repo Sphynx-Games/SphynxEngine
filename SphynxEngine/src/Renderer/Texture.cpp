@@ -6,27 +6,15 @@
 
 namespace Sphynx 
 {
-	Texture* Texture::Create(const std::string& path)
+	Texture* Texture::Create(void* data, Vector2i size)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    SPX_LOG_CORE_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::SDL:     return new SDLTexture(path);
+		case RendererAPI::API::SDL:     return new SDLTexture(data, size);
 		}
 
 		SPX_LOG_CORE_ERROR("Unknown RendererAPI!");
 		return nullptr;
 	}
-
-	/*Texture2D* Texture2D::Create(const TextureSpecification& specification)
-	{
-		switch (Renderer::GetAPI())
-		{
-		     case RendererAPI::API::None:    printf("RendererAPI::None is currently not supported!"); return nullptr;
-			 case RendererAPI::API::SDL:  return new SDLTexture2D(specification);
-		}
-
-		printf("Unknown RendererAPI!");
-		return nullptr;
-	}*/
 }

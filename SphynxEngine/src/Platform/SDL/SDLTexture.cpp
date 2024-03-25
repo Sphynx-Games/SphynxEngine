@@ -7,45 +7,58 @@
 
 namespace Sphynx 
 {
-	SDLTexture::SDLTexture(const std::string& path) : m_Texture(nullptr), m_IsLoaded(false)
+	SDLTexture::SDLTexture(void* data, Vector2i size)
 	{
-		m_Path = path;
-		Load();
-	}
-
-	SDLTexture::~SDLTexture()
-	{
-		if (m_IsLoaded) 
-		{
-			SDL_DestroyTexture(m_Texture);
-			m_Texture = nullptr;
-			m_IsLoaded = false;
-		}
-	}
-
-	bool SDLTexture::Load()
-	{
-		if (m_IsLoaded) return true;
+		m_Size = size;
 
 		const SDLRendererAPI* renderer = dynamic_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
 		if (renderer == nullptr)
 		{
 			SPX_LOG_CORE_ERROR("RendererAPI is not of SDL type");
-			return false;
+			return;
+		}
+
+		m_Texture = SDL_CreateTexture(renderer->GetSDLRenderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, size.X, size.Y);
+
+		if (SDL_UpdateTexture(m_Texture, nullptr, data, m_Size.X * sizeof(uint8_t)) < 0)
+		{
+			SPX_LOG_CORE_ERROR("Unable to create texture! SDL Error: {}", SDL_GetError());
+			return;
+		}
+	}
+
+	SDLTexture::~SDLTexture()
+	{
+		if (m_Texture != nullptr)
+		{
+			SDL_DestroyTexture(m_Texture);
+			m_Texture = nullptr;
+		}
+	}
+
+	SDLTexture::SDLTexture(SDL_Texture* texture) :
+		m_Texture(texture)
+	{
+		SDL_QueryTexture(texture, nullptr, nullptr, &m_Size.X, &m_Size.Y);
+	}
+
+	SDLTexture* SDLTextureLoader::Load(const std::filesystem::path& path)
+	{
+		const SDLRendererAPI* renderer = dynamic_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
+		if (renderer == nullptr)
+		{
+			SPX_LOG_CORE_ERROR("RendererAPI is not of SDL type");
+			return nullptr;
 		}
 
 		// load image
-		m_Texture = IMG_LoadTexture(renderer->GetSDLRenderer(), m_Path.c_str());
-		if (m_Texture == nullptr)
+		SDL_Texture* texture = IMG_LoadTexture(renderer->GetSDLRenderer(), path.string().c_str());
+		if (texture == nullptr)
 		{
-			SPX_LOG_CORE_ERROR("Unable to create texture from {}! SDL Error: {}", m_Path.c_str(), SDL_GetError());
-			return false;
+			SPX_LOG_CORE_ERROR("Unable to load texture from {}! SDL Error: {}", path.string().c_str(), SDL_GetError());
+			return nullptr;
 		}
-		
-		// store texture size
-		SDL_QueryTexture(m_Texture, NULL, NULL, &m_Size.X, &m_Size.Y);
 
-		m_IsLoaded = true;
-		return true;
+		return new SDLTexture(texture);
 	}
 }

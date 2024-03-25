@@ -4,7 +4,7 @@
 #include "Texture.h"
 #include "Sprite.h"
 #include "Math/Transform.h"
-#include "Core/Assets.h"
+
 
 namespace Sphynx
 {
@@ -19,8 +19,6 @@ namespace Sphynx
 
 	void Renderer2D::Shutdown()
 	{
-		Assets::DeleteTextures();
-
 		s_RendererAPI->Shutdown();
 		delete s_RendererAPI;
 		s_RendererAPI = nullptr;
@@ -116,7 +114,6 @@ namespace Sphynx
 	{
 		s_RendererAPI->DrawLine(transform, point1, point2, lineWidth, color);
 	}
-
 
 	void Renderer2D::DrawQuad(const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{

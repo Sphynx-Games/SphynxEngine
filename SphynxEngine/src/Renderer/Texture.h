@@ -12,17 +12,15 @@ namespace Sphynx
 	public:
 		virtual ~Texture() = default;
 
-		virtual Vector2i GetSize() { return m_Size; }
-		virtual uint32_t GetWidth() { return m_Size.X; }
-		virtual uint32_t GetHeight() { return m_Size.Y; }
-
-		virtual const std::string& GetPath() { return m_Path; }
+		virtual Vector2i GetSize() const { return m_Size; }
+		virtual uint32_t GetWidth() const { return m_Size.X; }
+		virtual uint32_t GetHeight() const { return m_Size.Y; }
 
 	protected:
-		std::string m_Path;
 		Vector2i m_Size;
 
 	public:
-		static Texture* Create(const std::string& path);
+		static Texture* Create(void* data, Vector2i size);
+
 	};
 }

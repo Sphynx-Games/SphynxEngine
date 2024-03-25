@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	struct UUID
+	struct SPHYNX_API UUID
 	{
 	public:
 		UUID();

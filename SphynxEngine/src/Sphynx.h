@@ -21,7 +21,7 @@
 #include "Core/Time.h"
 
 // Assets
-#include "Core/Assets.h"
+#include "Asset/AssetManager.h"
 
 // Rendering
 #include "Renderer/Window.h"
