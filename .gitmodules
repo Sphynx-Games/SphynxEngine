@@ -25,3 +25,7 @@
 [submodule "vendor/stduuid"]
 	path = vendor/stduuid
 	url = https://github.com/mariusbancila/stduuid
+	
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = https://github.com/ocornut/imgui

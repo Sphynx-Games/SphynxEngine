@@ -40,16 +40,18 @@ namespace Sphynx
 	class KeyTypedEvent : public Event
 	{
 	public:
-		KeyTypedEvent(int32_t keycode) : m_Keycode(keycode) {}
+		KeyTypedEvent(int32_t keycode, const std::string& text) : m_Keycode(keycode) , m_Text(text) {}
 		virtual ~KeyTypedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::KeyboardEvent);
 		EVENT_CLASS_TYPE(EventType::KeyTyped);
 
 		int32_t GetKeycode() const { return m_Keycode; }
+		const std::string& GetText() const { return m_Text; }
 
 	private:
 		int32_t m_Keycode;
+		std::string m_Text;
 	};
 
 	class MouseButtonPressedEvent : public Event

@@ -41,7 +41,7 @@ namespace Sphynx
 		virtual EventType GetType() const = 0;
 		static EventType GetStaticType() { return EventType::None; };
 
-	public:
+	private:
 		bool m_IsHandled;
 	};
 
@@ -58,7 +58,7 @@ namespace Sphynx
 
 			if (m_Event.GetType() == TEvent::GetStaticType())
 			{
-				m_Event.m_IsHandled = func((TEvent&)m_Event);
+				m_Event.SetHandled(func((TEvent&)m_Event));
 			}
 		}
 

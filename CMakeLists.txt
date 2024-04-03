@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COPILER "msvc")
 
 add_subdirectory(SphynxEngine)
+add_subdirectory(SphynxEngineEditor)
 add_subdirectory(Sandbox)
 add_subdirectory(vendor)
 

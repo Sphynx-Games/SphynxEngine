@@ -277,13 +277,13 @@ namespace Sphynx
 		}
 		case SDL_EVENT_TEXT_EDITING:
 		{
-			KeyTypedEvent keyTypedEvent(event.key.keysym.sym);
+			KeyTypedEvent keyTypedEvent(event.key.keysym.sym, event.text.text);
 			m_CallbackFunction(keyTypedEvent);
 			return true;
 		}
 		case SDL_EVENT_TEXT_INPUT:
 		{
-			KeyTypedEvent keyTypedEvent(event.key.keysym.sym);
+			KeyTypedEvent keyTypedEvent(event.key.keysym.sym, event.text.text);
 			m_CallbackFunction(keyTypedEvent);
 			return true;
 		}

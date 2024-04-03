@@ -5,9 +5,6 @@
 #include "Core/Layer.h"
 #include "Core/UUID.h"
 
-// Entry point
-#include "Core/EntryPoint.h"
-
 // Logging
 #include "Logging/Log.h"
 #include "Logging/LogDefines.h"
