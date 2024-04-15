@@ -28,7 +28,7 @@ namespace Sphynx
 		Application* app = Application::GetInstance();
 		m_Window = app->GetWindow();
 		if (m_Window == nullptr) {
-			SPX_LOG_CORE_ERROR("Window not initialized!");
+			SPX_CORE_LOG_ERROR("Window not initialized!");
 			return;
 		}
 		SDL_Window* window_SDL = reinterpret_cast<SDL_Window*>(m_Window->GetNativeWindow());
@@ -37,7 +37,7 @@ namespace Sphynx
 		SDL_SetHint(SDL_HINT_RENDER_LINE_METHOD, "3");
 		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (m_Renderer == nullptr) {
-			SPX_LOG_CORE_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
+			SPX_CORE_LOG_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
 		}
 	}
 

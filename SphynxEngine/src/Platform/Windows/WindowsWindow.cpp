@@ -68,14 +68,14 @@ namespace Sphynx
 	{
 		m_Params = params;
 
-		SPX_LOG_CORE_DISPLAY("Creating window {} ({}, {})", m_Params.Title, m_Params.Width, m_Params.Height);
+		SPX_CORE_LOG_DISPLAY("Creating window {} ({}, {})", m_Params.Title, m_Params.Width, m_Params.Height);
 
 		if (s_SDLWindowCount == 0)
 		{
 			// Init SDL
 			if (SDL_Init(SDL_INIT_VIDEO) < 0)
 			{
-				SPX_LOG_CORE_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
+				SPX_CORE_LOG_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
 			}
 
 			// Create window
@@ -83,7 +83,7 @@ namespace Sphynx
 			m_Window = SDL_CreateWindow(m_Params.Title, m_Params.Width, m_Params.Height, flags);
 			if (m_Window == nullptr)
 			{
-				SPX_LOG_CORE_ERROR("Window could not be created! SDL_Error: {}", SDL_GetError());
+				SPX_CORE_LOG_ERROR("Window could not be created! SDL_Error: {}", SDL_GetError());
 			}
 		}
 

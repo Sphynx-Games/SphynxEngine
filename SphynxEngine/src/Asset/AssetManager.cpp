@@ -28,7 +28,7 @@ namespace Sphynx
 
 	void AssetManager::Init()
 	{
-		SPX_LOG_CORE_TRACE("Initializing AssetManager");
+		SPX_CORE_LOG_TRACE("Initializing AssetManager");
 
 		// Register all engine related assets here,
 		// custom assets will be registered elsewhere
@@ -44,7 +44,7 @@ namespace Sphynx
 
 	void AssetManager::Shutdown()
 	{
-		SPX_LOG_CORE_TRACE("Shutting down AssetManager");
+		SPX_CORE_LOG_TRACE("Shutting down AssetManager");
 
 		// TODO: release all managed assets
 	}
@@ -52,7 +52,7 @@ namespace Sphynx
 	void AssetManager::RegisterAssetType(const AssetType& assetType)
 	{
 		SPX_CORE_ASSERT(!IsAssetTypeRegistered(assetType), "Asset type \"{}\" is already registered!", assetType);
-		SPX_LOG_CORE_TRACE("Asset type registered: {}", assetType);
+		SPX_CORE_LOG_TRACE("Asset type registered: {}", assetType);
 		s_TypeRegistry.insert(assetType);
 	}
 
@@ -102,7 +102,7 @@ namespace Sphynx
 		// Check if the handle is valid
 		if (handle == AssetHandle::Invalid)
 		{
-			SPX_LOG_CORE_ERROR("Trying to get an asset with an invalid handle!");
+			SPX_CORE_LOG_ERROR("Trying to get an asset with an invalid handle!");
 			return nullptr;
 		}
 

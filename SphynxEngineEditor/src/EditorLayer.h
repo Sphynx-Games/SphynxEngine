@@ -7,7 +7,7 @@ class Widget;
 class EditorLayer : public Sphynx::Layer
 {
 public:
-	using Sphynx::Layer::Layer;
+	EditorLayer();
 	virtual ~EditorLayer();
 
 	virtual void Attach() override;
@@ -26,9 +26,17 @@ public:
 
 public:
 	static EditorLayer* Create();
-	
+
 protected:
-	bool m_BlockEventsEnabled = false;
+	Sphynx::Framebuffer* m_Framebuffer;
+	bool m_BlockEventsEnabled;
 	std::vector<Widget*> m_Widgets;
+
+	// TODO: remove
+public:
+	static Sphynx::Framebuffer* s_Framebuffer;
+private:
+	std::unique_ptr<class Sphynx::OrthographicCameraController> m_CameraController;
+	Sphynx::Scene m_Scene;
 
 };

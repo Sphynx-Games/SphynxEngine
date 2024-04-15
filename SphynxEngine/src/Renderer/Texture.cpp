@@ -10,11 +10,11 @@ namespace Sphynx
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    SPX_LOG_CORE_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::SDL:     return new SDLTexture(data, size);
 		}
 
-		SPX_LOG_CORE_ERROR("Unknown RendererAPI!");
+		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
 		return nullptr;
 	}
 }

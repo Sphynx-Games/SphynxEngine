@@ -23,6 +23,7 @@
 // Rendering
 #include "Renderer/Window.h"
 #include "Renderer/Renderer2D.h"
+#include "Renderer/Framebuffer.h"
 #include "Renderer/OrthographicCameraController.h"
 #include "Renderer/Texture.h"
 #include "Renderer/Sprite.h"

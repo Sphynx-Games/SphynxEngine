@@ -14,7 +14,7 @@ namespace Sphynx
 		const SDLRendererAPI* renderer = dynamic_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
 		if (renderer == nullptr)
 		{
-			SPX_LOG_CORE_ERROR("RendererAPI is not of SDL type");
+			SPX_CORE_LOG_ERROR("RendererAPI is not of SDL type");
 			return;
 		}
 
@@ -22,7 +22,7 @@ namespace Sphynx
 
 		if (SDL_UpdateTexture(m_Texture, nullptr, data, m_Size.X * sizeof(uint8_t)) < 0)
 		{
-			SPX_LOG_CORE_ERROR("Unable to create texture! SDL Error: {}", SDL_GetError());
+			SPX_CORE_LOG_ERROR("Unable to create texture! SDL Error: {}", SDL_GetError());
 			return;
 		}
 	}
@@ -47,7 +47,7 @@ namespace Sphynx
 		const SDLRendererAPI* renderer = dynamic_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
 		if (renderer == nullptr)
 		{
-			SPX_LOG_CORE_ERROR("RendererAPI is not of SDL type");
+			SPX_CORE_LOG_ERROR("RendererAPI is not of SDL type");
 			return nullptr;
 		}
 
@@ -55,7 +55,7 @@ namespace Sphynx
 		SDL_Texture* texture = IMG_LoadTexture(renderer->GetSDLRenderer(), path.string().c_str());
 		if (texture == nullptr)
 		{
-			SPX_LOG_CORE_ERROR("Unable to load texture from {}! SDL Error: {}", path.string().c_str(), SDL_GetError());
+			SPX_CORE_LOG_ERROR("Unable to load texture from {}! SDL Error: {}", path.string().c_str(), SDL_GetError());
 			return nullptr;
 		}
 

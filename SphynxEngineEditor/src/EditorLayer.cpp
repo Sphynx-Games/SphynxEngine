@@ -7,6 +7,21 @@
 #include <Renderer/Renderer.h>
 #include <Renderer/Renderer2D.h>
 
+Sphynx::Framebuffer* EditorLayer::s_Framebuffer = nullptr;
+
+EditorLayer::EditorLayer() :
+	m_Framebuffer(nullptr),
+	m_BlockEventsEnabled(false),
+	m_Widgets(),
+	m_CameraController(new Sphynx::OrthographicCameraController(1.0f, true)),
+	m_Scene()
+{
+	m_Framebuffer = Sphynx::Framebuffer::Create(
+		{ 1920, 1080, { Sphynx::FramebufferTextureFormat::RGBA8 } }
+	);
+
+	s_Framebuffer = m_Framebuffer;
+}
 
 EditorLayer::~EditorLayer()
 {
@@ -15,10 +30,30 @@ EditorLayer::~EditorLayer()
 		delete widget;
 	}
 	m_Widgets.clear();
+
+	delete m_Framebuffer;
+	m_Framebuffer = nullptr;
 }
 
 void EditorLayer::Attach()
 {
+	Sphynx::AssetManager::Import("..\\Assets\\Textures\\cat.jpg");
+	Sphynx::Texture* enemyTexture = *Sphynx::AssetManager::Import<Sphynx::Texture>("..\\Assets\\Textures\\enemy_scaled5x.png");
+	Sphynx::Spritesheet* sheet = new Sphynx::Spritesheet(enemyTexture, 4, 3);
+
+	using namespace Sphynx;
+	Actor sprt = m_Scene.CreateActor();
+	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
+
+	Actor quad = m_Scene.CreateActor();
+	quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	quad.AddComponent<BoxRendererComponent>();
+
+	Actor line = m_Scene.CreateActor();
+	line.AddComponent<TransformComponent>(Transform{ { 0.5f, -0.5f, 0.0f }, { 1.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
+	line.AddComponent<LineRendererComponent>();
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -26,6 +61,7 @@ void EditorLayer::Attach()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Viewports
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -39,6 +75,22 @@ void EditorLayer::Detach()
 
 void EditorLayer::Update(float deltaTime)
 {
+	using namespace Sphynx;
+
+	// update camera
+	m_CameraController->Update(deltaTime);
+
+	m_Framebuffer->Bind();
+	{
+		// begin scene render
+		Renderer2D::Begin(&m_CameraController->GetCamera());
+		{
+			m_Scene.Update(deltaTime);
+		}
+		Renderer2D::End();
+	}
+	m_Framebuffer->Unbind();
+
 	Begin();
 	RenderGUI();
 	End();
@@ -160,10 +212,10 @@ EditorLayer* EditorLayer::Create()
 {
 	switch (Sphynx::Renderer::GetAPI())
 	{
-	case Sphynx::RendererAPI::API::None:    SPX_LOG_CORE_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+	case Sphynx::RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
 	case Sphynx::RendererAPI::API::SDL:     return new SDLEditorLayer();
 	}
 
-	SPX_LOG_CORE_ERROR("Unknown RendererAPI!");
+	SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
 	return nullptr;
 }

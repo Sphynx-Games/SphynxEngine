@@ -24,6 +24,7 @@ void EditorApplication::Init()
 	editorLayer->AddWidget(new SceneEditor());
 
 	PushLayer(editorLayer);
+
 }
 
 void EditorApplication::Run()

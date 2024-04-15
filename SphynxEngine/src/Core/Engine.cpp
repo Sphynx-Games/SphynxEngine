@@ -9,12 +9,12 @@ namespace Sphynx
 	{
 		Log::Init();
 		AssetManager::Init();
-		SPX_LOG_CORE_DISPLAY("Sphynx Engine initializing...");
+		SPX_CORE_LOG_DISPLAY("Sphynx Engine initializing...");
 	}
 
 	void Engine::Shutdown()
 	{
-		SPX_LOG_CORE_DISPLAY("Sphynx Engine shutting down...");
+		SPX_CORE_LOG_DISPLAY("Sphynx Engine shutting down...");
 		AssetManager::Shutdown();
 		Log::Shutdown();
 	}

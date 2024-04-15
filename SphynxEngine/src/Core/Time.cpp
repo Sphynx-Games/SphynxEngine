@@ -13,7 +13,7 @@ namespace Sphynx
 	{
 		if (s_IsInitialized)
 		{
-			SPX_LOG_CORE_WARNING("Trying to initialize global time when is already initialized");
+			SPX_CORE_LOG_WARNING("Trying to initialize global time when is already initialized");
 			return;
 		}
 
@@ -27,7 +27,7 @@ namespace Sphynx
 	{
 		if (!s_IsInitialized)
 		{
-			SPX_LOG_CORE_WARNING("Trying to tick global time when it is not initialized");
+			SPX_CORE_LOG_WARNING("Trying to tick global time when it is not initialized");
 			return;
 		}
 
@@ -41,7 +41,7 @@ namespace Sphynx
 	{
 		if (!s_IsInitialized)
 		{
-			SPX_LOG_CORE_WARNING("Trying to shutdown global time when it is not initialized");
+			SPX_CORE_LOG_WARNING("Trying to shutdown global time when it is not initialized");
 			return;
 		}
 

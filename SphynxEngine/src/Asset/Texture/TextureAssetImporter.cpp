@@ -10,7 +10,7 @@ namespace Sphynx
 {
 	std::shared_ptr<IAsset> TextureAssetImporter::Import(const AssetMetadata& metadata)
 	{
-		SPX_LOG_CORE_TRACE("Importing texture: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Importing texture: {}", metadata.Path.string().c_str());
 		Texture* texture = Load(metadata.Path);
 
 		std::shared_ptr<Asset<Texture>> asset = std::make_shared<Asset<Texture>>();
@@ -25,11 +25,11 @@ namespace Sphynx
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    SPX_LOG_CORE_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::SDL:     return SDLTextureLoader::Load(path);
 		}
 
-		SPX_LOG_CORE_ERROR("Unknown RendererAPI!");
+		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
 		return nullptr;
 	}
 }
