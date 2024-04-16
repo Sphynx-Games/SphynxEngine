@@ -40,11 +40,6 @@ namespace Sphynx
 			}
 		}
 
-		static void BindTexture(SDL_Texture* texture)
-		{
-			SDL_SetRenderTarget(SDL_GetRendererFromTexture(texture), texture);
-		}
-
 		static bool IsDepthFormat(FramebufferTextureFormat format)
 		{
 			switch (format)
@@ -54,7 +49,6 @@ namespace Sphynx
 
 			return false;
 		}
-
 	}
 
 	SDLFramebuffer::SDLFramebuffer(const FramebufferSpecification& spec) : 
@@ -152,7 +146,7 @@ namespace Sphynx
 	{
 		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
 		{
-			SPX_CORE_LOG_ERROR("Attempted to resize framebuffer to %d, %d", width, height);
+			SPX_CORE_LOG_ERROR("Attempted to resize framebuffer to {}, {}", width, height);
 			return;
 		}
 		m_Specification.Width = width;
