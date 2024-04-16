@@ -1,4 +1,6 @@
+#include "spxpch.h"
 #include "Texture.h"
+
 #include "Logging/Log.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererAPI.h"

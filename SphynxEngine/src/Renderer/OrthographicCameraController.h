@@ -25,6 +25,8 @@ namespace Sphynx
 		void SetTranslationSpeed(float speed) { m_TranslationSpeed = speed; }
 		void SetRotationSpeed(float speed) { m_RotationSpeed = speed; }
 
+		void Resize(float width, float height);
+
 	private:
 		bool m_AllowRotation;
 

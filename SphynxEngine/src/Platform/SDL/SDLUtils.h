@@ -8,11 +8,11 @@
 // to simulate correctly the cameras POV
 #define SDL_COORDS_TO_SPHYNX_COORDS(point, window) \
 {\
-	float width = (float)window->GetWidth();\
-	float height = (float)window->GetHeight();\
-	float aspectRatio = width / height;\
+	SDL_Rect rect;\
+	SDL_GetRenderViewport(SDL_GetRenderer((SDL_Window*)window->GetNativeWindow()), &rect);\
+	float width = rect.w;\
+	float height = rect.h;\
 	point.x *= width / 2.0f; \
-	point.x /= aspectRatio;\
 	point.y *= height / 2.0f;\
 	point.x += width / 2.0f;\
 	point.y = (height - point.y) - height / 2.0f;\

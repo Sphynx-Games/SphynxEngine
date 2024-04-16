@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <Sphynx.h>
-
+#include <Core/EntryPoint.h>
 
 Sphynx::Spritesheet* sheet = nullptr;
 Sphynx::Texture* enemyTexture = nullptr;

@@ -4,15 +4,18 @@
 #include <imgui.h>
 
 
-class ContentBrowserPanel : public Panel
+namespace Sphynx
 {
-public:
-	using Panel::Panel;
-
-protected:
-	virtual void RenderGUI() override
+	class ContentBrowserPanel : public Panel
 	{
-		ImGui::Begin("Content Brower");
-		ImGui::End();
-	}
-};
+	public:
+		using Panel::Panel;
+
+	protected:
+		virtual void RenderGUI() override
+		{
+			ImGui::Begin("Content Brower");
+			ImGui::End();
+		}
+	};
+}

@@ -1,24 +1,30 @@
 #pragma once
 
 #include "Base/Panel.h"
-#include <imgui.h>
-#include "SDL3/SDL.h"
-#include <EditorLayer.h>
 
 
-class ViewportPanel : public Panel
+namespace Sphynx
 {
-public:
-	using Panel::Panel;
+	class Framebuffer;
 
-protected:
-	virtual void RenderGUI() override
+	class ViewportPanel : public Panel
 	{
-		ImGui::Begin("Viewport");
-		ImVec2 size = ImGui::GetWindowSize();
-		EditorLayer::s_Framebuffer->GetColorAttachment(0);
-		ImGui::Image(EditorLayer::s_Framebuffer->GetColorAttachment(0), size);
+	public:
+		ViewportPanel();
+		ViewportPanel(Framebuffer* framebuffer, uint32_t index = 0u);
+		virtual ~ViewportPanel();
 
-		ImGui::End();
-	}
-};
+		void SetFramebuffer(Framebuffer* framebuffer);
+		void SetIndex(uint32_t index);
+
+	protected:
+		virtual void RenderGUI() override;
+
+	private:
+		void CheckFramebufferSizeValidity();
+
+	private:
+		Framebuffer* m_Framebuffer;
+		uint32_t m_Index;
+	};
+}

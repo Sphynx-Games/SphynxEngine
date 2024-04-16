@@ -60,7 +60,7 @@ namespace Sphynx
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, uint32_t value) = 0;
 
-		virtual void* GetColorAttachment(uint32_t index = 0) const = 0;
+		virtual void* GetColorAttachment(uint32_t index = 0u) const = 0;
 		virtual void* GetDepthAttachment() const = 0;
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;

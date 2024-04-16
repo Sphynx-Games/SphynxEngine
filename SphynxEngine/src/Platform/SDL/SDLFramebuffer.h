@@ -23,7 +23,7 @@ namespace Sphynx
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, uint32_t value) override;
 
-		virtual void* GetColorAttachment(uint32_t index = 0) const override { return m_ColorAttachments[index]; }
+		virtual void* GetColorAttachment(uint32_t index = 0u) const override { return m_ColorAttachments[index]; }
 		virtual void* GetDepthAttachment() const override { return m_DepthAttachment; }
 
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }

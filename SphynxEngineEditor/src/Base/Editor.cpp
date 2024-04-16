@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Editor.h"
 
 #include "Panel.h"

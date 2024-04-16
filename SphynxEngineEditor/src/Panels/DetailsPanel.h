@@ -4,15 +4,18 @@
 #include <imgui.h>
 
 
-class DetailsPanel : public Panel
+namespace Sphynx
 {
-public:
-	using Panel::Panel;
-
-protected:
-	virtual void RenderGUI() override
+	class DetailsPanel : public Panel
 	{
-		ImGui::Begin("Details");
-		ImGui::End();
-	}
-};
+	public:
+		using Panel::Panel;
+
+	protected:
+		virtual void RenderGUI() override
+		{
+			ImGui::Begin("Details");
+			ImGui::End();
+		}
+	};
+}

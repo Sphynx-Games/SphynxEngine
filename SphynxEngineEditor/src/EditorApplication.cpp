@@ -1,4 +1,7 @@
+#include "spxpch.h"
 #include "EditorApplication.h"
+
+#include <Core/EntryPoint.h>
 
 #include "EditorLayer.h"
 #include "Editors/SceneEditor.h"
@@ -6,33 +9,36 @@
 
 Sphynx::Application* CreateApplication()
 {
-	return new EditorApplication();
+	return new Sphynx::EditorApplication();
 }
 
-EditorApplication::EditorApplication()
+namespace Sphynx
 {
-}
+	EditorApplication::EditorApplication()
+	{
+	}
 
-void EditorApplication::Init()
-{
-	Sphynx::Application::Init();
-	
-	// create a editor layer
-	EditorLayer* editorLayer = EditorLayer::Create();
+	void EditorApplication::Init()
+	{
+		Application::Init();
 
-	// add gui widgets to the EditorLayer
-	editorLayer->AddWidget(new SceneEditor());
+		// create a editor layer
+		EditorLayer* editorLayer = EditorLayer::Create();
 
-	PushLayer(editorLayer);
+		// add gui widgets to the EditorLayer
+		editorLayer->AddWidget(new SceneEditor());
 
-}
+		PushLayer(editorLayer);
 
-void EditorApplication::Run()
-{
-	Sphynx::Application::Run();
-}
+	}
 
-void EditorApplication::Shutdown()
-{
-	Sphynx::Application::Shutdown();
+	void EditorApplication::Run()
+	{
+		Application::Run();
+	}
+
+	void EditorApplication::Shutdown()
+	{
+		Application::Shutdown();
+	}
 }

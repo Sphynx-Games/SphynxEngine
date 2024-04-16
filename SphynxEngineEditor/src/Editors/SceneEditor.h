@@ -2,14 +2,24 @@
 
 #include "Base/Editor.h"
 
-class SceneEditor : public Editor
-{
-public:
-	SceneEditor();
-	virtual ~SceneEditor();
 
-protected:
-	class ContentBrowserPanel* m_ContentBrowserPanel;
-	class ViewportPanel* m_ViewportPanel;
-	class DetailsPanel* m_DetailsPanel;
-};
+namespace Sphynx
+{
+	class SceneEditor : public Editor
+	{
+	public:
+		SceneEditor();
+		virtual ~SceneEditor();
+
+	protected:
+		virtual void RenderGUI() override;
+
+	private:
+		class ContentBrowserPanel* m_ContentBrowserPanel;
+		class ViewportPanel* m_ViewportPanel;
+		class DetailsPanel* m_DetailsPanel;
+
+		class Framebuffer* m_Framebuffer;
+		class Scene* m_ActiveScene;
+	};
+}

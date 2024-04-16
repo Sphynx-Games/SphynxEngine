@@ -132,12 +132,20 @@ namespace Sphynx
 	void SDLFramebuffer::Bind(uint32_t index)
 	{
 		SDL_SetRenderTarget(SDL_GetRendererFromTexture(m_ColorAttachments[index]), m_ColorAttachments[index]);
+
+		SDL_Rect rect;
+		rect.x = rect.y = 0;
+		rect.w = m_Specification.Width;
+		rect.h = m_Specification.Height;
+
+		SDL_SetRenderViewport(SDL_GetRendererFromTexture(m_ColorAttachments[index]), &rect);
 	}
 
 	void SDLFramebuffer::Unbind()
 	{
 		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
 		SDL_SetRenderTarget(renderer, nullptr);
+		SDL_SetRenderViewport(renderer, nullptr);
 	}
 
 	void SDLFramebuffer::Resize(uint32_t width, uint32_t height)

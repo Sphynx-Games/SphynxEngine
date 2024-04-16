@@ -84,10 +84,17 @@ namespace Sphynx
 			});
 		dispatcher.Dispatch<WindowResizedEvent>([&](WindowResizedEvent& e)
 			{
-				m_AspectRatio = (float)e.GetWidth(), (float)e.GetHeight();
-				m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom);
-
+				Resize((float)e.GetWidth(), (float)e.GetHeight());
 				return false;
 			});
+	}
+
+	void OrthographicCameraController::Resize(float width, float height)
+	{
+		float aspectRatio = width / height;
+		if (m_AspectRatio == aspectRatio) return;
+
+		m_AspectRatio = aspectRatio;
+		m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom);
 	}
 }

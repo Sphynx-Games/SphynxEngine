@@ -12,6 +12,16 @@ namespace Sphynx
 
 		T X;
 		T Y;
+
+		friend bool operator==(const Vector2T& lhs, const Vector2T& rhs)
+		{
+			return lhs.X == rhs.X && lhs.Y == rhs.Y;
+		}
+
+		friend bool operator!=(const Vector2T& lhs, const Vector2T& rhs)
+		{
+			return !(lhs == rhs);
+		}
 	};
 
 	template <typename T>
@@ -22,6 +32,16 @@ namespace Sphynx
 		T X;
 		T Y;
 		T Z;
+
+		friend bool operator==(const Vector3T& lhs, const Vector3T& rhs)
+		{
+			return lhs.X == rhs.X && lhs.Y == rhs.Y && lhs.Z == rhs.Z;
+		}
+
+		friend bool operator!=(const Vector3T& lhs, const Vector3T& rhs)
+		{
+			return !(lhs == rhs);
+		}
 	};
 
 	template <typename T>
@@ -33,6 +53,16 @@ namespace Sphynx
 		T Y;
 		T Z;
 		T W;
+
+		friend bool operator==(const Vector4T& lhs, const Vector4T& rhs)
+		{
+			return lhs.X == rhs.X && lhs.Y == rhs.Y && lhs.Z == rhs.Z && lhs.W == rhs.W;
+		}
+
+		friend bool operator!=(const Vector4T& lhs, const Vector4T& rhs)
+		{
+			return !(lhs == rhs);
+		}
 	};
 
 	typedef Vector2T<int32_t> Vector2i;
