@@ -23,4 +23,9 @@ namespace Sphynx
 		m_EntityID = entt::null;
 		m_Scene = nullptr;
 	}
+
+	bool Actor::IsValid() const
+	{
+		return m_EntityID != entt::null && m_Scene != nullptr;
+	}
 }

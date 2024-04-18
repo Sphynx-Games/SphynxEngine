@@ -20,8 +20,11 @@ namespace Sphynx
 		Actor CreateActor();
 		void DestroyActor(const Actor& actor);
 
+		const std::vector<Actor>& GetActors() const;
+
 	private:
 		entt::registry m_Registry;
+		std::vector<Actor> m_Actors;
 
 	private:
 		friend class Actor;

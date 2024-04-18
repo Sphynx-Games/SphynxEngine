@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include "Math/Color.h"
 
 
 namespace Sphynx
@@ -52,11 +53,11 @@ namespace Sphynx
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void Bind(uint32_t index = 0u) = 0;
+		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
-		virtual int ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) = 0;
+		virtual Color ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) = 0;
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, uint32_t value) = 0;
 

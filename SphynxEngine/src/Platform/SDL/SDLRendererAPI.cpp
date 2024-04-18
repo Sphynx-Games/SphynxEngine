@@ -61,7 +61,14 @@ namespace Sphynx
 
 	void SDLRendererAPI::Present()
 	{
-		SDL_RenderPresent(m_Renderer);
+		SDL_Texture* renderTarget = SDL_GetRenderTarget(m_Renderer);
+		if (renderTarget == nullptr)
+		{
+			SDL_RenderPresent(m_Renderer);
+			return;
+		}
+
+		SDL_RenderTexture(m_Renderer, renderTarget, nullptr, nullptr);
 	}
 
 	void SDLRendererAPI::DrawPoint(Vector2i point, Color color)

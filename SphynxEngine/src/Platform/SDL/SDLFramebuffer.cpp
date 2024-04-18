@@ -52,12 +52,18 @@ namespace Sphynx
 	}
 
 	SDLFramebuffer::SDLFramebuffer(const FramebufferSpecification& spec) : 
+		m_Renderer(nullptr),
 		m_Specification(spec),
 		m_ColorAttachmentSpecifications(),
 		m_DepthAttachmentSpecification(FramebufferTextureFormat::None),
 		m_ColorAttachments(),
 		m_DepthAttachment(nullptr)
 	{
+		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
+		SPX_CORE_ASSERT(renderer != nullptr);
+
+		m_Renderer = renderer;
+
 		for (auto spec : m_Specification.Attachments.Attachments)
 		{
 			if (!Utils::IsDepthFormat(spec.TextureFormat))
@@ -123,8 +129,10 @@ namespace Sphynx
 		}
 	}
 
-	void SDLFramebuffer::Bind(uint32_t index)
+	void SDLFramebuffer::Bind()
 	{
+		// SDL only supports a single attachment
+		const int32_t index = 0;
 		SDL_SetRenderTarget(SDL_GetRendererFromTexture(m_ColorAttachments[index]), m_ColorAttachments[index]);
 
 		SDL_Rect rect;
@@ -137,9 +145,8 @@ namespace Sphynx
 
 	void SDLFramebuffer::Unbind()
 	{
-		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
-		SDL_SetRenderTarget(renderer, nullptr);
-		SDL_SetRenderViewport(renderer, nullptr);
+		SDL_SetRenderTarget(m_Renderer, nullptr);
+		SDL_SetRenderViewport(m_Renderer, nullptr);
 	}
 
 	void SDLFramebuffer::Resize(uint32_t width, uint32_t height)
@@ -155,11 +162,23 @@ namespace Sphynx
 		Invalidate();
 	}
 
-	int SDLFramebuffer::ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y)
+	Sphynx::Color SDLFramebuffer::ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y)
 	{
 		SPX_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
-		// TODO
-		return 0;
+
+		SDL_Rect rect;
+		rect.x = x;
+		rect.y = y;
+		rect.w = rect.h = 1;
+
+		if (SDL_Surface* surface = SDL_RenderReadPixels(m_Renderer, &rect))
+		{
+			Color color;
+			SDL_GetRGBA(*(uint32_t*)surface->pixels, surface->format, &color.R, &color.G, &color.B, &color.A);
+			return color;
+		}
+
+		return Color::Black;
 	}
 
 	void SDLFramebuffer::ClearAttachment(uint32_t attachmentIndex, uint32_t value)
@@ -184,5 +203,20 @@ namespace Sphynx
 		// reset color
 		SDL_SetRenderDrawColor(renderer, prevColor.R, prevColor.G, prevColor.B, prevColor.A);
 
+	}
+
+	void* SDLFramebuffer::GetColorAttachment(uint32_t index) const
+	{
+		return m_ColorAttachments[index];
+	}
+
+	void* SDLFramebuffer::GetDepthAttachment() const
+	{
+		return m_DepthAttachment;
+	}
+
+	const FramebufferSpecification& SDLFramebuffer::GetSpecification() const
+	{
+		return m_Specification;
 	}
 }

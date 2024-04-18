@@ -15,6 +15,7 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
+		class SceneOutlinerPanel* m_SceneOutlinerPanel;
 		class ContentBrowserPanel* m_ContentBrowserPanel;
 		class ViewportPanel* m_ViewportPanel;
 		class DetailsPanel* m_DetailsPanel;

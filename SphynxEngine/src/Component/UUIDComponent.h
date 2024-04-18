@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Core/UUID.h"
 #include "Common.h"
-#include <cstdint>
 
 
 namespace Sphynx
@@ -12,11 +12,11 @@ namespace Sphynx
 		COMPONENT_COMMON_BODY(UUIDComponent);
 
 	public:
-		UUIDComponent(uint32_t UUID) :
+		UUIDComponent(const UUID& UUID) :
 			UUID(UUID) {}
 
 	public:
-		uint32_t UUID;
+		UUID UUID;
 
 	};
 }

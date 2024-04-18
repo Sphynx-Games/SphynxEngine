@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Base/Panel.h"
-#include <imgui.h>
+
+#include <Scene/Actor.h>
 
 
 namespace Sphynx
@@ -9,13 +10,17 @@ namespace Sphynx
 	class DetailsPanel : public Panel
 	{
 	public:
-		using Panel::Panel;
+		DetailsPanel() = default;
+		DetailsPanel(const Actor& context);
+
+	public:
+		void SetContext(const Actor& context);
 
 	protected:
-		virtual void RenderGUI() override
-		{
-			ImGui::Begin("Details");
-			ImGui::End();
-		}
+		virtual void RenderGUI() override;
+
+	private:
+		Actor m_Context;
+
 	};
 }

@@ -1,6 +1,7 @@
 #include "spxpch.h"
 #include "SceneEditor.h"
 
+#include "Panels/SceneOutlinerPanel.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/ViewportPanel.h"
 #include "Panels/DetailsPanel.h"
@@ -27,12 +28,14 @@ namespace Sphynx
 
 	SceneEditor::SceneEditor() :
 		Editor("SceneEditor"),
+		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
 		m_ContentBrowserPanel(new ContentBrowserPanel()),
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),
 		m_Framebuffer(nullptr),
 		m_ActiveScene(nullptr)
 	{
+		AddPanel(m_SceneOutlinerPanel);
 		AddPanel(m_ContentBrowserPanel);
 		AddPanel(m_ViewportPanel);
 		AddPanel(m_DetailsPanel);
@@ -48,19 +51,24 @@ namespace Sphynx
 			Spritesheet* sheet = new Spritesheet(enemyTexture, 4, 3);
 
 			Actor sprt = s_Scene.CreateActor();
+			sprt.AddComponent<NameComponent>("Sprite Actor");
 			sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 			sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
 
 			Actor quad = s_Scene.CreateActor();
+			quad.AddComponent<NameComponent>("Hollow Box");
 			quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 			quad.AddComponent<BoxRendererComponent>();
 
 			Actor line = s_Scene.CreateActor();
+			line.AddComponent<NameComponent>("White Line");
 			line.AddComponent<TransformComponent>(Transform{ { 0.5f, -0.5f, 0.0f }, { 1.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
 			line.AddComponent<LineRendererComponent>();
 
 			m_ActiveScene = &s_Scene;
 		}
+
+		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 	}
 
 	SceneEditor::~SceneEditor()
@@ -93,6 +101,8 @@ namespace Sphynx
 			Renderer2D::End();
 		}
 		m_Framebuffer->Unbind();
+
+		m_DetailsPanel->SetContext(m_SceneOutlinerPanel->GetSelectedActor());
 
 		Editor::RenderGUI();
 	}

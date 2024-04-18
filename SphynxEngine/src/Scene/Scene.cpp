@@ -7,7 +7,8 @@
 namespace Sphynx
 {
 	Scene::Scene() :
-		m_Registry()
+		m_Registry(),
+		m_Actors()
 	{
 	}
 
@@ -51,12 +52,19 @@ namespace Sphynx
 
 	Actor Scene::CreateActor()
 	{
-		return { m_Registry.create(), this };
+		Actor& actor = m_Actors.emplace_back(m_Registry.create(), this);
+		actor.AddComponent<UUIDComponent>(UUID::Generate());
+		return actor;
 	}
 
 	void Scene::DestroyActor(const Actor& actor)
 	{
 		m_Registry.destroy(actor);
+	}
+
+	const std::vector<Actor>& Scene::GetActors() const
+	{
+		return m_Actors;
 	}
 
 }

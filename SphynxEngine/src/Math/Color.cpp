@@ -8,6 +8,11 @@ namespace Sphynx
 	const Color Color::Green = Color(0, 255, 0, 255);
 	const Color Color::Blue = Color(0, 0, 255, 255);
 
+	Color::Color()
+	{
+		*this = Color::White;
+	}
+
 	Color::Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A) : R(R), G(G), B(B), A(A) {}
 
 	Color::Color(uint32_t hexColor) :

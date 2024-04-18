@@ -12,6 +12,7 @@ namespace Sphynx
 		uint8_t B;
 		uint8_t A;
 
+		Color();
 		explicit Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A);
 		explicit Color(uint32_t hexColor);
 
