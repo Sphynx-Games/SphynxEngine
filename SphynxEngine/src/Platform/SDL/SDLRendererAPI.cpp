@@ -221,15 +221,11 @@ namespace Sphynx
 		// multiply transformation matrices
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
-		// calculate rectangle corners with transformations applied
-		float halfWidth = (size.X / 2.0f);
-		float halfHeight = (size.Y / 2.0f);
-
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{  halfWidth * (1.0f - pivot.X)	,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{  halfWidth * (1.0f - pivot.X)	, -halfHeight * pivot.Y			, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X			,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X			, -size.Y * pivot.Y			, 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
@@ -257,8 +253,8 @@ namespace Sphynx
 		float height = std::max({ point1.Y, point2.Y, point3.Y }) - std::min({ point1.Y, point2.Y, point3.Y });
 
 		// NOTE: maybe should be relative to the triangle center
-		float xDiff = pivot.X * (width / 2.0f) - (1.0f - pivot.X) * width / 2.0f;
-		float yDiff = pivot.Y * (height / 2.0f) - (1.0f - pivot.Y) * height / 2.0f;
+		float xDiff = pivot.X * width - (1.0f - pivot.X) * width;
+		float yDiff = pivot.Y * height - (1.0f - pivot.Y) * height;
 
 		glm::vec4 P1 = mvpMatrix * glm::vec4{ point1.X - xDiff, point1.Y - yDiff, 0.0f, 1.0f };
 		glm::vec4 P2 = mvpMatrix * glm::vec4{ point2.X - xDiff, point2.Y - yDiff, 0.0f, 1.0f };
@@ -285,8 +281,8 @@ namespace Sphynx
 	{
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
-		float xDiff = pivot.X * radius - (1.0f - pivot.X) * radius;
-		float yDiff = pivot.Y * radius - (1.0f - pivot.Y) * radius;
+		float xDiff = pivot.X * radius * 2.0f - (1.0f - pivot.X) * radius * 2.0f;
+		float yDiff = pivot.Y * radius * 2.0f - (1.0f - pivot.Y) * radius * 2.0f;
 
 		glm::vec4 center = mvpMatrix * glm::vec4{ -xDiff, -yDiff, 0.0f, 1.0f };
 		SDL_COORDS_TO_SPHYNX_COORDS(center, m_Window);
@@ -328,15 +324,11 @@ namespace Sphynx
 		// multiply transformation matrices
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
-		// calculate rectangle corners with transformations applied
-		float halfWidth = (size.X / 2.0f);
-		float halfHeight = (size.Y / 2.0f);
-
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	, -halfHeight * pivot.Y			, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X			,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X			, -size.Y * pivot.Y			, 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
@@ -375,16 +367,13 @@ namespace Sphynx
 
 		// calculate rectangle corners with transformations applied
 		Vector2f pivot = sprite.GetPivot();
-
 		Vector2f size = { (float)sprite.GetSize().X / sprite.GetPixelsPerUnit(), (float)sprite.GetSize().Y / sprite.GetPixelsPerUnit() };
-		float halfWidth = (size.X / 2.0f);
-		float halfHeight = (size.Y / 2.0f);
 
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	,  halfHeight * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{ halfWidth * (1.0f - pivot.X)	, -halfHeight * pivot.Y			, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -halfWidth * pivot.X			, -halfHeight * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X			,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X			, -size.Y * pivot.Y			, 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;

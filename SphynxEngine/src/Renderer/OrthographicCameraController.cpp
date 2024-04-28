@@ -77,8 +77,7 @@ namespace Sphynx
 		dispatcher.Dispatch<MouseScrolledEvent>([&](MouseScrolledEvent& e)
 			{
 				m_Zoom -= e.GetY() * 0.25f;
-				m_Zoom = std::max(m_Zoom, 10e-8f);
-				m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom);
+				SetZoom(m_Zoom);
 
 				return false;
 			});
@@ -87,6 +86,12 @@ namespace Sphynx
 				Resize((float)e.GetWidth(), (float)e.GetHeight());
 				return false;
 			});
+	}
+
+	void OrthographicCameraController::SetZoom(float zoom)
+	{
+		m_Zoom = std::max(zoom, 10e-8f);
+		m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom);
 	}
 
 	void OrthographicCameraController::Resize(float width, float height)

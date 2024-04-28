@@ -19,7 +19,7 @@ namespace Sphynx
 		const OrthographicCamera& GetCamera() const { return m_Camera; }
 		
 		void SetAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; }
-		void SetZoom(float zoom) { m_Zoom = zoom; }
+		void SetZoom(float zoom);
 		void SetPosition(const Vector3f& position) { m_Position = position; }
 		void SetRotation(float rotation) { m_Rotation = rotation; }
 		void SetTranslationSpeed(float speed) { m_TranslationSpeed = speed; }

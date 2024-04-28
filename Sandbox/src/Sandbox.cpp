@@ -10,8 +10,10 @@ class SandboxLayer : public Sphynx::Layer
 {
 public:
 	SandboxLayer() :
-		m_CameraController(new Sphynx::OrthographicCameraController(1.0f, true))
-	{}
+		m_CameraController(new Sphynx::OrthographicCameraController(16.0f/9.0f, true))
+	{
+		m_CameraController->SetZoom(2.0f);
+	}
 
 	virtual void Attach() override;
 	virtual void Detach() override;
@@ -77,6 +79,18 @@ void SandboxLayer::Attach()
 	Actor line = m_SandboxScene.CreateActor();
 	line.AddComponent<TransformComponent>(Transform{ { 0.5f, -0.5f, 0.0f }, { 1.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
 	line.AddComponent<LineRendererComponent>();
+
+	Actor staticRigidBody = m_SandboxScene.CreateActor();
+	staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -1.5f, 0.0f }, { 5.0f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	staticRigidBody.AddComponent<RigidbodyComponent>();
+	staticRigidBody.AddComponent<BoxCollider2DComponent>();
+
+	Actor dynamicRigidbody = m_SandboxScene.CreateActor();
+	dynamicRigidbody.AddComponent<TransformComponent>(Transform{ { 0.5f, 3.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
+	dynamicRigidbody.AddComponent<RigidbodyComponent>(RigidbodyType::DYNAMIC);
+	dynamicRigidbody.AddComponent<BoxCollider2DComponent>();
+
+	m_SandboxScene.BeginPlay();
 }
 
 void SandboxLayer::Detach()
