@@ -22,7 +22,17 @@ namespace Sphynx
 	class Physics2DScene
 	{
 	public: 
-		Physics2DScene() : m_PhysicsWorld(new b2World({ 0.0f, -10.0f })) {}
+		Physics2DScene() : 
+			m_PhysicsWorld(new b2World({ 0.0f, -10.0f })),
+			m_Rigidbodies()
+		{}
+
+		~Physics2DScene()
+		{
+			delete m_PhysicsWorld;
+			m_PhysicsWorld = nullptr;
+			m_Rigidbodies.clear();
+		}
 
 	private:
 		b2World* m_PhysicsWorld;
@@ -175,8 +185,6 @@ namespace Sphynx
 
 	void Physics2D::DestroyPhysics2DScene(Physics2DScene* physiscsScene)
 	{
-		delete physiscsScene->m_PhysicsWorld;
-		physiscsScene->m_PhysicsWorld = nullptr;
 		delete physiscsScene;
 	}
 
@@ -287,9 +295,6 @@ namespace Sphynx
 
 				Renderer2D::DrawCircle(circleTransform, circleShape->m_radius * std::min(collider.Size.X, collider.Size.Y));
 			}
-
-			//Renderer2D::DrawQuad(transform.Transform, collider.Size, collider.Pivot, Color::Green);
-
 		}
 	}
 }
