@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "OrthographicCamera.h"
 #include "Events/Event.h"
 #include "Events/InputEvent.h"
@@ -8,7 +9,7 @@
 
 namespace Sphynx
 {
-	class OrthographicCameraController
+	class SPHYNX_API OrthographicCameraController
 	{
 	public:
 		OrthographicCameraController(float aspectRatio, bool allowRotation = false);

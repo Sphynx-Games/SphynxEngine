@@ -8,6 +8,7 @@
 #include "Renderer/Texture.h"
 #include "Renderer/Sprite.h"
 #include "Math/Transform.h"
+#include "Math/Matrix.h"
 #include "SDLUtils.h"
 #include <SDL3/SDL.h>
 #include <glm/ext/matrix_transform.hpp>

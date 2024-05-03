@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "RendererTypes.h"
 #include "Math/Vector.h"
 
@@ -11,7 +12,7 @@ namespace Sphynx
 	class Texture;
 	class Sprite;
 
-	class Renderer2D
+	class SPHYNX_API Renderer2D
 	{
 	public:
 		static void Init();

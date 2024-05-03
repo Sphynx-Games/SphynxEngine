@@ -7,5 +7,4 @@
 #include "SpriteRendererComponent.h"
 #include "BoxRendererComponent.h"
 #include "LineRendererComponent.h"
-#include "RigidbodyComponent.h"
-#include "BoxCollider2DComponent.h"
+#include "Physics2DComponents.h"

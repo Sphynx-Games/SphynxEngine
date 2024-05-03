@@ -11,7 +11,7 @@ namespace Sphynx
 	Spritesheet::Spritesheet(Texture* texture, int rows, int columns) : m_Texture(texture)
 	{
 		m_Sprites.reserve(rows * columns);
-		Vector2i sizeSprite = { m_Texture->GetWidth() / columns, m_Texture->GetHeight() / rows };
+		Vector2i sizeSprite = Vector2i{ (int32_t)m_Texture->GetWidth() / columns, (int32_t)m_Texture->GetHeight() / rows };
 
 		for (int i = 0; i < rows; ++i)
 		{

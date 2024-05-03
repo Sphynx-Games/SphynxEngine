@@ -4,8 +4,13 @@
 
 namespace Sphynx
 {
-	struct Transform
+	struct SPHYNX_API Transform
 	{
+		Transform()
+			: Position({ 0.0f, 0.0f, 0.0f }), Scale({ 1.0f, 1.0f, 1.0f }), Rotation({ 0.0f, 0.0f, 0.0f })
+		{
+		}
+
 		Transform(Vector3f position, Vector3f scale, Vector3f rotation) 
 			: Position(position), Scale(scale), Rotation(rotation)
 		{

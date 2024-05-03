@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "Renderer/RendererAPI.h"
+
 #include <cstdint>
 
 namespace Sphynx 
 {
-	class Renderer
+	class SPHYNX_API Renderer
 	{
 	public:
 		static void Init();

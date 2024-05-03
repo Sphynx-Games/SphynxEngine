@@ -1,13 +1,15 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "Math/Vector.h"
+
 #include <cstdint>
 #include <string>
 #include <memory>
 
 namespace Sphynx
 {
-	class Texture
+	class SPHYNX_API Texture
 	{
 	public:
 		virtual ~Texture() = default;

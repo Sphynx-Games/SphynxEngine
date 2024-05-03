@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "Math/Vector.h"
+
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -11,7 +12,7 @@ namespace Sphynx
 {
 	class Texture; 
 
-	class Sprite
+	class SPHYNX_API Sprite
 	{
 	public:
 		Sprite(Texture* texture, Vector2i position, Vector2i size, Vector2f pivot = { 0.5f, 0.5f }, uint32_t pixelsPerUnit = 100);

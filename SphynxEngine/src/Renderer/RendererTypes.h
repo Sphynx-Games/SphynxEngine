@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "Math/Color.h"
+
 #include <glm/glm.hpp>
 
 namespace Sphynx
 {
-	enum DrawMode
+	enum SPHYNX_API DrawMode
 	{
 		WIREFRAME,
 		FILLED

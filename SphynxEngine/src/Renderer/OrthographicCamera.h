@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "Math/Vector.h"
+
 #include <glm/glm.hpp>
 
 namespace Sphynx
 {
-	class OrthographicCamera
+	class SPHYNX_API OrthographicCamera
 	{
 	public:
 		OrthographicCamera(float left = -1.0f, float right = 1.0f, float bottom = -1.0f, float top = 1.0f);

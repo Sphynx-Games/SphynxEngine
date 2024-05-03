@@ -11,7 +11,7 @@ class b2Body;
 namespace Sphynx
 {
 	class Actor;
-	class RigidbodyComponent;
+	class Physics2DScene;
 	
 	class SPHYNX_API Scene
 	{
@@ -21,6 +21,7 @@ namespace Sphynx
 
 	public:
 		void BeginPlay();
+		void EndPlay();
 		void Update(float deltaTime);
 
 		Actor CreateActor();
@@ -29,19 +30,16 @@ namespace Sphynx
 		const std::vector<Actor>& GetActors() const;
 
 	private:
-		void PostPhysicsUpdate(float timeStep);
-
-	private:
 		bool m_HasBegunPlay;
-		entt::registry m_Registry;
-		
-		b2World* m_PhysicWorld;
-		std::unordered_map<RigidbodyComponent*, b2Body*> m_Rigidbodies;
 
+		entt::registry m_Registry;
 		std::vector<Actor> m_Actors;
+
+		Physics2DScene* m_PhysicsScene;
 
 	private:
 		friend class Actor;
+		friend class Physics2D;
 
 	};
 }
