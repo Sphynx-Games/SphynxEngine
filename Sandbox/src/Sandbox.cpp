@@ -71,35 +71,35 @@ void SandboxLayer::Attach()
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
 
-	Actor quad = m_SandboxScene.CreateActor();
+	/*Actor quad = m_SandboxScene.CreateActor();
 	quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	quad.AddComponent<BoxRendererComponent>();
+	quad.AddComponent<BoxRendererComponent>();*/
 
 	Actor line = m_SandboxScene.CreateActor();
 	line.AddComponent<TransformComponent>(Transform{ { 0.5f, -1.5f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	line.AddComponent<LineRendererComponent>(Vector2f{ 0.0f, 0.0f }, Vector2f{ 1.0f, 0.0f }, 1.0f, Color::Green); // TODO: fix line width
 
 	Actor staticRigidBody = m_SandboxScene.CreateActor();
-	staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -1.5f, 0.0f }, { 5.0f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -2.0f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	staticRigidBody.AddComponent<RigidbodyComponent>();
-	staticRigidBody.AddComponent<BoxCollider2DComponent>();
+	staticRigidBody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 1.0f });
 
-	/*Actor dynamicRigidbody = m_SandboxScene.CreateActor();
+	Actor dynamicRigidbody = m_SandboxScene.CreateActor();
 	dynamicRigidbody.AddComponent<TransformComponent>(Transform{ { 0.5f, 3.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
 	dynamicRigidbody.AddComponent<RigidbodyComponent>(RigidbodyType::DYNAMIC);
-	dynamicRigidbody.AddComponent<BoxCollider2DComponent>();
+	dynamicRigidbody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 3.0f });
 
 	Actor dynamicSphereRigidbody = m_SandboxScene.CreateActor();
-	dynamicSphereRigidbody.AddComponent<TransformComponent>(Transform{ { 0.5f, 3.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
+	dynamicSphereRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
 	dynamicSphereRigidbody.AddComponent<RigidbodyComponent>(RigidbodyType::DYNAMIC);
-	dynamicSphereRigidbody.AddComponent<CircleCollider2DComponent>();*/
+	dynamicSphereRigidbody.AddComponent<CircleCollider2DComponent>(1.0f, Vector2f{ 1.0f, 1.0f });
 
 	Actor capsuleRigidbody = m_SandboxScene.CreateActor();
-	capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 1.0f, 1.0f, 0.0f }, { 1.5f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 1.0f, 0.0f }, { 2.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	//capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 1.0f, 0.0f }, { 2.0f, -0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f } }); // TODO: take into account negative sizes
-	//capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 1.0f, 0.0f }, { 2.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, -10.0f } });
+	//capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 1.0f, 0.0f }, { 2.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, -10.0f } }); // TODO: width and heigh same size => capsule as a circle
 	capsuleRigidbody.AddComponent<RigidbodyComponent>(RigidbodyType::DYNAMIC);
-	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>();
+	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.0f, 0.0f });
 
 	m_SandboxScene.BeginPlay();
 }

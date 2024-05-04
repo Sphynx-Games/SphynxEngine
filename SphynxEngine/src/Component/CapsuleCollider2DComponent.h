@@ -13,13 +13,13 @@ namespace Sphynx
 		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(CapsuleCollider2DComponent);
 
 	public:
-		CapsuleCollider2DComponent(Vector2f size = { 1.0f, 2.0f }, Vector2f pivot = { 0.5f, 0.5f }) :
+		CapsuleCollider2DComponent(Vector2f size = { 1.0f, 2.0f }, Vector2f offset = { 0.0f, 0.0f }) :
 			Size(size),
-			Pivot(pivot)
+			Offset(offset)
 		{}
 
 	public:
 		Vector2f Size;
-		Vector2f Pivot;
+		Vector2f Offset;
 	};
 }

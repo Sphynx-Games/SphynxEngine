@@ -13,13 +13,13 @@ namespace Sphynx
 		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(CircleCollider2DComponent);
 
 	public:
-		CircleCollider2DComponent(float radius = 1.0f, Vector2f pivot = { 0.5f, 0.5f }) :
+		CircleCollider2DComponent(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }) :
 			Radius(radius),
-			Pivot(pivot)
+			Offset(offset)
 		{}
 
 	public:
 		float Radius;
-		Vector2f Pivot;
+		Vector2f Offset;
 	};
 }

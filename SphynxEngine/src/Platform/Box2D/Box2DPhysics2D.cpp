@@ -106,9 +106,9 @@ namespace Sphynx
 			b2PolygonShape shape;
 			shape.SetAsBox(
 				(transform.Transform.Scale.X * collider.Size.X) / 2.0f,
-				(transform.Transform.Scale.Y * collider.Size.Y) / 2.0f//,
-				//{ 0.0f, 0.0f }, // { collider.Pivot.X, collider.Pivot.Y }, // TODO: take pivot into account
-				//0.0f
+				(transform.Transform.Scale.Y * collider.Size.Y) / 2.0f,
+				{ collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y },
+				0.0f
 			);
 
 			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
@@ -129,7 +129,7 @@ namespace Sphynx
 
 			// body, shape of a circle and fixture
 			b2CircleShape shape;
-			shape.m_p = { 0.0f, 0.0f }; // TODO: take pivot into account
+			shape.m_p = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
 			shape.m_radius = collider.Radius * std::max(transform.Transform.Scale.X, transform.Transform.Scale.Y);
 
 			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
@@ -156,20 +156,25 @@ namespace Sphynx
 				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
 			};
 
-			b2CircleShape circleA; // right, up
-			circleA.m_p = (capsuleSize.X > capsuleSize.Y) ? b2Vec2{ boxSize.X / 2.0f, 0.0f } : b2Vec2{ 0.0f, boxSize.Y / 2.0f };
-			circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-			b2CircleShape circleB; // left, down
-			circleB.m_p = (capsuleSize.X > capsuleSize.Y) ? b2Vec2{ -boxSize.X / 2.0f, 0.0f } : b2Vec2{ 0.0f, -boxSize.Y / 2.0f };
-			circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-
+			Vector2f scaledOffset = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
 			b2PolygonShape box;
 			box.SetAsBox(
 				boxSize.X / 2.0f,
-				boxSize.Y / 2.0f//,
-				//{ 0.0f, 0.0f }, // { collider.Pivot.X, collider.Pivot.Y },
-				//0.0f
+				boxSize.Y / 2.0f,
+				{ scaledOffset.X, scaledOffset.Y },
+				0.0f
 			);
+
+			b2CircleShape circleA; // right, up
+			circleA.m_p = (capsuleSize.X > capsuleSize.Y) 
+				? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
+				: b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
+			circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
+			b2CircleShape circleB; // left, down
+			circleB.m_p = (capsuleSize.X > capsuleSize.Y) 
+				? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
+			    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
+			circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
 
 			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
 			body->CreateFixture(&box, 1.0f);
@@ -224,16 +229,57 @@ namespace Sphynx
 
 
 		// "physics debug"
+		auto GetTransformWithOffset = [](const Transform& local, const Transform& transform)
+			{
+				glm::mat4 localMatrix = GetModelMatrixFromTransform(local);
+				glm::mat4 worldMatrix = GetModelMatrixFromTransform(transform);
+				glm::mat4 entityWorldMatrix = worldMatrix * localMatrix;
+
+				glm::vec3 scale;
+				glm::quat orientation;
+				glm::vec3 pos;
+				glm::vec3 skew;
+				glm::vec4 perspective;
+				glm::decompose(entityWorldMatrix, scale, orientation, pos, skew, perspective);
+
+				glm::vec3 rotation = glm::eulerAngles(orientation);
+
+				Transform entityTransform;
+				entityTransform.Position = { pos.x, pos.y, pos.z };
+				entityTransform.Rotation = { glm::degrees(rotation.x), glm::degrees(rotation.y), glm::degrees(rotation.z) };
+				entityTransform.Scale = { scale.x, scale.y, scale.z };
+				return entityTransform;
+			};
+
 		for (entt::entity entity : boxGroup)
 		{
 			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
-			Renderer2D::DrawQuad(transform.Transform, collider.Size, collider.Pivot);
+
+			Transform local = {
+					{ collider.Offset.X, collider.Offset.Y, 0.0f },
+					{ collider.Size.X, collider.Size.Y, 1.0f },
+					{ 0.0f, 0.0f, 0.0f }
+			};
+			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+
+			Renderer2D::DrawQuad(entityTransform);
 		}
 
 		for (entt::entity entity : circleGroup)
 		{
 			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
-			Renderer2D::DrawCircle(transform.Transform, collider.Radius, 32u, collider.Pivot);
+			
+			Transform local = {
+					{ collider.Offset.X, collider.Offset.Y, 0.0f },
+					{ collider.Radius * 2.0f, collider.Radius * 2.0f, 1.0f },
+					{ 0.0f, 0.0f, 0.0f }
+			};
+			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+			float maxScale = std::max(entityTransform.Scale.X, entityTransform.Scale.Y);
+			entityTransform.Scale.X = maxScale;
+			entityTransform.Scale.Y = maxScale;
+
+			Renderer2D::DrawCircle(entityTransform);
 		}
 
 		for (entt::entity entity : capsuleGroup)
@@ -259,6 +305,7 @@ namespace Sphynx
 			}
 
 			// draw each fixture
+			// -- BOX
 			Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
 			Vector2f boxSize =
 			{
@@ -266,8 +313,17 @@ namespace Sphynx
 				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
 			};
 			boxSize /= Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
-			Renderer2D::DrawQuad(transform.Transform, boxSize); // TODO: take into account Pivot or Offset
 
+			Transform local = {
+					{ collider.Offset.X, collider.Offset.Y, 0.0f },
+					{ boxSize.X, boxSize.Y, 1.0f },
+					{ 0.0f, 0.0f, 0.0f }
+			};
+			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+
+			Renderer2D::DrawQuad(entityTransform);
+
+			// -- CIRCLES
 			for (b2CircleShape* circleShape : circleShapes)
 			{
 				Transform local = {
@@ -275,25 +331,9 @@ namespace Sphynx
 					Vector3f(1.0f) / transform.Transform.Scale,
 					{ 0.0f, 0.0f, 0.0f }
 				};
-				glm::mat4 localMatrix = GetModelMatrixFromTransform(local);
-				glm::mat4 worldMatrix = GetModelMatrixFromTransform(transform.Transform);
-				glm::mat4 circleWorldMatrix = worldMatrix * localMatrix;
+				Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
 
-				glm::vec3 scale;
-				glm::quat orientation;
-				glm::vec3 trans;
-				glm::vec3 skew;
-				glm::vec4 perspective;
-				glm::decompose(circleWorldMatrix, scale, orientation, trans, skew, perspective);
-
-				glm::vec3 rotation = glm::eulerAngles(orientation);
-
-				Transform circleTransform;
-				circleTransform.Position = { trans.x, trans.y, trans.z };
-				circleTransform.Rotation = { glm::degrees(rotation.x), glm::degrees(rotation.y), glm::degrees(rotation.z) };
-				circleTransform.Scale = { scale.x, scale.y, scale.z };
-
-				Renderer2D::DrawCircle(circleTransform, circleShape->m_radius * std::min(collider.Size.X, collider.Size.Y));
+				Renderer2D::DrawCircle(entityTransform, circleShape->m_radius * std::min(collider.Size.X, collider.Size.Y));
 			}
 		}
 	}
