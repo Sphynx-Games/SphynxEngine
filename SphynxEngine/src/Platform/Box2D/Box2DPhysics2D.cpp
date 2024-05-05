@@ -105,8 +105,8 @@ namespace Sphynx
 			// body, shape of a box and fixture
 			b2PolygonShape shape;
 			shape.SetAsBox(
-				(transform.Transform.Scale.X * collider.Size.X) / 2.0f,
-				(transform.Transform.Scale.Y * collider.Size.Y) / 2.0f,
+				(collider.Size.X * transform.Transform.Scale.X) / 2.0f,
+				(collider.Size.Y * transform.Transform.Scale.Y) / 2.0f,
 				{ collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y },
 				0.0f
 			);
@@ -150,36 +150,51 @@ namespace Sphynx
 
 			// body, shape and fixtures
 			Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
-			Vector2f boxSize =
-			{
-				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
-				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
-			};
-
 			Vector2f scaledOffset = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
-			b2PolygonShape box;
-			box.SetAsBox(
-				boxSize.X / 2.0f,
-				boxSize.Y / 2.0f,
-				{ scaledOffset.X, scaledOffset.Y },
-				0.0f
-			);
-
-			b2CircleShape circleA; // right, up
-			circleA.m_p = (capsuleSize.X > capsuleSize.Y) 
-				? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				: b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
-			circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-			b2CircleShape circleB; // left, down
-			circleB.m_p = (capsuleSize.X > capsuleSize.Y) 
-				? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-			    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
-			circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
 
 			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
-			body->CreateFixture(&box, 1.0f);
-			body->CreateFixture(&circleA, 1.0f);
-			body->CreateFixture(&circleB, 1.0f);
+
+			if (capsuleSize.X == capsuleSize.Y)
+			{
+				// 1 CIRCLE
+				b2CircleShape circle;
+				circle.m_p = b2Vec2{ scaledOffset.X, scaledOffset.Y };
+				circle.m_radius = capsuleSize.X / 2.0f;
+
+				body->CreateFixture(&circle, 1.0f);
+			}
+			else 
+			{
+				// 1 BOX + 2 CIRCLES
+				Vector2f boxSize =
+				{
+					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
+					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
+				};
+
+				b2PolygonShape box;
+				box.SetAsBox(
+					boxSize.X / 2.0f,
+					boxSize.Y / 2.0f,
+					{ scaledOffset.X, scaledOffset.Y },
+					0.0f
+				);
+
+				b2CircleShape circleA; // right, up
+				circleA.m_p = (capsuleSize.X > capsuleSize.Y)
+					? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
+				    : b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
+				circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
+				b2CircleShape circleB; // left, down
+				circleB.m_p = (capsuleSize.X > capsuleSize.Y)
+					? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
+				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
+				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
+
+				body->CreateFixture(&box, 1.0f);
+				body->CreateFixture(&circleA, 1.0f);
+				body->CreateFixture(&circleB, 1.0f);
+			}
 
 			// add rigidbody and body to the map
 			physiscsScene->m_Rigidbodies.emplace(&rigidbody, body);
@@ -286,7 +301,7 @@ namespace Sphynx
 		{
 			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
 
-			b2PolygonShape* polygonShape;
+			b2PolygonShape* polygonShape = nullptr;
 			std::vector<b2CircleShape*> circleShapes;
 			circleShapes.reserve(2);
 
@@ -306,22 +321,26 @@ namespace Sphynx
 
 			// draw each fixture
 			// -- BOX
-			Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
-			Vector2f boxSize =
+			if (polygonShape != nullptr)
 			{
-				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
-				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
-			};
-			boxSize /= Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
+				Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
+				Vector2f scaledOffset = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
+				Vector2f boxSize =
+				{
+					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
+					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
+				};
+				boxSize /= Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
 
-			Transform local = {
-					{ collider.Offset.X, collider.Offset.Y, 0.0f },
-					{ boxSize.X, boxSize.Y, 1.0f },
-					{ 0.0f, 0.0f, 0.0f }
-			};
-			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+				Transform local = {
+						{ collider.Offset.X, collider.Offset.Y, 0.0f },
+						{ boxSize.X, boxSize.Y, 1.0f },
+						{ 0.0f, 0.0f, 0.0f }
+				};
+				Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
 
-			Renderer2D::DrawQuad(entityTransform);
+				Renderer2D::DrawQuad(entityTransform);
+			}
 
 			// -- CIRCLES
 			for (b2CircleShape* circleShape : circleShapes)
