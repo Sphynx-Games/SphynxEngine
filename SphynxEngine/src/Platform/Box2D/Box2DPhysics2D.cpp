@@ -1,5 +1,6 @@
 #include "Physics/Physics2D.h"
-#include "Component/Physics2DComponents.h"
+#include "Box2DContactListener.h"
+#include "Component/Physics/Physics2DComponents.h"
 #include "Component/TransformComponent.h"
 #include "Scene/Scene.h"
 #include "Renderer/Renderer2D.h"
@@ -23,20 +24,40 @@ namespace Sphynx
 	{
 	public: 
 		Physics2DScene() : 
-			m_PhysicsWorld(new b2World({ 0.0f, -10.0f })),
-			m_Rigidbodies()
-		{}
+			m_PhysicsWorld(b2World({ 0.0f, -10.0f })),
+			m_contactListener()
+		{
+			m_PhysicsWorld.SetContactListener(&m_contactListener);
+		}
 
 		~Physics2DScene()
 		{
-			delete m_PhysicsWorld;
-			m_PhysicsWorld = nullptr;
-			m_Rigidbodies.clear();
 		}
 
 	private:
-		b2World* m_PhysicsWorld;
-		std::unordered_map<RigidbodyComponent*, b2Body*> m_Rigidbodies;
+		b2World m_PhysicsWorld;
+		Box2DContactListener m_contactListener;
+
+		friend class Physics2D;
+	};
+
+	struct RigidbodyData
+	{
+		UUID ActorUUID;
+	};
+
+	class Rigidbody2D
+	{
+	public:
+		Rigidbody2D() : m_Body() {}
+		Rigidbody2D(b2Body* body) : m_Body(body) {}
+
+		~Rigidbody2D()
+		{
+		}
+
+	private:
+		b2Body* m_Body;
 
 		friend class Physics2D;
 	};
@@ -73,14 +94,14 @@ namespace Sphynx
 		}
 	}
 
-	b2BodyDef CreateBodyDef(const RigidbodyComponent& rigidbody, const TransformComponent& transform)
+	RigidbodyType Box2D_To_RigidbodyType(b2BodyType type)
 	{
-		// body definition
-		b2BodyDef bodyDef;
-		bodyDef.type = RigidbodyType_To_Box2D(rigidbody.RigidbodyType);
-		bodyDef.position = { transform.Transform.Position.X, transform.Transform.Position.Y };
-		bodyDef.angle = glm::radians(transform.Transform.Rotation.Z);
-		return bodyDef;
+		switch (type)
+		{
+		case b2BodyType::b2_staticBody:     return RigidbodyType::STATIC;
+		case b2BodyType::b2_dynamicBody:    return RigidbodyType::DYNAMIC;
+		case b2BodyType::b2_kinematicBody:  return RigidbodyType::KINEMATIC;
+		}
 	}
 
 
@@ -93,16 +114,32 @@ namespace Sphynx
 	{
 		Physics2DScene* physiscsScene = new Physics2DScene();
 
+		/*auto CreateBody = [](const RigidbodyComponent& rigidbody, const TransformComponent& transform, Physics2DScene* physiscsScene)
+			{
+				b2BodyDef bodyDef;
+				bodyDef.type = RigidbodyType_To_Box2D(rigidbody.GetRigidbodyType());
+				bodyDef.position = { transform.Transform.Position.X, transform.Transform.Position.Y };
+				bodyDef.angle = glm::radians(transform.Transform.Rotation.Z);
+
+				return physiscsScene->m_PhysicsWorld.CreateBody(&bodyDef);
+			};
+
+		auto AddRigidbody = [](RigidbodyComponent& rigidbody, b2Body* body, Physics2DScene* physiscsScene)
+			{
+				if (!rigidbody.GetSimulationEnabled())
+				{
+					body->SetEnabled(false);
+				}
+				physiscsScene->m_Rigidbodies.emplace(&rigidbody, body);
+			};
+
+
 		// BOX COLLIDERS
 		auto boxGroup = scene.m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
 		for (entt::entity entity : boxGroup)
 		{
 			auto [collider, rigidbody, transform] = boxGroup.get<BoxCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
 
-			// body definition
-			b2BodyDef bodyDef = CreateBodyDef(rigidbody, transform);
-
-			// body, shape of a box and fixture
 			b2PolygonShape shape;
 			shape.SetAsBox(
 				(collider.Size.X * transform.Transform.Scale.X) / 2.0f,
@@ -111,11 +148,10 @@ namespace Sphynx
 				0.0f
 			);
 
-			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
+			b2Body* body = CreateBody(rigidbody, transform, physiscsScene);
 			body->CreateFixture(&shape, 1.0f);
 
-			// add rigidbody and body to the map
-			physiscsScene->m_Rigidbodies.emplace(&rigidbody, body);
+			AddRigidbody(rigidbody, body, physiscsScene);
 		}
 
 		// CIRCLE COLLIDERS
@@ -124,19 +160,14 @@ namespace Sphynx
 		{
 			auto [collider, rigidbody, transform] = circleGroup.get<CircleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
 
-			// body definition
-			b2BodyDef bodyDef = CreateBodyDef(rigidbody, transform);
-
-			// body, shape of a circle and fixture
 			b2CircleShape shape;
 			shape.m_p = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
 			shape.m_radius = collider.Radius * std::max(transform.Transform.Scale.X, transform.Transform.Scale.Y);
 
-			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
+			b2Body* body = CreateBody(rigidbody, transform, physiscsScene);
 			body->CreateFixture(&shape, 1.0f);
 
-			// add rigidbody and body to the map
-			physiscsScene->m_Rigidbodies.emplace(&rigidbody, body);
+			AddRigidbody(rigidbody, body, physiscsScene);
 		}
 
 		// CAPSULE COLLIDERS
@@ -145,14 +176,10 @@ namespace Sphynx
 		{
 			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
 
-			// body definition
-			b2BodyDef bodyDef = CreateBodyDef(rigidbody, transform);
-
-			// body, shape and fixtures
 			Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
 			Vector2f scaledOffset = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
 
-			b2Body* body = physiscsScene->m_PhysicsWorld->CreateBody(&bodyDef);
+			b2Body* body = CreateBody(rigidbody, transform, physiscsScene);
 
 			if (capsuleSize.X == capsuleSize.Y)
 			{
@@ -196,9 +223,8 @@ namespace Sphynx
 				body->CreateFixture(&circleB, 1.0f);
 			}
 
-			// add rigidbody and body to the map
-			physiscsScene->m_Rigidbodies.emplace(&rigidbody, body);
-		}
+			AddRigidbody(rigidbody, body, physiscsScene);
+		}*/
 
 		return physiscsScene;
 	}
@@ -208,39 +234,174 @@ namespace Sphynx
 		delete physiscsScene;
 	}
 
+	Rigidbody2D* Physics2D::CreateRigidbody(Physics2DScene* physicsScene, Collider2D* collider, RigidbodyDef& rigidbodyDef, void* rigidbodyData)
+	{
+		if (physicsScene == nullptr) return nullptr;
+
+		b2BodyDef bodyDef;
+		bodyDef.enabled = rigidbodyDef.Enabled;
+		bodyDef.type = RigidbodyType_To_Box2D(rigidbodyDef.Type);
+		bodyDef.linearVelocity = { rigidbodyDef.LinearVelocity.X, rigidbodyDef.LinearVelocity.Y };
+		bodyDef.angularVelocity = rigidbodyDef.AngularVelocity;
+		bodyDef.linearDamping = rigidbodyDef.LinearDamping;
+		bodyDef.angularDamping = rigidbodyDef.AngularDamping;
+		bodyDef.gravityScale = rigidbodyDef.GravityScale;
+		bodyDef.position = { rigidbodyDef.Transform.Position.X, rigidbodyDef.Transform.Position.Y };
+		bodyDef.angle = glm::radians(rigidbodyDef.Transform.Rotation.Z);
+		bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(rigidbodyData);
+
+		b2Body* body = physicsScene->m_PhysicsWorld.CreateBody(&bodyDef);
+
+		if (collider == nullptr)
+		{
+			Rigidbody2D* rigidbody = new Rigidbody2D(body);
+			return rigidbody;
+		}
+
+		// BOX COLLIDERS
+		if(BoxCollider2D* collider2D = dynamic_cast<BoxCollider2D*>(collider))
+		{
+			b2PolygonShape shape;
+			shape.SetAsBox(
+				(collider2D->Size.X * rigidbodyDef.Transform.Scale.X) / 2.0f,
+				(collider2D->Size.Y * rigidbodyDef.Transform.Scale.Y) / 2.0f,
+				{ collider2D->Offset.X * rigidbodyDef.Transform.Scale.X, collider2D->Offset.Y * rigidbodyDef.Transform.Scale.Y },
+				0.0f
+			);
+
+			body->CreateFixture(&shape, 1.0f);
+		}
+
+		// CIRCLE COLLIDERS
+		else if (CircleCollider2D* collider2D = dynamic_cast<CircleCollider2D*>(collider))
+		{
+			b2CircleShape shape;
+			shape.m_p = { collider2D->Offset.X * rigidbodyDef.Transform.Scale.X, collider2D->Offset.Y * rigidbodyDef.Transform.Scale.Y };
+			shape.m_radius = collider2D->Radius * std::max(rigidbodyDef.Transform.Scale.X, rigidbodyDef.Transform.Scale.Y);
+
+			body->CreateFixture(&shape, 1.0f);
+		}
+
+		// CAPSULE COLLIDERS
+		else if (CapsuleCollider2D* collider2D = dynamic_cast<CapsuleCollider2D*>(collider))
+		{
+			Vector2f capsuleSize = collider2D->Size * Vector2f{ rigidbodyDef.Transform.Scale.X, rigidbodyDef.Transform.Scale.Y };
+			Vector2f scaledOffset = { collider2D->Offset.X * rigidbodyDef.Transform.Scale.X, collider2D->Offset.Y * rigidbodyDef.Transform.Scale.Y };
+
+			if (capsuleSize.X == capsuleSize.Y)
+			{
+				// 1 CIRCLE
+				b2CircleShape circle;
+				circle.m_p = b2Vec2{ scaledOffset.X, scaledOffset.Y };
+				circle.m_radius = capsuleSize.X / 2.0f;
+
+				body->CreateFixture(&circle, 1.0f);
+			}
+			else
+			{
+				// 1 BOX + 2 CIRCLES
+				Vector2f boxSize =
+				{
+					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
+					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
+				};
+
+				b2PolygonShape box;
+				box.SetAsBox(
+					boxSize.X / 2.0f,
+					boxSize.Y / 2.0f,
+					{ scaledOffset.X, scaledOffset.Y },
+					0.0f
+				);
+
+				b2CircleShape circleA; // right, up
+				circleA.m_p = (capsuleSize.X > capsuleSize.Y)
+					? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
+				    : b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
+				circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
+				b2CircleShape circleB; // left, down
+				circleB.m_p = (capsuleSize.X > capsuleSize.Y)
+					? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
+				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
+				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
+
+				body->CreateFixture(&box, 1.0f);
+				body->CreateFixture(&circleA, 1.0f);
+				body->CreateFixture(&circleB, 1.0f);
+			}
+		}
+
+		Rigidbody2D* rigidbody = new Rigidbody2D(body);
+
+		if (m_PhysicScenes.find(physicsScene) == m_PhysicScenes.end())
+		{
+			m_PhysicScenes[physicsScene] = std::vector<Rigidbody2D*>();
+		}
+		std::vector<Rigidbody2D*>& values = m_PhysicScenes[physicsScene]; 
+		values.push_back(rigidbody);
+		return rigidbody;
+	}
+
+	void Physics2D::DestroyRigidbody(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		for (auto& it : m_PhysicScenes) 
+		{
+			for (unsigned i = 0; i < it.second.size(); ++i)
+			{
+				if (it.second[i] == rigidbody)
+				{
+					it.second.erase(it.second.begin() + i);
+					break;
+				}
+			}
+		}
+		b2Body* b2body = rigidbody->m_Body;
+		b2body->GetWorld()->DestroyBody(b2body);
+		rigidbody->m_Body = nullptr;
+		delete rigidbody;
+	}
+
 	void Physics2D::Step(Physics2DScene* physicsScene, float timeStep)
 	{
-		physicsScene->m_PhysicsWorld->Step(timeStep, 8, 3);
+		physicsScene->m_PhysicsWorld.Step(timeStep, 8, 3);
 	}
 
 	void Physics2D::Step(Scene& scene, float timeStep)
 	{
+		if (m_PhysicScenes.find(scene.m_PhysicsScene) == m_PhysicScenes.end())
+		{
+			SPX_CORE_LOG_WARNING("There are no Rigidbodies for the current PhysicsScene!!");
+			return;
+		}
+
 		Step(scene.m_PhysicsScene, timeStep);
 		PostStep(scene, timeStep);
 	}
 
 	void Physics2D::PostStep(Scene& scene, float timeStep)
 	{
-		auto SyncBodyTransform = [](Scene& scene, const auto& group)
+		auto SyncBodyTransform = [&](const auto& group)
 			{
 				for (entt::entity entity : group)
 				{
 					auto [rigidbody, transform] = group.get<RigidbodyComponent, TransformComponent>(entity);
 
-					b2Body* body = scene.m_PhysicsScene->m_Rigidbodies[&rigidbody];
+					b2Body* body = rigidbody.m_Rigidbody->m_Body;
 					transform.Transform.Position = { body->GetPosition().x, body->GetPosition().y, transform.Transform.Position.Z };
 					transform.Transform.Rotation.Z = glm::degrees(body->GetAngle());
 				}
 			};
 		
 		auto boxGroup = scene.m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		SyncBodyTransform(scene, boxGroup);
+		SyncBodyTransform(boxGroup);
 
 		auto circleGroup = scene.m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		SyncBodyTransform(scene, circleGroup);
+		SyncBodyTransform(circleGroup);
 
 		auto capsuleGroup = scene.m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		SyncBodyTransform(scene, capsuleGroup);
+		SyncBodyTransform(capsuleGroup);
 
 
 		// "physics debug"
@@ -271,8 +432,8 @@ namespace Sphynx
 			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
 
 			Transform local = {
-					{ collider.Offset.X, collider.Offset.Y, 0.0f },
-					{ collider.Size.X, collider.Size.Y, 1.0f },
+					{ collider.GetOffset().X, collider.GetOffset().Y, 0.0f},
+					{ collider.GetSize().X, collider.GetSize().Y, 1.0f},
 					{ 0.0f, 0.0f, 0.0f }
 			};
 			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
@@ -285,8 +446,8 @@ namespace Sphynx
 			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
 			
 			Transform local = {
-					{ collider.Offset.X, collider.Offset.Y, 0.0f },
-					{ collider.Radius * 2.0f, collider.Radius * 2.0f, 1.0f },
+					{ collider.GetOffset().X, collider.GetOffset().Y, 0.0f },
+					{ collider.GetRadius() * 2.0f, collider.GetRadius() * 2.0f, 1.0f },
 					{ 0.0f, 0.0f, 0.0f }
 			};
 			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
@@ -306,7 +467,7 @@ namespace Sphynx
 			circleShapes.reserve(2);
 
 			// identify each fixture
-			for (b2Fixture* fixture = scene.m_PhysicsScene->m_Rigidbodies[&rigidbody]->GetFixtureList(); fixture; fixture = fixture->GetNext())
+			for (b2Fixture* fixture = rigidbody.m_Rigidbody->m_Body->GetFixtureList(); fixture; fixture = fixture->GetNext())
 			{
 				b2Shape::Type shapeType = fixture->GetType();
 				if (shapeType == b2Shape::e_polygon)
@@ -323,8 +484,8 @@ namespace Sphynx
 			// -- BOX
 			if (polygonShape != nullptr)
 			{
-				Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
-				Vector2f scaledOffset = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
+				Vector2f capsuleSize = collider.GetSize() * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
+				Vector2f scaledOffset = { collider.GetOffset().X * transform.Transform.Scale.X, collider.GetOffset().Y * transform.Transform.Scale.Y};
 				Vector2f boxSize =
 				{
 					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
@@ -333,7 +494,7 @@ namespace Sphynx
 				boxSize /= Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
 
 				Transform local = {
-						{ collider.Offset.X, collider.Offset.Y, 0.0f },
+						{ collider.GetOffset().X, collider.GetOffset().Y, 0.0f },
 						{ boxSize.X, boxSize.Y, 1.0f },
 						{ 0.0f, 0.0f, 0.0f }
 				};
@@ -352,8 +513,163 @@ namespace Sphynx
 				};
 				Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
 
-				Renderer2D::DrawCircle(entityTransform, circleShape->m_radius * std::min(collider.Size.X, collider.Size.Y));
+				Renderer2D::DrawCircle(entityTransform, circleShape->m_radius * std::min(collider.GetSize().X, collider.GetSize().Y));
 			}
 		}
+	}
+
+
+	bool Physics2D::IsRigidbodyValid(Rigidbody2D* rigidbody)
+	{
+		return rigidbody != nullptr && rigidbody->m_Body != nullptr;
+	}
+
+	bool Physics2D::IsRigidbodyEnabled(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		return rigidbody->m_Body->IsEnabled();
+	}
+
+	RigidbodyType Physics2D::GetRigidbodyType(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		return Box2D_To_RigidbodyType(rigidbody->m_Body->GetType());
+	}
+
+	Vector2f Physics2D::GetRigidbodyLinearVelocity(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		b2Vec2 velocity = rigidbody->m_Body->GetLinearVelocity();
+		return Vector2f(velocity.x, velocity.y);
+	}
+
+	float Physics2D::GetRigidbodyAngularVelocity(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		return rigidbody->m_Body->GetAngularVelocity();
+	}
+
+	float Physics2D::GetRigidbodyLinearDamping(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		return rigidbody->m_Body->GetLinearDamping();
+	}
+
+	float Physics2D::GetRigidbodyAngularDamping(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		return rigidbody->m_Body->GetAngularDamping();
+	}
+
+	float Physics2D::GetRigidbodyGravityScale(Rigidbody2D* rigidbody)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		return rigidbody->m_Body->GetGravityScale();
+	}
+
+	void Physics2D::SetRigidbodyEnabled(Rigidbody2D* rigidbody, bool enable)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetEnabled(enable);
+	}
+
+	void Physics2D::SetRigidbodyType(Rigidbody2D* rigidbody, RigidbodyType type)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetType(RigidbodyType_To_Box2D(type));
+	}
+
+	void Physics2D::SetRigidbodyLinearVelocity(Rigidbody2D* rigidbody, Vector2f velocity)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetLinearVelocity({ velocity.X, velocity.Y });
+	}
+
+	void Physics2D::SetRigidbodyAngularVelocity(Rigidbody2D* rigidbody, float velocity)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetAngularVelocity(velocity);
+	}
+
+	void Physics2D::SetRigidbodyLinearDamping(Rigidbody2D* rigidbody, float damping)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetLinearDamping(damping);
+	}
+
+	void Physics2D::SetRigidbodyAngularDamping(Rigidbody2D* rigidbody, float damping)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetAngularDamping(damping);
+	}
+
+	void Physics2D::SetRigidbodyGravityScale(Rigidbody2D* rigidbody, float gravityScale)
+	{
+		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
+
+		rigidbody->m_Body->SetGravityScale(gravityScale);
+	}
+	
+	bool Physics2D::IsColliderTrigger(Collider2D* collider)
+	{
+		return collider->Trigger;
+	}
+
+	void Physics2D::SetColliderIsTrigger(Collider2D* collider, bool trigger)
+	{
+		collider->Trigger = trigger;
+	}
+
+	Vector2f Physics2D::GetColliderOffset(Collider2D* collider)
+	{
+		return collider->Offset;
+	}
+
+	void Physics2D::SetColliderOffset(Collider2D* collider, Vector2f offset)
+	{
+		collider->Offset = offset;
+	}
+
+	Vector2f Physics2D::GetBoxColliderSize(BoxCollider2D* collider)
+	{
+		return collider->Size;
+	}
+
+	void Physics2D::SetBoxColliderSize(BoxCollider2D* collider, Vector2f size)
+	{
+		collider->Size = size;
+	}
+
+	float Physics2D::GetCircleColliderRadius(CircleCollider2D* collider)
+	{
+		return collider->Radius;
+	}
+
+	void Physics2D::SetCircleColliderRadius(CircleCollider2D* collider, float radius)
+	{
+		collider->Radius = radius;
+	}
+
+	Vector2f Physics2D::GetCapsuleColliderSize(CapsuleCollider2D* collider)
+	{
+		return collider->Size;
+	}
+
+	void Physics2D::SetCapsuleColliderSize(CapsuleCollider2D* collider, Vector2f size)
+	{
+		collider->Size = size;
 	}
 }

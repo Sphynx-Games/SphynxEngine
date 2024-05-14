@@ -24,7 +24,7 @@ namespace Sphynx
 	{
 		if (m_HasBegunPlay) return;
 
-		m_PhysicsScene = Physics2D::CreatePhysics2DScene(*this);
+		InitPhysics();
 		
 		m_HasBegunPlay = true;
 	}
@@ -87,6 +87,59 @@ namespace Sphynx
 	const std::vector<Actor>& Scene::GetActors() const
 	{
 		return m_Actors;
+	}
+
+	void Scene::InitPhysics()
+	{
+		m_PhysicsScene = Physics2D::CreatePhysics2DScene(*this);
+
+		auto CreateBody = [&](RigidbodyComponent& rigidbody, Collider2D* collider, const TransformComponent& transform)
+			{
+				RigidbodyDef def = RigidbodyDef();
+				def.Enabled = rigidbody.Enabled;
+				def.Type = rigidbody.Type;
+				def.LinearVelocity = rigidbody.LinearVelocity;
+				def.AngularVelocity = rigidbody.AngularVelocity;
+				def.LinearDamping = rigidbody.LinearDamping;
+				def.AngularDamping = rigidbody.AngularDamping;
+				def.GravityScale = rigidbody.GravityScale;
+				def.Transform = transform.Transform;
+				Rigidbody2D* rb = Physics2D::CreateRigidbody(m_PhysicsScene, collider, def, nullptr);
+				rigidbody.m_Rigidbody = rb;
+			};
+
+		// BOX
+		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		for (entt::entity entity : boxGroup)
+		{
+			auto [collider, rigidbody, transform] = boxGroup.get<BoxCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
+
+			BoxCollider2D* collider2D = new BoxCollider2D(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
+			collider.m_Collider = collider2D;
+			CreateBody(rigidbody, collider2D, transform);
+		}
+
+		// CIRCLE
+		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		for (entt::entity entity : circleGroup)
+		{
+			auto [collider, rigidbody, transform] = circleGroup.get<CircleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
+
+			CircleCollider2D* collider2D = new CircleCollider2D(collider.GetRadius(), collider.GetOffset(), collider.IsTrigger());
+			collider.m_Collider = collider2D;
+			CreateBody(rigidbody, collider2D, transform);
+		}
+
+		// CAPSULE
+		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		for (entt::entity entity : capsuleGroup)
+		{
+			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
+
+			CapsuleCollider2D* collider2D = new CapsuleCollider2D(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
+			collider.m_Collider = collider2D;
+			CreateBody(rigidbody, collider2D, transform);
+		}
 	}
 
 }

@@ -5,8 +5,6 @@
 
 #include "entt/entt.hpp"
 
-class b2World;
-class b2Body;
 
 namespace Sphynx
 {
@@ -30,6 +28,9 @@ namespace Sphynx
 		const std::vector<Actor>& GetActors() const;
 
 	private:
+		void InitPhysics();
+
+	private:
 		bool m_HasBegunPlay;
 
 		entt::registry m_Registry;
@@ -37,9 +38,7 @@ namespace Sphynx
 
 		Physics2DScene* m_PhysicsScene;
 
-	private:
 		friend class Actor;
 		friend class Physics2D;
-
 	};
 }

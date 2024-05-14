@@ -2,9 +2,9 @@
 
 #include "Core/Core.h"
 #include "Common.h"
-#include "Math/Color.h"
-#include "Math/Vector.h"
 #include "Renderer/RendererTypes.h"
+#include "Math/Vector.h"
+#include "Math/Color.h"
 
 
 namespace Sphynx
