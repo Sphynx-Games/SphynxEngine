@@ -29,6 +29,7 @@ namespace Sphynx
 
 	private:
 		void InitPhysics();
+		void DebugPhysics();
 
 	private:
 		bool m_HasBegunPlay;

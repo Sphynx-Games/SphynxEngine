@@ -5,6 +5,7 @@
 #include "Scene/Scene.h"
 #include "Renderer/Renderer2D.h"
 #include "Math/Transform.h"
+#include "Core/Delegate.h"
 
 #include "entt/entt.hpp"
 
@@ -22,8 +23,8 @@ namespace Sphynx
 {
 	class Physics2DScene
 	{
-	public: 
-		Physics2DScene() : 
+	public:
+		Physics2DScene() :
 			m_PhysicsWorld(b2World({ 0.0f, -10.0f })),
 			m_contactListener()
 		{
@@ -32,18 +33,17 @@ namespace Sphynx
 
 		~Physics2DScene()
 		{
+			OnPostStepPhysics.Unbind();
 		}
+
+	public:
+		Delegate<void()> OnPostStepPhysics;
 
 	private:
 		b2World m_PhysicsWorld;
 		Box2DContactListener m_contactListener;
 
 		friend class Physics2D;
-	};
-
-	struct RigidbodyData
-	{
-		UUID ActorUUID;
 	};
 
 	class Rigidbody2D
@@ -92,6 +92,9 @@ namespace Sphynx
 		case RigidbodyType::DYNAMIC:    return b2BodyType::b2_dynamicBody;
 		case RigidbodyType::KINEMATIC:  return b2BodyType::b2_kinematicBody;
 		}
+
+		SPX_CORE_ASSERT(false);
+		return b2BodyType::b2_staticBody;
 	}
 
 	RigidbodyType Box2D_To_RigidbodyType(b2BodyType type)
@@ -102,6 +105,9 @@ namespace Sphynx
 		case b2BodyType::b2_dynamicBody:    return RigidbodyType::DYNAMIC;
 		case b2BodyType::b2_kinematicBody:  return RigidbodyType::KINEMATIC;
 		}
+
+		SPX_CORE_ASSERT(false);
+		return RigidbodyType::STATIC;
 	}
 
 
@@ -110,131 +116,12 @@ namespace Sphynx
 		return new Physics2DScene();
 	}
 
-	Physics2DScene* Physics2D::CreatePhysics2DScene(Scene& scene)
-	{
-		Physics2DScene* physiscsScene = new Physics2DScene();
-
-		/*auto CreateBody = [](const RigidbodyComponent& rigidbody, const TransformComponent& transform, Physics2DScene* physiscsScene)
-			{
-				b2BodyDef bodyDef;
-				bodyDef.type = RigidbodyType_To_Box2D(rigidbody.GetRigidbodyType());
-				bodyDef.position = { transform.Transform.Position.X, transform.Transform.Position.Y };
-				bodyDef.angle = glm::radians(transform.Transform.Rotation.Z);
-
-				return physiscsScene->m_PhysicsWorld.CreateBody(&bodyDef);
-			};
-
-		auto AddRigidbody = [](RigidbodyComponent& rigidbody, b2Body* body, Physics2DScene* physiscsScene)
-			{
-				if (!rigidbody.GetSimulationEnabled())
-				{
-					body->SetEnabled(false);
-				}
-				physiscsScene->m_Rigidbodies.emplace(&rigidbody, body);
-			};
-
-
-		// BOX COLLIDERS
-		auto boxGroup = scene.m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		for (entt::entity entity : boxGroup)
-		{
-			auto [collider, rigidbody, transform] = boxGroup.get<BoxCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
-
-			b2PolygonShape shape;
-			shape.SetAsBox(
-				(collider.Size.X * transform.Transform.Scale.X) / 2.0f,
-				(collider.Size.Y * transform.Transform.Scale.Y) / 2.0f,
-				{ collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y },
-				0.0f
-			);
-
-			b2Body* body = CreateBody(rigidbody, transform, physiscsScene);
-			body->CreateFixture(&shape, 1.0f);
-
-			AddRigidbody(rigidbody, body, physiscsScene);
-		}
-
-		// CIRCLE COLLIDERS
-		auto circleGroup = scene.m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		for (entt::entity entity : circleGroup)
-		{
-			auto [collider, rigidbody, transform] = circleGroup.get<CircleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
-
-			b2CircleShape shape;
-			shape.m_p = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
-			shape.m_radius = collider.Radius * std::max(transform.Transform.Scale.X, transform.Transform.Scale.Y);
-
-			b2Body* body = CreateBody(rigidbody, transform, physiscsScene);
-			body->CreateFixture(&shape, 1.0f);
-
-			AddRigidbody(rigidbody, body, physiscsScene);
-		}
-
-		// CAPSULE COLLIDERS
-		auto capsuleGroup = scene.m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		for (entt::entity entity : capsuleGroup)
-		{
-			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
-
-			Vector2f capsuleSize = collider.Size * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
-			Vector2f scaledOffset = { collider.Offset.X * transform.Transform.Scale.X, collider.Offset.Y * transform.Transform.Scale.Y };
-
-			b2Body* body = CreateBody(rigidbody, transform, physiscsScene);
-
-			if (capsuleSize.X == capsuleSize.Y)
-			{
-				// 1 CIRCLE
-				b2CircleShape circle;
-				circle.m_p = b2Vec2{ scaledOffset.X, scaledOffset.Y };
-				circle.m_radius = capsuleSize.X / 2.0f;
-
-				body->CreateFixture(&circle, 1.0f);
-			}
-			else 
-			{
-				// 1 BOX + 2 CIRCLES
-				Vector2f boxSize =
-				{
-					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
-					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
-				};
-
-				b2PolygonShape box;
-				box.SetAsBox(
-					boxSize.X / 2.0f,
-					boxSize.Y / 2.0f,
-					{ scaledOffset.X, scaledOffset.Y },
-					0.0f
-				);
-
-				b2CircleShape circleA; // right, up
-				circleA.m_p = (capsuleSize.X > capsuleSize.Y)
-					? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				    : b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
-				circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-				b2CircleShape circleB; // left, down
-				circleB.m_p = (capsuleSize.X > capsuleSize.Y)
-					? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
-				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-
-				body->CreateFixture(&box, 1.0f);
-				body->CreateFixture(&circleA, 1.0f);
-				body->CreateFixture(&circleB, 1.0f);
-			}
-
-			AddRigidbody(rigidbody, body, physiscsScene);
-		}*/
-
-		return physiscsScene;
-	}
-
 	void Physics2D::DestroyPhysics2DScene(Physics2DScene* physiscsScene)
 	{
 		delete physiscsScene;
 	}
 
-	Rigidbody2D* Physics2D::CreateRigidbody(Physics2DScene* physicsScene, Collider2D* collider, RigidbodyDef& rigidbodyDef, void* rigidbodyData)
+	Rigidbody2D* Physics2D::CreateRigidbody(Physics2DScene* physicsScene, Collider2D* collider, RigidbodyDef& rigidbodyDef)
 	{
 		if (physicsScene == nullptr) return nullptr;
 
@@ -248,7 +135,6 @@ namespace Sphynx
 		bodyDef.gravityScale = rigidbodyDef.GravityScale;
 		bodyDef.position = { rigidbodyDef.Transform.Position.X, rigidbodyDef.Transform.Position.Y };
 		bodyDef.angle = glm::radians(rigidbodyDef.Transform.Rotation.Z);
-		bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(rigidbodyData);
 
 		b2Body* body = physicsScene->m_PhysicsWorld.CreateBody(&bodyDef);
 
@@ -259,7 +145,7 @@ namespace Sphynx
 		}
 
 		// BOX COLLIDERS
-		if(BoxCollider2D* collider2D = dynamic_cast<BoxCollider2D*>(collider))
+		if (BoxCollider2D* collider2D = dynamic_cast<BoxCollider2D*>(collider))
 		{
 			b2PolygonShape shape;
 			shape.SetAsBox(
@@ -317,12 +203,12 @@ namespace Sphynx
 				b2CircleShape circleA; // right, up
 				circleA.m_p = (capsuleSize.X > capsuleSize.Y)
 					? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				    : b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
+				: b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
 				circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
 				b2CircleShape circleB; // left, down
 				circleB.m_p = (capsuleSize.X > capsuleSize.Y)
 					? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
+				: b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
 				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
 
 				body->CreateFixture(&box, 1.0f);
@@ -337,7 +223,7 @@ namespace Sphynx
 		{
 			m_PhysicScenes[physicsScene] = std::vector<Rigidbody2D*>();
 		}
-		std::vector<Rigidbody2D*>& values = m_PhysicScenes[physicsScene]; 
+		std::vector<Rigidbody2D*>& values = m_PhysicScenes[physicsScene];
 		values.push_back(rigidbody);
 		return rigidbody;
 	}
@@ -346,7 +232,7 @@ namespace Sphynx
 	{
 		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
 
-		for (auto& it : m_PhysicScenes) 
+		for (auto& it : m_PhysicScenes)
 		{
 			for (unsigned i = 0; i < it.second.size(); ++i)
 			{
@@ -365,46 +251,29 @@ namespace Sphynx
 
 	void Physics2D::Step(Physics2DScene* physicsScene, float timeStep)
 	{
-		physicsScene->m_PhysicsWorld.Step(timeStep, 8, 3);
-	}
-
-	void Physics2D::Step(Scene& scene, float timeStep)
-	{
-		if (m_PhysicScenes.find(scene.m_PhysicsScene) == m_PhysicScenes.end())
+		if (m_PhysicScenes.find(physicsScene) == m_PhysicScenes.end())
 		{
 			SPX_CORE_LOG_WARNING("There are no Rigidbodies for the current PhysicsScene!!");
 			return;
 		}
 
-		Step(scene.m_PhysicsScene, timeStep);
-		PostStep(scene, timeStep);
+		physicsScene->m_PhysicsWorld.Step(timeStep, 8, 3);
+		physicsScene->OnPostStepPhysics.Execute();
 	}
 
-	void Physics2D::PostStep(Scene& scene, float timeStep)
+	Delegate<void()>& Physics2D::GetOnPostStepPhysiscsDelegate(Physics2DScene* physicsScene)
 	{
-		auto SyncBodyTransform = [&](const auto& group)
-			{
-				for (entt::entity entity : group)
-				{
-					auto [rigidbody, transform] = group.get<RigidbodyComponent, TransformComponent>(entity);
+		return physicsScene->OnPostStepPhysics;
+	}
 
-					b2Body* body = rigidbody.m_Rigidbody->m_Body;
-					transform.Transform.Position = { body->GetPosition().x, body->GetPosition().y, transform.Transform.Position.Z };
-					transform.Transform.Rotation.Z = glm::degrees(body->GetAngle());
-				}
-			};
-		
-		auto boxGroup = scene.m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		SyncBodyTransform(boxGroup);
+	void Physics2D::DebugCollider(const Collider2D* collider, const Transform& transform)
+	{
+		if (collider == nullptr)
+		{
+			SPX_CORE_LOG_WARNING("There are no Rigidbodies for the current PhysicsScene!!");
+			return;
+		}
 
-		auto circleGroup = scene.m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		SyncBodyTransform(circleGroup);
-
-		auto capsuleGroup = scene.m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
-		SyncBodyTransform(capsuleGroup);
-
-
-		// "physics debug"
 		auto GetTransformWithOffset = [](const Transform& local, const Transform& transform)
 			{
 				glm::mat4 localMatrix = GetModelMatrixFromTransform(local);
@@ -427,30 +296,28 @@ namespace Sphynx
 				return entityTransform;
 			};
 
-		for (entt::entity entity : boxGroup)
+		// BOX COLLIDERS
+		if (const BoxCollider2D* collider2D = dynamic_cast<const BoxCollider2D*>(collider))
 		{
-			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
-
 			Transform local = {
-					{ collider.GetOffset().X, collider.GetOffset().Y, 0.0f},
-					{ collider.GetSize().X, collider.GetSize().Y, 1.0f},
+					{ collider2D->Offset.X, collider2D->Offset.Y, 0.0f},
+					{ collider2D->Size.X, collider2D->Size.Y, 1.0f},
 					{ 0.0f, 0.0f, 0.0f }
 			};
-			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+			Transform entityTransform = GetTransformWithOffset(local, transform);
 
 			Renderer2D::DrawQuad(entityTransform);
 		}
 
-		for (entt::entity entity : circleGroup)
+		// CIRCLE COLLIDERS
+		else if (const CircleCollider2D* collider2D = dynamic_cast<const CircleCollider2D*>(collider))
 		{
-			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
-			
 			Transform local = {
-					{ collider.GetOffset().X, collider.GetOffset().Y, 0.0f },
-					{ collider.GetRadius() * 2.0f, collider.GetRadius() * 2.0f, 1.0f },
+					{ collider2D->Offset.X, collider2D->Offset.Y, 0.0f },
+					{ collider2D->Radius * 2.0f, collider2D->Radius * 2.0f, 1.0f },
 					{ 0.0f, 0.0f, 0.0f }
 			};
-			Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+			Transform entityTransform = GetTransformWithOffset(local, transform);
 			float maxScale = std::max(entityTransform.Scale.X, entityTransform.Scale.Y);
 			entityTransform.Scale.X = maxScale;
 			entityTransform.Scale.Y = maxScale;
@@ -458,63 +325,52 @@ namespace Sphynx
 			Renderer2D::DrawCircle(entityTransform);
 		}
 
-		for (entt::entity entity : capsuleGroup)
+		// CAPSULE COLLIDERS
+		else if (const CapsuleCollider2D* collider2D = dynamic_cast<const CapsuleCollider2D*>(collider))
 		{
-			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
-
-			b2PolygonShape* polygonShape = nullptr;
-			std::vector<b2CircleShape*> circleShapes;
-			circleShapes.reserve(2);
-
-			// identify each fixture
-			for (b2Fixture* fixture = rigidbody.m_Rigidbody->m_Body->GetFixtureList(); fixture; fixture = fixture->GetNext())
-			{
-				b2Shape::Type shapeType = fixture->GetType();
-				if (shapeType == b2Shape::e_polygon)
-				{
-					polygonShape = (b2PolygonShape*)fixture->GetShape();
-				}
-				else if (shapeType == b2Shape::e_circle)
-				{
-					circleShapes.push_back((b2CircleShape*)fixture->GetShape());
-				}
-			}
-
 			// draw each fixture
 			// -- BOX
-			if (polygonShape != nullptr)
+			Vector2f capsuleSize = collider2D->Size * Vector2f{ transform.Scale.X, transform.Scale.Y };
+			Vector2f boxSize =
 			{
-				Vector2f capsuleSize = collider.GetSize() * Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
-				Vector2f scaledOffset = { collider.GetOffset().X * transform.Transform.Scale.X, collider.GetOffset().Y * transform.Transform.Scale.Y};
-				Vector2f boxSize =
-				{
-					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
-					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
-				};
-				boxSize /= Vector2f{ transform.Transform.Scale.X, transform.Transform.Scale.Y };
+				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
+				(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
+			};
+			boxSize /= Vector2f{ transform.Scale.X, transform.Scale.Y };
 
-				Transform local = {
-						{ collider.GetOffset().X, collider.GetOffset().Y, 0.0f },
-						{ boxSize.X, boxSize.Y, 1.0f },
-						{ 0.0f, 0.0f, 0.0f }
-				};
-				Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+			Transform local = {
+					{ collider2D->Offset.X, collider2D->Offset.Y, 0.0f },
+					{ 1.0f, 1.0f, 1.0f },
+					{ 0.0f, 0.0f, 0.0f }
+			};
+			Transform entityTransform = GetTransformWithOffset(local, transform);
 
-				Renderer2D::DrawQuad(entityTransform);
-			}
+			Renderer2D::DrawQuad(entityTransform, boxSize);
+			
+			// bounding box
+			//Renderer2D::DrawQuad(entityTransform, collider2D->Size, { 0.5, 0.5f }, Color::Green);
 
 			// -- CIRCLES
-			for (b2CircleShape* circleShape : circleShapes)
-			{
-				Transform local = {
-					Vector3f{ circleShape->m_p.x, circleShape->m_p.y, 0.0f } / transform.Transform.Scale,
-					Vector3f(1.0f) / transform.Transform.Scale,
-					{ 0.0f, 0.0f, 0.0f }
-				};
-				Transform entityTransform = GetTransformWithOffset(local, transform.Transform);
+			// right, up
+			Transform circleTransformA;
+			circleTransformA.Position = (capsuleSize.X > capsuleSize.Y)
+				? Vector3f{ (boxSize.X / 2.0f) + collider2D->Offset.X, collider2D->Offset.Y , 0.0f }
+			: Vector3f{ collider2D->Offset.X, (boxSize.Y / 2.0f) + collider2D->Offset.Y, 0.0f };
+			circleTransformA.Scale /= transform.Scale;
+			circleTransformA = GetTransformWithOffset(circleTransformA, transform);
+			float circleRadiusA = std::min(capsuleSize.X, capsuleSize.Y) / 2.0f;
 
-				Renderer2D::DrawCircle(entityTransform, circleShape->m_radius * std::min(collider.GetSize().X, collider.GetSize().Y));
-			}
+			// left, down
+			Transform circleTransformB;
+			circleTransformB.Position = (capsuleSize.X > capsuleSize.Y)
+				? Vector3f{ (-boxSize.X / 2.0f) + collider2D->Offset.X, collider2D->Offset.Y, 0.0f }
+			: Vector3f{ collider2D->Offset.X, (-boxSize.Y / 2.0f) + collider2D->Offset.Y, 0.0f };
+			circleTransformB.Scale /= transform.Scale;
+			circleTransformB = GetTransformWithOffset(circleTransformB, transform);
+			float circleRadiusB = std::min(capsuleSize.X, capsuleSize.Y) / 2.0f;
+
+			Renderer2D::DrawCircle(circleTransformA, circleRadiusA);
+			Renderer2D::DrawCircle(circleTransformB, circleRadiusB);
 		}
 	}
 
@@ -522,6 +378,16 @@ namespace Sphynx
 	bool Physics2D::IsRigidbodyValid(Rigidbody2D* rigidbody)
 	{
 		return rigidbody != nullptr && rigidbody->m_Body != nullptr;
+	}
+
+	Vector2f Physics2D::GetRigidbodyPosition(Rigidbody2D* rigidbody)
+	{
+		return Vector2f(rigidbody->m_Body->GetPosition().x, rigidbody->m_Body->GetPosition().y);
+	}
+
+	float Physics2D::GetRigidbodyRotation(Rigidbody2D* rigidbody)
+	{
+		return glm::degrees(rigidbody->m_Body->GetAngle());
 	}
 
 	bool Physics2D::IsRigidbodyEnabled(Rigidbody2D* rigidbody)
@@ -622,7 +488,7 @@ namespace Sphynx
 
 		rigidbody->m_Body->SetGravityScale(gravityScale);
 	}
-	
+
 	bool Physics2D::IsColliderTrigger(Collider2D* collider)
 	{
 		return collider->Trigger;

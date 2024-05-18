@@ -27,9 +27,10 @@ namespace Sphynx
 	class SPHYNX_API Collider2D
 	{
 	public:
-		Collider2D(Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false) :
+		Collider2D(Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
 			Offset(offset),
-			Trigger(isTrigger)
+			Trigger(isTrigger),
+			Debug(debug)
 		{}
 
 		virtual ~Collider2D() = default;
@@ -37,6 +38,7 @@ namespace Sphynx
 	protected:
 		Vector2f Offset;
 		bool Trigger;
+		bool Debug;
 
 		friend class Physics2D;
 	};
@@ -44,8 +46,8 @@ namespace Sphynx
 	class SPHYNX_API BoxCollider2D : public Collider2D
 	{
 	public:
-		BoxCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false) :
-			Collider2D(offset, isTrigger),
+		BoxCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
+			Collider2D(offset, isTrigger, debug),
 			Size(size)
 		{}
 
@@ -58,8 +60,8 @@ namespace Sphynx
 	class SPHYNX_API CircleCollider2D : public Collider2D
 	{
 	public:
-		CircleCollider2D(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false) :
-			Collider2D(offset, isTrigger),
+		CircleCollider2D(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
+			Collider2D(offset, isTrigger, debug),
 			Radius(radius)
 		{}
 
@@ -72,8 +74,8 @@ namespace Sphynx
 	class SPHYNX_API CapsuleCollider2D : public Collider2D
 	{
 	public:
-		CapsuleCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false) :
-			Collider2D(offset, isTrigger),
+		CapsuleCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
+			Collider2D(offset, isTrigger, debug),
 			Size(size)
 		{}
 

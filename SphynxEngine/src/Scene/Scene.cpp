@@ -3,6 +3,8 @@
 #include "Component/Components.h"
 #include "Renderer/Renderer2D.h"
 #include "Physics/Physics2D.h"
+#include "Core/Delegate.h"
+
 
 namespace Sphynx
 {
@@ -69,7 +71,7 @@ namespace Sphynx
 		}
 
 		// Simulate PHYSISCS in scene
-		Physics2D::Step(*this, deltaTime);
+		Physics2D::Step(m_PhysicsScene, deltaTime);
 	}
 
 	Actor Scene::CreateActor()
@@ -91,7 +93,7 @@ namespace Sphynx
 
 	void Scene::InitPhysics()
 	{
-		m_PhysicsScene = Physics2D::CreatePhysics2DScene(*this);
+		m_PhysicsScene = Physics2D::CreatePhysics2DScene();
 
 		auto CreateBody = [&](RigidbodyComponent& rigidbody, Collider2D* collider, const TransformComponent& transform)
 			{
@@ -104,7 +106,7 @@ namespace Sphynx
 				def.AngularDamping = rigidbody.AngularDamping;
 				def.GravityScale = rigidbody.GravityScale;
 				def.Transform = transform.Transform;
-				Rigidbody2D* rb = Physics2D::CreateRigidbody(m_PhysicsScene, collider, def, nullptr);
+				Rigidbody2D* rb = Physics2D::CreateRigidbody(m_PhysicsScene, collider, def);
 				rigidbody.m_Rigidbody = rb;
 			};
 
@@ -139,6 +141,62 @@ namespace Sphynx
 			CapsuleCollider2D* collider2D = new CapsuleCollider2D(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
 			CreateBody(rigidbody, collider2D, transform);
+		}
+
+		// post step => update transform values
+		Delegate<void()>& onPostStepPhysics = Physics2D::GetOnPostStepPhysiscsDelegate(m_PhysicsScene);
+		onPostStepPhysics.Bind([&]() {
+			auto UpdateTransform = [](const auto& group)
+				{
+					for (entt::entity entity : group)
+					{
+						auto [rigidbody, transform] = group.get<RigidbodyComponent, TransformComponent>(entity);
+
+						Vector2f currentPos = Physics2D::GetRigidbodyPosition(rigidbody.m_Rigidbody);
+						float currentRot = Physics2D::GetRigidbodyRotation(rigidbody.m_Rigidbody);
+						transform.Transform.Position.X = currentPos.X;
+						transform.Transform.Position.Y = currentPos.Y;
+						transform.Transform.Rotation.Z = currentRot;
+					}
+				};
+
+			auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+			UpdateTransform(boxGroup);
+
+			auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+			UpdateTransform(circleGroup);
+
+			auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+			UpdateTransform(capsuleGroup);
+
+			DebugPhysics();
+		});
+	}
+
+	void Scene::DebugPhysics()
+	{
+		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		for (entt::entity entity : boxGroup)
+		{
+			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
+
+			Physics2D::DebugCollider(collider.m_Collider, transform.Transform);
+		}
+
+		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		for (entt::entity entity : circleGroup)
+		{
+			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
+
+			Physics2D::DebugCollider(collider.m_Collider, transform.Transform);
+		}
+
+		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		for (entt::entity entity : capsuleGroup)
+		{
+			auto [collider, transform] = capsuleGroup.get<CapsuleCollider2DComponent, TransformComponent>(entity);
+
+			Physics2D::DebugCollider(collider.m_Collider, transform.Transform);
 		}
 	}
 

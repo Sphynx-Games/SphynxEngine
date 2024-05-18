@@ -27,6 +27,7 @@ namespace Sphynx
 		Vector2f Size;
 		Vector2f Offset;
 		bool Trigger;
+		bool Debug;
 
 		class CapsuleCollider2D* m_Collider;
 

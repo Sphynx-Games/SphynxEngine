@@ -12,6 +12,7 @@ namespace Sphynx
 	class Delegate<TReturn(Args...), Size>
 	{
 		static_assert(Size >= sizeof(void*), "Size should be at least the size of a pointer");
+
 	public:
 		constexpr Delegate() = default;
 		~Delegate() { Unbind(); }
@@ -52,6 +53,7 @@ namespace Sphynx
 		}
 
 	private:
+
 		template<typename T, typename TMethod>
 		struct MemberFuncDelegateImpl
 		{
@@ -87,12 +89,14 @@ namespace Sphynx
 
 		struct Buffer
 		{
-			constexpr Buffer() = default;
+			constexpr Buffer() : m_Data{std::byte(0)} {}
 
 			template<typename T, typename V> constexpr inline T* Init(const V& v) { return new(m_Data) T(v); }
 			template<typename T> constexpr inline T& Get() { return *reinterpret_cast<T*>(m_Data); }
 			template<typename T> constexpr inline const T& Get() const { return *reinterpret_cast<const T*>(m_Data); }
+		
 		private:
+			// TODO: align as max between memberfuncimpl or functorimpl
 			std::byte m_Data[Size];
 		};
 

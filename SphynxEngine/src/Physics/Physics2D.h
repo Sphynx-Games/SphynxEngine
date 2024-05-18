@@ -1,35 +1,41 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Core/Delegate.h"
 #include "Physics2DUtils.h"
+#include "Math/Transform.h"
 #include <unordered_map>
 #include <vector>
 
 
 namespace Sphynx
 {
-	extern class Physics2DScene;
-	extern class Rigidbody2D;
-	extern struct RigidbodyData;
-	extern struct Collider2D;
-	class Scene;
+	class Physics2DScene;
+	class Rigidbody2D;
+	struct RigidbodyData;
+	class Collider2D;
 
 	class SPHYNX_API Physics2D
 	{
 	public:
 		static Physics2DScene* CreatePhysics2DScene();
-		static Physics2DScene* CreatePhysics2DScene(Scene& scene);
 		static void DestroyPhysics2DScene(Physics2DScene* physicsScene);
 
-		static Rigidbody2D* CreateRigidbody(Physics2DScene* physicsScene, Collider2D* collider, RigidbodyDef& rigidbodyDef, void* rigidbodyData);
+		static Rigidbody2D* CreateRigidbody(Physics2DScene* physicsScene, Collider2D* collider, RigidbodyDef& rigidbodyDef);
 		static void DestroyRigidbody(Rigidbody2D* rigidbody);
 
 		static void Step(Physics2DScene* physicsScene, float timeStep);
-		static void Step(Scene& scene, float timeStep);
+		static Delegate<void()>& GetOnPostStepPhysiscsDelegate(Physics2DScene* physicsScene);
+
+		static void DebugCollider(const Collider2D* collider, const Transform& transform);
+
 
 		// getters and setters
 		// -- RIGIDBODY
 		static bool IsRigidbodyValid(Rigidbody2D* rigidbody);
+
+		static Vector2f GetRigidbodyPosition(Rigidbody2D* rigidbody);
+		static float GetRigidbodyRotation(Rigidbody2D* rigidbody);
 
 		static bool IsRigidbodyEnabled(Rigidbody2D* rigidbody);
 		static void SetRigidbodyEnabled(Rigidbody2D* rigidbody, bool enable);
@@ -70,10 +76,6 @@ namespace Sphynx
 		//		-- CAPSULE
 		static Vector2f GetCapsuleColliderSize(CapsuleCollider2D* collider);
 		static void SetCapsuleColliderSize(CapsuleCollider2D* collider, Vector2f size);
-
-
-	private:
-		static void PostStep(Scene& scene, float timeStep);
 
 	private:
 		inline static std::unordered_map<Physics2DScene*, std::vector<Rigidbody2D*>> m_PhysicScenes;

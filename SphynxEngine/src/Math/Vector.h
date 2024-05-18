@@ -36,12 +36,12 @@ namespace Sphynx
 			return *this;
 		}
 
-		Vector2T operator+(const Vector2T& other)
+		Vector2T operator+(const Vector2T& other) const
 		{
 			return { X + other.X, Y + other.Y };
 		}
 
-		Vector2T operator*(const Vector2T& other)
+		Vector2T operator*(const Vector2T& other) const
 		{
 			return { X * other.X, Y * other.Y };
 		}
@@ -53,7 +53,7 @@ namespace Sphynx
 			return *this;
 		}
 
-		Vector2T operator/(const Vector2T& other)
+		Vector2T operator/(const Vector2T& other) const
 		{
 			return { X / other.X, Y / other.Y };
 		}
@@ -90,12 +90,12 @@ namespace Sphynx
 			return *this;
 		}
 
-		Vector3T operator+(const Vector3T& other)
+		Vector3T operator+(const Vector3T& other) const
 		{
 			return { X + other.X, Y + other.Y, Z + other.Z };
 		}
 
-		Vector3T operator*(const Vector3T& other)
+		Vector3T operator*(const Vector3T& other) const
 		{
 			return { X * other.X, Y * other.Y, Z * other.Z };
 		}
@@ -108,7 +108,7 @@ namespace Sphynx
 			return *this;
 		}
 
-		Vector3T operator/(const Vector3T& other)
+		Vector3T operator/(const Vector3T& other) const
 		{
 			return { X / other.X, Y / other.Y, Z / other.Z };
 		}
@@ -147,12 +147,12 @@ namespace Sphynx
 			return *this; 
 		}
 
-		Vector4T operator+(const Vector4T& other)
+		Vector4T operator+(const Vector4T& other) const
 		{
 			return { X + other.X, Y + other.Y, Z + other.Z, W + other.W };
 		}
 
-		Vector4T operator*(const Vector4T& other)
+		Vector4T operator*(const Vector4T& other) const
 		{
 			return { X * other.X, Y * other.Y, Z * other.Z, W * other.W };
 		}
@@ -166,7 +166,7 @@ namespace Sphynx
 			return *this;
 		}
 
-		Vector4T operator/(const Vector4T& other)
+		Vector4T operator/(const Vector4T& other) const
 		{
 			return { X / other.X, Y / other.Y, Z / other.Z, W / other.W };
 		}

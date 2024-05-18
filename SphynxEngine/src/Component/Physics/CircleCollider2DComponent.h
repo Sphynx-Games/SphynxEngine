@@ -27,6 +27,7 @@ namespace Sphynx
 		float Radius;
 		Vector2f Offset;
 		bool Trigger;
+		bool Debug;
 
 		class CircleCollider2D* m_Collider;
 
