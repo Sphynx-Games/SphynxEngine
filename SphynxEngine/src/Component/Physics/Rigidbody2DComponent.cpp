@@ -1,9 +1,9 @@
-#include "RigidbodyComponent.h"
+#include "Rigidbody2DComponent.h"
 #include "Physics/Physics2D.h"
 
 namespace Sphynx
 {
-	RigidbodyComponent::RigidbodyComponent() :
+	Rigidbody2DComponent::Rigidbody2DComponent() :
 		Enabled(true),
 		Type(RigidbodyType::STATIC),
 		LinearVelocity(Vector2f(0.0f, 0.0f)),
@@ -14,7 +14,7 @@ namespace Sphynx
 		m_Rigidbody(nullptr)
 	{}
 
-	bool RigidbodyComponent::IsEnabled()
+	bool Rigidbody2DComponent::IsEnabled()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -23,7 +23,7 @@ namespace Sphynx
 		return Physics2D::IsRigidbodyEnabled(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetEnabled(bool enabled)
+	void Rigidbody2DComponent::SetEnabled(bool enabled)
 	{
 		Enabled = enabled;
 		if (m_Rigidbody != nullptr)
@@ -32,7 +32,7 @@ namespace Sphynx
 		}
 	}
 
-	RigidbodyType RigidbodyComponent::GetRigidbodyType()
+	RigidbodyType Rigidbody2DComponent::GetRigidbodyType()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -41,7 +41,7 @@ namespace Sphynx
 		return Physics2D::GetRigidbodyType(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetRigidbodyType(RigidbodyType type)
+	void Rigidbody2DComponent::SetRigidbodyType(RigidbodyType type)
 	{
 		Type = type;
 		if (m_Rigidbody != nullptr)
@@ -50,7 +50,7 @@ namespace Sphynx
 		}
 	}
 
-	Vector2f RigidbodyComponent::GetLinearVelocity()
+	Vector2f Rigidbody2DComponent::GetLinearVelocity()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -59,7 +59,7 @@ namespace Sphynx
 		return Physics2D::GetRigidbodyLinearVelocity(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetLinearVelocity(Vector2f velocity)
+	void Rigidbody2DComponent::SetLinearVelocity(Vector2f velocity)
 	{
 		LinearVelocity = velocity;
 		if (m_Rigidbody != nullptr)
@@ -68,7 +68,7 @@ namespace Sphynx
 		}
 	}
 
-	float RigidbodyComponent::GetAngularVelocity()
+	float Rigidbody2DComponent::GetAngularVelocity()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -77,7 +77,7 @@ namespace Sphynx
 		return Physics2D::GetRigidbodyAngularVelocity(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetAngularVelocity(float velocity)
+	void Rigidbody2DComponent::SetAngularVelocity(float velocity)
 	{
 		AngularVelocity = velocity;
 		if (m_Rigidbody != nullptr)
@@ -86,7 +86,7 @@ namespace Sphynx
 		}
 	}
 
-	float RigidbodyComponent::GetLinearDamping()
+	float Rigidbody2DComponent::GetLinearDamping()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -95,7 +95,7 @@ namespace Sphynx
 		return Physics2D::GetRigidbodyLinearDamping(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetLinearDamping(float damping)
+	void Rigidbody2DComponent::SetLinearDamping(float damping)
 	{
 		LinearDamping = damping;
 		if (m_Rigidbody != nullptr)
@@ -104,7 +104,7 @@ namespace Sphynx
 		}
 	}
 
-	float RigidbodyComponent::GetAngularDamping()
+	float Rigidbody2DComponent::GetAngularDamping()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -113,7 +113,7 @@ namespace Sphynx
 		return Physics2D::GetRigidbodyAngularDamping(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetAngularDamping(float damping)
+	void Rigidbody2DComponent::SetAngularDamping(float damping)
 	{
 		AngularDamping = damping;
 		if (m_Rigidbody != nullptr)
@@ -122,7 +122,7 @@ namespace Sphynx
 		}
 	}
 
-	float RigidbodyComponent::GetGravityScale()
+	float Rigidbody2DComponent::GetGravityScale()
 	{
 		if (m_Rigidbody == nullptr)
 		{
@@ -131,7 +131,7 @@ namespace Sphynx
 		return Physics2D::GetRigidbodyGravityScale(m_Rigidbody);
 	}
 
-	void RigidbodyComponent::SetGravityScale(float gravityScale)
+	void Rigidbody2DComponent::SetGravityScale(float gravityScale)
 	{
 		GravityScale = gravityScale;
 		if (m_Rigidbody != nullptr)

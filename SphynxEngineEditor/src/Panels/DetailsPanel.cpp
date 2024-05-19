@@ -158,6 +158,165 @@ namespace Sphynx
 				}
 			}
 
+			// Draw Rigidbody2DComponent
+			if (m_Context.HasComponent<Rigidbody2DComponent>())
+			{
+				if (ImGui::CollapsingHeader("Rigidbody2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+
+					auto& component = m_Context.GetComponent<Rigidbody2DComponent>();
+
+					bool enabled = component.IsEnabled();
+					if (ImGui::Checkbox(LABEL("Enabled").c_str(), &enabled))
+					{
+						component.SetEnabled(enabled);
+					}
+
+					RigidbodyType type = component.GetRigidbodyType();
+					const char* mode = "STATIC";
+					switch (type)
+					{
+					case RigidbodyType::STATIC:    mode = "STATIC"; break;
+					case RigidbodyType::DYNAMIC :  mode = "DYNAMIC"; break;
+					case RigidbodyType::KINEMATIC: mode = "KINEMATIC"; break;
+					}
+
+					if (ImGui::BeginCombo(LABEL("Type").c_str(), mode))
+					{
+						if (ImGui::Selectable("STATIC", false)) component.SetRigidbodyType(RigidbodyType::STATIC);
+						if (ImGui::Selectable("DYNAMIC", false)) component.SetRigidbodyType(RigidbodyType::DYNAMIC);
+						if (ImGui::Selectable("KINEMATIC", false)) component.SetRigidbodyType(RigidbodyType::KINEMATIC);
+						ImGui::EndCombo();
+					}
+
+					Vector2f linearVelocity = component.GetLinearVelocity();
+					if (ImGui::DragFloat2(LABEL("Linear Velocity").c_str(), (float*)&linearVelocity, 0.1f))
+					{
+						component.SetLinearVelocity(linearVelocity);
+					}
+
+					float angularVelocity = component.GetAngularVelocity();
+					if (ImGui::DragFloat(LABEL("Angular Velocity").c_str(), &angularVelocity, 0.1f))
+					{
+						component.SetAngularVelocity(angularVelocity);
+					}
+
+					float linearDamping = component.GetLinearDamping();
+					if (ImGui::DragFloat(LABEL("Linear Damping").c_str(), &linearDamping, 0.1f))
+					{
+						component.SetLinearDamping(linearDamping);
+					}
+
+					float angularDamping = component.GetAngularDamping();
+					if (ImGui::DragFloat(LABEL("Angular Damping").c_str(), &angularDamping, 0.1f))
+					{
+						component.SetAngularDamping(angularDamping);
+					}
+
+					float gravityScale = component.GetGravityScale();
+					if (ImGui::DragFloat(LABEL("Gravity Scale").c_str(), &gravityScale, 0.1f))
+					{
+						component.SetGravityScale(gravityScale);
+					}
+
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				}
+			}
+
+			// Draw BoxCollider2DComponent
+			if (m_Context.HasComponent<BoxCollider2DComponent>())
+			{
+				if (ImGui::CollapsingHeader("BoxCollider2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+
+					auto& component = m_Context.GetComponent<BoxCollider2DComponent>();
+
+					Vector2f size = component.GetSize();
+					if (ImGui::DragFloat2(LABEL("Size").c_str(), (float*)&size, 0.1f))
+					{
+						component.SetSize(size);
+					}
+
+					Vector2f offset = component.GetOffset();
+					if (ImGui::DragFloat2(LABEL("Offset").c_str(), (float*)&offset, 0.1f))
+					{
+						component.SetOffset(offset);
+					}
+
+					bool trigger = component.IsTrigger();
+					if (ImGui::Checkbox(LABEL("Trigger").c_str(), &trigger))
+					{
+						component.SetIsTrigger(trigger);
+					}
+
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				}
+			}
+
+			// Draw CircleCollider2DComponent
+			if (m_Context.HasComponent<CircleCollider2DComponent>())
+			{
+				if (ImGui::CollapsingHeader("CircleCollider2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+
+					auto& component = m_Context.GetComponent<CircleCollider2DComponent>();
+
+					float radius = component.GetRadius();
+					if (ImGui::DragFloat(LABEL("Radius").c_str(), &radius, 0.1f))
+					{
+						component.SetRadius(radius);
+					}
+
+					Vector2f offset = component.GetOffset();
+					if (ImGui::DragFloat2(LABEL("Offset").c_str(), (float*)&offset, 0.1f))
+					{
+						component.SetOffset(offset);
+					}
+
+					bool trigger = component.IsTrigger();
+					if (ImGui::Checkbox(LABEL("Trigger").c_str(), &trigger))
+					{
+						component.SetIsTrigger(trigger);
+					}
+
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				}
+			}
+
+			// Draw CapsuleCollider2DComponent
+			if (m_Context.HasComponent<CapsuleCollider2DComponent>())
+			{
+				if (ImGui::CollapsingHeader("CapsuleCollider2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+
+					auto& component = m_Context.GetComponent<CapsuleCollider2DComponent>();
+
+					Vector2f size = component.GetSize();
+					if (ImGui::DragFloat2(LABEL("Size").c_str(), (float*)&size, 0.1f))
+					{
+						component.SetSize(size);
+					}
+
+					Vector2f offset = component.GetOffset();
+					if (ImGui::DragFloat2(LABEL("Offset").c_str(), (float*)&offset, 0.1f))
+					{
+						component.SetOffset(offset);
+					}
+
+					bool trigger = component.IsTrigger();
+					if (ImGui::Checkbox(LABEL("Trigger").c_str(), &trigger))
+					{
+						component.SetIsTrigger(trigger);
+					}
+
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				}
+			}
+
 		}
 		ImGui::End();
 	}

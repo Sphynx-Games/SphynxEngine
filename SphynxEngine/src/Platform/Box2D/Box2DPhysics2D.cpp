@@ -218,13 +218,6 @@ namespace Sphynx
 		}
 
 		Rigidbody2D* rigidbody = new Rigidbody2D(body);
-
-		if (m_PhysicScenes.find(physicsScene) == m_PhysicScenes.end())
-		{
-			m_PhysicScenes[physicsScene] = std::vector<Rigidbody2D*>();
-		}
-		std::vector<Rigidbody2D*>& values = m_PhysicScenes[physicsScene];
-		values.push_back(rigidbody);
 		return rigidbody;
 	}
 
@@ -232,17 +225,6 @@ namespace Sphynx
 	{
 		SPX_CORE_ASSERT(IsRigidbodyValid(rigidbody), "Rigidbody is not valid!!");
 
-		for (auto& it : m_PhysicScenes)
-		{
-			for (unsigned i = 0; i < it.second.size(); ++i)
-			{
-				if (it.second[i] == rigidbody)
-				{
-					it.second.erase(it.second.begin() + i);
-					break;
-				}
-			}
-		}
 		b2Body* b2body = rigidbody->m_Body;
 		b2body->GetWorld()->DestroyBody(b2body);
 		rigidbody->m_Body = nullptr;
@@ -251,11 +233,7 @@ namespace Sphynx
 
 	void Physics2D::Step(Physics2DScene* physicsScene, float timeStep)
 	{
-		if (m_PhysicScenes.find(physicsScene) == m_PhysicScenes.end())
-		{
-			SPX_CORE_LOG_WARNING("There are no Rigidbodies for the current PhysicsScene!!");
-			return;
-		}
+		SPX_CORE_ASSERT(physicsScene != nullptr, "Physics2DScene is nullptr!!");
 
 		physicsScene->m_PhysicsWorld.Step(timeStep, 8, 3);
 		physicsScene->OnPostStepPhysics.Execute();

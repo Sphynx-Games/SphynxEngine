@@ -76,8 +76,5 @@ namespace Sphynx
 		//		-- CAPSULE
 		static Vector2f GetCapsuleColliderSize(CapsuleCollider2D* collider);
 		static void SetCapsuleColliderSize(CapsuleCollider2D* collider, Vector2f size);
-
-	private:
-		inline static std::unordered_map<Physics2DScene*, std::vector<Rigidbody2D*>> m_PhysicScenes;
 	};
 }

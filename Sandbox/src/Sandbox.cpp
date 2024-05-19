@@ -81,24 +81,24 @@ void SandboxLayer::Attach()
 
 	Actor staticRigidBody = m_SandboxScene.CreateActor();
 	staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -2.0f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	staticRigidBody.AddComponent<RigidbodyComponent>().SetRigidbodyType(RigidbodyType::STATIC);
+	staticRigidBody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::STATIC);
 	staticRigidBody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 1.0f });
 
 	Actor dynamicRigidbody = m_SandboxScene.CreateActor();
 	dynamicRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
-	dynamicRigidbody.AddComponent<RigidbodyComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
+	dynamicRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	dynamicRigidbody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 0.0f });
 
 	Actor dynamicSphereRigidbody = m_SandboxScene.CreateActor();
 	dynamicSphereRigidbody.AddComponent<TransformComponent>(Transform{ { 0.5f, 3.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
-	dynamicSphereRigidbody.AddComponent<RigidbodyComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
+	dynamicSphereRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	dynamicSphereRigidbody.AddComponent<CircleCollider2DComponent>(1.0f, Vector2f{ 0.0f, 0.0f });
 
 	Actor capsuleRigidbody = m_SandboxScene.CreateActor();
 	//capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 1.0f, 0.0f }, { 2.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	//capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 1.0f, 0.0f }, { 2.0f, -0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f } }); // TODO: take into account negative sizes
 	capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { -1.5f, 1.0f, 0.0f }, { 2.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, -10.0f } });
-	capsuleRigidbody.AddComponent<RigidbodyComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
+	capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 
 	m_SandboxScene.BeginPlay();

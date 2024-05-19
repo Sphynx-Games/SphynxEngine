@@ -71,7 +71,10 @@ namespace Sphynx
 		}
 
 		// Simulate PHYSISCS in scene
-		Physics2D::Step(m_PhysicsScene, deltaTime);
+		if (m_PhysicsScene != nullptr)
+		{
+			Physics2D::Step(m_PhysicsScene, deltaTime);
+		}
 	}
 
 	Actor Scene::CreateActor()
@@ -95,7 +98,7 @@ namespace Sphynx
 	{
 		m_PhysicsScene = Physics2D::CreatePhysics2DScene();
 
-		auto CreateBody = [&](RigidbodyComponent& rigidbody, Collider2D* collider, const TransformComponent& transform)
+		auto CreateBody = [&](Rigidbody2DComponent& rigidbody, Collider2D* collider, const TransformComponent& transform)
 			{
 				RigidbodyDef def = RigidbodyDef();
 				def.Enabled = rigidbody.Enabled;
@@ -111,10 +114,10 @@ namespace Sphynx
 			};
 
 		// BOX
-		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : boxGroup)
 		{
-			auto [collider, rigidbody, transform] = boxGroup.get<BoxCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
+			auto [collider, rigidbody, transform] = boxGroup.get<BoxCollider2DComponent, Rigidbody2DComponent, TransformComponent>(entity);
 
 			BoxCollider2D* collider2D = new BoxCollider2D(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
@@ -122,10 +125,10 @@ namespace Sphynx
 		}
 
 		// CIRCLE
-		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : circleGroup)
 		{
-			auto [collider, rigidbody, transform] = circleGroup.get<CircleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
+			auto [collider, rigidbody, transform] = circleGroup.get<CircleCollider2DComponent, Rigidbody2DComponent, TransformComponent>(entity);
 
 			CircleCollider2D* collider2D = new CircleCollider2D(collider.GetRadius(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
@@ -133,10 +136,10 @@ namespace Sphynx
 		}
 
 		// CAPSULE
-		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : capsuleGroup)
 		{
-			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, RigidbodyComponent, TransformComponent>(entity);
+			auto [collider, rigidbody, transform] = capsuleGroup.get<CapsuleCollider2DComponent, Rigidbody2DComponent, TransformComponent>(entity);
 
 			CapsuleCollider2D* collider2D = new CapsuleCollider2D(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
@@ -150,7 +153,7 @@ namespace Sphynx
 				{
 					for (entt::entity entity : group)
 					{
-						auto [rigidbody, transform] = group.get<RigidbodyComponent, TransformComponent>(entity);
+						auto [rigidbody, transform] = group.get<Rigidbody2DComponent, TransformComponent>(entity);
 
 						Vector2f currentPos = Physics2D::GetRigidbodyPosition(rigidbody.m_Rigidbody);
 						float currentRot = Physics2D::GetRigidbodyRotation(rigidbody.m_Rigidbody);
@@ -160,13 +163,13 @@ namespace Sphynx
 					}
 				};
 
-			auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+			auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 			UpdateTransform(boxGroup);
 
-			auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+			auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 			UpdateTransform(circleGroup);
 
-			auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+			auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 			UpdateTransform(capsuleGroup);
 
 			DebugPhysics();
@@ -175,7 +178,7 @@ namespace Sphynx
 
 	void Scene::DebugPhysics()
 	{
-		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : boxGroup)
 		{
 			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
@@ -183,7 +186,7 @@ namespace Sphynx
 			Physics2D::DebugCollider(collider.m_Collider, transform.Transform);
 		}
 
-		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : circleGroup)
 		{
 			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
@@ -191,7 +194,7 @@ namespace Sphynx
 			Physics2D::DebugCollider(collider.m_Collider, transform.Transform);
 		}
 
-		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<RigidbodyComponent, TransformComponent>);
+		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : capsuleGroup)
 		{
 			auto [collider, transform] = capsuleGroup.get<CapsuleCollider2DComponent, TransformComponent>(entity);

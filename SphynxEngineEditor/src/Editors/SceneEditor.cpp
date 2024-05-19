@@ -65,7 +65,32 @@ namespace Sphynx
 			line.AddComponent<TransformComponent>(Transform{ { 0.5f, -0.5f, 0.0f }, { 1.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
 			line.AddComponent<LineRendererComponent>();
 
+			Actor staticRigidBody = s_Scene.CreateActor();
+			staticRigidBody.AddComponent<NameComponent>("Ground");
+			staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -2.0f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+			staticRigidBody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::STATIC);
+			staticRigidBody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 1.0f });
+
+			Actor dynamicRigidbody = s_Scene.CreateActor();
+			dynamicRigidbody.AddComponent<NameComponent>("Box");
+			dynamicRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
+			dynamicRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
+			dynamicRigidbody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 0.0f });
+
+			Actor dynamicSphereRigidbody = s_Scene.CreateActor();
+			dynamicSphereRigidbody.AddComponent<NameComponent>("Sphere");
+			dynamicSphereRigidbody.AddComponent<TransformComponent>(Transform{ { 0.5f, 3.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
+			dynamicSphereRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
+			dynamicSphereRigidbody.AddComponent<CircleCollider2DComponent>(1.0f, Vector2f{ 0.0f, 0.0f });
+
+			Actor capsuleRigidbody = s_Scene.CreateActor();
+			capsuleRigidbody.AddComponent<NameComponent>("Capsule");
+			capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { -1.5f, 1.0f, 0.0f }, { 2.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, -10.0f } });
+			capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
+			capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
+
 			m_ActiveScene = &s_Scene;
+			m_ActiveScene->BeginPlay(); // TODO: change this in the future
 		}
 
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
@@ -73,6 +98,7 @@ namespace Sphynx
 
 	SceneEditor::~SceneEditor()
 	{
+		m_ActiveScene->EndPlay(); // TODO: change this in the future
 		if (m_Framebuffer != nullptr)
 		{
 			delete m_Framebuffer;

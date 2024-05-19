@@ -6,12 +6,12 @@
 
 namespace Sphynx
 {
-	struct SPHYNX_API RigidbodyComponent
+	struct SPHYNX_API Rigidbody2DComponent
 	{
-		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(RigidbodyComponent);
+		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(Rigidbody2DComponent);
 
 	public:
-		RigidbodyComponent();
+		Rigidbody2DComponent();
 
 		bool IsEnabled();
 		void SetEnabled(bool enabled);
