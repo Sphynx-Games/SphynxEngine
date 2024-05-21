@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Logging/Log.h"
-#include "Component/Physics/RigidbodyComponent.h"
+#include "Component/Physics/Rigidbody2DComponent.h"
 
 #include <box2d/b2_world_callbacks.h>
 #include <box2d/b2_contact.h>

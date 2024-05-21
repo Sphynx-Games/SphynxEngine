@@ -2,7 +2,7 @@
 
 #include "Core/Core.h"
 #include "Core/Delegate.h"
-#include "Physics2DUtils.h"
+#include "Physics/Rigidbody2D.h"
 #include "Math/Transform.h"
 #include <unordered_map>
 #include <vector>
@@ -10,71 +10,32 @@
 
 namespace Sphynx
 {
-	class Physics2DScene;
-	class Rigidbody2D;
-	struct RigidbodyData;
-	class Collider2D;
-
 	class SPHYNX_API Physics2D
 	{
 	public:
-		static Physics2DScene* CreatePhysics2DScene();
-		static void DestroyPhysics2DScene(Physics2DScene* physicsScene);
+		static class PhysicsWorld2D* CreatePhysicsWorld();
+		static void DestroyPhysicsWorld(PhysicsWorld2D* physicWorld);
 
-		static Rigidbody2D* CreateRigidbody(Physics2DScene* physicsScene, Collider2D* collider, RigidbodyDef& rigidbodyDef);
-		static void DestroyRigidbody(Rigidbody2D* rigidbody);
+		static Rigidbody2D* CreateRigidbody(const RigidbodyDef& rigidbodyDef);
+		static void DestroyRigidbody(class Rigidbody2D* rigidbody);
 
-		static void Step(Physics2DScene* physicsScene, float timeStep);
-		static Delegate<void()>& GetOnPostStepPhysiscsDelegate(Physics2DScene* physicsScene);
+		static void AddRigidbody(PhysicsWorld2D* physicWorld, Rigidbody2D* rigidbody); // to physicWorld
+		static void RemoveRigidbody(Rigidbody2D* rigidbody);
 
-		static void DebugCollider(const Collider2D* collider, const Transform& transform);
+		static class BoxCollider2D* CreateBoxCollider(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
+		static class CircleCollider2D* CreateCircleCollider(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
+		static class CapsuleCollider2D* CreateCapsuleCollider(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
+		static void DestroyCollider(class Collider2D* collider);
 
+		static void AddCollider(Rigidbody2D* rigidbody, Collider2D* collider); // to rigidbody
+		static void RemoveCollider(Rigidbody2D* rigidbody, Collider2D* collider);
 
-		// getters and setters
-		// -- RIGIDBODY
-		static bool IsRigidbodyValid(Rigidbody2D* rigidbody);
+		static void Step(PhysicsWorld2D* physicWorld, float timeStep);
 
-		static Vector2f GetRigidbodyPosition(Rigidbody2D* rigidbody);
-		static float GetRigidbodyRotation(Rigidbody2D* rigidbody);
-
-		static bool IsRigidbodyEnabled(Rigidbody2D* rigidbody);
-		static void SetRigidbodyEnabled(Rigidbody2D* rigidbody, bool enable);
-
-		static RigidbodyType GetRigidbodyType(Rigidbody2D* rigidbody);
-		static void SetRigidbodyType(Rigidbody2D* rigidbody, RigidbodyType type);
-
-		static Vector2f GetRigidbodyLinearVelocity(Rigidbody2D* rigidbody);
-		static void SetRigidbodyLinearVelocity(Rigidbody2D* rigidbody, Vector2f velocity);
-
-		static float GetRigidbodyAngularVelocity(Rigidbody2D* rigidbody);
-		static void SetRigidbodyAngularVelocity(Rigidbody2D* rigidbody, float velocity);
-
-		static float GetRigidbodyLinearDamping(Rigidbody2D* rigidbody);
-		static void SetRigidbodyLinearDamping(Rigidbody2D* rigidbody, float damping);
-
-		static float GetRigidbodyAngularDamping(Rigidbody2D* rigidbody);
-		static void SetRigidbodyAngularDamping(Rigidbody2D* rigidbody, float damping);
-
-		static float GetRigidbodyGravityScale(Rigidbody2D* rigidbody);
-		static void SetRigidbodyGravityScale(Rigidbody2D* rigidbody, float gravityScale);
-
-		// -- COLLIDERS
-		static bool IsColliderTrigger(Collider2D* collider);
-		static void SetColliderIsTrigger(Collider2D* collider, bool trigger);
-
-		static Vector2f GetColliderOffset(Collider2D * collider);
-		static void SetColliderOffset(Collider2D * collider, Vector2f offset);
-
-		//		-- BOX
-		static Vector2f GetBoxColliderSize(BoxCollider2D* collider);
-		static void SetBoxColliderSize(BoxCollider2D* collider, Vector2f size);
-
-		//		-- CIRCLE
-		static float GetCircleColliderRadius(CircleCollider2D* collider);
-		static void SetCircleColliderRadius(CircleCollider2D* collider, float radius);
-
-		//		-- CAPSULE
-		static Vector2f GetCapsuleColliderSize(CapsuleCollider2D* collider);
-		static void SetCapsuleColliderSize(CapsuleCollider2D* collider, Vector2f size);
+	private:
+		// all created worlds, rigidbodies and colliders
+		inline static std::vector<class PhysicsWorld2D*> s_PhysicWorlds;
+		inline static std::vector<class Rigidbody2D*> s_Rigidbodies;
+		inline static std::vector<class Collider2D*> s_Colliders;
 	};
 }

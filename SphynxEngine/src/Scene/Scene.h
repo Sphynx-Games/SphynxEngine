@@ -7,10 +7,7 @@
 
 
 namespace Sphynx
-{
-	class Actor;
-	class Physics2DScene;
-	
+{	
 	class SPHYNX_API Scene
 	{
 	public:
@@ -22,7 +19,7 @@ namespace Sphynx
 		void EndPlay();
 		void Update(float deltaTime);
 
-		Actor CreateActor();
+		class Actor CreateActor();
 		void DestroyActor(const Actor& actor);
 
 		const std::vector<Actor>& GetActors() const;
@@ -37,9 +34,8 @@ namespace Sphynx
 		entt::registry m_Registry;
 		std::vector<Actor> m_Actors;
 
-		Physics2DScene* m_PhysicsScene;
+		class PhysicsWorld2D* m_PhysicsWorld;
 
 		friend class Actor;
-		friend class Physics2D;
 	};
 }

@@ -1,5 +1,6 @@
 #include "BoxCollider2DComponent.h"
 #include "Physics/Physics2D.h"
+#include "Physics/Collider2D.h"
 
 namespace Sphynx
 {
@@ -16,7 +17,7 @@ namespace Sphynx
 		{
 			return Size;
 		}
-		return Physics2D::GetBoxColliderSize(m_Collider);
+		return m_Collider->GetSize();
 	}
 
 	void BoxCollider2DComponent::SetSize(Vector2f size)
@@ -24,7 +25,7 @@ namespace Sphynx
 		Size = size;
 		if (m_Collider != nullptr)
 		{
-			Physics2D::SetBoxColliderSize(m_Collider, size);
+			m_Collider->SetSize(size);
 		}
 	}
 
@@ -34,7 +35,7 @@ namespace Sphynx
 		{
 			return Offset;
 		}
-		return Physics2D::GetColliderOffset(m_Collider);
+		return m_Collider->GetOffset();
 	}
 
 	void BoxCollider2DComponent::SetOffset(Vector2f offset)
@@ -42,7 +43,7 @@ namespace Sphynx
 		Offset = offset;
 		if (m_Collider != nullptr)
 		{
-			Physics2D::SetColliderOffset(m_Collider, offset);
+			m_Collider->SetOffset(offset);
 		}
 	}
 
@@ -52,7 +53,7 @@ namespace Sphynx
 		{
 			return Trigger;
 		}
-		return Physics2D::IsColliderTrigger(m_Collider);
+		return m_Collider->IsTrigger();
 	}
 
 	void BoxCollider2DComponent::SetIsTrigger(bool trigger)
@@ -60,7 +61,7 @@ namespace Sphynx
 		Trigger = trigger;
 		if (m_Collider != nullptr)
 		{
-			Physics2D::SetColliderIsTrigger(m_Collider, trigger);
+			m_Collider->SetTrigger(trigger);
 		}
 	}
 }

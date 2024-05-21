@@ -2,7 +2,7 @@
 
 #include "Core/Core.h"
 #include "Component/Common.h"
-#include "Physics/Physics2DUtils.h"
+#include "Physics/Rigidbody2D.h"
 
 namespace Sphynx
 {
@@ -35,7 +35,6 @@ namespace Sphynx
 		void SetGravityScale(float gravityScale);
 
 	private:
-		// initial values
 		bool Enabled;
 		RigidbodyType Type;
 		Vector2f LinearVelocity;
@@ -44,7 +43,6 @@ namespace Sphynx
 		float AngularDamping;
 		float GravityScale;
 
-		// pointer to rigidbody for physics2d
 		class Rigidbody2D* m_Rigidbody;
 
 		friend class Scene;
