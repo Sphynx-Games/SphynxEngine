@@ -14,20 +14,23 @@ namespace Sphynx
 	public:
 		CircleCollider2DComponent(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
 
-		float GetRadius();
+		float GetRadius() const;
 		void SetRadius(float radius);
 
-		Vector2f GetOffset();
+		Vector2f GetOffset() const;
 		void SetOffset(Vector2f offset);
 
-		bool IsTrigger();
+		bool IsTrigger() const;
 		void SetIsTrigger(bool trigger);
 
+		bool NeedsDebug() const;
+		void SetDebug(bool debug);
+
 	private:
-		float Radius;
-		Vector2f Offset;
-		bool Trigger;
-		bool Debug;
+		float m_Radius;
+		Vector2f m_Offset;
+		bool m_Trigger;
+		bool m_Debug;
 
 		class CircleCollider2D* m_Collider;
 

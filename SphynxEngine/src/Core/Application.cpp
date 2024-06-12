@@ -1,15 +1,13 @@
 #include "Application.h"
 #include "Renderer/Window.h"
 #include "Renderer/Renderer2D.h"
+#include "Physics/Physics2D.h"
 #include "Input/Input.h"
 #include "Core/Time.h"
-
 #include "Events/Event.h"
 #include "Events/WindowEvent.h"
-
 #include "LayerStack.h"
 #include "Layer.h"
-
 #include "Renderer/OrthographicCameraController.h"
 
 
@@ -103,6 +101,9 @@ namespace Sphynx
 
 		// Shut input
 		Input::Shutdown();
+
+		// Shut physics
+		Physics2D::Shutdown();
 
 		// Shut renderer
 		Renderer2D::Shutdown();

@@ -2,10 +2,10 @@
 
 #include "Core/Core.h"
 #include "Core/Delegate.h"
-#include "Physics/Rigidbody2D.h"
 #include "Math/Transform.h"
-#include <unordered_map>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 
 
 namespace Sphynx
@@ -13,29 +13,37 @@ namespace Sphynx
 	class SPHYNX_API Physics2D
 	{
 	public:
-		static class PhysicsWorld2D* CreatePhysicsWorld();
-		static void DestroyPhysicsWorld(PhysicsWorld2D* physicWorld);
+		static void Shutdown();
 
-		static Rigidbody2D* CreateRigidbody(const RigidbodyDef& rigidbodyDef);
-		static void DestroyRigidbody(class Rigidbody2D* rigidbody);
+		static class PhysicsWorld2D* CreatePhysicsWorld(Vector2f gravity = WorldGravity);
+		static void DestroyPhysicsWorld(PhysicsWorld2D* physicsWorld);
 
-		static void AddRigidbody(PhysicsWorld2D* physicWorld, Rigidbody2D* rigidbody); // to physicWorld
-		static void RemoveRigidbody(Rigidbody2D* rigidbody);
+		static class Rigidbody2D* CreateRigidbody(const struct RigidbodyDef& rigidbodyDef);
+		static void DestroyRigidbody(Rigidbody2D* rigidbody);
 
 		static class BoxCollider2D* CreateBoxCollider(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
 		static class CircleCollider2D* CreateCircleCollider(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
 		static class CapsuleCollider2D* CreateCapsuleCollider(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
 		static void DestroyCollider(class Collider2D* collider);
 
+		static void AddRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody); // to physicWorld
+		static void RemoveRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody);
 		static void AddCollider(Rigidbody2D* rigidbody, Collider2D* collider); // to rigidbody
 		static void RemoveCollider(Rigidbody2D* rigidbody, Collider2D* collider);
 
-		static void Step(PhysicsWorld2D* physicWorld, float timeStep);
+		static const std::unordered_set<Rigidbody2D*>& GetRigidbodies(PhysicsWorld2D* physicsWorld);
+		static const std::unordered_set<Collider2D*>& GetColliders(Rigidbody2D* rigidbody);
+
+		static void Step(PhysicsWorld2D* physicsWorld, float timeStep);
+
+	public:
+		inline static Vector2f WorldGravity = Vector2f(0.0f, -10.0f);
+		inline static uint32_t WorldVelocityIterations = 8;
+		inline static uint32_t WorldPositionIterations = 3;
 
 	private:
-		// all created worlds, rigidbodies and colliders
-		inline static std::vector<class PhysicsWorld2D*> s_PhysicWorlds;
-		inline static std::vector<class Rigidbody2D*> s_Rigidbodies;
-		inline static std::vector<class Collider2D*> s_Colliders;
+		inline static std::unordered_map<PhysicsWorld2D*, std::unordered_set<Rigidbody2D*>> s_PhysicsWorldToRigidbodies = { {nullptr, std::unordered_set<Rigidbody2D*>()} };
+		inline static std::unordered_map<Rigidbody2D*, std::unordered_set<Collider2D*>> s_RigidbodyToColliders = { {nullptr, std::unordered_set<Collider2D*>()} };
 	};
+
 }

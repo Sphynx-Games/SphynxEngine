@@ -102,13 +102,13 @@ namespace Sphynx
 		auto CreateBody = [&](Rigidbody2DComponent& rigidbody, Collider2D* collider, const TransformComponent& transform)
 			{
 				RigidbodyDef def = RigidbodyDef();
-				def.Enabled = rigidbody.Enabled;
-				def.Type = rigidbody.Type;
-				def.LinearVelocity = rigidbody.LinearVelocity;
-				def.AngularVelocity = rigidbody.AngularVelocity;
-				def.LinearDamping = rigidbody.LinearDamping;
-				def.AngularDamping = rigidbody.AngularDamping;
-				def.GravityScale = rigidbody.GravityScale;
+				def.Enabled = rigidbody.IsEnabled();
+				def.Type = rigidbody.GetRigidbodyType();
+				def.LinearVelocity = rigidbody.GetLinearVelocity();
+				def.AngularVelocity = rigidbody.GetAngularVelocity();
+				def.LinearDamping = rigidbody.GetLinearDamping();
+				def.AngularDamping = rigidbody.GetAngularDamping();
+				def.GravityScale = rigidbody.GetGravityScale();
 				def.Transform = transform.Transform;
 				Rigidbody2D* rb = Physics2D::CreateRigidbody(def);
 				Physics2D::AddRigidbody(m_PhysicsWorld, rb);
@@ -188,15 +188,20 @@ namespace Sphynx
 		{
 			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
 
-			Physics2DRenderer::DrawBoxCollider(collider.m_Collider, transform.Transform);
+			if (collider.NeedsDebug())
+			{
+				Physics2DRenderer::DrawBoxCollider(collider.m_Collider, transform.Transform);
+			}
 		}
 
 		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : circleGroup)
 		{
 			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
-
-			Physics2DRenderer::DrawCircleCollider(collider.m_Collider, transform.Transform);
+			if (collider.NeedsDebug())
+			{
+				Physics2DRenderer::DrawCircleCollider(collider.m_Collider, transform.Transform);
+			}
 		}
 
 		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
@@ -204,7 +209,10 @@ namespace Sphynx
 		{
 			auto [collider, transform] = capsuleGroup.get<CapsuleCollider2DComponent, TransformComponent>(entity);
 
-			Physics2DRenderer::DrawCapsuleCollider(collider.m_Collider, transform.Transform);
+			if (collider.NeedsDebug())
+			{
+				Physics2DRenderer::DrawCapsuleCollider(collider.m_Collider, transform.Transform);
+			}
 		}
 	}
 

@@ -37,7 +37,7 @@ namespace Sphynx
 
 	void Physics2DRenderer::DrawBoxCollider(BoxCollider2D* collider, const Transform& transform)
 	{
-		if (collider == nullptr || !collider->NeedsDebug()) return;
+		if (collider == nullptr) return;
 
 		Transform local = {
 					{ collider->GetOffset().X, collider->GetOffset().Y, 0.0f },
@@ -51,7 +51,7 @@ namespace Sphynx
 
 	void Physics2DRenderer::DrawCircleCollider(CircleCollider2D* collider, const Transform& transform)
 	{
-		if (collider == nullptr || !collider->NeedsDebug()) return;
+		if (collider == nullptr) return;
 
 		Transform local = {
 					{ collider->GetOffset().X, collider->GetOffset().Y, 0.0f },
@@ -68,7 +68,7 @@ namespace Sphynx
 
 	void Physics2DRenderer::DrawCapsuleCollider(CapsuleCollider2D* collider, const Transform& transform)
 	{
-		if (collider == nullptr || !collider->NeedsDebug()) return;
+		if (collider == nullptr) return;
 
 		// draw each fixture
 		// -- BOX

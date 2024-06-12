@@ -14,20 +14,23 @@ namespace Sphynx
 	public:
 		CapsuleCollider2DComponent(Vector2f size = { 1.0f, 2.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
 
-		Vector2f GetSize();
+		Vector2f GetSize() const;
 		void SetSize(Vector2f size);
 
-		Vector2f GetOffset();
+		Vector2f GetOffset() const;
 		void SetOffset(Vector2f offset);
 
-		bool IsTrigger();
+		bool IsTrigger()const;
 		void SetIsTrigger(bool trigger);
 
+		bool NeedsDebug() const;
+		void SetDebug(bool debug);
+
 	private:
-		Vector2f Size;
-		Vector2f Offset;
-		bool Trigger;
-		bool Debug;
+		Vector2f m_Size;
+		Vector2f m_Offset;
+		bool m_Trigger;
+		bool m_Debug;
 
 		class CapsuleCollider2D* m_Collider;
 

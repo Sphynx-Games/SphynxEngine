@@ -19,6 +19,12 @@ namespace Sphynx
 			m_Fixtures()
 		{}
 
+		~Box2DBoxCollider2D()
+		{
+			m_Fixtures.clear();
+			BoxCollider2D::~BoxCollider2D();
+		};
+
 	private:
 		std::vector<class b2Fixture*> m_Fixtures;
 
@@ -33,6 +39,12 @@ namespace Sphynx
 			m_Fixtures()
 		{}
 
+		~Box2DCircleCollider2D()
+		{
+			m_Fixtures.clear();
+			CircleCollider2D::~CircleCollider2D();
+		};
+
 	private:
 		std::vector<class b2Fixture*> m_Fixtures;
 
@@ -46,6 +58,12 @@ namespace Sphynx
 			CapsuleCollider2D(size, offset, isTrigger, debug),
 			m_Fixtures()
 		{}
+
+		~Box2DCapsuleCollider2D()
+		{
+			m_Fixtures.clear();
+			CapsuleCollider2D::~CapsuleCollider2D();
+		};
 
 	private:
 		std::vector<class b2Fixture*> m_Fixtures;

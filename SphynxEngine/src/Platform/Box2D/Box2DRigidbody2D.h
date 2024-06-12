@@ -11,35 +11,33 @@ namespace Sphynx
 	{
 	public:
 		Box2DRigidbody2D(RigidbodyDef definition);
-		virtual ~Box2DRigidbody2D();
+		~Box2DRigidbody2D();
 
 		virtual void AddCollider(class Collider2D* collider) override;
 		virtual void RemoveCollider(Collider2D* collider) override;
 
+		virtual Vector2f GetPosition() const override;
+		virtual float GetRotation() const override;
 
-		virtual void SetTransform(const Transform& transform) override;
-		virtual Vector2f GetPosition() override;
-		virtual float GetRotation() override;
-
-		virtual bool IsEnabled() override;
+		virtual bool IsEnabled() const override;
 		virtual void SetEnabled(bool enable) override;
 
-		virtual RigidbodyType GetType() override;
+		virtual RigidbodyType GetType() const override;
 		virtual void SetType(RigidbodyType type) override;
 
-		virtual Vector2f GetLinearVelocity() override;
+		virtual Vector2f GetLinearVelocity() const override;
 		virtual void SetLinearVelocity(Vector2f velocity) override;
 
-		virtual float GetAngularVelocity() override;
+		virtual float GetAngularVelocity() const override;
 		virtual void SetAngularVelocity(float velocity) override;
 
-		virtual float GetLinearDamping() override;
+		virtual float GetLinearDamping() const override;
 		virtual void SetLinearDamping(float damping) override;
 
-		virtual float GetAngularDamping() override;
+		virtual float GetAngularDamping() const override;
 		virtual void SetAngularDamping(float damping) override;
 
-		virtual float GetGravityScale() override;
+		virtual float GetGravityScale() const override;
 		virtual void SetGravityScale(float gravityScale) override;
 
 		static b2BodyType RigidbodyType_To_Box2D(RigidbodyType type);

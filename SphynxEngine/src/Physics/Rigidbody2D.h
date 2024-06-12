@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "Math/Transform.h"
+#include "Physics/Physics2D.h"
 
 
 namespace Sphynx
@@ -26,42 +27,47 @@ namespace Sphynx
 	class SPHYNX_API Rigidbody2D
 	{
 	public:
-		virtual ~Rigidbody2D() = default;
+		inline virtual class PhysicsWorld2D* GetPhysicsWorld() const { return m_PhysicsWorld; }
+
+		inline virtual Vector2f GetPosition() const { return Vector2f(m_Definition.Transform.Position.X, m_Definition.Transform.Position.Y); }
+		inline virtual float GetRotation() const { return m_Definition.Transform.Rotation.Z; }
+
+		inline virtual bool IsEnabled() const { return m_Definition.Enabled; }
+		inline virtual void SetEnabled(bool enable) { m_Definition.Enabled = enable; }
+
+		inline virtual RigidbodyType GetType() const { return m_Definition.Type; }
+		inline virtual void SetType(RigidbodyType type) { m_Definition.Type = type; };
+
+		inline virtual Vector2f GetLinearVelocity() const { return m_Definition.LinearVelocity; }
+		inline virtual void SetLinearVelocity(Vector2f velocity) { m_Definition.LinearVelocity = velocity; }
+
+		inline virtual float GetAngularVelocity() const { return m_Definition.AngularVelocity; }
+		inline virtual void SetAngularVelocity(float velocity) { m_Definition.AngularVelocity = velocity; }
+
+		inline virtual float GetLinearDamping() const { return m_Definition.LinearDamping; }
+		inline virtual void SetLinearDamping(float damping) { m_Definition.LinearDamping = damping; }
+
+		inline virtual float GetAngularDamping() const { return m_Definition.AngularDamping; }
+		inline virtual void SetAngularDamping(float damping) { m_Definition.AngularDamping = damping; }
+
+		inline virtual float GetGravityScale() const { return m_Definition.GravityScale; }
+		inline virtual void SetGravityScale(float gravityScale) { m_Definition.GravityScale = gravityScale; }
+
+	protected:
+		virtual ~Rigidbody2D() 
+		{
+			m_PhysicsWorld = nullptr;
+		};
 
 		virtual void AddCollider(class Collider2D* collider) = 0;
 		virtual void RemoveCollider(Collider2D* collider) = 0;
 
-
-		virtual const RigidbodyDef& GetDefinition() const { return m_Definition; }
-		virtual class PhysicsWorld2D* GetPhysicWorld() const { return m_PhysicWorld; }
-
-		virtual void SetTransform(const Transform& transform) = 0;
-		virtual Vector2f GetPosition() = 0;
-		virtual float GetRotation() = 0;
-
-		virtual bool IsEnabled() = 0;
-		virtual void SetEnabled(bool enable) = 0;
-
-		virtual RigidbodyType GetType() = 0;
-		virtual void SetType(RigidbodyType type) = 0;
-
-		virtual Vector2f GetLinearVelocity() = 0;
-		virtual void SetLinearVelocity(Vector2f velocity) = 0;
-
-		virtual float GetAngularVelocity() = 0;
-		virtual void SetAngularVelocity(float velocity) = 0;
-
-		virtual float GetLinearDamping() = 0;
-		virtual void SetLinearDamping(float damping) = 0;
-
-		virtual float GetAngularDamping() = 0;
-		virtual void SetAngularDamping(float damping) = 0;
-
-		virtual float GetGravityScale() = 0;
-		virtual void SetGravityScale(float gravityScale) = 0;
-
 	protected:
 		RigidbodyDef m_Definition;
-		PhysicsWorld2D* m_PhysicWorld;
+		PhysicsWorld2D* m_PhysicsWorld;
+
+	public:
+		friend class Physics2D;
+		friend class PhysicsWorld2D;
 	};
 }

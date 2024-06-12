@@ -2,7 +2,6 @@
 #include "Box2DPhysicsWorld2D.h"
 #include "Physics/Collider2D.h"
 #include "Box2DCollider2D.h"
-#include "Core/Core.h"
 
 #include <glm/glm.hpp>
 #include <box2d/b2_body.h>
@@ -15,16 +14,14 @@ namespace Sphynx
 		m_Body(nullptr)
 	{
 		m_Definition = definition;
-		m_PhysicWorld = nullptr;
+		m_PhysicsWorld = nullptr;
 	}
 
 	Box2DRigidbody2D::~Box2DRigidbody2D()
 	{
-		if (m_PhysicWorld != nullptr)
-		{
-			m_PhysicWorld->RemoveRigidbody(this);
-		}
-	}
+		m_Body = nullptr;
+		Rigidbody2D::~Rigidbody2D();
+	};
 
 	void Box2DRigidbody2D::AddCollider(Collider2D* collider)
 	{
@@ -103,8 +100,8 @@ namespace Sphynx
 				colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&circleB, 1.0f));
 			}
 		}
-
-		collider->SetRigidbody(this);
+		
+		//collider->m_Rigidbody = this;
 	}
 
 	void Box2DRigidbody2D::RemoveCollider(Collider2D* collider)
@@ -130,73 +127,71 @@ namespace Sphynx
 				m_Body->DestroyFixture(fix);
 			}
 			fixtures->clear();
-			collider->SetRigidbody(nullptr);
+
+			//collider->m_Rigidbody = nullptr;
+			//collider->SetRigidbody(nullptr);
 		}
 	}
 
-	void Box2DRigidbody2D::SetTransform(const Transform& transform)
-	{
-	}
-
-	Vector2f Box2DRigidbody2D::GetPosition()
+	Vector2f Box2DRigidbody2D::GetPosition() const
 	{
 		if (m_Body == nullptr)
 		{
-			return Vector2f(m_Definition.Transform.Position.X, m_Definition.Transform.Position.Y);
+			return Rigidbody2D::GetPosition();
 		}
 		return Vector2f(m_Body->GetPosition().x, m_Body->GetPosition().y);
 	}
 
-	float Box2DRigidbody2D::GetRotation()
+	float Box2DRigidbody2D::GetRotation() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.Transform.Rotation.Z;
+			return Rigidbody2D::GetRotation();
 		}
 		return glm::degrees(m_Body->GetAngle());
 	}
 
-	bool Box2DRigidbody2D::IsEnabled()
+	bool Box2DRigidbody2D::IsEnabled() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.Enabled;
+			return Rigidbody2D::IsEnabled();
 		}
 		return m_Body->IsEnabled();
 	}
 
 	void Box2DRigidbody2D::SetEnabled(bool enable)
 	{
-		m_Definition.Enabled = enable;
+		Rigidbody2D::SetEnabled(enable);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetEnabled(enable);
 		}
 	}
 
-	RigidbodyType Box2DRigidbody2D::GetType()
+	RigidbodyType Box2DRigidbody2D::GetType() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.Type;
+			return Rigidbody2D::GetType();
 		}
 		return Box2D_To_RigidbodyType(m_Body->GetType());
 	}
 
 	void Box2DRigidbody2D::SetType(RigidbodyType type)
 	{
-		m_Definition.Type = type;
+		Rigidbody2D::SetType(type);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetType(RigidbodyType_To_Box2D(type));
 		}
 	}
 
-	Vector2f Box2DRigidbody2D::GetLinearVelocity()
+	Vector2f Box2DRigidbody2D::GetLinearVelocity() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.LinearVelocity;
+			return Rigidbody2D::GetLinearVelocity();
 		}
 		b2Vec2 velocity = m_Body->GetLinearVelocity();
 		return Vector2f(velocity.x, velocity.y);
@@ -204,79 +199,79 @@ namespace Sphynx
 
 	void Box2DRigidbody2D::SetLinearVelocity(Vector2f velocity)
 	{
-		m_Definition.LinearVelocity = velocity;
+		Rigidbody2D::SetLinearVelocity(velocity);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetLinearVelocity({ velocity.X, velocity.Y });
 		}
 	}
 
-	float Box2DRigidbody2D::GetAngularVelocity()
+	float Box2DRigidbody2D::GetAngularVelocity() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.AngularVelocity;
+			return Rigidbody2D::GetAngularVelocity();
 		}
 		return m_Body->GetAngularVelocity();
 	}
 
 	void Box2DRigidbody2D::SetAngularVelocity(float velocity)
 	{
-		m_Definition.AngularVelocity = velocity;
+		Rigidbody2D::SetAngularVelocity(velocity);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetAngularVelocity(velocity);
 		}
 	}
 
-	float Box2DRigidbody2D::GetLinearDamping()
+	float Box2DRigidbody2D::GetLinearDamping() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.LinearDamping;
+			return Rigidbody2D::GetLinearDamping();
 		}
 		return m_Body->GetLinearDamping();
 	}
 
 	void Box2DRigidbody2D::SetLinearDamping(float damping)
 	{
-		m_Definition.LinearDamping = damping;
+		Rigidbody2D::SetLinearDamping(damping);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetLinearDamping(damping);
 		}
 	}
 
-	float Box2DRigidbody2D::GetAngularDamping()
+	float Box2DRigidbody2D::GetAngularDamping() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.AngularDamping;
+			return Rigidbody2D::GetAngularDamping();
 		}
 		return m_Body->GetAngularDamping();
 	}
 
 	void Box2DRigidbody2D::SetAngularDamping(float damping)
 	{
-		m_Definition.AngularDamping = damping;
+		Rigidbody2D::SetAngularDamping(damping);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetAngularDamping(damping);
 		}
 	}
 
-	float Box2DRigidbody2D::GetGravityScale()
+	float Box2DRigidbody2D::GetGravityScale() const
 	{
 		if (m_Body == nullptr)
 		{
-			return m_Definition.GravityScale;
+			return Rigidbody2D::GetGravityScale();
 		}
 		return m_Body->GetGravityScale();
 	}
 
 	void Box2DRigidbody2D::SetGravityScale(float gravityScale)
 	{
-		m_Definition.GravityScale = gravityScale;
+		Rigidbody2D::SetGravityScale(gravityScale);
 		if (m_Body != nullptr)
 		{
 			m_Body->SetGravityScale(gravityScale);

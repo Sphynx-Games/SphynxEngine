@@ -13,35 +13,35 @@ namespace Sphynx
 	public:
 		Rigidbody2DComponent();
 
-		bool IsEnabled();
+		bool IsEnabled() const;
 		void SetEnabled(bool enabled);
 
-		RigidbodyType GetRigidbodyType();
+		RigidbodyType GetRigidbodyType() const;
 		void SetRigidbodyType(RigidbodyType type);
 
-		Vector2f GetLinearVelocity();
+		Vector2f GetLinearVelocity() const;
 		void SetLinearVelocity(Vector2f velocity);
 
-		float GetAngularVelocity();
+		float GetAngularVelocity() const;
 		void SetAngularVelocity(float velocity);
 
-		float GetLinearDamping();
+		float GetLinearDamping() const;
 		void SetLinearDamping(float damping);
 
-		float GetAngularDamping();
+		float GetAngularDamping() const;
 		void SetAngularDamping(float damping);
 
-		float GetGravityScale();
+		float GetGravityScale() const;
 		void SetGravityScale(float gravityScale);
 
 	private:
-		bool Enabled;
-		RigidbodyType Type;
-		Vector2f LinearVelocity;
-		float AngularVelocity;
-		float LinearDamping;
-		float AngularDamping;
-		float GravityScale;
+		bool m_Enabled;
+		RigidbodyType m_Type;
+		Vector2f m_LinearVelocity;
+		float m_AngularVelocity;
+		float m_LinearDamping;
+		float m_AngularDamping;
+		float m_GravityScale;
 
 		class Rigidbody2D* m_Rigidbody;
 

@@ -4,136 +4,136 @@
 namespace Sphynx
 {
 	Rigidbody2DComponent::Rigidbody2DComponent() :
-		Enabled(true),
-		Type(RigidbodyType::STATIC),
-		LinearVelocity(Vector2f(0.0f, 0.0f)),
-		AngularVelocity(0.0f),
-		LinearDamping(0.0f),
-		AngularDamping(0.0f),
-		GravityScale(1.0f),
+		m_Enabled(true),
+		m_Type(RigidbodyType::STATIC),
+		m_LinearVelocity(Vector2f(0.0f, 0.0f)),
+		m_AngularVelocity(0.0f),
+		m_LinearDamping(0.0f),
+		m_AngularDamping(0.0f),
+		m_GravityScale(1.0f),
 		m_Rigidbody(nullptr)
 	{}
 
-	bool Rigidbody2DComponent::IsEnabled()
+	bool Rigidbody2DComponent::IsEnabled() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return Enabled;
+			return m_Enabled;
 		}
 		return m_Rigidbody->IsEnabled();
 	}
 
 	void Rigidbody2DComponent::SetEnabled(bool enabled)
 	{
-		Enabled = enabled;
+		m_Enabled = enabled;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetEnabled(enabled);
 		}
 	}
 
-	RigidbodyType Rigidbody2DComponent::GetRigidbodyType()
+	RigidbodyType Rigidbody2DComponent::GetRigidbodyType() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return Type;
+			return m_Type;
 		}
 		return m_Rigidbody->GetType();
 	}
 
 	void Rigidbody2DComponent::SetRigidbodyType(RigidbodyType type)
 	{
-		Type = type;
+		m_Type = type;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetType(type);
 		}
 	}
 
-	Vector2f Rigidbody2DComponent::GetLinearVelocity()
+	Vector2f Rigidbody2DComponent::GetLinearVelocity() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return LinearVelocity;
+			return m_LinearVelocity;
 		}
 		return m_Rigidbody->GetLinearVelocity();
 	}
 
 	void Rigidbody2DComponent::SetLinearVelocity(Vector2f velocity)
 	{
-		LinearVelocity = velocity;
+		m_LinearVelocity = velocity;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetLinearVelocity(velocity);
 		}
 	}
 
-	float Rigidbody2DComponent::GetAngularVelocity()
+	float Rigidbody2DComponent::GetAngularVelocity() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return AngularVelocity;
+			return m_AngularVelocity;
 		}
 		return m_Rigidbody->GetAngularVelocity();
 	}
 
 	void Rigidbody2DComponent::SetAngularVelocity(float velocity)
 	{
-		AngularVelocity = velocity;
+		m_AngularVelocity = velocity;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetAngularVelocity(velocity);
 		}
 	}
 
-	float Rigidbody2DComponent::GetLinearDamping()
+	float Rigidbody2DComponent::GetLinearDamping() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return LinearDamping;
+			return m_LinearDamping;
 		}
 		return m_Rigidbody->GetLinearDamping();
 	}
 
 	void Rigidbody2DComponent::SetLinearDamping(float damping)
 	{
-		LinearDamping = damping;
+		m_LinearDamping = damping;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetLinearDamping(damping);
 		}
 	}
 
-	float Rigidbody2DComponent::GetAngularDamping()
+	float Rigidbody2DComponent::GetAngularDamping() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return AngularDamping;
+			return m_AngularDamping;
 		}
 		return m_Rigidbody->GetAngularDamping();
 	}
 
 	void Rigidbody2DComponent::SetAngularDamping(float damping)
 	{
-		AngularDamping = damping;
+		m_AngularDamping = damping;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetAngularDamping(damping);
 		}
 	}
 
-	float Rigidbody2DComponent::GetGravityScale()
+	float Rigidbody2DComponent::GetGravityScale() const
 	{
 		if (m_Rigidbody == nullptr)
 		{
-			return GravityScale;
+			return m_GravityScale;
 		}
 		return m_Rigidbody->GetGravityScale();
 	}
 
 	void Rigidbody2DComponent::SetGravityScale(float gravityScale)
 	{
-		GravityScale = gravityScale;
+		m_GravityScale = gravityScale;
 		if (m_Rigidbody != nullptr)
 		{
 			m_Rigidbody->SetGravityScale(gravityScale);

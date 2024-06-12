@@ -9,16 +9,11 @@
 
 namespace Sphynx
 {
-	Box2DPhysicsWorld2D::Box2DPhysicsWorld2D() :
-		m_PhysicsWorld(b2World({ 0.0f, -10.0f })),
+	Box2DPhysicsWorld2D::Box2DPhysicsWorld2D(Vector2f gravity) :
+		m_PhysicsWorld(b2World({ gravity.X, gravity.Y })),
 		m_contactListener()
 	{
 		m_PhysicsWorld.SetContactListener(&m_contactListener);
-	}
-
-	Box2DPhysicsWorld2D::~Box2DPhysicsWorld2D()
-	{
-		OnPostStepPhysics.Unbind();
 	}
 
 	void Box2DPhysicsWorld2D::AddRigidbody(Rigidbody2D* rigidbody)
@@ -26,42 +21,41 @@ namespace Sphynx
 		if (rigidbody == nullptr) return;
 
 		b2BodyDef bodyDef;
-		RigidbodyDef rigidbodyDef = rigidbody->GetDefinition();
-		bodyDef.enabled = rigidbodyDef.Enabled;
-		bodyDef.type = Box2DRigidbody2D::RigidbodyType_To_Box2D(rigidbodyDef.Type);
-		bodyDef.linearVelocity = { rigidbodyDef.LinearVelocity.X, rigidbodyDef.LinearVelocity.Y };
-		bodyDef.angularVelocity = rigidbodyDef.AngularVelocity;
-		bodyDef.linearDamping = rigidbodyDef.LinearDamping;
-		bodyDef.angularDamping = rigidbodyDef.AngularDamping;
-		bodyDef.gravityScale = rigidbodyDef.GravityScale;
-		bodyDef.position = { rigidbodyDef.Transform.Position.X, rigidbodyDef.Transform.Position.Y };
-		bodyDef.angle = glm::radians(rigidbodyDef.Transform.Rotation.Z);
+		bodyDef.enabled = rigidbody->IsEnabled();
+		bodyDef.type = Box2DRigidbody2D::RigidbodyType_To_Box2D(rigidbody->GetType());
+		bodyDef.linearVelocity = { rigidbody->GetLinearVelocity().X, rigidbody->GetLinearVelocity().Y };
+		bodyDef.angularVelocity = rigidbody->GetAngularVelocity();
+		bodyDef.linearDamping = rigidbody->GetLinearDamping();
+		bodyDef.angularDamping = rigidbody->GetAngularDamping();
+		bodyDef.gravityScale = rigidbody->GetGravityScale();
+		bodyDef.position = { rigidbody->GetPosition().X, rigidbody->GetPosition().Y };
+		bodyDef.angle = glm::radians(rigidbody->GetRotation());
 
 		b2Body* body = m_PhysicsWorld.CreateBody(&bodyDef);
 		Box2DRigidbody2D* rigidbodyBox2D = static_cast<Box2DRigidbody2D*>(rigidbody);
 		rigidbodyBox2D->m_Body = body;
-		rigidbodyBox2D->m_PhysicWorld = this;
+		//rigidbodyBox2D->m_PhysicsWorld = this;
 	}
 
 	void Box2DPhysicsWorld2D::RemoveRigidbody(Rigidbody2D* rigidbody)
 	{
-		if (rigidbody == nullptr) return;
+		//if (rigidbody == nullptr) return;
 
 		Box2DRigidbody2D* rigidbodyBox2D = static_cast<Box2DRigidbody2D*>(rigidbody);
-		if (rigidbodyBox2D->GetPhysicWorld() != nullptr && rigidbodyBox2D->GetPhysicWorld() == this)
-		{
+		//if (rigidbodyBox2D->GetPhysicsWorld() != nullptr && rigidbodyBox2D->GetPhysicsWorld() == this)
+		//{
 			if (rigidbodyBox2D->m_Body != nullptr)
 			{
 				m_PhysicsWorld.DestroyBody(rigidbodyBox2D->m_Body);
 				rigidbodyBox2D->m_Body = nullptr;
 			}
-			rigidbodyBox2D->m_PhysicWorld = nullptr;
-		}
+			//rigidbodyBox2D->m_PhysicsWorld = nullptr;
+		//}
 	}
 
-	void Box2DPhysicsWorld2D::Step(float timeStep)
+	void Box2DPhysicsWorld2D::Step(float timeStep, uint32_t velocityIterations, uint32_t positionIterations)
 	{
-		m_PhysicsWorld.Step(timeStep, 8, 3);
+		m_PhysicsWorld.Step(timeStep, velocityIterations, positionIterations);
 		OnPostStepPhysics.Execute();
 	}
 }
