@@ -4,6 +4,7 @@
 #include "Core/UUID.h"
 #include "Asset.h"
 #include "AssetMetadata.h"
+#include "Container/Map.h"
 
 
 namespace Sphynx
@@ -20,7 +21,7 @@ namespace Sphynx
 		static AssetImportFunction GetImporter(const AssetType& type);
 
 	private:
-		static std::unordered_map<AssetType, AssetImportFunction> s_AssetImportFunctions;
+		static HashMap<AssetType, AssetImportFunction> s_AssetImportFunctions;
 
 	};
 }

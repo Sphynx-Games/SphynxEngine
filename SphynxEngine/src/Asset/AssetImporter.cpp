@@ -5,7 +5,7 @@
 
 namespace Sphynx
 {
-	std::unordered_map<AssetType, AssetImportFunction> AssetImporter::s_AssetImportFunctions = {};
+	HashMap<AssetType, AssetImportFunction> AssetImporter::s_AssetImportFunctions = {};
 
 	std::shared_ptr<IAsset> AssetImporter::Import(const AssetMetadata& metadata)
 	{
@@ -20,7 +20,7 @@ namespace Sphynx
 
 	bool AssetImporter::IsImporterRegistered(const AssetType& type)
 	{
-		return s_AssetImportFunctions.find(type) != s_AssetImportFunctions.end();
+		return s_AssetImportFunctions.ContainsKey(type);
 	}
 
 	AssetImportFunction AssetImporter::GetImporter(const AssetType& type)

@@ -36,7 +36,7 @@ namespace Sphynx
 				0.0f
 			);
 
-			colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&shape, 1.0f));
+			colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&shape, 1.0f));
 		}
 
 		// CIRCLE COLLIDERS
@@ -46,7 +46,7 @@ namespace Sphynx
 			shape.m_p = { colliderBox2D->GetOffset().X * m_Definition.Transform.Scale.X, colliderBox2D->GetOffset().Y * m_Definition.Transform.Scale.Y };
 			shape.m_radius = colliderBox2D->GetRadius() * std::max(m_Definition.Transform.Scale.X, m_Definition.Transform.Scale.Y);
 
-			colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&shape, 1.0f));
+			colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&shape, 1.0f));
 		}
 
 		// CAPSULE COLLIDERS
@@ -65,7 +65,7 @@ namespace Sphynx
 				circle.m_p = b2Vec2{ scaledOffset.X, scaledOffset.Y };
 				circle.m_radius = capsuleSize.X / 2.0f;
 
-				colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&circle, 1.0f));
+				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&circle, 1.0f));
 			}
 			else
 			{
@@ -95,9 +95,9 @@ namespace Sphynx
 				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
 				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
 
-				colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&box, 1.0f));
-				colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&circleA, 1.0f));
-				colliderBox2D->m_Fixtures.push_back(m_Body->CreateFixture(&circleB, 1.0f));
+				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&box, 1.0f));
+				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&circleA, 1.0f));
+				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&circleB, 1.0f));
 			}
 		}
 		
@@ -106,7 +106,7 @@ namespace Sphynx
 
 	void Box2DRigidbody2D::RemoveCollider(Collider2D* collider)
 	{
-		std::vector<b2Fixture*>* fixtures = &std::vector<b2Fixture*>();
+		Array<b2Fixture*>* fixtures = &Array<b2Fixture*>();
 		if (Box2DBoxCollider2D* colliderBox2D = dynamic_cast<Box2DBoxCollider2D*>(collider))
 		{
 			fixtures = &colliderBox2D->m_Fixtures;
@@ -120,13 +120,13 @@ namespace Sphynx
 			fixtures = &colliderBox2D->m_Fixtures;
 		}
 			
-		if (fixtures->size() > 0)
+		if (fixtures->Size() > 0)
 		{
 			for (b2Fixture* fix : *fixtures)
 			{
 				m_Body->DestroyFixture(fix);
 			}
-			fixtures->clear();
+			fixtures->RemoveAll();
 
 			//collider->m_Rigidbody = nullptr;
 			//collider->SetRigidbody(nullptr);

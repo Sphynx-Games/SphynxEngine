@@ -4,17 +4,17 @@
 #include "Asset.h"
 #include "AssetMetadata.h"
 #include "AssetImporter.h"
+#include "Container/Map.h"
 
 #include <string>
 #include <set>
-#include <unordered_map>
 #include <memory>
 
 
 namespace Sphynx
 {
 	using AssetTypeRegistry = std::set<AssetType>;
-	using AssetRegistry = std::unordered_map<AssetHandle, AssetMetadata>;
+	using AssetRegistry = HashMap<AssetHandle, AssetMetadata>;
 
 	class AssetManager
 	{

@@ -20,14 +20,14 @@ namespace Sphynx
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+		m_Layers.EmplaceAt(m_Layers.begin() + m_LayerInsertIndex, layer);
 		++m_LayerInsertIndex;
 		layer->Attach();
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
-		m_Layers.emplace_back(overlay);
+		m_Layers.Emplace(overlay);
 		overlay->Attach();
 	}
 
@@ -37,7 +37,7 @@ namespace Sphynx
 		if (it != m_Layers.begin() + m_LayerInsertIndex)
 		{
 			layer->Detach();
-			m_Layers.erase(it);
+			m_Layers.Remove(layer);
 			--m_LayerInsertIndex;
 		}
 	}
@@ -48,7 +48,7 @@ namespace Sphynx
 		if (it != m_Layers.end())
 		{
 			overlay->Detach();
-			m_Layers.erase(it);
+			m_Layers.Remove(overlay);
 		}
 	}
 }

@@ -45,6 +45,9 @@ namespace Sphynx
 		// Initialize renderer
 		Renderer2D::Init();
 
+		// Initialize physics
+		Physics2D::Init();
+
 		// Initialize input
 		Input::Init();
 

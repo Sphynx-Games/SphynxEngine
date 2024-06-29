@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include "Container/Array.h"
+
 
 namespace Sphynx
 {
@@ -9,7 +10,7 @@ namespace Sphynx
 	class LayerStack
 	{
 	public:
-		LayerStack();;
+		LayerStack();
 		~LayerStack();
 
 		void PushLayer(Layer* layer);
@@ -17,21 +18,21 @@ namespace Sphynx
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* overlay);
 
-		inline const std::vector<Layer*>& get() { return m_Layers; }
-		inline size_t size() { return m_Layers.size(); }
+		inline const Array<Layer*>& get() { return m_Layers; }
+		inline size_t size() { return m_Layers.Size(); }
 
-		std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
-		std::vector<Layer*>::iterator end() { return m_Layers.end(); }
-		std::vector<Layer*>::reverse_iterator rbegin() { return m_Layers.rbegin(); }
-		std::vector<Layer*>::reverse_iterator rend() { return m_Layers.rend(); }
+		Array<Layer*>::Iterator begin() { return m_Layers.begin(); }
+		Array<Layer*>::Iterator end() { return m_Layers.end(); }
+		Array<Layer*>::ReverseIterator rbegin() { return m_Layers.rbegin(); }
+		Array<Layer*>::ReverseIterator rend() { return m_Layers.rend(); }
 
-		std::vector<Layer*>::const_iterator begin() const { return m_Layers.begin(); }
-		std::vector<Layer*>::const_iterator end()	const { return m_Layers.end(); }
-		std::vector<Layer*>::const_reverse_iterator rbegin() const { return m_Layers.rbegin(); }
-		std::vector<Layer*>::const_reverse_iterator rend() const { return m_Layers.rend(); }
+		Array<Layer*>::ConstIterator begin() const { return m_Layers.begin(); }
+		Array<Layer*>::ConstIterator end()	const { return m_Layers.end(); }
+		Array<Layer*>::ConstReverseIterator rbegin() const { return m_Layers.rbegin(); }
+		Array<Layer*>::ConstReverseIterator rend() const { return m_Layers.rend(); }
 
 	private:
-		std::vector<Layer*> m_Layers;
-		uint32_t m_LayerInsertIndex;
+		Array<Layer*> m_Layers;
+		uint64_t m_LayerInsertIndex;
 	};
 }

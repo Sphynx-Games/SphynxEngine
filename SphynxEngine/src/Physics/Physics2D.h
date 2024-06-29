@@ -3,9 +3,8 @@
 #include "Core/Core.h"
 #include "Core/Delegate.h"
 #include "Math/Transform.h"
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
+#include "Container/Map.h"
+#include "Container/Set.h"
 
 
 namespace Sphynx
@@ -13,6 +12,7 @@ namespace Sphynx
 	class SPHYNX_API Physics2D
 	{
 	public:
+		static void Init();
 		static void Shutdown();
 
 		static class PhysicsWorld2D* CreatePhysicsWorld(Vector2f gravity = WorldGravity);
@@ -31,8 +31,8 @@ namespace Sphynx
 		static void AddCollider(Rigidbody2D* rigidbody, Collider2D* collider); // to rigidbody
 		static void RemoveCollider(Rigidbody2D* rigidbody, Collider2D* collider);
 
-		static const std::unordered_set<Rigidbody2D*>& GetRigidbodies(PhysicsWorld2D* physicsWorld);
-		static const std::unordered_set<Collider2D*>& GetColliders(Rigidbody2D* rigidbody);
+		static const Set<Rigidbody2D*>& GetRigidbodies(PhysicsWorld2D* physicsWorld);
+		static const Set<Collider2D*>& GetColliders(Rigidbody2D* rigidbody);
 
 		static void Step(PhysicsWorld2D* physicsWorld, float timeStep);
 
@@ -42,8 +42,8 @@ namespace Sphynx
 		inline static uint32_t WorldPositionIterations = 3;
 
 	private:
-		inline static std::unordered_map<PhysicsWorld2D*, std::unordered_set<Rigidbody2D*>> s_PhysicsWorldToRigidbodies = { {nullptr, std::unordered_set<Rigidbody2D*>()} };
-		inline static std::unordered_map<Rigidbody2D*, std::unordered_set<Collider2D*>> s_RigidbodyToColliders = { {nullptr, std::unordered_set<Collider2D*>()} };
+		inline static HashMap<PhysicsWorld2D*, Set<Rigidbody2D*>> s_PhysicsWorldToRigidbodies;
+		inline static HashMap<Rigidbody2D*, Set<Collider2D*>> s_RigidbodyToColliders;
 	};
 
 }

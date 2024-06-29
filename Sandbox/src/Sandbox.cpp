@@ -76,8 +76,9 @@ void SandboxLayer::Attach()
 	quad.AddComponent<BoxRendererComponent>();*/
 
 	Actor line = m_SandboxScene.CreateActor();
-	line.AddComponent<TransformComponent>(Transform{ { 0.5f, -1.5f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	line.AddComponent<LineRendererComponent>(Vector2f{ 0.0f, 0.0f }, Vector2f{ 1.0f, 0.0f }, 1.0f, Color::Green); // TODO: fix line width
+	//line.AddComponent<TransformComponent>(Transform{ { 0.5f, -1.5f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	line.AddComponent<TransformComponent>(Transform{ { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	line.AddComponent<LineRendererComponent>(Vector2f{ 0.0f, 0.0f }, Vector2f{ 1.0f, 0.0f }, 1.0f, Color::Green);
 
 	Actor staticRigidBody = m_SandboxScene.CreateActor();
 	staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -2.0f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
