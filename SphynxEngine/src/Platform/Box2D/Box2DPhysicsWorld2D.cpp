@@ -20,7 +20,10 @@ namespace Sphynx
 	{
 		if (rigidbody == nullptr) return;
 
+		Box2DRigidbody2D* rigidbodyBox2D = static_cast<Box2DRigidbody2D*>(rigidbody);
+
 		b2BodyDef bodyDef;
+		bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(rigidbodyBox2D);
 		bodyDef.enabled = rigidbody->IsEnabled();
 		bodyDef.type = Box2DRigidbody2D::RigidbodyType_To_Box2D(rigidbody->GetType());
 		bodyDef.linearVelocity = { rigidbody->GetLinearVelocity().X, rigidbody->GetLinearVelocity().Y };
@@ -32,7 +35,6 @@ namespace Sphynx
 		bodyDef.angle = glm::radians(rigidbody->GetRotation());
 
 		b2Body* body = m_PhysicsWorld.CreateBody(&bodyDef);
-		Box2DRigidbody2D* rigidbodyBox2D = static_cast<Box2DRigidbody2D*>(rigidbody);
 		rigidbodyBox2D->m_Body = body;
 		//rigidbodyBox2D->m_PhysicsWorld = this;
 	}

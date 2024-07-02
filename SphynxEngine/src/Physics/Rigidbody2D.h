@@ -27,6 +27,11 @@ namespace Sphynx
 	class SPHYNX_API Rigidbody2D
 	{
 	public:
+		Rigidbody2D(RigidbodyDef definition) :
+			m_Definition(definition),
+			m_PhysicsWorld(nullptr)
+		{}
+
 		inline virtual class PhysicsWorld2D* GetPhysicsWorld() const { return m_PhysicsWorld; }
 
 		inline virtual Vector2f GetPosition() const { return Vector2f(m_Definition.Transform.Position.X, m_Definition.Transform.Position.Y); }

@@ -114,6 +114,5 @@ namespace Sphynx
 
 	private:
 		std::unordered_set<T> m_Set;
-
 	};
 }

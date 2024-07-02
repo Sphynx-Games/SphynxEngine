@@ -11,20 +11,25 @@
 namespace Sphynx
 {
 	Box2DRigidbody2D::Box2DRigidbody2D(RigidbodyDef definition) :
+		Rigidbody2D(definition),
 		m_Body(nullptr)
-	{
-		m_Definition = definition;
-		m_PhysicsWorld = nullptr;
-	}
+	{}
 
 	Box2DRigidbody2D::~Box2DRigidbody2D()
 	{
 		m_Body = nullptr;
-		Rigidbody2D::~Rigidbody2D();
 	};
 
 	void Box2DRigidbody2D::AddCollider(Collider2D* collider)
 	{
+		auto CreateFixture = [&](Collider2D* collider, b2Shape& shape)
+			{
+				b2Fixture* fixture = m_Body->CreateFixture(&shape, 1.0f);
+				fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(collider);
+				return fixture;
+			};
+
+
 		// BOX COLLIDERS
 		if (Box2DBoxCollider2D* colliderBox2D = dynamic_cast<Box2DBoxCollider2D*>(collider))
 		{
@@ -36,7 +41,7 @@ namespace Sphynx
 				0.0f
 			);
 
-			colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&shape, 1.0f));
+			colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, shape));
 		}
 
 		// CIRCLE COLLIDERS
@@ -46,7 +51,7 @@ namespace Sphynx
 			shape.m_p = { colliderBox2D->GetOffset().X * m_Definition.Transform.Scale.X, colliderBox2D->GetOffset().Y * m_Definition.Transform.Scale.Y };
 			shape.m_radius = colliderBox2D->GetRadius() * std::max(m_Definition.Transform.Scale.X, m_Definition.Transform.Scale.Y);
 
-			colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&shape, 1.0f));
+			colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, shape));
 		}
 
 		// CAPSULE COLLIDERS
@@ -65,7 +70,7 @@ namespace Sphynx
 				circle.m_p = b2Vec2{ scaledOffset.X, scaledOffset.Y };
 				circle.m_radius = capsuleSize.X / 2.0f;
 
-				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&circle, 1.0f));
+				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, circle));
 			}
 			else
 			{
@@ -95,9 +100,9 @@ namespace Sphynx
 				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
 				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
 
-				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&box, 1.0f));
-				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&circleA, 1.0f));
-				colliderBox2D->m_Fixtures.Add(m_Body->CreateFixture(&circleB, 1.0f));
+				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, box));
+				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, circleA));
+				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, circleB));
 			}
 		}
 		

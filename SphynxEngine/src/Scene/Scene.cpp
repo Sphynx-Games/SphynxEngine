@@ -6,7 +6,6 @@
 #include "Physics/PhysicsWorld2D.h"
 #include "Physics/Collider2D.h"
 #include "Physics/Physics2DRenderer.h"
-#include "Core/Delegate.h"
 
 
 namespace Sphynx

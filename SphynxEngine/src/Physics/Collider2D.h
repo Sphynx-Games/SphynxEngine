@@ -1,13 +1,22 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Core/Delegate.h"
 #include "Math/Vector.h"
 #include "Physics/Rigidbody2D.h"
 #include "Physics/Physics2D.h"
+#include "Container/Set.h"
 
 
 namespace Sphynx
 {
+	struct SPHYNX_API Contact2D
+	{
+		class Collider2D* OtherCollider;
+		Vector2f Normal;
+	};
+
+
 	class SPHYNX_API Collider2D
 	{
 	public:
@@ -18,7 +27,8 @@ namespace Sphynx
 		inline void SetTrigger(bool trigger) { m_Trigger = trigger; }
 
 		inline class Rigidbody2D* GetRigidbody() const { return m_Rigidbody; }
-		/*inline void SetRigidbody(Rigidbody2D* rigidbody) { m_Rigidbody = rigidbody; }*/
+
+		inline const Set<Collider2D*>& GetOverlaps() { return m_Overlaps; }
 
 	protected:
 		Collider2D(Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
@@ -32,11 +42,43 @@ namespace Sphynx
 			m_Rigidbody = nullptr;
 		};
 
+		virtual void BeginOverlap(Contact2D contact)
+		{
+			m_Overlaps.Add(contact.OtherCollider);
+			if (OnBeginOverlap.IsBound())
+			{
+				OnBeginOverlap.Execute(&contact);
+			}
+		}
+
+		virtual void EndOverlap(Contact2D contact)
+		{
+			m_Overlaps.Remove(contact.OtherCollider);
+			if (OnEndOverlap.IsBound())
+			{
+				OnEndOverlap.Execute(&contact);
+			}
+		}
+
+		virtual void BeginHit(Contact2D contact)
+		{
+			if (OnHit.IsBound())
+			{
+				OnHit.Execute(&contact);
+			}
+		}
+
 	protected:
 		Vector2f m_Offset;
 		bool m_Trigger;
-
 		Rigidbody2D* m_Rigidbody;
+
+		Set<Collider2D*> m_Overlaps;
+
+	public:
+		Delegate<void(Contact2D*)> OnBeginOverlap;
+		Delegate<void(Contact2D*)> OnEndOverlap;
+		Delegate<void(Contact2D*)> OnHit;
 
 	public:
 		friend class Physics2D;
