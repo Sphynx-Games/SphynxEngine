@@ -22,120 +22,14 @@ namespace Sphynx
 
 	void Box2DRigidbody2D::AddCollider(Collider2D* collider)
 	{
-		auto CreateFixture = [&](Collider2D* collider, b2Shape& shape)
-			{
-				b2Fixture* fixture = m_Body->CreateFixture(&shape, 1.0f);
-				fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(collider);
-				return fixture;
-			};
-
-
-		// BOX COLLIDERS
-		if (Box2DBoxCollider2D* colliderBox2D = dynamic_cast<Box2DBoxCollider2D*>(collider))
-		{
-			b2PolygonShape shape;
-			shape.SetAsBox(
-				(colliderBox2D->GetSize().X * m_Definition.Transform.Scale.X) / 2.0f,
-				(colliderBox2D->GetSize().Y * m_Definition.Transform.Scale.Y) / 2.0f,
-				{ colliderBox2D->GetOffset().X * m_Definition.Transform.Scale.X, colliderBox2D->GetOffset().Y * m_Definition.Transform.Scale.Y },
-				0.0f
-			);
-
-			colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, shape));
-		}
-
-		// CIRCLE COLLIDERS
-		else if (Box2DCircleCollider2D* colliderBox2D = dynamic_cast<Box2DCircleCollider2D*>(collider))
-		{
-			b2CircleShape shape;
-			shape.m_p = { colliderBox2D->GetOffset().X * m_Definition.Transform.Scale.X, colliderBox2D->GetOffset().Y * m_Definition.Transform.Scale.Y };
-			shape.m_radius = colliderBox2D->GetRadius() * std::max(m_Definition.Transform.Scale.X, m_Definition.Transform.Scale.Y);
-
-			colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, shape));
-		}
-
-		// CAPSULE COLLIDERS
-		else if (Box2DCapsuleCollider2D* colliderBox2D = dynamic_cast<Box2DCapsuleCollider2D*>(collider))
-		{
-			Vector2f capsuleSize = colliderBox2D->GetSize() * Vector2f{ m_Definition.Transform.Scale.X, m_Definition.Transform.Scale.Y };
-			Vector2f scaledOffset = {
-				colliderBox2D->GetOffset().X * m_Definition.Transform.Scale.X,
-				colliderBox2D->GetOffset().Y * m_Definition.Transform.Scale.Y
-			};
-
-			if (capsuleSize.X == capsuleSize.Y)
-			{
-				// 1 CIRCLE
-				b2CircleShape circle;
-				circle.m_p = b2Vec2{ scaledOffset.X, scaledOffset.Y };
-				circle.m_radius = capsuleSize.X / 2.0f;
-
-				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, circle));
-			}
-			else
-			{
-				// 1 BOX + 2 CIRCLES
-				Vector2f boxSize =
-				{
-					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.X - capsuleSize.Y : capsuleSize.X,
-					(capsuleSize.X > capsuleSize.Y) ? capsuleSize.Y : capsuleSize.Y - capsuleSize.X
-				};
-
-				b2PolygonShape box;
-				box.SetAsBox(
-					boxSize.X / 2.0f,
-					boxSize.Y / 2.0f,
-					{ scaledOffset.X, scaledOffset.Y },
-					0.0f
-				);
-
-				b2CircleShape circleA; // right, up
-				circleA.m_p = (capsuleSize.X > capsuleSize.Y)
-					? b2Vec2{ (boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				    : b2Vec2{ scaledOffset.X, (boxSize.Y / 2.0f) + scaledOffset.Y };
-				circleA.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-				b2CircleShape circleB; // left, down
-				circleB.m_p = (capsuleSize.X > capsuleSize.Y)
-					? b2Vec2{ (-boxSize.X / 2.0f) + scaledOffset.X, scaledOffset.Y }
-				    : b2Vec2{ scaledOffset.X, (-boxSize.Y / 2.0f) + scaledOffset.Y };
-				circleB.m_radius = (capsuleSize.X > capsuleSize.Y) ? boxSize.Y / 2.0f : boxSize.X / 2.0f;
-
-				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, box));
-				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, circleA));
-				colliderBox2D->m_Fixtures.Add(CreateFixture(colliderBox2D, circleB));
-			}
-		}
-		
-		//collider->m_Rigidbody = this;
+		Box2DCollider2D* colliderBox2D = dynamic_cast<Box2DCollider2D*>(collider);
+		colliderBox2D->CreateFixtures(m_Body, m_Definition.Transform);
 	}
 
 	void Box2DRigidbody2D::RemoveCollider(Collider2D* collider)
 	{
-		Array<b2Fixture*>* fixtures = &Array<b2Fixture*>();
-		if (Box2DBoxCollider2D* colliderBox2D = dynamic_cast<Box2DBoxCollider2D*>(collider))
-		{
-			fixtures = &colliderBox2D->m_Fixtures;
-		}
-		else if (Box2DCircleCollider2D* colliderBox2D = dynamic_cast<Box2DCircleCollider2D*>(collider))
-		{
-			fixtures = &colliderBox2D->m_Fixtures;
-		}
-		else if (Box2DCapsuleCollider2D* colliderBox2D = dynamic_cast<Box2DCapsuleCollider2D*>(collider))
-		{
-			fixtures = &colliderBox2D->m_Fixtures;
-		}
-			
-		if (fixtures->Size() > 0)
-		{
-			for (b2Fixture* fix : *fixtures)
-			{
-				m_Body->DestroyFixture(fix);
-			}
-			fixtures->RemoveAll();
-
-			//collider->m_Rigidbody = nullptr;
-			//collider->SetRigidbody(nullptr);
-		}
+		Box2DCollider2D* colliderBox2D = dynamic_cast<Box2DCollider2D*>(collider);
+		colliderBox2D->DestroyFixtures(m_Body);
 	}
 
 	Vector2f Box2DRigidbody2D::GetPosition() const

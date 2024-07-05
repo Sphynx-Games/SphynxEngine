@@ -15,6 +15,7 @@ namespace Sphynx
 
 		virtual void AddRigidbody(class Rigidbody2D* rigidbody) = 0;
 		virtual void RemoveRigidbody(Rigidbody2D* rigidbody) = 0;
+		virtual void AddCollider(class Collider2D* collider, const RigidbodyDef& definition) = 0; // no rigidbody
 
 		virtual void Step(float timeStep, uint32_t velocityIterations, uint32_t positionIterations) = 0;
 

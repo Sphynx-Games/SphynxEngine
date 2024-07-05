@@ -98,21 +98,29 @@ namespace Sphynx
 	{
 		m_PhysicsWorld = Physics2D::CreatePhysicsWorld();
 
-		auto CreateBody = [&](Rigidbody2DComponent& rigidbody, Collider2D* collider, const TransformComponent& transform)
+		auto CreateBody = [&](Rigidbody2DComponent* rigidbody, Collider2D* collider, const TransformComponent& transform)
 			{
 				RigidbodyDef def = RigidbodyDef();
-				def.Enabled = rigidbody.IsEnabled();
-				def.Type = rigidbody.GetRigidbodyType();
-				def.LinearVelocity = rigidbody.GetLinearVelocity();
-				def.AngularVelocity = rigidbody.GetAngularVelocity();
-				def.LinearDamping = rigidbody.GetLinearDamping();
-				def.AngularDamping = rigidbody.GetAngularDamping();
-				def.GravityScale = rigidbody.GetGravityScale();
 				def.Transform = transform.Transform;
-				Rigidbody2D* rb = Physics2D::CreateRigidbody(def);
-				Physics2D::AddRigidbody(m_PhysicsWorld, rb);
-				rigidbody.m_Rigidbody = rb;
-				Physics2D::AddCollider(rb, collider);
+				if (rigidbody != nullptr)
+				{
+					def.Enabled = rigidbody->IsEnabled();
+					def.Type = rigidbody->GetRigidbodyType();
+					def.LinearVelocity = rigidbody->GetLinearVelocity();
+					def.AngularVelocity = rigidbody->GetAngularVelocity();
+					def.LinearDamping = rigidbody->GetLinearDamping();
+					def.AngularDamping = rigidbody->GetAngularDamping();
+					def.GravityScale = rigidbody->GetGravityScale();
+					
+					Rigidbody2D* rb = Physics2D::CreateRigidbody(def);
+					Physics2D::AddRigidbody(m_PhysicsWorld, rb);
+					rigidbody->m_Rigidbody = rb;
+					Physics2D::AddCollider(rb, collider);
+				}
+				else
+				{
+					Physics2D::AddCollider(m_PhysicsWorld, collider, def);
+				}
 			};
 
 		// BOX
@@ -123,7 +131,7 @@ namespace Sphynx
 
 			BoxCollider2D* collider2D = Physics2D::CreateBoxCollider(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
-			CreateBody(rigidbody, collider2D, transform);
+			CreateBody(&rigidbody, collider2D, transform);
 		}
 
 		// CIRCLE
@@ -134,7 +142,7 @@ namespace Sphynx
 
 			CircleCollider2D* collider2D = Physics2D::CreateCircleCollider(collider.GetRadius(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
-			CreateBody(rigidbody, collider2D, transform);
+			CreateBody(&rigidbody, collider2D, transform);
 		}
 
 		// CAPSULE
@@ -145,7 +153,7 @@ namespace Sphynx
 
 			CapsuleCollider2D* collider2D = Physics2D::CreateCapsuleCollider(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
-			CreateBody(rigidbody, collider2D, transform);
+			CreateBody(&rigidbody, collider2D, transform);
 		}
 
 		// post step => update transform values

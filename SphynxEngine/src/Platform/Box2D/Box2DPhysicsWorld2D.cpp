@@ -1,5 +1,7 @@
 #include "Box2DPhysicsWorld2D.h"
 #include "Box2DRigidbody2D.h"
+#include "Box2DCollider2D.h"
+#include "Physics/Collider2D.h"
 
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
@@ -53,6 +55,18 @@ namespace Sphynx
 			}
 			//rigidbodyBox2D->m_PhysicsWorld = nullptr;
 		//}
+	}
+
+	void Box2DPhysicsWorld2D::AddCollider(Collider2D* collider, const RigidbodyDef& definition)
+	{
+		b2BodyDef bodyDef;
+		bodyDef.position = { definition.Transform.Position.X, definition.Transform.Position.Y };
+		bodyDef.angle = glm::radians(definition.Transform.Rotation.Z);
+
+		b2Body* body = m_PhysicsWorld.CreateBody(&bodyDef);
+
+		Box2DCollider2D* colliderBox2D = dynamic_cast<Box2DCollider2D*>(collider);
+		colliderBox2D->CreateFixtures(body, definition.Transform);
 	}
 
 	void Box2DPhysicsWorld2D::Step(float timeStep, uint32_t velocityIterations, uint32_t positionIterations)

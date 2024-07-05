@@ -27,9 +27,10 @@ namespace Sphynx
 		static void DestroyCollider(class Collider2D* collider);
 
 		static void AddRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody); // to physicWorld
-		static void RemoveRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody);
+		static void RemoveRigidbody(Rigidbody2D* rigidbody);
 		static void AddCollider(Rigidbody2D* rigidbody, Collider2D* collider); // to rigidbody
-		static void RemoveCollider(Rigidbody2D* rigidbody, Collider2D* collider);
+		static void AddCollider(PhysicsWorld2D* physicsWorld, Collider2D* collider, const RigidbodyDef& definition); // to world; no rigidbody
+		static void RemoveCollider(Collider2D* collider);
 
 		static const Set<Rigidbody2D*>& GetRigidbodies(PhysicsWorld2D* physicsWorld);
 		static const Set<Collider2D*>& GetColliders(Rigidbody2D* rigidbody);

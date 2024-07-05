@@ -158,14 +158,16 @@ namespace Sphynx
 		s_PhysicsWorldToRigidbodies[physicsWorld].Add(rigidbody);
 	}
 
-	void Physics2D::RemoveRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody)
+	void Physics2D::RemoveRigidbody(Rigidbody2D* rigidbody)
 	{
-		SPX_CORE_ASSERT(physicsWorld != nullptr, "PhysicsWorld2D is nullptr!!");
 		SPX_CORE_ASSERT(rigidbody != nullptr, "Rigidbody2D is nullptr!!");
-		SPX_CORE_ASSERT(physicsWorld == rigidbody->GetPhysicsWorld(), "physicsWorld and rigidbody->GetPhysicsWorld() are not the same!!");
 
-		physicsWorld->RemoveRigidbody(rigidbody);
-		rigidbody->m_PhysicsWorld = nullptr;
+		PhysicsWorld2D* physicsWorld = rigidbody->GetPhysicsWorld();
+		if (physicsWorld != nullptr)
+		{
+			physicsWorld->RemoveRigidbody(rigidbody);
+			rigidbody->m_PhysicsWorld = nullptr;
+		}
 
 		s_PhysicsWorldToRigidbodies[physicsWorld].Remove(rigidbody);
 		s_PhysicsWorldToRigidbodies[nullptr].Add(rigidbody);
@@ -236,15 +238,25 @@ namespace Sphynx
 		s_RigidbodyToColliders[rigidbody].Add(collider);
 	}
 
-	void Physics2D::RemoveCollider(Rigidbody2D* rigidbody, Collider2D* collider)
+	void Physics2D::AddCollider(PhysicsWorld2D* physicsWorld, Collider2D* collider, const RigidbodyDef& definition)
 	{
-		SPX_CORE_ASSERT(rigidbody != nullptr, "Rigidbody2D is nullptr!!");
+		SPX_CORE_ASSERT(physicsWorld != nullptr, "PhysicsWorld2D is nullptr!!");
 		SPX_CORE_ASSERT(collider != nullptr, "Collider2D is nullptr!!");
-		SPX_CORE_ASSERT(rigidbody == collider->GetRigidbody(), "rigidbody and collider->GetRigidbody() are not the same!!");
 
-		rigidbody->RemoveCollider(collider);
-		collider->m_Rigidbody = nullptr;
+		physicsWorld->AddCollider(collider, definition);
+	}
 
+	void Physics2D::RemoveCollider(Collider2D* collider)
+	{
+		SPX_CORE_ASSERT(collider != nullptr, "Collider2D is nullptr!!");
+
+		Rigidbody2D* rigidbody = collider->GetRigidbody();
+		if (rigidbody != nullptr)
+		{
+			rigidbody->RemoveCollider(collider);
+			collider->m_Rigidbody = nullptr;
+		}
+		
 		s_RigidbodyToColliders[rigidbody].Remove(collider);
 		s_RigidbodyToColliders[nullptr].Add(collider);
 	}

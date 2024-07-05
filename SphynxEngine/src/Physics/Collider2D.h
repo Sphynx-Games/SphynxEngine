@@ -24,7 +24,7 @@ namespace Sphynx
 		inline void SetOffset(Vector2f offset) { m_Offset = offset; }
 
 		inline bool IsTrigger() const { return m_Trigger; }
-		inline void SetTrigger(bool trigger) { m_Trigger = trigger; }
+		inline virtual void SetTrigger(bool trigger) { m_Trigger = trigger; }
 
 		inline class Rigidbody2D* GetRigidbody() const { return m_Rigidbody; }
 
