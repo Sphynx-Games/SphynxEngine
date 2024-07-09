@@ -51,6 +51,8 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 	$<$<CONFIG:Release>:SPX_RELEASE>
 	$<$<CONFIG:MinSizeRel>:SPX_RELEASE>) 
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_PHYSICS_2D_BOX2D)
+
 if (WIN32 AND BUILD_SHARED_LIBS)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_BUILD_SHARED)
 endif()

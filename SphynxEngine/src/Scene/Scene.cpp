@@ -96,7 +96,7 @@ namespace Sphynx
 
 	void Scene::InitPhysics()
 	{
-		m_PhysicsWorld = Physics2D::CreatePhysicsWorld();
+		m_PhysicsWorld = Physics2D::CreatePhysicsWorld(Physics2D::WorldGravity);
 
 		auto CreateBody = [&](Rigidbody2DComponent* rigidbody, Collider2D* collider, const TransformComponent& transform)
 			{
@@ -119,9 +119,10 @@ namespace Sphynx
 				}
 				else
 				{
-					Physics2D::AddCollider(m_PhysicsWorld, collider, def);
+					Physics2D::AddCollider(m_PhysicsWorld, collider, def.Transform);
 				}
 			};
+
 
 		// BOX
 		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
@@ -132,6 +133,19 @@ namespace Sphynx
 			BoxCollider2D* collider2D = Physics2D::CreateBoxCollider(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
 			collider.m_Collider = collider2D;
 			CreateBody(&rigidbody, collider2D, transform);
+		}
+
+		auto boxView = m_Registry.view<BoxCollider2DComponent, TransformComponent>();
+		for (auto entity : boxView)
+		{
+			if (!m_Registry.all_of<Rigidbody2DComponent>(entity))
+			{
+				auto [collider, transform] = boxView.get<BoxCollider2DComponent, TransformComponent>(entity);
+
+				BoxCollider2D* collider2D = Physics2D::CreateBoxCollider(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
+				collider.m_Collider = collider2D;
+				CreateBody(nullptr, collider2D, transform);
+			}
 		}
 
 		// CIRCLE
@@ -145,6 +159,19 @@ namespace Sphynx
 			CreateBody(&rigidbody, collider2D, transform);
 		}
 
+		auto circleView = m_Registry.view<CircleCollider2DComponent, TransformComponent>();
+		for (auto entity : circleView)
+		{
+			if (!m_Registry.all_of<Rigidbody2DComponent>(entity))
+			{
+				auto [collider, transform] = circleView.get<CircleCollider2DComponent, TransformComponent>(entity);
+
+				CircleCollider2D* collider2D = Physics2D::CreateCircleCollider(collider.GetRadius(), collider.GetOffset(), collider.IsTrigger());
+				collider.m_Collider = collider2D;
+				CreateBody(nullptr, collider2D, transform);
+			}
+		}
+
 		// CAPSULE
 		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : capsuleGroup)
@@ -155,6 +182,20 @@ namespace Sphynx
 			collider.m_Collider = collider2D;
 			CreateBody(&rigidbody, collider2D, transform);
 		}
+
+		auto capsuleView = m_Registry.view<CapsuleCollider2DComponent, TransformComponent>();
+		for (auto entity : capsuleView)
+		{
+			if (!m_Registry.all_of<Rigidbody2DComponent>(entity))
+			{
+				auto [collider, transform] = capsuleView.get<CapsuleCollider2DComponent, TransformComponent>(entity);
+
+				CapsuleCollider2D* collider2D = Physics2D::CreateCapsuleCollider(collider.GetSize(), collider.GetOffset(), collider.IsTrigger());
+				collider.m_Collider = collider2D;
+				CreateBody(nullptr, collider2D, transform);
+			}
+		}
+
 
 		// post step => update transform values
 		m_PhysicsWorld->OnPostStepPhysics.Bind([&]() {
@@ -190,35 +231,82 @@ namespace Sphynx
 
 	void Scene::DebugPhysics()
 	{
+		auto DebugBox = [&](BoxCollider2DComponent collider, TransformComponent transform)
+			{
+				if (collider.NeedsDebug())
+				{
+					Physics2DRenderer::DrawBoxCollider(collider.m_Collider, transform.Transform);
+				}
+			};
+
+		auto DebugCircle = [&](CircleCollider2DComponent collider, TransformComponent transform)
+			{
+				if (collider.NeedsDebug())
+				{
+					Physics2DRenderer::DrawCircleCollider(collider.m_Collider, transform.Transform);
+				}
+			};
+
+		auto DebugCapsule = [&](CapsuleCollider2DComponent collider, TransformComponent transform)
+			{
+				if (collider.NeedsDebug())
+				{
+					Physics2DRenderer::DrawCapsuleCollider(collider.m_Collider, transform.Transform);
+				}
+			};
+
+
+		// BOX
 		auto boxGroup = m_Registry.group<BoxCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : boxGroup)
 		{
 			auto [collider, transform] = boxGroup.get<BoxCollider2DComponent, TransformComponent>(entity);
+			DebugBox(collider, transform);
+		}
 
-			if (collider.NeedsDebug())
+		auto boxView = m_Registry.view<BoxCollider2DComponent, TransformComponent>();
+		for (auto entity : boxView)
+		{
+			if (!m_Registry.all_of<Rigidbody2DComponent>(entity))
 			{
-				Physics2DRenderer::DrawBoxCollider(collider.m_Collider, transform.Transform);
+				auto [collider, transform] = boxView.get<BoxCollider2DComponent, TransformComponent>(entity);
+				DebugBox(collider, transform);
 			}
 		}
 
+		// CIRCLE
 		auto circleGroup = m_Registry.group<CircleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : circleGroup)
 		{
 			auto [collider, transform] = circleGroup.get<CircleCollider2DComponent, TransformComponent>(entity);
-			if (collider.NeedsDebug())
+			DebugCircle(collider, transform);
+		}
+
+		auto circleView = m_Registry.view<CircleCollider2DComponent, TransformComponent>();
+		for (auto entity : circleView)
+		{
+			if (!m_Registry.all_of<Rigidbody2DComponent>(entity))
 			{
-				Physics2DRenderer::DrawCircleCollider(collider.m_Collider, transform.Transform);
+				auto [collider, transform] = circleView.get<CircleCollider2DComponent, TransformComponent>(entity);
+				DebugCircle(collider, transform);
 			}
 		}
 
+		// CAPSULE
 		auto capsuleGroup = m_Registry.group<CapsuleCollider2DComponent>(entt::get<Rigidbody2DComponent, TransformComponent>);
 		for (entt::entity entity : capsuleGroup)
 		{
 			auto [collider, transform] = capsuleGroup.get<CapsuleCollider2DComponent, TransformComponent>(entity);
+			DebugCapsule(collider, transform);
+		}
 
-			if (collider.NeedsDebug())
+		auto capsuleView = m_Registry.view<CapsuleCollider2DComponent, TransformComponent>();
+		for (auto entity : capsuleView)
+		{
+			if (!m_Registry.all_of<Rigidbody2DComponent>(entity))
 			{
-				Physics2DRenderer::DrawCapsuleCollider(collider.m_Collider, transform.Transform);
+				auto [collider, transform] = capsuleView.get<CapsuleCollider2DComponent, TransformComponent>(entity);
+				DebugCapsule(collider, transform);
 			}
 		}
 	}

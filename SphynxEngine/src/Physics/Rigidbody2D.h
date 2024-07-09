@@ -2,7 +2,6 @@
 
 #include "Core/Core.h"
 #include "Math/Transform.h"
-#include "Physics/Physics2D.h"
 
 
 namespace Sphynx
@@ -27,52 +26,75 @@ namespace Sphynx
 	class SPHYNX_API Rigidbody2D
 	{
 	public:
-		Rigidbody2D(RigidbodyDef definition) :
-			m_Definition(definition),
-			m_PhysicsWorld(nullptr)
-		{}
+		Rigidbody2D(RigidbodyDef definition);
 
-		inline virtual class PhysicsWorld2D* GetPhysicsWorld() const { return m_PhysicsWorld; }
+		inline class PhysicsWorld2D* GetPhysicsWorld() const { return m_PhysicsWorld; }
+		inline struct Rigidbody2DData* GetData() const { return m_Data; }
 
-		inline virtual Vector2f GetPosition() const { return Vector2f(m_Definition.Transform.Position.X, m_Definition.Transform.Position.Y); }
-		inline virtual float GetRotation() const { return m_Definition.Transform.Rotation.Z; }
+		Vector2f GetPosition() const;
+		float GetRotation() const;
+		Transform GetTransform() const;
 
-		inline virtual bool IsEnabled() const { return m_Definition.Enabled; }
-		inline virtual void SetEnabled(bool enable) { m_Definition.Enabled = enable; }
+		bool IsEnabled() const;
+		void SetEnabled(bool enable);
 
-		inline virtual RigidbodyType GetType() const { return m_Definition.Type; }
-		inline virtual void SetType(RigidbodyType type) { m_Definition.Type = type; };
+		RigidbodyType GetType() const;
+		void SetType(RigidbodyType type);
 
-		inline virtual Vector2f GetLinearVelocity() const { return m_Definition.LinearVelocity; }
-		inline virtual void SetLinearVelocity(Vector2f velocity) { m_Definition.LinearVelocity = velocity; }
+		Vector2f GetLinearVelocity() const;
+		void SetLinearVelocity(Vector2f velocity);
 
-		inline virtual float GetAngularVelocity() const { return m_Definition.AngularVelocity; }
-		inline virtual void SetAngularVelocity(float velocity) { m_Definition.AngularVelocity = velocity; }
+		float GetAngularVelocity() const;
+		void SetAngularVelocity(float velocity);
 
-		inline virtual float GetLinearDamping() const { return m_Definition.LinearDamping; }
-		inline virtual void SetLinearDamping(float damping) { m_Definition.LinearDamping = damping; }
+		float GetLinearDamping() const;
+		void SetLinearDamping(float damping);
 
-		inline virtual float GetAngularDamping() const { return m_Definition.AngularDamping; }
-		inline virtual void SetAngularDamping(float damping) { m_Definition.AngularDamping = damping; }
+		float GetAngularDamping() const;
+		void SetAngularDamping(float damping);
 
-		inline virtual float GetGravityScale() const { return m_Definition.GravityScale; }
-		inline virtual void SetGravityScale(float gravityScale) { m_Definition.GravityScale = gravityScale; }
+		float GetGravityScale() const;
+		void SetGravityScale(float gravityScale);
 
 	protected:
-		virtual ~Rigidbody2D() 
-		{
-			m_PhysicsWorld = nullptr;
-		};
+		~Rigidbody2D();
 
-		virtual void AddCollider(class Collider2D* collider) = 0;
-		virtual void RemoveCollider(Collider2D* collider) = 0;
+		void AttachToPhysicsWorld(PhysicsWorld2D* physicsWorld);
+		void Detach();
+
+
+		Vector2f GetPositionDef() const { return Vector2f(m_Definition.Transform.Position.X, m_Definition.Transform.Position.Y); }
+		float GetRotationDef() const { return m_Definition.Transform.Rotation.Z; }
+
+		bool IsEnabledDef() const { return m_Definition.Enabled; }
+		void SetEnabledDef(bool enable) { m_Definition.Enabled = enable; }
+
+		RigidbodyType GetTypeDef() const { return m_Definition.Type; }
+		void SetTypeDef(RigidbodyType type) { m_Definition.Type = type; };
+
+		Vector2f GetLinearVelocityDef() const { return m_Definition.LinearVelocity; }
+		void SetLinearVelocityDef(Vector2f velocity) { m_Definition.LinearVelocity = velocity; }
+
+		float GetAngularVelocityDef() const { return m_Definition.AngularVelocity; }
+		void SetAngularVelocityDef(float velocity) { m_Definition.AngularVelocity = velocity; }
+
+		float GetLinearDampingDef() const { return m_Definition.LinearDamping; }
+		void SetLinearDampingDef(float damping) { m_Definition.LinearDamping = damping; }
+
+		float GetAngularDampingDef() const { return m_Definition.AngularDamping; }
+		void SetAngularDampingDef(float damping) { m_Definition.AngularDamping = damping; }
+
+		float GetGravityScaleDef() const { return m_Definition.GravityScale; }
+		void SetGravityScaleDef(float gravityScale) { m_Definition.GravityScale = gravityScale; }
 
 	protected:
 		RigidbodyDef m_Definition;
 		PhysicsWorld2D* m_PhysicsWorld;
+		Rigidbody2DData* m_Data;
 
 	public:
 		friend class Physics2D;
 		friend class PhysicsWorld2D;
+		friend class Collider2D;
 	};
 }

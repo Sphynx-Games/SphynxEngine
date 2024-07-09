@@ -2,14 +2,8 @@
 #include "Physics/PhysicsWorld2D.h"
 #include "Physics/Rigidbody2D.h"
 #include "Physics/Collider2D.h"
-#include "Platform/Box2D/Box2DPhysicsWorld2D.h"
-#include "Platform/Box2D/Box2DRigidbody2D.h"
-#include "Platform/Box2D/Box2DCollider2D.h"
-#include "Renderer/Renderer2D.h"
 #include "Math/Transform.h"
 #include "Core/Delegate.h"
-
-#define SPX_PHYSICS_2D_BOX2D
 
 
 namespace Sphynx
@@ -42,25 +36,6 @@ namespace Sphynx
 
 	void Physics2D::Shutdown()
 	{
-		// delete worlds
-		HashMap<PhysicsWorld2D*, Set<Rigidbody2D*>> worlds = s_PhysicsWorldToRigidbodies;
-		for (auto& [world, rigidbodies] : worlds)
-		{
-			if (world != nullptr)
-			{
-				DestroyPhysicsWorld(world);
-			}
-			else
-			{
-				for (auto rigidbody : rigidbodies)
-				{
-					DestroyRigidbody(rigidbody);
-				}
-			}
-		}
-		worlds.RemoveAll();
-		s_PhysicsWorldToRigidbodies.RemoveAll();
-
 		// delete rigidbodies
 		HashMap<Rigidbody2D*, Set<Collider2D*>> rigidbodies = s_RigidbodyToColliders;
 		for (auto& [rigidbody, colliders] : rigidbodies)
@@ -79,19 +54,32 @@ namespace Sphynx
 		}
 		rigidbodies.RemoveAll();
 		s_RigidbodyToColliders.RemoveAll();
+
+		// delete worlds
+		HashMap<PhysicsWorld2D*, Set<Rigidbody2D*>> worlds = s_PhysicsWorldToRigidbodies;
+		for (auto& [world, rigidbodies] : worlds)
+		{
+			if (world != nullptr)
+			{
+				DestroyPhysicsWorld(world);
+			}
+			else
+			{
+				for (auto rigidbody : rigidbodies)
+				{
+					DestroyRigidbody(rigidbody);
+				}
+			}
+		}
+		worlds.RemoveAll();
+		s_PhysicsWorldToRigidbodies.RemoveAll();
 	}
 
 	PhysicsWorld2D* Physics2D::CreatePhysicsWorld(Vector2f gravity)
 	{
-#ifdef SPX_PHYSICS_2D_BOX2D
-		Box2DPhysicsWorld2D* world = new Box2DPhysicsWorld2D(gravity);
+		PhysicsWorld2D* world = new PhysicsWorld2D(gravity);
 		s_PhysicsWorldToRigidbodies.Add(world, Set<Rigidbody2D*>());
 		return world;
-#else
-
-#error No Physics 2D Engine selected
-
-#endif
 	}
 
 	void Physics2D::DestroyPhysicsWorld(PhysicsWorld2D* physicsWorld)
@@ -112,16 +100,10 @@ namespace Sphynx
 
 	Rigidbody2D* Physics2D::CreateRigidbody(const RigidbodyDef& rigidbodyDef)
 	{
-#ifdef SPX_PHYSICS_2D_BOX2D
-		Box2DRigidbody2D* rigidbody = new Box2DRigidbody2D(rigidbodyDef);
+		Rigidbody2D* rigidbody = new Rigidbody2D(rigidbodyDef);
 		s_PhysicsWorldToRigidbodies[nullptr].Add(rigidbody);
 		s_RigidbodyToColliders.Add(rigidbody, Set<Collider2D*>());
 		return rigidbody;
-#else
-
-#error No Physics 2D Engine selected
-
-#endif
 	}
 
 	void Physics2D::DestroyRigidbody(Rigidbody2D* rigidbody)
@@ -136,7 +118,7 @@ namespace Sphynx
 
 		for (auto collider : s_RigidbodyToColliders[rigidbody])
 		{
-			rigidbody->RemoveCollider(collider);
+			collider->Detach();
 			delete collider;
 		}
 		rigidbody->m_PhysicsWorld = nullptr;
@@ -151,7 +133,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(rigidbody != nullptr, "Rigidbody2D is nullptr!!");
 		SPX_CORE_ASSERT(rigidbody->GetPhysicsWorld() == nullptr, "Rigidbody2D already added to PhysicsWorld2D!!");
 
-		physicsWorld->AddRigidbody(rigidbody);
+		rigidbody->AttachToPhysicsWorld(physicsWorld);
 		rigidbody->m_PhysicsWorld = physicsWorld;
 
 		s_PhysicsWorldToRigidbodies[nullptr].Remove(rigidbody);
@@ -165,7 +147,7 @@ namespace Sphynx
 		PhysicsWorld2D* physicsWorld = rigidbody->GetPhysicsWorld();
 		if (physicsWorld != nullptr)
 		{
-			physicsWorld->RemoveRigidbody(rigidbody);
+			rigidbody->Detach();
 			rigidbody->m_PhysicsWorld = nullptr;
 		}
 
@@ -173,54 +155,32 @@ namespace Sphynx
 		s_PhysicsWorldToRigidbodies[nullptr].Add(rigidbody);
 	}
 
-	BoxCollider2D* Physics2D::CreateBoxCollider(Vector2f size, Vector2f offset, bool isTrigger, bool debug)
+	BoxCollider2D* Physics2D::CreateBoxCollider(Vector2f size, Vector2f offset, bool isTrigger)
 	{
-#ifdef SPX_PHYSICS_2D_BOX2D
-		Box2DBoxCollider2D* collider = new Box2DBoxCollider2D(size, offset, isTrigger, debug);
+		BoxCollider2D* collider = new BoxCollider2D(size, offset, isTrigger);
 		s_RigidbodyToColliders[nullptr].Add(collider);
 		return collider;
-#else
-
-#error No Physics 2D Engine selected
-
-#endif
 	}
 
-	CircleCollider2D* Physics2D::CreateCircleCollider(float radius, Vector2f offset, bool isTrigger, bool debug)
+	CircleCollider2D* Physics2D::CreateCircleCollider(float radius, Vector2f offset, bool isTrigger)
 	{
-#ifdef SPX_PHYSICS_2D_BOX2D
-		Box2DCircleCollider2D* collider = new Box2DCircleCollider2D(radius, offset, isTrigger, debug);
+		CircleCollider2D* collider = new CircleCollider2D(radius, offset, isTrigger);
 		s_RigidbodyToColliders[nullptr].Add(collider);
 		return collider;
-#else
-
-#error No Physics 2D Engine selected
-
-#endif
 	}
 
-	CapsuleCollider2D* Physics2D::CreateCapsuleCollider(Vector2f size, Vector2f offset, bool isTrigger, bool debug)
+	CapsuleCollider2D* Physics2D::CreateCapsuleCollider(Vector2f size, Vector2f offset, bool isTrigger)
 	{
-#ifdef SPX_PHYSICS_2D_BOX2D
-		Box2DCapsuleCollider2D* collider = new Box2DCapsuleCollider2D(size, offset, isTrigger, debug);
+		CapsuleCollider2D* collider = new CapsuleCollider2D(size, offset, isTrigger);
 		s_RigidbodyToColliders[nullptr].Add(collider);
 		return collider;
-#else
-
-#error No Physics 2D Engine selected
-
-#endif
 	}
 
 	void Physics2D::DestroyCollider(Collider2D* collider)
 	{
 		SPX_CORE_ASSERT(collider != nullptr, "Collider2D is nullptr!!");
-		SPX_CORE_ASSERT(!s_RigidbodyToColliders[collider->GetRigidbody()].Contains(collider), "Collider2D not found!!");
 
-		if (collider->GetRigidbody() != nullptr)
-		{
-			collider->GetRigidbody()->RemoveCollider(collider);
-		}
+		collider->Detach();
 		s_RigidbodyToColliders[collider->GetRigidbody()].Remove(collider);
 		delete collider;
 	}
@@ -231,19 +191,19 @@ namespace Sphynx
 		SPX_CORE_ASSERT(collider != nullptr, "Collider2D is nullptr!!");
 		SPX_CORE_ASSERT(collider->GetRigidbody() == nullptr, "Collider2D already added to Rigidbody2D!!");
 
-		rigidbody->AddCollider(collider);
+		collider->AttachToRigidbody(rigidbody);
 		collider->m_Rigidbody = rigidbody;
 
 		s_RigidbodyToColliders[nullptr].Remove(collider);
 		s_RigidbodyToColliders[rigidbody].Add(collider);
 	}
 
-	void Physics2D::AddCollider(PhysicsWorld2D* physicsWorld, Collider2D* collider, const RigidbodyDef& definition)
+	void Physics2D::AddCollider(PhysicsWorld2D* physicsWorld, Collider2D* collider, const Transform& transform)
 	{
 		SPX_CORE_ASSERT(physicsWorld != nullptr, "PhysicsWorld2D is nullptr!!");
 		SPX_CORE_ASSERT(collider != nullptr, "Collider2D is nullptr!!");
 
-		physicsWorld->AddCollider(collider, definition);
+		collider->AttachToPhysicsWorld(physicsWorld, transform);
 	}
 
 	void Physics2D::RemoveCollider(Collider2D* collider)
@@ -253,7 +213,8 @@ namespace Sphynx
 		Rigidbody2D* rigidbody = collider->GetRigidbody();
 		if (rigidbody != nullptr)
 		{
-			rigidbody->RemoveCollider(collider);
+			collider->Detach();
+			collider->m_PhysicsWorld = nullptr;
 			collider->m_Rigidbody = nullptr;
 		}
 		

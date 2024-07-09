@@ -2,7 +2,7 @@
 
 #include "Core/Core.h"
 #include "Core/Delegate.h"
-#include "Math/Transform.h"
+#include "Math/Vector.h"
 #include "Container/Map.h"
 #include "Container/Set.h"
 
@@ -21,15 +21,15 @@ namespace Sphynx
 		static class Rigidbody2D* CreateRigidbody(const struct RigidbodyDef& rigidbodyDef);
 		static void DestroyRigidbody(Rigidbody2D* rigidbody);
 
-		static class BoxCollider2D* CreateBoxCollider(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
-		static class CircleCollider2D* CreateCircleCollider(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
-		static class CapsuleCollider2D* CreateCapsuleCollider(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true);
+		static class BoxCollider2D* CreateBoxCollider(Vector2f size = { 1.0f, 1.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+		static class CircleCollider2D* CreateCircleCollider(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+		static class CapsuleCollider2D* CreateCapsuleCollider(Vector2f size = { 1.0f, 1.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
 		static void DestroyCollider(class Collider2D* collider);
 
 		static void AddRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody); // to physicWorld
 		static void RemoveRigidbody(Rigidbody2D* rigidbody);
 		static void AddCollider(Rigidbody2D* rigidbody, Collider2D* collider); // to rigidbody
-		static void AddCollider(PhysicsWorld2D* physicsWorld, Collider2D* collider, const RigidbodyDef& definition); // to world; no rigidbody
+		static void AddCollider(PhysicsWorld2D* physicsWorld, Collider2D* collider, const struct Transform& transform); // to world; no rigidbody
 		static void RemoveCollider(Collider2D* collider);
 
 		static const Set<Rigidbody2D*>& GetRigidbodies(PhysicsWorld2D* physicsWorld);

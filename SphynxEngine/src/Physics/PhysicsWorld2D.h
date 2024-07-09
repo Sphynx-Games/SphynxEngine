@@ -1,28 +1,31 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Math/Vector.h"
 #include "Core/Delegate.h"
-#include "Physics/Rigidbody2D.h"
-#include "Physics/Physics2D.h"
 
 
 namespace Sphynx
 {
 	class SPHYNX_API PhysicsWorld2D
 	{
-	protected:
-		virtual ~PhysicsWorld2D() = default;
+	public:
+		PhysicsWorld2D(Vector2f gravity);
+		inline struct PhysicsWorld2DData* GetData() const { return m_Data; }
 
-		virtual void AddRigidbody(class Rigidbody2D* rigidbody) = 0;
-		virtual void RemoveRigidbody(Rigidbody2D* rigidbody) = 0;
-		virtual void AddCollider(class Collider2D* collider, const RigidbodyDef& definition) = 0; // no rigidbody
+	protected:		
+		~PhysicsWorld2D();
 
-		virtual void Step(float timeStep, uint32_t velocityIterations, uint32_t positionIterations) = 0;
+		void Step(float timeStep, uint32_t velocityIterations, uint32_t positionIterations);
 
 	public:
 		Delegate<void()> OnPostStepPhysics;
 
-	public:
+	protected:
+		PhysicsWorld2DData* m_Data;
+
 		friend class Physics2D;
+		friend class Rigidbody2D;
+		friend class Collider2D;
 	};
 }

@@ -3,8 +3,6 @@
 #include "Core/Core.h"
 #include "Core/Delegate.h"
 #include "Math/Vector.h"
-#include "Physics/Rigidbody2D.h"
-#include "Physics/Physics2D.h"
 #include "Container/Set.h"
 
 
@@ -20,84 +18,66 @@ namespace Sphynx
 	class SPHYNX_API Collider2D
 	{
 	public:
+		Collider2D(Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+
 		inline Vector2f GetOffset() const { return m_Offset; }
 		inline void SetOffset(Vector2f offset) { m_Offset = offset; }
 
 		inline bool IsTrigger() const { return m_Trigger; }
-		inline virtual void SetTrigger(bool trigger) { m_Trigger = trigger; }
+		virtual void SetTrigger(bool trigger);
 
+		inline class PhysicsWorld2D* GetPhysicsWorld() const { return m_PhysicsWorld; }
 		inline class Rigidbody2D* GetRigidbody() const { return m_Rigidbody; }
+
+		inline struct Collider2DData* GetData() const { return m_Data; }
 
 		inline const Set<Collider2D*>& GetOverlaps() { return m_Overlaps; }
 
 	protected:
-		Collider2D(Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
-			m_Offset(offset),
-			m_Trigger(isTrigger),
-			m_Rigidbody(nullptr)
-		{}
+		virtual ~Collider2D();
 
-		virtual ~Collider2D()
-		{
-			m_Rigidbody = nullptr;
-		};
+		virtual void AttachToPhysicsWorld(PhysicsWorld2D* physicsWorld, const struct Transform& transform) = 0;
+		virtual void AttachToRigidbody(Rigidbody2D* rigidbody) = 0;
+		void Detach();
 
-		virtual void BeginOverlap(Contact2D contact)
-		{
-			m_Overlaps.Add(contact.OtherCollider);
-			if (OnBeginOverlap.IsBound())
-			{
-				OnBeginOverlap.Execute(&contact);
-			}
-		}
+		void BeginContact(const Contact2D& contact);
+		void EndContact(const Contact2D& contact);
 
-		virtual void EndOverlap(Contact2D contact)
-		{
-			m_Overlaps.Remove(contact.OtherCollider);
-			if (OnEndOverlap.IsBound())
-			{
-				OnEndOverlap.Execute(&contact);
-			}
-		}
+	public:
+		Delegate<void(const Contact2D&)> OnBeginContact;
+		Delegate<void(const Contact2D&)> OnEndContact;
 
-		virtual void BeginHit(Contact2D contact)
-		{
-			if (OnHit.IsBound())
-			{
-				OnHit.Execute(&contact);
-			}
-		}
+		Delegate<void(const Contact2D&)> OnBeginOverlap;
+		Delegate<void(const Contact2D&)> OnEndOverlap;
+		Delegate<void(const Contact2D&)> OnHit;
 
 	protected:
 		Vector2f m_Offset;
 		bool m_Trigger;
+		PhysicsWorld2D* m_PhysicsWorld;
 		Rigidbody2D* m_Rigidbody;
+		Collider2DData* m_Data;
 
 		Set<Collider2D*> m_Overlaps;
 
-	public:
-		Delegate<void(Contact2D*)> OnBeginOverlap;
-		Delegate<void(Contact2D*)> OnEndOverlap;
-		Delegate<void(Contact2D*)> OnHit;
-
-	public:
 		friend class Physics2D;
+		friend class PhysicsWorld2D;
 		friend class Rigidbody2D;
 	};
 
 	class SPHYNX_API BoxCollider2D : public Collider2D
 	{
 	public:
+		BoxCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+
 		inline Vector2f GetSize() const { return m_Size; }
 		inline void SetSize(Vector2f size) { m_Size = size; }
 
 	protected:
-		BoxCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
-			Collider2D(offset, isTrigger, debug),
-			m_Size(size)
-		{}
-
 		virtual ~BoxCollider2D() = default;
+
+		virtual void AttachToPhysicsWorld(PhysicsWorld2D* physicsWorld, const struct Transform& transform) override;
+		virtual void AttachToRigidbody(Rigidbody2D* rigidbody) override;
 
 	protected:
 		Vector2f m_Size;
@@ -106,16 +86,16 @@ namespace Sphynx
 	class SPHYNX_API CircleCollider2D : public Collider2D
 	{
 	public:
+		CircleCollider2D(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+
 		inline float GetRadius() const { return m_Radius; }
 		inline void SetRadius(float radius) { m_Radius = radius; }
 
 	protected:
-		CircleCollider2D(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
-			Collider2D(offset, isTrigger, debug),
-			m_Radius(radius)
-		{}
-
 		virtual ~CircleCollider2D() = default;
+
+		virtual void AttachToPhysicsWorld(PhysicsWorld2D* physicsWorld, const struct Transform& transform) override;
+		virtual void AttachToRigidbody(Rigidbody2D* rigidbody) override;
 
 	protected:
 		float m_Radius;
@@ -124,16 +104,16 @@ namespace Sphynx
 	class SPHYNX_API CapsuleCollider2D : public Collider2D
 	{
 	public:
+		CapsuleCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+		
 		inline Vector2f GetSize() const { return m_Size; }
 		inline void SetSize(Vector2f size) { m_Size = size; }
 
 	protected:
-		CapsuleCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false, bool debug = true) :
-			Collider2D(offset, isTrigger, debug),
-			m_Size(size)
-		{}
-
 		virtual ~CapsuleCollider2D() = default;
+
+		virtual void AttachToPhysicsWorld(PhysicsWorld2D* physicsWorld, const Transform& transform) override;
+		virtual void AttachToRigidbody(Rigidbody2D* rigidbody) override;
 
 	protected:
 		Vector2f m_Size;
