@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Container/Array.h"
 
 
 namespace Sphynx
@@ -141,5 +142,89 @@ namespace Sphynx
 		typedef TReturn(*Callable)(const Delegate&, Args&&...);
 		Callable m_Callable = nullptr;
 
+	};
+
+
+	using DelegateHandle = UUID;
+
+	template<typename T, size_t Size = sizeof(void*) * 2>
+	class MulticastDelegate;
+
+	template<typename TReturn, typename ...Args, size_t Size>
+	class MulticastDelegate<TReturn(Args...), Size>
+	{
+	public:
+		constexpr MulticastDelegate() = default;
+		~MulticastDelegate()
+		{
+			for (auto& delegate : m_Delegates)
+			{
+				delegate.Unbind();
+			}
+			m_Handles.RemoveAll();
+			m_Delegates.RemoveAll();
+		}
+
+		constexpr void Broadcast(Args&&... args)
+		{
+			for (auto& delegate : m_Delegates)
+			{
+				delegate.Execute(args...);
+			}
+		}
+
+		template<typename F>
+		constexpr DelegateHandle Bind(const F& f)
+		{
+			DelegateHandle handle;
+			handle.Generate();
+
+			Delegate<TReturn(Args...), Size> delegate;
+			delegate.Bind(f);
+
+			m_Delegates.Emplace(handle, delegate);
+			return handle;
+		}
+
+		template<typename T, typename TMethod>
+		constexpr DelegateHandle Bind(T* object, TMethod method)
+		{
+			DelegateHandle handle;
+			handle.Generate();
+
+			Delegate<TReturn(Args...), Size> delegate;
+			delegate.Bind(object, method);
+
+			m_Delegates.Emplace(handle, delegate);
+			return handle;
+		}
+
+		constexpr void Unbind(const DelegateHandle& handle)
+		{
+			uint64_t index = m_Handles.Size();
+			for (int64_t i = 0; i < m_Handles.Size(); ++i)
+			{
+				if (m_Handles[i] == handle)
+				{
+					index = i;
+					break;
+				}
+			}
+
+			SPX_CORE_ASSERT(index < m_Handles.Size(), "Handle not found in delegate");
+
+			m_Delegates[i].Unbind();
+			m_Delegates.RemoveAt(index);
+			m_Handles.RemoveAt(index);
+		}
+
+		constexpr bool IsBound(const DelegateHandle& handle) const
+		{
+			return m_Delegates.GetValue(handle).IsBound();
+		}
+
+	private:
+		Array<DelegateHandle> m_Handles;
+		Array<Delegate<TReturn(Args...), Size>> m_Delegates;
 	};
 }

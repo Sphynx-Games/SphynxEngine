@@ -35,27 +35,16 @@ namespace Sphynx
 			other.RemoveAll();
 		}
 
-		/*HashMap(const Array<Pair<TKey, TValue>>& pairs)
-		{
-			m_Array.reserve(values.Size());
-			for (const T& val : values)
-			{
-				Add(val);
-			}
-		}*/
-
 		~HashMap() = default;
-
-		// TODO: REVISE
-		/*template <typename ...ArgsKey, typename ...ArgsValue>
-		inline T& Emplace(ArgsKey&&... argsKey, ArgsValue&&... argsValue)
-		{
-			return m_Hashmap.emplace(std::forward<ArgsKey>(argsKey)..., std::forward<ArgsValue>(argsValue)...);
-		}*/
 
 		void Add(const TKey& key, const TValue& value)
 		{
 			m_Hashmap[key] = value;
+		}
+
+		void Emplace(TKey&& key, TValue&& value)
+		{
+			m_Hashmap.emplace(key, value);
 		}
 
 		void Remove(const TKey& key)

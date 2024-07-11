@@ -8,26 +8,6 @@
 
 namespace Sphynx
 {
-	Vector2f RotatePointAboutOtherPoint(Vector2f point, Vector2f otherPoint, float angleInRadians)
-	{
-		// R.x = (P.x - C.x) * Math.cos(a) - (P.y - C.y) * Math.sin(a) + C.x
-		// R.y = (P.x - C.x) * Math.sin(a) + (P.y - C.y) * Math.cos(a) + C.y
-
-		// translate point back to origin: (P.x - C.x)
-		// rotate point:                   * Math.cos(a) - (P.y - C.y) * Math.sin(a)
-		// translate point back:           + C.x
-
-		float sinValue = sin(angleInRadians);
-		float cosValue = cos(angleInRadians);
-
-		Vector2f substraction = { otherPoint.X - point.X, otherPoint.Y - point.Y };
-
-		return {
-			substraction.X * cosValue - substraction.Y * sinValue + point.X,
-			substraction.X * sinValue + substraction.Y * cosValue + point.Y
-		};
-	}
-
 	void Physics2D::Init()
 	{
 		s_PhysicsWorldToRigidbodies.Add(nullptr, Set<Rigidbody2D*>());
@@ -242,5 +222,4 @@ namespace Sphynx
 
 		physicsWorld->Step(timeStep, WorldVelocityIterations, WorldPositionIterations);
 	}
-
 }

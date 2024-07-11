@@ -47,9 +47,9 @@ namespace Sphynx
 		Delegate<void(const Contact2D&)> OnBeginContact;
 		Delegate<void(const Contact2D&)> OnEndContact;
 
-		Delegate<void(const Contact2D&)> OnBeginOverlap;
-		Delegate<void(const Contact2D&)> OnEndOverlap;
-		Delegate<void(const Contact2D&)> OnHit;
+		MulticastDelegate<void(const Contact2D&)> OnBeginOverlap;
+		MulticastDelegate<void(const Contact2D&)> OnEndOverlap;
+		MulticastDelegate<void(const Contact2D&)> OnHit;
 
 	protected:
 		Vector2f m_Offset;

@@ -91,18 +91,12 @@ namespace Sphynx
 		{
 			// BeginOverlap
 			m_Overlaps.Add(contact.OtherCollider);
-			if (OnBeginOverlap.IsBound())
-			{
-				OnBeginOverlap.Execute(contact);
-			}
+			OnBeginOverlap.Broadcast(contact);
 		}
 		else
 		{
 			// BeginHit
-			if (OnHit.IsBound())
-			{
-				OnHit.Execute(contact);
-			}
+			OnHit.Broadcast(contact);
 		}
 	}
 
@@ -112,10 +106,7 @@ namespace Sphynx
 		{
 			// EndOverlap
 			m_Overlaps.Remove(contact.OtherCollider);
-			if (OnEndOverlap.IsBound())
-			{
-				OnEndOverlap.Execute(contact);
-			}
+			OnEndOverlap.Broadcast(contact);
 		}
 	}
 
