@@ -2,6 +2,7 @@
 
 #include "Type.h"
 #include "Class.h"
+#include "Enum.h"
 #include "Property.h"
 #include "Storage.h"
 
@@ -24,6 +25,7 @@
  *
  */
 
+ // ---------- Class -----------
 #define SPX_REFLECT_CLASS_BEGIN(_Class) \
 	namespace { \
 		inline static ::Sphynx::Reflection::details::ClassStorage<_Class> _Class##__ClassStorage([](auto* self) { \
@@ -50,20 +52,32 @@
 	inline const ::Sphynx::Reflection::Type& ::Sphynx::Reflection::details::GetTypeImpl<_Class>() \
 	{ \
 		return GetClassImpl<_Class>(); \
-	} \
-
+	}
 
 #define SPX_REFLECT_CLASS(_Class) \
 	SPX_REFLECT_CLASS_BEGIN(_Class) \
 	SPX_REFLECT_CLASS_END()
 
+ // ---------- Struct -----------
+#define SPX_REFLECT_STRUCT_BEGIN(_Struct) \
+	SPX_REFLECT_CLASS_BEGIN(_Struct) \
+	self->IsStruct = true;
+
+#define SPX_REFLECT_STRUCT_END(_Struct) \
+	SPX_REFLECT_CLASS_END(_Struct)
+
+#define SPX_REFLECT_STRUCT(_Struct) \
+	SPX_REFLECT_STRUCT_BEGIN(_Struct) \
+	SPX_REFLECT_STRUCT_END(_Struct)
+
+ // ---------- Property -----------
 #define SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	{ \
 		Properties.push_back(::Sphynx::Reflection::Property{ \
 			::Sphynx::Reflection::GetType<decltype(((context_type*)0)->_Property)>(), \
 			#_Property, \
 			offsetof(context_type, _Property) \
-		}); \
+		});
 
 #define SPX_REFLECT_PROPERTY_END() \
 	}
@@ -71,6 +85,43 @@
 #define SPX_REFLECT_PROPERTY(_Property) \
 	SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	SPX_REFLECT_PROPERTY_END()
+
+ // ---------- Enum -----------
+#define SPX_REFLECT_ENUM_BEGIN(_Enum) \
+	namespace { \
+		inline static ::Sphynx::Reflection::details::EnumStorage<_Enum> _Enum##__EnumStorage([](auto* self) { \
+			using context_enum = _Enum; \
+			auto& Entries = self->Entries; \
+
+#define SPX_REFLECT_ENUM_END(_Enum) \
+		}); \
+	} \
+	\
+	template<> \
+	inline const ::Sphynx::Reflection::Enum& ::Sphynx::Reflection::details::GetEnumImpl<_Enum>() \
+	{ \
+		static const Enum e { \
+			::Sphynx::Reflection::Type{ #_Enum, sizeof(_Enum), alignof(_Enum) }, \
+			_Enum##__EnumStorage.Entries.data(), \
+			_Enum##__EnumStorage.Entries.size() \
+		}; \
+		return e; \
+	} \
+	template<> struct ::Sphynx::Reflection::EnumRange<_Enum> { \
+		inline const Enum::Entry* begin() { return _Enum##__EnumStorage.Entries.data(); } \
+		inline const Enum::Entry* begin() const { return _Enum##__EnumStorage.Entries.data(); } \
+		inline const Enum::Entry* end() { return _Enum##__EnumStorage.Entries.data() + _Enum##__EnumStorage.Entries.size(); } \
+		inline const Enum::Entry* end() const { return _Enum##__EnumStorage.Entries.data() + _Enum##__EnumStorage.Entries.size(); } \
+	};
+
+#define SPX_REFLECT_ENUM_VALUE(_Value) \
+	{ \
+		Entries.push_back(::Sphynx::Reflection::Enum::Entry{ std::string(#_Value) ,(int64_t)context_enum::_Value }); \
+	}
+
+#define SPX_REFLECT_ENUM(_Enum) \
+	SPX_REFLECT_ENUM_BEGIN(_Enum) \
+	SPX_REFLECT_ENUM_END(_Enum)
 
 namespace Sphynx
 {
@@ -83,7 +134,13 @@ namespace Sphynx
 
 			template<typename T>
 			inline const Class& GetClassImpl();
+
+			template<typename T>
+			inline const Enum& GetEnumImpl();
 		}
+
+		template<typename Enum>
+		struct EnumRange;
 
 		template<typename T>
 		inline const Type& GetType()
@@ -97,6 +154,12 @@ namespace Sphynx
 			return details::GetClassImpl<T>();
 		}
 
+		template<typename T>
+		inline const Enum& GetEnum()
+		{
+			return details::GetEnumImpl<T>();
+		}
+
 #define X(_Type) \
 	template<> inline const Type& details::GetTypeImpl<_Type>() \
 	{ \
@@ -106,19 +169,19 @@ namespace Sphynx
 
 #define TYPES() \
 	X(bool)					\
-    X(char)					\
-    X(short)				\
-    X(int)					\
-    X(long)					\
-    X(long long)			\
-    X(float)				\
-    X(double)				\
-    X(long double)			\
-    X(unsigned char)		\
-    X(unsigned short)		\
-    X(unsigned int)			\
-    X(unsigned long)		\
-    X(unsigned long long)	\
+	X(char)					\
+	X(short)				\
+	X(int)					\
+	X(long)					\
+	X(long long)			\
+	X(float)				\
+	X(double)				\
+	X(long double)			\
+	X(unsigned char)		\
+	X(unsigned short)		\
+	X(unsigned int)			\
+	X(unsigned long)		\
+	X(unsigned long long)	\
 
 
 		TYPES()
@@ -156,4 +219,19 @@ namespace Sphynx
 //	// TODO: Functions
 //	
 //SPX_REFLECT_CLASS_END(Vector)
+
+enum class Test
+{
+	A,
+	B,
+	C
+};
+
+SPX_REFLECT_ENUM_BEGIN(Test)
+	
+	SPX_REFLECT_ENUM_VALUE(A)
+	SPX_REFLECT_ENUM_VALUE(B)
+	SPX_REFLECT_ENUM_VALUE(C)
+	
+SPX_REFLECT_ENUM_END(Test)
 

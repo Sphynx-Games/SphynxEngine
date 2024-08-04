@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Core.h"
+
 
 namespace Sphynx
 {
@@ -8,7 +10,7 @@ namespace Sphynx
 		struct Class;
 		struct Type;
 
-		struct Property
+		struct SPHYNX_API Property
 		{
 			const Type& Type;
 			const char* Name;

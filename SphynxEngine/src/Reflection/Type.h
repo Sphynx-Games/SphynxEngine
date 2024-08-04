@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Core.h"
+
 
 namespace Sphynx
 {
 	namespace Reflection
 	{
-		struct Type
+		struct SPHYNX_API Type
 		{
 			const char* Name;
 			size_t Size;

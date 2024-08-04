@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Core.h"
 #include "Type.h"
 #include "Property.h"
 
@@ -10,7 +11,7 @@ namespace Sphynx
 	{
 		struct Property;
 
-		struct Class : public Type
+		struct SPHYNX_API Class : public Type
 		{
 			const Property* Properties;
 			size_t PropertiesCount;
