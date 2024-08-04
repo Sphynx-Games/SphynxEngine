@@ -7,15 +7,18 @@ namespace Sphynx
 {
 	void Engine::Init()
 	{
+		// First initialize core engine systems
 		Log::Init();
+		SPX_CORE_LOG_DISPLAY("Initializing Sphynx Engine");
+
 		AssetManager::Init();
-		SPX_CORE_LOG_DISPLAY("Sphynx Engine initializing...");
 	}
 
 	void Engine::Shutdown()
 	{
-		SPX_CORE_LOG_DISPLAY("Sphynx Engine shutting down...");
 		AssetManager::Shutdown();
+
+		SPX_CORE_LOG_DISPLAY("Shutting down Sphynx Engine");
 		Log::Shutdown();
 	}
 }

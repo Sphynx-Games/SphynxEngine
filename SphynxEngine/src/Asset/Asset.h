@@ -2,12 +2,13 @@
 
 #include "Core/Core.h"
 #include "Core/UUID.h"
+#include "Traits/Utility.h"
 
 
 namespace Sphynx
 {
-	using AssetHandle = UUID;
-	using AssetType = std::string;
+	using AssetHandle = UniqueType<UUID, struct __AssetHandle__>;
+	using AssetType = UniqueType<std::string, struct __AssetType__>;
 
 	struct SPHYNX_API IAsset
 	{

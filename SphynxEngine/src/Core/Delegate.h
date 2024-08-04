@@ -2,6 +2,8 @@
 
 #include "Core/Core.h"
 #include "Container/Array.h"
+#include "Core/UUID.h"
+#include "Traits/Utility.h"
 
 
 namespace Sphynx
@@ -18,10 +20,10 @@ namespace Sphynx
 		constexpr Delegate() = default;
 		~Delegate() { Unbind(); }
 
-		constexpr TReturn Execute(Args&&... args)
+		constexpr TReturn Execute(Args... args) const
 		{
 			SPX_CORE_ASSERT(IsBound(), "Cannot invoke a delegate with no invokable binded");
-			return (*m_Callable)(*this, std::forward<Args>(args)...);
+			return (*m_Callable)(*this, args...);
 		}
 
 		template<typename F>
@@ -62,10 +64,10 @@ namespace Sphynx
 			constexpr explicit MemberFuncDelegateImpl(const MemberFuncDelegateImpl& other) = default;
 			constexpr MemberFuncDelegateImpl(MemberFuncDelegateImpl&& other) = default;
 
-			constexpr inline static TReturn Invoke(const Delegate& d, Args&&... args)
+			constexpr inline static TReturn Invoke(const Delegate& d, Args... args)
 			{
 				const MemberFuncDelegateImpl& impl = d.m_Storage.template Get<const MemberFuncDelegateImpl>();
-				return (impl.object->*impl.method)(std::forward<Args>(args)...);
+				return (impl.object->*impl.method)(args...);
 			}
 
 			T* object;
@@ -79,10 +81,10 @@ namespace Sphynx
 			constexpr explicit FunctorDelegateImpl(const FunctorDelegateImpl& other) = default;
 			constexpr FunctorDelegateImpl(FunctorDelegateImpl&& other) = default;
 
-			constexpr inline static TReturn Invoke(const Delegate& d, Args&&... args)
+			constexpr inline static TReturn Invoke(const Delegate& d, Args... args)
 			{
 				const FunctorDelegateImpl& impl = d.m_Storage.template Get<const FunctorDelegateImpl>();
-				return impl.functor(std::forward<Args>(args)...);
+				return impl.functor(args...);
 			}
 
 			Functor functor;
@@ -90,15 +92,14 @@ namespace Sphynx
 
 		struct Buffer
 		{
-			constexpr Buffer() : m_Data{std::byte(0)} {}
+			constexpr Buffer() : m_Data{ std::byte(0) } {}
 
 			template<typename T, typename V> constexpr inline T* Init(const V& v) { return new(m_Data) T(v); }
 			template<typename T> constexpr inline T& Get() { return *reinterpret_cast<T*>(m_Data); }
 			template<typename T> constexpr inline const T& Get() const { return *reinterpret_cast<const T*>(m_Data); }
-		
+
 		private:
-			// TODO: align as max between memberfuncimpl or functorimpl
-			std::byte m_Data[Size];
+			alignas(void*) std::byte m_Data[Size];
 		};
 
 		template<typename T>
@@ -113,10 +114,10 @@ namespace Sphynx
 		template<typename T>
 		struct HeapAlloc // heap allocator
 		{
-			template<typename V> constexpr inline static T* Init(Buffer& buffer, const V& v) { /*SPX_CORE_LOG_TRACE("Allocating {} bytes", sizeof(T));*/ return *buffer.template Init<T*>(new T(v)); }
+			template<typename V> constexpr inline static T* Init(Buffer& buffer, const V& v) { return *buffer.template Init<T*>(new T(v)); }
 			constexpr inline static T& Get(Buffer& buffer) { return *buffer.template Get<T*>(); }
 			constexpr inline static const T& Get(const Buffer& buffer) { return *buffer.template Get<const T*>(); }
-			constexpr inline static void Delete(Buffer& buffer) { /*SPX_CORE_LOG_TRACE("Deallocating {} bytes", sizeof(T));*/ T* ptr = buffer.template Get<T*>(); delete ptr; }
+			constexpr inline static void Delete(Buffer& buffer) { T* ptr = buffer.template Get<T*>(); delete ptr; }
 		};
 
 		template<typename T>
@@ -139,13 +140,12 @@ namespace Sphynx
 			Buffer m_Buffer;
 		} m_Storage{};
 
-		typedef TReturn(*Callable)(const Delegate&, Args&&...);
+		typedef TReturn(*Callable)(const Delegate&, Args...);
 		Callable m_Callable = nullptr;
 
 	};
 
-
-	using DelegateHandle = UUID;
+	using DelegateHandle = UniqueType<UUID, struct __DelegateHandle__>;
 
 	template<typename T, size_t Size = sizeof(void*) * 2>
 	class MulticastDelegate;
@@ -165,9 +165,9 @@ namespace Sphynx
 			m_Delegates.RemoveAll();
 		}
 
-		constexpr void Broadcast(Args&&... args)
+		constexpr void Broadcast(Args... args) const
 		{
-			for (auto& delegate : m_Delegates)
+			for (const auto& delegate : m_Delegates)
 			{
 				delegate.Execute(args...);
 			}
@@ -178,11 +178,12 @@ namespace Sphynx
 		{
 			DelegateHandle handle;
 			handle.Generate();
+			m_Handles.Add(handle);
 
 			Delegate<TReturn(Args...), Size> delegate;
 			delegate.Bind(f);
+			m_Delegates.Add(delegate);
 
-			m_Delegates.Emplace(handle, delegate);
 			return handle;
 		}
 
@@ -191,36 +192,30 @@ namespace Sphynx
 		{
 			DelegateHandle handle;
 			handle.Generate();
+			m_Handles.Add(handle);
 
 			Delegate<TReturn(Args...), Size> delegate;
 			delegate.Bind(object, method);
+			m_Delegates.Add(delegate);
 
-			m_Delegates.Emplace(handle, delegate);
 			return handle;
 		}
 
 		constexpr void Unbind(const DelegateHandle& handle)
 		{
-			uint64_t index = m_Handles.Size();
-			for (int64_t i = 0; i < m_Handles.Size(); ++i)
-			{
-				if (m_Handles[i] == handle)
-				{
-					index = i;
-					break;
-				}
-			}
+			size_t index = m_Handles.IndexOf(handle);
+			SPX_CORE_ASSERT(index < m_Handles.Size(), "Index out of bounds!");
 
-			SPX_CORE_ASSERT(index < m_Handles.Size(), "Handle not found in delegate");
-
-			m_Delegates[i].Unbind();
+			m_Delegates[index].Unbind();
 			m_Delegates.RemoveAt(index);
 			m_Handles.RemoveAt(index);
 		}
 
 		constexpr bool IsBound(const DelegateHandle& handle) const
 		{
-			return m_Delegates.GetValue(handle).IsBound();
+			size_t index = m_Handles.IndexOf(handle);
+			SPX_CORE_ASSERT(index < m_Handles.Size(), "Index out of bounds!");
+			return m_Delegates[index].IsBound();
 		}
 
 	private:

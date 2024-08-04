@@ -11,7 +11,7 @@ namespace Sphynx
 	{
 		m_Size = size;
 
-		const SDLRendererAPI* renderer = dynamic_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
+		const SDLRendererAPI* renderer = static_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
 		if (renderer == nullptr)
 		{
 			SPX_CORE_LOG_ERROR("RendererAPI is not of SDL type");
@@ -44,7 +44,7 @@ namespace Sphynx
 
 	SDLTexture* SDLTextureLoader::Load(const std::filesystem::path& path)
 	{
-		const SDLRendererAPI* renderer = dynamic_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
+		const SDLRendererAPI* renderer = static_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
 		if (renderer == nullptr)
 		{
 			SPX_CORE_LOG_ERROR("RendererAPI is not of SDL type");

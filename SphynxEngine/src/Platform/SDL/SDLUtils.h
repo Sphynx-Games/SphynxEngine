@@ -10,8 +10,8 @@
 {\
 	SDL_Rect rect;\
 	SDL_GetRenderViewport(SDL_GetRenderer((SDL_Window*)window->GetNativeWindow()), &rect);\
-	float width = rect.w;\
-	float height = rect.h;\
+	float width = (float)rect.w;\
+	float height = (float)rect.h;\
 	point.x *= width / 2.0f; \
 	point.y *= height / 2.0f;\
 	point.x += width / 2.0f;\

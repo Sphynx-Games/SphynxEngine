@@ -109,6 +109,12 @@ namespace Sphynx
 			return *this;
 		}
 
+		size_t IndexOf(const T& value)
+		{
+			auto it = std::find(m_Array.begin(), m_Array.end(), value);
+			return std::distance(m_Array.begin(), it);
+		}
+
 		inline bool Contains(const T& value) const { return std::find(m_Array.begin(), m_Array.end(), value) != m_Array.end(); }
 		inline size_t Size() const { return m_Array.size(); }
 		inline bool IsEmpty() const { return m_Array.empty(); }
