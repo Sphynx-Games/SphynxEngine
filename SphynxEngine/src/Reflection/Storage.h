@@ -38,6 +38,7 @@ namespace Sphynx
 				}
 
 				std::vector<Enum::Entry> Entries;
+				std::vector<int64_t> Values;
 			};
 		}
 	}

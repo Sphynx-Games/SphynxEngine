@@ -20,10 +20,15 @@ namespace Sphynx
 			const Entry* Values;
 			size_t Count;
 
+			inline const Entry* begin() { return Values; }
+			inline const Entry* begin() const { return Values; }
+			inline const Entry* end() { return Values + Count; }
+			inline const Entry* end() const { return Values + Count; }
+
 			template<typename T>
 			inline int64_t GetValue(T e) const
 			{
-				SPX_CORE_ASSERT(GetEnum<T> == *this);
+				SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
 				int64_t value = (int64_t)e;
 				auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Value == value; });
@@ -35,7 +40,7 @@ namespace Sphynx
 			template<typename T>
 			inline const std::string& GetName(T e) const
 			{
-				SPX_CORE_ASSERT(GetEnum<T> == *this);
+				SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
 				int64_t value = (int64_t)e;
 				auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Value == value; });

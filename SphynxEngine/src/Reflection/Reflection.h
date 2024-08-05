@@ -92,6 +92,7 @@
 		inline static ::Sphynx::Reflection::details::EnumStorage<_Enum> _Enum##__EnumStorage([](auto* self) { \
 			using context_enum = _Enum; \
 			auto& Entries = self->Entries; \
+			auto& Values = self->Values; \
 
 #define SPX_REFLECT_ENUM_END(_Enum) \
 		}); \
@@ -108,16 +109,43 @@
 		return e; \
 	} \
 	template<> struct ::Sphynx::Reflection::EnumRange<_Enum> { \
-		inline const Enum::Entry* begin() { return _Enum##__EnumStorage.Entries.data(); } \
-		inline const Enum::Entry* begin() const { return _Enum##__EnumStorage.Entries.data(); } \
-		inline const Enum::Entry* end() { return _Enum##__EnumStorage.Entries.data() + _Enum##__EnumStorage.Entries.size(); } \
-		inline const Enum::Entry* end() const { return _Enum##__EnumStorage.Entries.data() + _Enum##__EnumStorage.Entries.size(); } \
+		struct Iterator \
+		{ \
+			using difference_type = std::ptrdiff_t; \
+			using value_type = _Enum; \
+			using pointer = _Enum*; \
+			using reference = _Enum&; \
+			\
+			Iterator(int64_t* values) : m_Values(values) {} \
+			\
+			reference operator*() const { return reinterpret_cast<reference>(*m_Values); } \
+			pointer operator->() { return reinterpret_cast<pointer>(m_Values); } \
+			Iterator& operator++() { m_Values++; return *this; } \
+			Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; } \
+			friend bool operator== (const Iterator& a, const Iterator& b) { return a.m_Values == b.m_Values; }; \
+			friend bool operator!= (const Iterator& a, const Iterator& b) { return a.m_Values != b.m_Values; }; \
+		\
+		private: \
+			int64_t* m_Values; \
+		}; \
+		inline Iterator begin() { return _Enum##__EnumStorage.Values.data(); } \
+		inline Iterator begin() const { return _Enum##__EnumStorage.Values.data(); } \
+		inline Iterator end() { return _Enum##__EnumStorage.Values.data() + _Enum##__EnumStorage.Values.size(); } \
+		inline Iterator end() const { return _Enum##__EnumStorage.Values.data() + _Enum##__EnumStorage.Values.size(); } \
 	};
 
-#define SPX_REFLECT_ENUM_VALUE(_Value) \
+#define SPX_REFLECT_ENUM_VALUE_BEGIN(_Value) \
 	{ \
 		Entries.push_back(::Sphynx::Reflection::Enum::Entry{ std::string(#_Value) ,(int64_t)context_enum::_Value }); \
+		Values.push_back((int64_t)context_enum::_Value); \
+		[[maybe_unused]] auto& Entry = *(Entries.end() - 1);
+
+#define SPX_REFLECT_ENUM_VALUE_END() \
 	}
+
+#define SPX_REFLECT_ENUM_VALUE(_Value) \
+	SPX_REFLECT_ENUM_VALUE_BEGIN(_Value) \
+	SPX_REFLECT_ENUM_VALUE_END()
 
 #define SPX_REFLECT_ENUM(_Enum) \
 	SPX_REFLECT_ENUM_BEGIN(_Enum) \
