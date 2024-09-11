@@ -7,8 +7,8 @@
 
 namespace Sphynx
 {
-	using AssetHandle = UniqueType<UUID, struct __AssetHandle__>;
-	using AssetType = UniqueType<std::string, struct __AssetType__>;
+	using AssetHandle = Traits::unique_type<UUID, struct __AssetHandle__>;
+	using AssetType = Traits::unique_type<std::string, struct __AssetType__>;
 
 	struct SPHYNX_API IAsset
 	{

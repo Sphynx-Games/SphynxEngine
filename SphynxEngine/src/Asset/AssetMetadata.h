@@ -10,7 +10,7 @@
 
 namespace Sphynx
 {
-	using AssetHandle = UniqueType<UUID, struct __AssetHandle__>;
+	using AssetHandle = Traits::unique_type<UUID, struct __AssetHandle__>;
 
 	struct AssetMetadata
 	{

@@ -145,7 +145,7 @@ namespace Sphynx
 
 	};
 
-	using DelegateHandle = UniqueType<UUID, struct __DelegateHandle__>;
+	using DelegateHandle = Traits::unique_type<UUID, struct __DelegateHandle__>;
 
 	template<typename T, size_t Size = sizeof(void*) * 2>
 	class MulticastDelegate;
