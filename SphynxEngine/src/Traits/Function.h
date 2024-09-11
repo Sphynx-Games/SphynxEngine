@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "Utility.h"
 
 
 namespace Sphynx

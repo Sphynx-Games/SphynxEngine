@@ -2,9 +2,11 @@
 
 #include "Type.h"
 #include "Class.h"
+#include "Function.h"
 #include "Enum.h"
 #include "Property.h"
 #include "Storage.h"
+#include "Traits/Traits.h"
 
 
 /**
@@ -21,7 +23,7 @@
  * SPX_REFLECT_CLASS_BEGIN(Texture)
  *		SPX_REFLECT_PROPERTY(Width)
  *		SPX_REFLECT_PROPERTY(Height)
- * SPX_REGLECT_CLASS_END(Texture)
+ * SPX_REFLECT_CLASS_END(Texture)
  *
  */
 
@@ -31,6 +33,7 @@
 		inline static ::Sphynx::Reflection::details::ClassStorage<_Class> _Class##__ClassStorage([](auto* self) { \
 			self->Size = sizeof(_Class); \
 			auto& Properties = self->Properties; \
+			auto& Functions = self->Functions; \
 			using context_type = _Class;
 
 #define SPX_REFLECT_CLASS_END(_Class) \
@@ -43,7 +46,9 @@
 		static const Class c { \
 			::Sphynx::Reflection::Type{ #_Class, sizeof(_Class), alignof(_Class) }, \
 			_Class##__ClassStorage.Properties.data(), \
-			_Class##__ClassStorage.Properties.size() \
+			_Class##__ClassStorage.Properties.size(), \
+			_Class##__ClassStorage.Functions.data(), \
+			_Class##__ClassStorage.Functions.size() \
 		}; \
 		return c; \
 	} \
@@ -85,6 +90,37 @@
 #define SPX_REFLECT_PROPERTY(_Property) \
 	SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	SPX_REFLECT_PROPERTY_END()
+
+ // ---------- Member Function -----------
+#define SPX_REFLECT_FUNCTION_BEGIN(_Function) \
+	{ \
+		using param_pack = typename ::Sphynx::Traits::function_args_type<decltype(&context_type::_Function)>::type; \
+		using return_type = typename ::Sphynx::Traits::function_return_type<decltype(&context_type::_Function)>::type; \
+		static std::array<::Sphynx::Reflection::Function::Parameter, ::Sphynx::Traits::args_pack_size<param_pack>::value> Parameters = \
+			::Sphynx::Reflection::details::GetParameterPackArray<param_pack>( \
+				std::make_index_sequence<::Sphynx::Traits::args_pack_size<param_pack>::value>{}); \
+	 \
+		Functions.push_back(::Sphynx::Reflection::Function{ #_Function, ::Sphynx::Reflection::GetType<return_type>(), Parameters.data(), ::Sphynx::Traits::args_pack_size<param_pack>::value }); \
+		[[maybe_unused]]::Sphynx::Reflection::Function::Parameter* ParamPtr = Parameters.data(); \
+
+#define SPX_REFLECT_FUNCTION_END() \
+	}
+
+#define SPX_REFLECT_FUNCTION(_Function) \
+	SPX_REFLECT_FUNCTION_BEGIN(_Function) \
+	SPX_REFLECT_FUNCTION_END()
+
+#define SPX_REFLECT_FUNCTION_PARAM_BEGIN(_Param) \
+	{ \
+		ParamPtr->Name = #_Param; \
+		
+#define SPX_REFLECT_FUNCTION_PARAM_END() \
+		++ParamPtr; \
+	}
+
+#define SPX_REFLECT_FUNCTION_PARAM(_Param) \
+	SPX_REFLECT_FUNCTION_PARAM_BEGIN(_Param) \
+	SPX_REFLECT_FUNCTION_PARAM_END()
 
  // ---------- Enum -----------
 #define SPX_REFLECT_ENUM_BEGIN(_Enum) \
@@ -151,6 +187,7 @@
 	SPX_REFLECT_ENUM_BEGIN(_Enum) \
 	SPX_REFLECT_ENUM_END(_Enum)
 
+
 namespace Sphynx
 {
 	namespace Reflection
@@ -213,7 +250,7 @@ namespace Sphynx
 
 
 		TYPES()
-		
+
 		template<> inline const Type& details::GetTypeImpl<void>()
 		{
 			static const Type type{ "void", 0, 0 };
@@ -230,23 +267,29 @@ namespace Sphynx
 }
 
 // DO NOT UNCOMMENT, THIS IS FOR TESTING PURPOSES
-//struct Vector
-//{
-//	int a;
-//	int b;
-//	int c;
-//};
-//
-//SPX_REFLECT_CLASS_BEGIN(Vector)
-//	
-//	// Properties
-//	SPX_REFLECT_PROPERTY(a)
-//	SPX_REFLECT_PROPERTY(b)
-//	SPX_REFLECT_PROPERTY(c)
-//
-//	// TODO: Functions
-//	
-//SPX_REFLECT_CLASS_END(Vector)
+struct Vector
+{
+	int a;
+	int b;
+	int c;
+
+	int Hola(double, int)
+	{
+		return 0;
+	}
+};
+
+SPX_REFLECT_CLASS_BEGIN(Vector)
+	
+	// Properties
+	SPX_REFLECT_PROPERTY(a)
+	SPX_REFLECT_PROPERTY(b)
+	SPX_REFLECT_PROPERTY(c)
+
+	// Functions
+	SPX_REFLECT_FUNCTION(Hola)
+	
+SPX_REFLECT_CLASS_END(Vector)
 
 enum class Test
 {
@@ -256,10 +299,10 @@ enum class Test
 };
 
 SPX_REFLECT_ENUM_BEGIN(Test)
-	
+
 	SPX_REFLECT_ENUM_VALUE(A)
 	SPX_REFLECT_ENUM_VALUE(B)
 	SPX_REFLECT_ENUM_VALUE(C)
-	
+
 SPX_REFLECT_ENUM_END(Test)
 

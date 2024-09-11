@@ -1,5 +1,6 @@
 #pragma once
 #include "Property.h"
+#include "Function.h"
 #include <vector>
 #include <string>
 
@@ -16,6 +17,7 @@ namespace Sphynx
 				template<typename Lambda>
 				ClassStorage(Lambda&& ctor) :
 					Properties{},
+					Functions{},
 					Size{0},
 					IsStruct{false}
 				{
@@ -23,6 +25,7 @@ namespace Sphynx
 				}
 
 				std::vector<Property> Properties;
+				std::vector<Function> Functions;
 				size_t Size;
 				bool IsStruct;
 			};
