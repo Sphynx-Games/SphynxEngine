@@ -23,6 +23,7 @@ namespace Sphynx
 			const Type& ReturnType;
 			const Parameter* Parameters;
 			size_t ParameterCount;
+			void(*FunctionPtr)(void*, void*);
 		};
 
 		namespace details

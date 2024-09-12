@@ -7,6 +7,8 @@
 #include "Property.h"
 #include "Storage.h"
 #include "Traits/Traits.h"
+#include "Core/Invoke.h"
+#include <any>
 
 
 /**
@@ -94,13 +96,20 @@
  // ---------- Member Function -----------
 #define SPX_REFLECT_FUNCTION_BEGIN(_Function) \
 	{ \
+		auto FuncPtr = [](void* obj, void* params) \
+		{ \
+			::Sphynx::Invoke( \
+				*reinterpret_cast<typename ::Sphynx::Traits::function_scope_type<decltype(&context_type::_Function)>::type*>(obj), \
+				&context_type::_Function, \
+				params); \
+		}; \
 		using param_pack = typename ::Sphynx::Traits::function_args_type<decltype(&context_type::_Function)>::type; \
 		using return_type = typename ::Sphynx::Traits::function_return_type<decltype(&context_type::_Function)>::type; \
 		static std::array<::Sphynx::Reflection::Function::Parameter, ::Sphynx::Traits::args_pack_size<param_pack>::value> Parameters = \
 			::Sphynx::Reflection::details::GetParameterPackArray<param_pack>( \
 				std::make_index_sequence<::Sphynx::Traits::args_pack_size<param_pack>::value>{}); \
 	 \
-		Functions.push_back(::Sphynx::Reflection::Function{ #_Function, ::Sphynx::Reflection::GetType<return_type>(), Parameters.data(), ::Sphynx::Traits::args_pack_size<param_pack>::value }); \
+		Functions.push_back(::Sphynx::Reflection::Function{ #_Function, ::Sphynx::Reflection::GetType<return_type>(), Parameters.data(), ::Sphynx::Traits::args_pack_size<param_pack>::value, std::move(FuncPtr) }); \
 		[[maybe_unused]]::Sphynx::Reflection::Function::Parameter* ParamPtr = Parameters.data(); \
 
 #define SPX_REFLECT_FUNCTION_END() \
@@ -273,7 +282,7 @@ struct Vector
 	int b;
 	int c;
 
-	int Hola(double, int)
+	int Hola(double, int) const
 	{
 		return 0;
 	}
