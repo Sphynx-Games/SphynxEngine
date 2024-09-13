@@ -10,6 +10,7 @@
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
 
+
 namespace Sphynx
 {
 	struct PhysicsWorld2DData
@@ -41,7 +42,7 @@ namespace Sphynx
 		friend Rigidbody2D;
 	};
 
-	struct Collider2DData
+	/*struct Collider2DData
 	{
 	public:
 		Collider2DData() : Fixtures() {};
@@ -51,5 +52,20 @@ namespace Sphynx
 		Array<b2Fixture*> Fixtures;
 
 		friend Collider2D;
+	};*/
+
+	struct Contact2DData
+	{
+	public:
+		~Contact2DData() = default;
+
+		inline bool IsFromListener() { return WasCalledFromListener; };
+
+	private:
+		Contact2DData() : WasCalledFromListener(true) {};
+
+		bool WasCalledFromListener;
+
+		friend Box2DContactListener;
 	};
 }

@@ -2,6 +2,7 @@
 
 #include "Logging/Log.h"
 #include "Container/Map.h"
+#include "Platform/Box2D/Box2DData.h"
 
 #include <box2d/b2_world_callbacks.h>
 #include <box2d/b2_contact.h>
@@ -17,8 +18,8 @@ namespace Sphynx
 
 		void BeginContact(b2Contact* contact)
 		{
-			StartContact(contact, contact->GetFixtureA()->GetUserData(), contact->GetFixtureB()->GetUserData());
-			StartContact(contact, contact->GetFixtureB()->GetUserData(), contact->GetFixtureA()->GetUserData());
+			BeginContact(contact, contact->GetFixtureA()->GetUserData(), contact->GetFixtureB()->GetUserData());
+			BeginContact(contact, contact->GetFixtureB()->GetUserData(), contact->GetFixtureA()->GetUserData());
 		};
 
 		void EndContact(b2Contact* contact)
@@ -28,16 +29,16 @@ namespace Sphynx
 		}
 
 	private:
-		void StartContact(b2Contact* contact, b2FixtureUserData& userData1, b2FixtureUserData& userData2)
+		void BeginContact(b2Contact* contact, b2FixtureUserData& userData1, b2FixtureUserData& userData2)
 		{
 			Collider2D* collider1 = reinterpret_cast<Collider2D*>(userData1.pointer);
 			Collider2D* collider2 = reinterpret_cast<Collider2D*>(userData2.pointer);
 			if (collider1 == nullptr || collider2 == nullptr) return;
 
-			Contact2D contactInfo = { collider2, Vector2f(contact->GetManifold()->localNormal.x, contact->GetManifold()->localNormal.y) };
+			Contact2D contactInfo = { collider2, Vector2f(contact->GetManifold()->localNormal.x, contact->GetManifold()->localNormal.y)/*, Contact2DData()*/ };
 
 			SPX_CORE_LOG_DISPLAY("START CONTACT!!");
-			collider1->OnBeginContact.Execute(contactInfo);
+			collider1->BeginContact(contactInfo);
 		}
 
 		void EndContact(b2Contact* contact, b2FixtureUserData& userData1, b2FixtureUserData& userData2)
@@ -46,10 +47,13 @@ namespace Sphynx
 			Collider2D* collider2 = reinterpret_cast<Collider2D*>(userData2.pointer);
 			if (collider1 == nullptr || collider2 == nullptr) return;
 
-			Contact2D contactInfo = { collider2, Vector2f(contact->GetManifold()->localNormal.x, contact->GetManifold()->localNormal.y) };
+			Contact2D contactInfo = { collider2, Vector2f(contact->GetManifold()->localNormal.x, contact->GetManifold()->localNormal.y)/*, Contact2DData()*/ };
 
 			SPX_CORE_LOG_DISPLAY("END CONTACT!!");
-			collider1->OnEndContact.Execute(contactInfo);
+			collider1->EndContact(contactInfo);
 		}
+
+	/*private:
+		HashMap<Collider2D*, Contact2DDelegates>*/
 	};
 }

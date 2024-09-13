@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "WindowsInput.h"
 #include <SDL3/SDL.h>
 

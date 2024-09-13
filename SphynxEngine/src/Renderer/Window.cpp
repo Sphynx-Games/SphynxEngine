@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Window.h"
 
 #ifdef SPX_PLATFORM_WINDOWS

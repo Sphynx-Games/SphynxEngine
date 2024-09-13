@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Input.h"
 
 #ifdef SPX_PLATFORM_WINDOWS

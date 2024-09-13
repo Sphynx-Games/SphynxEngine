@@ -7,6 +7,8 @@
 
 namespace Sphynx
 {
+	//extern struct PhysicsWorld2DData;
+
 	class SPHYNX_API PhysicsWorld2D
 	{
 	public:

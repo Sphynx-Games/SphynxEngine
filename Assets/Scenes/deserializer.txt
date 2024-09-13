@@ -1,0 +1,750 @@
+      - Value: Default SceneDefault Scene
+[17:15:42] SPHYNX: Default SceneDefault Scene
+[17:15:42] SPHYNX: 6
+[17:15:42] SPHYNX: 0
+      - Value: ♥
+[17:15:42] SPHYNX: ♥
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: TransformComponent
+[17:15:42] SPHYNX: TransformComponent
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?SpriteRendererComponent
+[17:15:42] SPHYNX: Ç?SpriteRendererComponent
+      - Value: h☺
+[17:15:42] SPHYNX: h☺
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç☻
+[17:15:42] SPHYNX: Ç☻
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: x
+[17:15:42] SPHYNX: x
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: á
+[17:15:42] SPHYNX: á
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: ?
+[17:15:42] SPHYNX: ?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: ?d
+[17:15:42] SPHYNX: ?d
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:   ♥
+[17:15:42] SPHYNX:   ♥
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: TransformComponent
+[17:15:42] SPHYNX: TransformComponent
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?LineRendererComponent
+[17:15:42] SPHYNX: Ç?LineRendererComponent
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:  
+[17:15:42] SPHYNX:  
+      - Value:  ♥
+[17:15:42] SPHYNX:  ♥
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: TransformComponent
+[17:15:42] SPHYNX: TransformComponent
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: └
+[17:15:42] SPHYNX: └
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: á@
+[17:15:42] SPHYNX: á@
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?BoxCollider2DComponent
+[17:15:42] SPHYNX: Ç?BoxCollider2DComponent
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: Ç?
+[17:15:42] SPHYNX: Ç?
+      - Value: ═♦
+[17:15:42] SPHYNX: ═♦
+      - Value:
+[17:15:42] SPHYNX:
+      - Value:
+[17:15:42] SPHYNX:
+      - Value: TransformComponent
+[17:15:43] SPHYNX: TransformComponent
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: 4B
+[17:15:43] SPHYNX: 4B
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ?
+[17:15:43] SPHYNX: ?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ?
+[17:15:43] SPHYNX: ?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?Rigidbody2DComponent
+[17:15:43] SPHYNX: Ç?Rigidbody2DComponent
+      - Value: ☺☺
+[17:15:43] SPHYNX: ☺☺
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?BoxCollider2DComponent
+[17:15:43] SPHYNX: Ç?BoxCollider2DComponent
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?
+[17:15:43] SPHYNX: Ç?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?
+[17:15:43] SPHYNX: Ç?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ═♦
+[17:15:43] SPHYNX: ═♦
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: TransformComponent
+[17:15:43] SPHYNX: TransformComponent
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ?
+[17:15:43] SPHYNX: ?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: @@
+[17:15:43] SPHYNX: @@
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ♀B
+[17:15:43] SPHYNX: ♀B
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ?
+[17:15:43] SPHYNX: ?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ?
+[17:15:43] SPHYNX: ?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?Rigidbody2DComponent
+[17:15:43] SPHYNX: Ç?Rigidbody2DComponent
+      - Value: ☺☺
+[17:15:43] SPHYNX: ☺☺
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?CircleCollider2DComponent
+[17:15:43] SPHYNX: Ç?CircleCollider2DComponent
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?
+[17:15:43] SPHYNX: Ç?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: ═♦
+[17:15:43] SPHYNX: ═♦
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: TransformComponent
+[17:15:43] SPHYNX: TransformComponent
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: └┐
+[17:15:43] SPHYNX: └┐
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?
+[17:15:43] SPHYNX: Ç?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:  ┴
+[17:15:43] SPHYNX:  ┴
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: @
+[17:15:43] SPHYNX: @
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?
+[17:15:43] SPHYNX: Ç?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?Rigidbody2DComponent
+[17:15:43] SPHYNX: Ç?Rigidbody2DComponent
+      - Value: ☺☺
+[17:15:43] SPHYNX: ☺☺
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?CapsuleCollider2DComponent
+[17:15:43] SPHYNX: Ç?CapsuleCollider2DComponent
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: Ç?
+[17:15:43] SPHYNX: Ç?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: @
+[17:15:43] SPHYNX: @
+      - Value:
+[17:15:43] SPHYNX:
+      - Value: └?
+[17:15:43] SPHYNX: └?
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:
+      - Value:
+[17:15:43] SPHYNX:

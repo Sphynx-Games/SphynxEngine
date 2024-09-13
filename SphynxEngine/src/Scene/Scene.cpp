@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Scene.h"
 #include "Actor.h"
 #include "Component/Components.h"
@@ -6,11 +7,25 @@
 #include "Physics/PhysicsWorld2D.h"
 #include "Physics/Collider2D.h"
 #include "Physics/Physics2DRenderer.h"
+#include "Serialization/SceneSerialiZer.h"
+#include "Serialization/SceneDeserializer.h"
 
 
 namespace Sphynx
 {
 	Scene::Scene() :
+		m_UUID(UUID().Generate()),
+		m_Name("Default Scene"),
+		m_HasBegunPlay(false),
+		m_Registry(),
+		m_Actors(),
+		m_PhysicsWorld(nullptr)
+	{
+	}
+
+	Scene::Scene(std::string name) :
+		m_UUID(UUID().Generate()),
+		m_Name(name),
 		m_HasBegunPlay(false),
 		m_Registry(),
 		m_Actors(),
@@ -33,7 +48,6 @@ namespace Sphynx
 
 	void Scene::EndPlay()
 	{
-		Physics2D::DestroyPhysicsWorld(m_PhysicsWorld);
 		m_PhysicsWorld = nullptr;
 	}
 
@@ -77,7 +91,7 @@ namespace Sphynx
 		}
 	}
 
-	Actor Scene::CreateActor()
+	Actor& Scene::CreateActor()
 	{
 		Actor& actor = m_Actors.emplace_back(m_Registry.create(), this);
 		actor.AddComponent<UUIDComponent>(UUID::Generate());

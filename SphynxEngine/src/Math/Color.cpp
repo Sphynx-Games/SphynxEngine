@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Color.h"
 
 namespace Sphynx

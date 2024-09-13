@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Sprite.h"
 #include "Texture.h"
 

@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Time.h"
 #include "Logging/Log.h"
 

@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Physics/Physics2D.h"
 #include "Physics/PhysicsWorld2D.h"
 #include "Physics/Rigidbody2D.h"
@@ -65,7 +66,7 @@ namespace Sphynx
 	void Physics2D::DestroyPhysicsWorld(PhysicsWorld2D* physicsWorld)
 	{
 		SPX_CORE_ASSERT(physicsWorld != nullptr, "PhysicsWorld2D is nullptr!!");
-		SPX_CORE_ASSERT(s_PhysicsWorldToRigidbodies.ContainsKey(physicsWorld), "Rigidbody2D not found!!");
+		SPX_CORE_ASSERT(s_PhysicsWorldToRigidbodies.ContainsKey(physicsWorld), "PhysicsWorld2D not found!!");
 
 		Set<Rigidbody2D*> worldRigidbodies = s_PhysicsWorldToRigidbodies[physicsWorld];
 		for (auto rigidbody : worldRigidbodies)

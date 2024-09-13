@@ -17,6 +17,9 @@ namespace Sphynx
 		static UUID FromString(const std::string& str);
 		static std::string ToString(const UUID& uuid);
 
+		UUID& operator=(const UUID& rhs);
+		UUID& operator=(UUID&& rhs);
+
 	private:
 		friend bool operator==(const UUID& lhs, const UUID& rhs);
 

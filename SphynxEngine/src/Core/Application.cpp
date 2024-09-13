@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Application.h"
 #include "Renderer/Window.h"
 #include "Renderer/Renderer2D.h"

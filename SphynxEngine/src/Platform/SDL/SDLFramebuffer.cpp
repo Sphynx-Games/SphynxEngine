@@ -1,9 +1,10 @@
+#include "spxpch.h"
 #include "SDLFramebuffer.h"
+#include "Renderer/Renderer.h"
+#include "Platform/SDL/SDLRendererAPI.h"
 
 #include <SDL3/SDL.h>
 #include <Sphynx.h>
-#include "Renderer/Renderer.h"
-#include "Platform/SDL/SDLRendererAPI.h"
 
 
 namespace Sphynx

@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Collider2D.h"
 #include "PhysicsWorld2D.h"
 #include "Rigidbody2D.h"
@@ -23,6 +24,18 @@ namespace Sphynx
 {
 #ifdef SPX_PHYSICS_2D_BOX2D
 
+	struct Collider2DData
+	{
+	public:
+		Collider2DData() : Fixtures() {};
+		~Collider2DData() { Fixtures.RemoveAll(); };
+
+	public:
+		Array<b2Fixture*> Fixtures;
+
+		friend Collider2D;
+	};
+
 	bool IsHit(Collider2D* collider1, Collider2D* collider2);
 	b2Body* GetB2BodyFromPhysicsWorld(Collider2D* collider, const Transform& transform);
 	b2Body* GetB2BodyFromRigidbody(Collider2D* collider);
@@ -40,14 +53,10 @@ namespace Sphynx
 		m_Data(new Collider2DData()),
 		m_Overlaps()
 	{
-		OnBeginContact.Bind(this, &Collider2D::BeginContact);
-		OnEndContact.Bind(this, &Collider2D::EndContact);
 	}
 
 	Collider2D::~Collider2D()
 	{
-		OnBeginContact.Unbind();
-		OnEndContact.Unbind();
 		m_PhysicsWorld = nullptr;
 		m_Rigidbody = nullptr;
 		delete m_Data;
@@ -85,26 +94,32 @@ namespace Sphynx
 		m_Rigidbody = nullptr;
 	}
 
+	Collider2DData* Collider2D::GetData()
+	{
+		return m_Data;
+	}
+
 	void Collider2D::BeginContact(const Contact2D& contact)
 	{
+		//SPX_CORE_ASSERT(contact.Data.IsFromListener(), "BeginContact was not called from insede a contact listener!!");
+
 		if (!IsHit(this, contact.OtherCollider))
 		{
-			// BeginOverlap
 			m_Overlaps.Add(contact.OtherCollider);
 			OnBeginOverlap.Broadcast(contact);
 		}
 		else
 		{
-			// BeginHit
 			OnHit.Broadcast(contact);
 		}
 	}
 
 	void Collider2D::EndContact(const Contact2D& contact)
 	{
+		//SPX_CORE_ASSERT(contact.Data.IsFromListener(), "EndContact was not called from insede a contact listener!!");
+
 		if (!IsHit(this, contact.OtherCollider))
 		{
-			// EndOverlap
 			m_Overlaps.Remove(contact.OtherCollider);
 			OnEndOverlap.Broadcast(contact);
 		}
@@ -163,6 +178,7 @@ namespace Sphynx
 	void CapsuleCollider2D::AttachToRigidbody(Rigidbody2D* rigidbody)
 	{
 		m_Rigidbody = rigidbody;
+		m_PhysicsWorld = m_Rigidbody->GetPhysicsWorld();
 		b2Body* body = GetB2BodyFromRigidbody(this);
 		CreateCapsuleFixtures(this, body, rigidbody->GetTransform());
 	}

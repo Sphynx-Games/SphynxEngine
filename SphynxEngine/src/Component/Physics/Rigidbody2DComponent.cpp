@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Rigidbody2DComponent.h"
 #include "Physics/Physics2D.h"
 

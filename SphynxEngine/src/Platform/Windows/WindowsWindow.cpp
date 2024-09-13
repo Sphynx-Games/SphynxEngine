@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "WindowsWindow.h"
 #include "Logging/Log.h"
 

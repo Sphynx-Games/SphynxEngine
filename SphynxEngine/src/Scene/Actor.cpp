@@ -8,13 +8,15 @@ namespace Sphynx
 {
 	Actor::Actor() :
 		m_EntityID(entt::null),
-		m_Scene(nullptr)
+		m_Scene(nullptr),
+		m_numComponents(0)
 	{
 	}
 
 	Actor::Actor(entt::entity entity, Scene* scene) :
 		m_EntityID(entity),
-		m_Scene(scene)
+		m_Scene(scene),
+		m_numComponents(0)
 	{
 	}
 

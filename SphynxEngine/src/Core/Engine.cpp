@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Engine.h"
 #include "Logging/Log.h"
 #include "Asset/AssetManager.h"

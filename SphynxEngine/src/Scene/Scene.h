@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Core/UUID.h"
+#include "Math/Transform.h"
 #include "Math/Transform.h"
 
 #include "entt/entt.hpp"
+#include <cstring>
 
 
 namespace Sphynx
@@ -12,6 +15,7 @@ namespace Sphynx
 	{
 	public:
 		Scene();
+		Scene(std::string name);
 		~Scene();
 
 	public:
@@ -19,7 +23,7 @@ namespace Sphynx
 		void EndPlay();
 		void Update(float deltaTime);
 
-		class Actor CreateActor();
+		class Actor& CreateActor();
 		void DestroyActor(const Actor& actor);
 
 		const std::vector<Actor>& GetActors() const;
@@ -29,6 +33,9 @@ namespace Sphynx
 		void DebugPhysics();
 
 	private:
+		UUID m_UUID;
+		std::string m_Name;
+
 		bool m_HasBegunPlay;
 
 		entt::registry m_Registry;
@@ -37,5 +44,7 @@ namespace Sphynx
 		class PhysicsWorld2D* m_PhysicsWorld;
 
 		friend class Actor;
+		friend class SceneSerializer;
+		friend class SceneDeserializer;
 	};
 }

@@ -34,3 +34,9 @@
 
 // Components
 #include "Component/Components.h"
+
+// Serialization
+#include "Serialization/FileReader.h"
+#include "Serialization/FileWriter.h"
+#include "Serialization/SceneDeserializer.h"
+#include "Serialization/SceneSerializer.h"

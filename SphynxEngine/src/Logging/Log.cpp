@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "Log.h"
 
 #pragma warning(push, 0)

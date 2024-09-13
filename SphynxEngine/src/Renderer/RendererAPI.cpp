@@ -1,3 +1,4 @@
+#include "spxpch.h"
 #include "RendererAPI.h"
 #include "Logging/Log.h"
 #include "Platform/SDL/SDLRendererAPI.h"

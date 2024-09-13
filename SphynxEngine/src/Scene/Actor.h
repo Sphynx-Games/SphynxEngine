@@ -16,6 +16,8 @@ namespace Sphynx
 		virtual ~Actor();
 
 	public:
+		inline size_t GetNumComponents() const { return m_numComponents; }
+
 		template<typename Component, typename... Args>
 		Component& AddComponent(Args&&... args);
 
@@ -36,7 +38,10 @@ namespace Sphynx
 	private:
 		entt::entity m_EntityID;
 		Scene* m_Scene;
+		size_t m_numComponents;
 
+		friend class SceneSerializer;
+		friend class SceneDeserializer;
 	};
 
 	template<typename Component, typename... Args>
@@ -44,6 +49,7 @@ namespace Sphynx
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		SPX_CORE_ASSERT(!HasComponent<Component>(), "Component is already in actor");
+		++m_numComponents;
 		return m_Scene->m_Registry.emplace<Component>(m_EntityID, std::forward<Args>(args)...);
 	}
 
@@ -52,6 +58,7 @@ namespace Sphynx
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		SPX_CORE_ASSERT(HasComponent<Component>(), "Component is not in actor");
+		--m_numComponents;
 		m_Scene->m_Registry.remove<Component>(m_EntityID);
 	}
 

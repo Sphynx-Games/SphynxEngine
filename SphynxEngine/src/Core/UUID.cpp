@@ -55,4 +55,15 @@ namespace Sphynx
 		return lhs.m_Data == rhs.m_Data;
 	}
 
+	UUID& UUID::operator=(const UUID& rhs)
+	{
+		m_Data = rhs.m_Data;
+		return *this;
+	}
+
+	UUID& UUID::operator=(UUID&& rhs)
+	{
+		m_Data = std::move(rhs.m_Data);
+		return *this;
+	}
 }
