@@ -72,7 +72,7 @@ namespace Sphynx
 				SPX_CORE_LOG_DISPLAY(componentName);
 
 				// Name Component
-				if (componentName == NameComponent_NAME)
+				if (!strcmp(componentName.c_str(), NameComponent_NAME))
 				{
 					NameComponent& component = actor.AddComponent<NameComponent>();
 					std::string name;
@@ -81,13 +81,13 @@ namespace Sphynx
 					SPX_CORE_LOG_DISPLAY(name);
 				}
 				// Transform Component
-				else if (componentName == TransformComponent_NAME)
+				else if (!strcmp(componentName.c_str(), TransformComponent_NAME))
 				{
 					TransformComponent& component = actor.AddComponent<TransformComponent>();
 					ReadTransform(m_Reader, component.Transform);
 				}
 				// LineRenderer Component
-				else if (componentName == LineRendererComponent_NAME)
+				else if (!strcmp(componentName.c_str(), LineRendererComponent_NAME))
 				{
 					LineRendererComponent& component = actor.AddComponent<LineRendererComponent>();
 					ReadVector2f(m_Reader, component.Point1);
@@ -99,7 +99,7 @@ namespace Sphynx
 					ReadColor(m_Reader, component.Color);
 				}
 				// SpriteRenderer Component
-				else if (componentName == SpriteRendererComponent_NAME)
+				else if (!strcmp(componentName.c_str(), SpriteRendererComponent_NAME))
 				{
 					SpriteRendererComponent& component = actor.AddComponent<SpriteRendererComponent>();
 					ReadVector2i(m_Reader, component.Sprite->GetTexture()->GetSize());
@@ -113,7 +113,7 @@ namespace Sphynx
 					ReadColor(m_Reader, component.Tint);
 				}
 				// BoxRenderer Component
-				else if (componentName == BoxRendererComponent_NAME)
+				else if (!strcmp(componentName.c_str(), BoxRendererComponent_NAME))
 				{
 					BoxRendererComponent& component = actor.AddComponent<BoxRendererComponent>();
 					DrawMode drawMode;
@@ -125,7 +125,7 @@ namespace Sphynx
 					ReadColor(m_Reader, component.Color);
 				}
 				// Rigidbody Component
-				else if (componentName == Rigidbody2DComponent_NAME)
+				else if (!strcmp(componentName.c_str(), Rigidbody2DComponent_NAME))
 				{
 					Rigidbody2DComponent& component = actor.AddComponent<Rigidbody2DComponent>();
 					bool enabled;
@@ -152,7 +152,7 @@ namespace Sphynx
 					SPX_CORE_LOG_DISPLAY(value);
 				}
 				// BoxCollider Component
-				else if (componentName == BoxCollider2DComponent_NAME)
+				else if (!strcmp(componentName.c_str(), BoxCollider2DComponent_NAME))
 				{
 					BoxCollider2DComponent& component = actor.AddComponent<BoxCollider2DComponent>();
 					ReadVector2f(m_Reader, component.GetSize());
@@ -166,7 +166,7 @@ namespace Sphynx
 					SPX_CORE_LOG_DISPLAY(boolValue);
 				}
 				// CircleCollider Component
-				else if (componentName == CircleCollider2DComponent_NAME)
+				else if (!strcmp(componentName.c_str(), CircleCollider2DComponent_NAME))
 				{
 					CircleCollider2DComponent& component = actor.AddComponent<CircleCollider2DComponent>();
 					float value;
@@ -183,7 +183,7 @@ namespace Sphynx
 					SPX_CORE_LOG_DISPLAY(boolValue);
 				}
 				// CapsuleCollider Component
-				else if (componentName == CapsuleCollider2DComponent_NAME)
+				else if (!strcmp(componentName.c_str(), CapsuleCollider2DComponent_NAME))
 				{
 					CapsuleCollider2DComponent& component = actor.AddComponent<CapsuleCollider2DComponent>();
 					ReadVector2f(m_Reader, component.GetSize());
