@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Attribute.h"
 
 
 namespace Sphynx
@@ -15,6 +16,8 @@ namespace Sphynx
 			const Type& Type;
 			const char* Name;
 			size_t Offset;
+
+			std::vector<Attribute*> Attributes;
 		};
 	}
 }

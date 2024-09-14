@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "Type.h"
+#include "Attribute.h"
 #include <string>
 
 
@@ -15,10 +16,15 @@ namespace Sphynx
 			{
 				std::string Name;
 				int64_t Value;
+
+				std::vector<Attribute*> Attributes;
 			};
 
 			const Entry* Values;
 			size_t Count;
+
+			const Attribute* const* Attributes;
+			size_t AttributesCount;
 
 			inline const Entry* begin() { return Values; }
 			inline const Entry* begin() const { return Values; }

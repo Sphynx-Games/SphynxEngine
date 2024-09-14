@@ -11,6 +11,7 @@ namespace Sphynx
 	{
 		struct Property;
 		struct Function;
+		class Attribute;
 
 		struct SPHYNX_API Class : public Type
 		{
@@ -19,6 +20,9 @@ namespace Sphynx
 
 			const Function* Functions;
 			size_t FunctionsCount;
+
+			const Attribute* const* Attributes;
+			size_t AttributesCount;
 
 			inline const Property* begin() { return Properties; }
 			inline const Property* begin() const { return Properties; }

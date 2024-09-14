@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "Type.h"
+#include "Attribute.h"
 #include "Traits/Utility.h"
 
 
@@ -17,6 +18,8 @@ namespace Sphynx
 
 				const char* Name;
 				const Type& Type;
+
+				std::vector<Attribute*> Attributes;
 			};
 
 			const char* Name;
@@ -24,6 +27,8 @@ namespace Sphynx
 			const Parameter* Parameters;
 			size_t ParameterCount;
 			void(*FunctionPtr)(void*, void*);
+
+			std::vector<Attribute*> Attributes;
 		};
 
 		namespace details

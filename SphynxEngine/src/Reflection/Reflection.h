@@ -6,6 +6,7 @@
 #include "Enum.h"
 #include "Property.h"
 #include "Storage.h"
+#include "Attribute.h"
 #include "Traits/Traits.h"
 #include "Core/Invoke.h"
 #include <any>
@@ -28,14 +29,16 @@
  * SPX_REFLECT_CLASS_END(Texture)
  *
  */
+#define EXPAND_MACRO(x) x
 
  // ---------- Class -----------
 #define SPX_REFLECT_CLASS_BEGIN(_Class) \
 	namespace { \
-		inline static ::Sphynx::Reflection::details::ClassStorage<_Class> _Class##__ClassStorage([](auto* self) { \
+		inline static ::Sphynx::Reflection::details::ClassStorage<_Class> EXPAND_MACRO(s_ClassStorage)EXPAND_MACRO(__LINE__)([](auto* self) { \
 			self->Size = sizeof(_Class); \
-			auto& Properties = self->Properties; \
-			auto& Functions = self->Functions; \
+			[[maybe_unused]] auto& Properties = self->Properties; \
+			[[maybe_unused]] auto& Functions = self->Functions; \
+			[[maybe_unused]] auto& Attributes = self->Attributes; \
 			using context_type = _Class;
 
 #define SPX_REFLECT_CLASS_END(_Class) \
@@ -45,12 +48,15 @@
 	template<> \
 	inline const ::Sphynx::Reflection::Class& ::Sphynx::Reflection::details::GetClassImpl<_Class>() \
 	{ \
+		static const auto* Storage = ::Sphynx::Reflection::details::ClassStorage<_Class>::Instance; \
 		static const Class c { \
 			::Sphynx::Reflection::Type{ #_Class, sizeof(_Class), alignof(_Class) }, \
-			_Class##__ClassStorage.Properties.data(), \
-			_Class##__ClassStorage.Properties.size(), \
-			_Class##__ClassStorage.Functions.data(), \
-			_Class##__ClassStorage.Functions.size() \
+			Storage->Properties.data(), \
+			Storage->Properties.size(), \
+			Storage->Functions.data(), \
+			Storage->Functions.size(), \
+			Storage->Attributes.data(), \
+			Storage->Attributes.size() \
 		}; \
 		return c; \
 	} \
@@ -63,7 +69,7 @@
 
 #define SPX_REFLECT_CLASS(_Class) \
 	SPX_REFLECT_CLASS_BEGIN(_Class) \
-	SPX_REFLECT_CLASS_END()
+	SPX_REFLECT_CLASS_END(_Class)
 
  // ---------- Struct -----------
 #define SPX_REFLECT_STRUCT_BEGIN(_Struct) \
@@ -84,7 +90,8 @@
 			::Sphynx::Reflection::GetType<decltype(((context_type*)0)->_Property)>(), \
 			#_Property, \
 			offsetof(context_type, _Property) \
-		});
+		}); \
+		[[maybe_unused]] auto& Attributes = (--Properties.end())->Attributes;
 
 #define SPX_REFLECT_PROPERTY_END() \
 	}
@@ -110,7 +117,8 @@
 				std::make_index_sequence<::Sphynx::Traits::args_pack_size<param_pack>::value>{}); \
 	 \
 		Functions.push_back(::Sphynx::Reflection::Function{ #_Function, ::Sphynx::Reflection::GetType<return_type>(), Parameters.data(), ::Sphynx::Traits::args_pack_size<param_pack>::value, std::move(FuncPtr) }); \
-		[[maybe_unused]]::Sphynx::Reflection::Function::Parameter* ParamPtr = Parameters.data(); \
+		[[maybe_unused]] auto& Attributes = (--Functions.end())->Attributes; \
+		[[maybe_unused]] ::Sphynx::Reflection::Function::Parameter* ParamPtr = Parameters.data(); \
 
 #define SPX_REFLECT_FUNCTION_END() \
 	}
@@ -121,8 +129,9 @@
 
 #define SPX_REFLECT_FUNCTION_PARAM_BEGIN(_Param) \
 	{ \
+		[[maybe_unused]] auto& Attributes = ParamPtr->Attributes; \
 		ParamPtr->Name = #_Param; \
-		
+
 #define SPX_REFLECT_FUNCTION_PARAM_END() \
 		++ParamPtr; \
 	}
@@ -134,10 +143,12 @@
  // ---------- Enum -----------
 #define SPX_REFLECT_ENUM_BEGIN(_Enum) \
 	namespace { \
-		inline static ::Sphynx::Reflection::details::EnumStorage<_Enum> _Enum##__EnumStorage([](auto* self) { \
+		inline static ::Sphynx::Reflection::details::EnumStorage<_Enum> EXPAND_MACRO(s_EnumStorage)EXPAND_MACRO(__LINE__)([](auto* self) { \
 			using context_enum = _Enum; \
-			auto& Entries = self->Entries; \
-			auto& Values = self->Values; \
+			[[maybe_unused]] auto& Entries = self->Entries; \
+			[[maybe_unused]] auto& Values = self->Values; \
+			[[maybe_unused]] auto& Attributes = self->Attributes; \
+
 
 #define SPX_REFLECT_ENUM_END(_Enum) \
 		}); \
@@ -146,10 +157,13 @@
 	template<> \
 	inline const ::Sphynx::Reflection::Enum& ::Sphynx::Reflection::details::GetEnumImpl<_Enum>() \
 	{ \
+		static const auto* Storage = ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance; \
 		static const Enum e { \
 			::Sphynx::Reflection::Type{ #_Enum, sizeof(_Enum), alignof(_Enum) }, \
-			_Enum##__EnumStorage.Entries.data(), \
-			_Enum##__EnumStorage.Entries.size() \
+			Storage->Entries.data(), \
+			Storage->Entries.size(), \
+			Storage->Attributes.data(), \
+			Storage->Attributes.size() \
 		}; \
 		return e; \
 	} \
@@ -173,17 +187,18 @@
 		private: \
 			int64_t* m_Values; \
 		}; \
-		inline Iterator begin() { return _Enum##__EnumStorage.Values.data(); } \
-		inline Iterator begin() const { return _Enum##__EnumStorage.Values.data(); } \
-		inline Iterator end() { return _Enum##__EnumStorage.Values.data() + _Enum##__EnumStorage.Values.size(); } \
-		inline Iterator end() const { return _Enum##__EnumStorage.Values.data() + _Enum##__EnumStorage.Values.size(); } \
+		inline Iterator begin() { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data(); } \
+		inline Iterator begin() const { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data(); } \
+		inline Iterator end() { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
+		inline Iterator end() const { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
 	};
 
 #define SPX_REFLECT_ENUM_VALUE_BEGIN(_Value) \
 	{ \
 		Entries.push_back(::Sphynx::Reflection::Enum::Entry{ std::string(#_Value) ,(int64_t)context_enum::_Value }); \
 		Values.push_back((int64_t)context_enum::_Value); \
-		[[maybe_unused]] auto& Entry = *(Entries.end() - 1);
+		[[maybe_unused]] auto& Entry = *(Entries.end() - 1); \
+		[[maybe_unused]] auto& Attributes = Entry.Attributes;
 
 #define SPX_REFLECT_ENUM_VALUE_END() \
 	}
@@ -195,6 +210,14 @@
 #define SPX_REFLECT_ENUM(_Enum) \
 	SPX_REFLECT_ENUM_BEGIN(_Enum) \
 	SPX_REFLECT_ENUM_END(_Enum)
+
+ // ---------- Attribute -----------
+#define SPX_REFLECT_ATTRIBUTE(Attr, ...) \
+	{ \
+		using namespace ::Sphynx::Reflection::CommonAttribute; \
+		static Attr s_Attribute{ __VA_ARGS__ }; \
+		Attributes.push_back(&s_Attribute); \
+	}
 
 
 namespace Sphynx
@@ -276,42 +299,67 @@ namespace Sphynx
 }
 
 // DO NOT UNCOMMENT, THIS IS FOR TESTING PURPOSES
-struct Vector
-{
-	int a;
-	int b;
-	int c;
-
-	int Hola(double, int) const
-	{
-		return 0;
-	}
-};
-
-SPX_REFLECT_CLASS_BEGIN(Vector)
-	
-	// Properties
-	SPX_REFLECT_PROPERTY(a)
-	SPX_REFLECT_PROPERTY(b)
-	SPX_REFLECT_PROPERTY(c)
-
-	// Functions
-	SPX_REFLECT_FUNCTION(Hola)
-	
-SPX_REFLECT_CLASS_END(Vector)
-
-enum class Test
-{
-	A,
-	B,
-	C
-};
-
-SPX_REFLECT_ENUM_BEGIN(Test)
-
-	SPX_REFLECT_ENUM_VALUE(A)
-	SPX_REFLECT_ENUM_VALUE(B)
-	SPX_REFLECT_ENUM_VALUE(C)
-
-SPX_REFLECT_ENUM_END(Test)
+//namespace S
+//{
+//	struct Vector
+//	{
+//		int a;
+//		int b;
+//		int c;
+//
+//		int Hola(double a, int b) const
+//		{
+//			return 0;
+//		}
+//	};
+//
+//	struct TestA {};
+//
+//	enum class Test
+//	{
+//		A,
+//		B,
+//		C
+//	};
+//}
+//
+//SPX_REFLECT_CLASS_BEGIN(S::Vector)
+//
+//	// Attributes
+//	SPX_REFLECT_ATTRIBUTE(Description, "Test class for testing purposes")
+//
+//	// Properties
+//	SPX_REFLECT_PROPERTY_BEGIN(a)
+//	SPX_REFLECT_ATTRIBUTE(Description, "This is a variable called 'a'")
+//		SPX_REFLECT_ATTRIBUTE(Range, 0, 10)
+//	SPX_REFLECT_PROPERTY_END(a)
+//
+//	SPX_REFLECT_PROPERTY(b)
+//	SPX_REFLECT_PROPERTY(c)
+//
+//	// Functions
+//	SPX_REFLECT_FUNCTION_BEGIN(Hola)
+//	SPX_REFLECT_ATTRIBUTE(Description, "Function called Hola")
+//		
+//		SPX_REFLECT_FUNCTION_PARAM_BEGIN(a)
+//			SPX_REFLECT_ATTRIBUTE(Description, "Param called a")
+//		SPX_REFLECT_FUNCTION_PARAM_END(a)
+//	SPX_REFLECT_FUNCTION_END(Hola)
+//
+//SPX_REFLECT_CLASS_END(S::Vector)
+//
+//SPX_REFLECT_CLASS(S::TestA)
+//
+//SPX_REFLECT_ENUM_BEGIN(S::Test)
+//
+//SPX_REFLECT_ATTRIBUTE(Description, "Test enum for testing purposes")
+//
+//SPX_REFLECT_ENUM_VALUE_BEGIN(A)
+//	SPX_REFLECT_ATTRIBUTE(Description, "Enum value A for testing purposes")
+//SPX_REFLECT_ENUM_VALUE_END(A)
+//
+//SPX_REFLECT_ENUM_VALUE(B)
+//SPX_REFLECT_ENUM_VALUE(C)
+//
+//SPX_REFLECT_ENUM_END(S::Test)
 
