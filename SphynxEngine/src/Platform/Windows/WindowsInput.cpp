@@ -11,7 +11,7 @@ namespace Sphynx
 		m_CurrKeys = SDL_GetKeyboardState(&m_KeyCount);
 
 		m_PrevKeysCache.resize(m_KeyCount);
-		m_PrevKeys = m_PrevKeysCache.data();
+		m_PrevKeys = (bool*) m_PrevKeysCache.data();
 
 		m_PrevMouseState = SDL_GetMouseState(nullptr, nullptr);
 	}
@@ -34,19 +34,19 @@ namespace Sphynx
 
 	bool WindowsInput::IsKeyPressedImpl(int32_t keycode)
 	{
-		SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode);
+		SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode, nullptr);
 		return m_CurrKeys[scancode] && !m_PrevKeys[scancode];
 	}
 
 	bool WindowsInput::IsKeyReleasedImpl(int32_t keycode)
 	{
-		SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode);
+		SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode, nullptr);
 		return !m_CurrKeys[scancode] && m_PrevKeys[scancode];
 	}
 
 	bool WindowsInput::IsKeyDownImpl(int32_t keycode)
 	{
-		SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode);
+		SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode, nullptr);
 		if (scancode < 0 || scancode >= m_KeyCount) return false;
 
 		return m_CurrKeys[scancode] != 0;

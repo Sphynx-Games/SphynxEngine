@@ -1,7 +1,7 @@
 @echo off
 
 pushd %~dp0
-call cmake .
+call cmake -S . -B build
 popd
 
 pause

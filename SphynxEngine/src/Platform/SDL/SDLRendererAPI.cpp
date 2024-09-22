@@ -39,7 +39,7 @@ namespace Sphynx
 
 		// Create renderer
 		SDL_SetHint(SDL_HINT_RENDER_LINE_METHOD, "3");
-		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr);
 		if (m_Renderer == nullptr) {
 			SPX_CORE_LOG_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
 		}
@@ -351,7 +351,7 @@ namespace Sphynx
 
 		const SDLTexture* texture_SDL = static_cast<const SDLTexture*>(&texture);
 
-		SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
+		SDL_FColor sdlColor = { color.R, color.G, color.B, color.A };
 		SDL_RenderGeometryRaw(
 			m_Renderer,
 			texture_SDL->GetTexture(),
@@ -404,7 +404,7 @@ namespace Sphynx
 
 		SDLTexture* texture_SDL = static_cast<SDLTexture*>(sprite.GetTexture());
 
-		SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
+		SDL_FColor sdlColor = { color.R, color.G, color.B, color.A };
 		SDL_RenderGeometryRaw(
 			m_Renderer,
 			texture_SDL->GetTexture(),

@@ -14,15 +14,15 @@ namespace Sphynx
 
 	namespace Utils
 	{
-		static SDL_PixelFormatEnum SphynxTextureFormatToSDL(FramebufferTextureFormat format)
+		static SDL_PixelFormat SphynxTextureFormatToSDL(FramebufferTextureFormat format)
 		{
 			switch (format)
 			{
-			case FramebufferTextureFormat::RGBA8:       return SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA8888;
-			case FramebufferTextureFormat::RED_INTEGER: return SDL_PixelFormatEnum::SDL_PIXELFORMAT_INDEX8;
+			case FramebufferTextureFormat::RGBA8:       return SDL_PixelFormat::SDL_PIXELFORMAT_RGBA8888;
+			case FramebufferTextureFormat::RED_INTEGER: return SDL_PixelFormat::SDL_PIXELFORMAT_INDEX8;
 			}
 
-			return SDL_PixelFormatEnum::SDL_PIXELFORMAT_UNKNOWN;
+			return SDL_PixelFormat::SDL_PIXELFORMAT_UNKNOWN;
 		}
 
 		static void CreateTextures(SDL_Texture** textures, FramebufferTextureSpecification* specs, uint32_t count, uint32_t width, uint32_t height)
@@ -175,7 +175,7 @@ namespace Sphynx
 		if (SDL_Surface* surface = SDL_RenderReadPixels(m_Renderer, &rect))
 		{
 			Color color;
-			SDL_GetRGBA(*(uint32_t*)surface->pixels, surface->format, &color.R, &color.G, &color.B, &color.A);
+			SDL_GetRGBA(*(uint32_t*)surface->pixels, SDL_GetPixelFormatDetails(surface->format), nullptr, &color.R, &color.G, &color.B, &color.A);
 			return color;
 		}
 

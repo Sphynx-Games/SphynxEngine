@@ -40,7 +40,12 @@ namespace Sphynx
 	SDLTexture::SDLTexture(SDL_Texture* texture) :
 		m_Texture(texture)
 	{
-		SDL_QueryTexture(texture, nullptr, nullptr, &m_Size.X, &m_Size.Y);
+		float width = 0;
+		float height = 0;
+
+		SDL_GetTextureSize(texture, &width, &height);
+		m_Size.X = width;
+		m_Size.Y = height;
 	}
 
 	SDLTexture* SDLTextureLoader::Load(const std::filesystem::path& path)

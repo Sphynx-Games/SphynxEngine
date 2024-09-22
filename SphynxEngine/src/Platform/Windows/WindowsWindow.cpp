@@ -208,11 +208,6 @@ namespace Sphynx
 			// NOTE: this might be important to look
 		}
 		break;
-		case SDL_EventType::SDL_EVENT_WINDOW_TAKE_FOCUS:
-		{
-			// not supported
-		}
-		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_HIT_TEST:
 		{
 			// not supported
@@ -266,25 +261,25 @@ namespace Sphynx
 		{
 		case SDL_EVENT_KEY_DOWN:
 		{
-			KeyPressedEvent keyPressedEvent(event.key.keysym.sym, event.key.repeat != 0);
+			KeyPressedEvent keyPressedEvent(event.key.key, event.key.repeat != 0);
 			m_CallbackFunction(keyPressedEvent);
 			return true;
 		}
 		case SDL_EVENT_KEY_UP:
 		{
-			KeyReleasedEvent keyReleasedEvent(event.key.keysym.sym);
+			KeyReleasedEvent keyReleasedEvent(event.key.key);
 			m_CallbackFunction(keyReleasedEvent);
 			return true;
 		}
 		case SDL_EVENT_TEXT_EDITING:
 		{
-			KeyTypedEvent keyTypedEvent(event.key.keysym.sym, event.text.text);
+			KeyTypedEvent keyTypedEvent(event.key.key, event.text.text);
 			m_CallbackFunction(keyTypedEvent);
 			return true;
 		}
 		case SDL_EVENT_TEXT_INPUT:
 		{
-			KeyTypedEvent keyTypedEvent(event.key.keysym.sym, event.text.text);
+			KeyTypedEvent keyTypedEvent(event.key.key, event.text.text);
 			m_CallbackFunction(keyTypedEvent);
 			return true;
 		}

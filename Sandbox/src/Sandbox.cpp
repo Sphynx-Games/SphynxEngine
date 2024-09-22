@@ -42,8 +42,8 @@ public:
 		Application::Init();
 
 		// assets
-		AssetManager::Import("..\\Assets\\Textures\\cat.jpg");
-		enemyTexture = *AssetManager::Import<Texture>("..\\Assets\\Textures\\enemy_scaled5x.png");
+		AssetManager::Import("Assets\\Textures\\cat.jpg");
+		enemyTexture = *AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
 		sheet = new Spritesheet(enemyTexture, 4, 3);
 
 		// layers
@@ -68,7 +68,7 @@ Sphynx::Application* CreateApplication()
 void SandboxLayer::Attach()
 {
 	using namespace Sphynx;
-#if 0
+#if 1
 	Actor& sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);

@@ -48,7 +48,7 @@ namespace Sphynx
 
 		case DrawMode::FILLED:
 		{
-			SDL_Color sdlColor = { color.R, color.G, color.B, color.A };
+			SDL_FColor sdlColor = { color.R, color.G, color.B, color.A };
 			SDL_RenderGeometryRaw(
 				renderer,
 				nullptr,

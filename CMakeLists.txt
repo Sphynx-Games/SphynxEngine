@@ -1,7 +1,7 @@
 # ---------------------------------------------------
 # Workspace CMake Setup
 # ---------------------------------------------------
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.8)
 
 project(SphynxEngine)
 
@@ -24,3 +24,6 @@ if (WIN32)
 	target_compile_definitions(SphynxEngine PUBLIC SPX_PLATFORM_WINDOWS)
 	target_compile_definitions(Sandbox PUBLIC SPX_PLATFORM_WINDOWS)
 endif()
+
+set_target_properties(Sandbox PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_target_properties(SphynxEngineEditor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

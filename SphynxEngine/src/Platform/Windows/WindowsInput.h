@@ -26,8 +26,8 @@ namespace Sphynx
 		int64_t GetMousePositionYImpl() override;
 
 	private:
-		const uint8_t* m_PrevKeys;
-		const uint8_t* m_CurrKeys;
+		const bool* m_PrevKeys;
+		const bool* m_CurrKeys;
 		int32_t m_KeyCount;
 		std::vector<uint8_t> m_PrevKeysCache;
 
