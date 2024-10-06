@@ -3,6 +3,9 @@
 #include "Logging/Log.h"
 
 #include "Asset/Texture/TextureAssetImporter.h"
+#include "Asset/Sprite/SpriteAssetImporter.h"
+#include "Asset/Font/FontAssetImporter.h"
+
 
 #undef RegisterAssetType
 #undef RegisterAssetTypeExtensions
@@ -14,6 +17,7 @@
 	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { Extension, ##__VA_ARGS__ });\
 	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), Importer);\
 }
+
 
 namespace Sphynx
 {
@@ -36,8 +40,11 @@ namespace Sphynx
 		// Register a "Invalid" type as a utility value
 		REGISTER_ASSETTYPE(Invalid, nullptr, "");
 
-		// Register Texture
-		REGISTER_ASSETTYPE(Texture, &TextureAssetImporter::Import, ".png", ".jpg", "jpeg"); // NOTE: add more extensions if needed
+		// Register Asset types (Texture, Sprite...)
+		REGISTER_ASSETTYPE(Texture, &TextureAssetImporter::Import, ".png", ".jpg", ".jpeg"); // NOTE: add more extensions if needed
+		//REGISTER_ASSETTYPE(Spritesheet, &TextureAssetImporter::Import);
+		//REGISTER_ASSETTYPE(Sprite, &SpriteAssetImporter::Import, "");
+		REGISTER_ASSETTYPE(Font, &FontAssetImporter::Import, ".ttf");
 
 		// TODO: load all managed assets (needs some kind of project asset registry file)
 	}

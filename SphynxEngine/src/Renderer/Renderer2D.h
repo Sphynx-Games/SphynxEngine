@@ -3,6 +3,8 @@
 #include "Core/Core.h"
 #include "RendererTypes.h"
 #include "Math/Vector.h"
+#include <string>
+
 
 namespace Sphynx
 {
@@ -11,6 +13,7 @@ namespace Sphynx
 	class OrthographicCamera;
 	class Texture;
 	class Sprite;
+	class Font;
 
 	class SPHYNX_API Renderer2D
 	{
@@ -40,6 +43,7 @@ namespace Sphynx
 
 		static void DrawTexture(const Texture& texture, Vector2i position, Vector2i size = { 100, 100 }, Color color = Color::White);
 		static void DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size = { 100, 100 }, Color color = Color::White);
+		static void DrawText(const std::string& text, const Font& font, uint8_t size, Vector2i position, Vector2i scale = { 1, 1 }, Color color = Color::White);
 
 		/* World space draw commands */
 		static void DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth = 1.0f, Color color = Color::White);

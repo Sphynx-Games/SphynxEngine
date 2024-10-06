@@ -3,8 +3,11 @@
 #include <Sphynx.h>
 #include <Core/EntryPoint.h>
 
+
+Sphynx::Font* font = nullptr;
 Sphynx::Spritesheet* sheet = nullptr;
 Sphynx::Texture* enemyTexture = nullptr;
+
 
 class SandboxLayer : public Sphynx::Layer
 {
@@ -42,6 +45,7 @@ public:
 		Application::Init();
 
 		// assets
+		font = *AssetManager::Import<Font>("Assets\\Fonts\\roboto\\Roboto-Regular.ttf");
 		AssetManager::Import("Assets\\Textures\\cat.jpg");
 		enemyTexture = *AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
 		sheet = new Spritesheet(enemyTexture, 4, 3);
@@ -104,11 +108,11 @@ void SandboxLayer::Attach()
 	capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 
-	FileWriter writer = FileWriter("..\\Assets\\Scenes\\scene1.txt");
+	FileWriter writer = FileWriter("Assets\\Scenes\\scene1.txt");
 	SceneSerializer sceneSerializer = SceneSerializer(m_SandboxScene, writer);
 	sceneSerializer.Serialize();
 #else
-	FileReader reader = FileReader("..\\Assets\\Scenes\\scene1.txt");
+	FileReader reader = FileReader("Assets\\Scenes\\scene1.txt");
 	SceneDeserializer sceneDeserializer = SceneDeserializer(m_SandboxScene, reader);
 	sceneDeserializer.Deserialize();
 #endif
@@ -130,6 +134,7 @@ void SandboxLayer::Update(float deltaTime)
 	// begin scene render
 	Renderer2D::Begin(&m_CameraController->GetCamera());
 	{
+		Renderer2D::DrawText("hello!!", *font, 16, { 2,2 });
 		m_SandboxScene.Update(deltaTime);
 	}
 	Renderer2D::End();

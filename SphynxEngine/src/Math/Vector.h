@@ -187,3 +187,36 @@ namespace Sphynx
 	typedef Vector4T<float> Vector4f;
 	typedef Vector4T<double> Vector4d;
 }
+
+#include "Reflection/Reflection.h"
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector2i)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector2i)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector2u)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector2u)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector2f)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector2f)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector2d)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector2d)

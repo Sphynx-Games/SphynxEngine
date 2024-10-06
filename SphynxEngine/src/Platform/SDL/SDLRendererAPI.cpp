@@ -5,15 +5,20 @@
 #include "Renderer/Window.h"
 #include "Platform/Windows/WindowsWindow.h"
 #include "Platform/SDL/SDLTexture.h"
+#include "Platform/SDL/SDLFont.h"
 #include "Renderer/Renderer2D.h"
 #include "Renderer/Texture.h"
 #include "Renderer/Sprite.h"
+#include "Renderer/Font.h"
 #include "Math/Math.h"
 #include "Math/Transform.h"
 #include "Math/Matrix.h"
 #include "SDLUtils.h"
 #include <SDL3/SDL.h>
 #include <glm/ext/matrix_transform.hpp>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3/SDL_iostream.h>
+
 
 namespace Sphynx
 {
@@ -43,10 +48,17 @@ namespace Sphynx
 		if (m_Renderer == nullptr) {
 			SPX_CORE_LOG_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
 		}
+
+		// Init SDL_ttf
+		if (TTF_Init() == -1)
+		{
+			SPX_CORE_LOG_ERROR("SDL_ttf could not initialize! TTF_Error: {}", SDL_GetError());
+		}
 	}
 
 	void SDLRendererAPI::Shutdown()
 	{
+		TTF_Quit();
 		SDL_DestroyRenderer(m_Renderer);
 		m_Renderer = nullptr;
 	}
@@ -136,7 +148,7 @@ namespace Sphynx
 
 		std::vector<int32_t> indices({ 0, 1, 2 });
 
-		DrawPolygon(m_Renderer, drawMode, points, indices, color);
+		DrawSDLPolygon(m_Renderer, drawMode, points, indices, color);
 	}
 
 	void SDLRendererAPI::DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color)
@@ -169,7 +181,7 @@ namespace Sphynx
 			indices.emplace_back(((i + 1) % numSegments) + 1);
 		}
 
-		DrawPolygon(m_Renderer, drawMode, points, indices, color, true);
+		DrawSDLPolygon(m_Renderer, drawMode, points, indices, color, true);
 	}
 
 	void SDLRendererAPI::DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color)
@@ -177,8 +189,8 @@ namespace Sphynx
 		ChangeToSphynxCoords(position, m_Window);
 		SDL_FRect rect = { (float)position.X, (float)position.Y, (float)size.X, (float)size.Y };
 
-		const SDLTexture* texture_SDL = static_cast<const SDLTexture*>(&texture);
-		SDL_RenderTexture(m_Renderer, texture_SDL->GetTexture(), nullptr, &rect);
+		const SDLTexture* sdlTexture = static_cast<const SDLTexture*>(&texture);
+		SDL_RenderTexture(m_Renderer, sdlTexture->GetTexture(), nullptr, &rect);
 	}
 
 	void SDLRendererAPI::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
@@ -190,8 +202,34 @@ namespace Sphynx
 		SDL_FRect dstRect = { (float)position.X, (float)position.Y, (float)size.X, (float)size.Y };
 		SDL_FRect srcRect = { (float)spritePosition.X, (float)spritePosition.Y, (float)sprite.GetSize().X, (float)sprite.GetSize().Y };
 
-		SDLTexture* texture_SDL = static_cast<SDLTexture*>(sprite.GetTexture());
-		SDL_RenderTexture(m_Renderer, texture_SDL->GetTexture(), &srcRect, &dstRect);
+		SDLTexture* sdlTexture = static_cast<SDLTexture*>(sprite.GetTexture());
+		SDL_RenderTexture(m_Renderer, sdlTexture->GetTexture(), &srcRect, &dstRect);
+	}
+
+	void SDLRendererAPI::DrawText(const std::string& text, const Font& font, float size, Vector2i position, Vector2i scale, Color color)
+	{
+		// NOTE: SDL does not allow to get the font size, so we have to set it every time
+		const SDLFont& sdlFont = static_cast<const SDLFont&>(font);
+
+		TTF_Font* ttfFont = sdlFont.GetFont();
+		if (ttfFont == nullptr) return;
+		TTF_SetFontSize(ttfFont, size);
+
+		// create surface
+		SDL_Surface* surfaceText = TTF_RenderText_Solid(ttfFont, text.c_str(), { color.R, color.G, color.B, color.A });
+
+		// convert text into a texture
+		SDL_Texture* textureText = SDL_CreateTextureFromSurface(m_Renderer, surfaceText);
+		float w, h;
+		SDL_GetTextureSize(textureText, &w, &h);
+
+		// render textureText into a rectangle in the screen
+		SDL_FRect rect = { position.X, position.Y, scale.X * w, scale.Y * h };
+		SDL_RenderTexture(m_Renderer, textureText, NULL, &rect);
+
+		// free surface, texture and font
+		SDL_DestroySurface(surfaceText);
+		SDL_DestroyTexture(textureText);
 	}
 
 	void SDLRendererAPI::DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth, Color color)
@@ -226,10 +264,10 @@ namespace Sphynx
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X			,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X), -size.Y * pivot.Y			, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X			, -size.Y * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    ,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    , -size.Y * pivot.Y		    , 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
@@ -247,7 +285,7 @@ namespace Sphynx
 
 		std::vector<int32_t> indices({ 0, 1, 2, 2, 3, 0 });
 
-		DrawPolygon(m_Renderer, drawMode, points, indices, color);
+		DrawSDLPolygon(m_Renderer, drawMode, points, indices, color);
 	}
 
 	void SDLRendererAPI::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color)
@@ -278,7 +316,7 @@ namespace Sphynx
 
 		std::vector<int32_t> indices({ 0, 1, 2 });
 
-		DrawPolygon(m_Renderer, drawMode, points, indices, color);
+		DrawSDLPolygon(m_Renderer, drawMode, points, indices, color);
 	}
 
 	void SDLRendererAPI::DrawCircle(DrawMode drawMode, const Transform& transform, float radius, uint32_t numSegments, Vector2f pivot, Color color)
@@ -319,7 +357,7 @@ namespace Sphynx
 			indices.emplace_back(((i + 1) % numSegments) + 1);
 		}
 
-		DrawPolygon(m_Renderer, drawMode, points, indices, color, true);
+		DrawSDLPolygon(m_Renderer, drawMode, points, indices, color, true);
 	}
 
 	void SDLRendererAPI::DrawTexture(const Texture& texture, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
@@ -328,10 +366,10 @@ namespace Sphynx
 		glm::mat4 mvpMatrix = GetMVPMatrix(transform);
 
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X			,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X), -size.Y * pivot.Y			, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X			, -size.Y * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    ,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    , -size.Y * pivot.Y		    , 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
@@ -351,16 +389,7 @@ namespace Sphynx
 
 		const SDLTexture* texture_SDL = static_cast<const SDLTexture*>(&texture);
 
-		SDL_FColor sdlColor = { color.R, color.G, color.B, color.A };
-		SDL_RenderGeometryRaw(
-			m_Renderer,
-			texture_SDL->GetTexture(),
-			(float*)points.data(), sizeof(float) * 2,
-			&sdlColor, 0,
-			uv.data(), sizeof(float) * 2, // uv
-			(int32_t)points.size(),
-			indices.data(), (int32_t)indices.size(), sizeof(int32_t)
-		);
+		DrawSDLTexture(m_Renderer, texture_SDL, points, indices, uv, color);
 	}
 
 	void SDLRendererAPI::DrawSprite(const Sprite& sprite, const Transform& transform, Color color)
@@ -373,10 +402,10 @@ namespace Sphynx
 		Vector2f size = { (float)sprite.GetSize().X / sprite.GetPixelsPerUnit(), (float)sprite.GetSize().Y / sprite.GetPixelsPerUnit() };
 
 		// Coordinates in screen space
-		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X			,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X), -size.Y * pivot.Y			, 0.0f, 1.0f };
-		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X			, -size.Y * pivot.Y			, 0.0f, 1.0f };
+		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    ,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
+		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    , -size.Y * pivot.Y		    , 0.0f, 1.0f };
 
 		// define points and indices to draw
 		std::vector<SDL_FPoint> points;
@@ -404,15 +433,6 @@ namespace Sphynx
 
 		SDLTexture* texture_SDL = static_cast<SDLTexture*>(sprite.GetTexture());
 
-		SDL_FColor sdlColor = { color.R, color.G, color.B, color.A };
-		SDL_RenderGeometryRaw(
-			m_Renderer,
-			texture_SDL->GetTexture(),
-			(float*)points.data(), sizeof(float) * 2,
-			&sdlColor, 0,
-			uv.data(), sizeof(float) * 2, // uv
-			(int32_t)points.size(),
-			indices.data(), (int32_t)indices.size(), sizeof(int32_t)
-		);
+		DrawSDLTexture(m_Renderer, texture_SDL, points, indices, uv, color);
 	}
 }

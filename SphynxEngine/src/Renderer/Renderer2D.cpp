@@ -4,6 +4,7 @@
 #include "OrthographicCamera.h"
 #include "Texture.h"
 #include "Sprite.h"
+#include "Font.h"
 #include "Math/Transform.h"
 
 
@@ -109,6 +110,11 @@ namespace Sphynx
 	void Renderer2D::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
 	{
 		s_RendererAPI->DrawSprite(sprite, position, size, color);
+	}
+
+	void Renderer2D::DrawText(const std::string& text, const Font& font, uint8_t size, Vector2i position, Vector2i scale, Color color)
+	{
+		s_RendererAPI->DrawText(text, font, size, position, scale, color);
 	}
 
 	void Renderer2D::DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth, Color color)

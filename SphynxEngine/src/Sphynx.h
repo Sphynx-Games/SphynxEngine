@@ -27,6 +27,7 @@
 #include "Renderer/OrthographicCameraController.h"
 #include "Renderer/Texture.h"
 #include "Renderer/Sprite.h"
+#include "Renderer/Font.h"
 
 // Scene
 #include "Scene/Scene.h"

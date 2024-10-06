@@ -3,12 +3,15 @@
 #include "Math/Vector.h"
 #include "Math/Color.h"
 #include "RendererTypes.h"
+#include <string>
+
 
 namespace Sphynx 
 {
 	struct Transform;
 	class Texture;
 	class Sprite;
+	class Font;
 	
 	class RendererAPI
 	{
@@ -36,6 +39,7 @@ namespace Sphynx
 		virtual void DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color) = 0;
 		virtual void DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color) = 0;
 		virtual void DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color) = 0;
+		virtual void DrawText(const std::string& text, const Font& font, float size, Vector2i position, Vector2i scale, Color color) = 0;
 
 		/* World space draw commands */
 		virtual void DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth, Color color) = 0;

@@ -18,6 +18,9 @@
 	point.y = (height - point.y) - height / 2.0f;\
 }
 
+#define SPHYNX_COLOR_TO_SDL_FCOLOR(color) { color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f }
+
+
 namespace Sphynx
 {
 	inline void ChangeToSphynxCoords(Vector2i& point, const Window* window)
@@ -25,7 +28,7 @@ namespace Sphynx
 		point.Y = window->GetHeight() - point.Y;
 	}
 
-	inline void DrawPolygon(
+	inline void DrawSDLPolygon(
 		SDL_Renderer* renderer,
 		DrawMode drawMode,
 		const std::vector<SDL_FPoint>& points,
@@ -48,7 +51,7 @@ namespace Sphynx
 
 		case DrawMode::FILLED:
 		{
-			SDL_FColor sdlColor = { color.R, color.G, color.B, color.A };
+			SDL_FColor sdlColor = SPHYNX_COLOR_TO_SDL_FCOLOR(color);
 			SDL_RenderGeometryRaw(
 				renderer,
 				nullptr,
@@ -61,5 +64,26 @@ namespace Sphynx
 		}
 		break;
 		}
+	}
+
+	inline void DrawSDLTexture(
+		SDL_Renderer* renderer,
+		const SDLTexture* texture,
+		const std::vector<SDL_FPoint>& points,
+		const std::vector<int32_t>& indices,
+		const std::vector<float> &uv,
+		Color color
+	)
+	{
+		SDL_FColor sdlColor = SPHYNX_COLOR_TO_SDL_FCOLOR(color);
+		SDL_RenderGeometryRaw(
+			renderer,
+			texture->GetTexture(),
+			(float*)points.data(), sizeof(float) * 2,
+			&sdlColor, 0,
+			uv.data(), sizeof(float) * 2, // uv
+			(int32_t)points.size(),
+			indices.data(), (int32_t)indices.size(), sizeof(int32_t)
+		);
 	}
 }

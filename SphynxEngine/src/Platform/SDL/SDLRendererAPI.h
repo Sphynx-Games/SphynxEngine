@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Renderer/RendererAPI.h"
+#include <string>
+
 
 struct SDL_Renderer;
 
@@ -19,6 +21,7 @@ namespace Sphynx
 		virtual void Clear(Color color) override;
 		virtual void Present() override;
 
+		/* Screen space draw commands */
 		virtual void DrawPoint(Vector2i point, Color color) override;
 		virtual void DrawLine(Vector2i point1, Vector2i point2, float lineWidth, Color color) override;
 		virtual void DrawQuad(DrawMode drawMode, Vector2i center, Vector2i size, Color color) override;
@@ -26,7 +29,9 @@ namespace Sphynx
 		virtual void DrawCircle(DrawMode drawMode, Vector2i center, float radius, uint32_t numSegments, Color color) override;
 		virtual void DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color) override;
 		virtual void DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color) override;
+		virtual void DrawText(const std::string& text, const Font& font, float size, Vector2i position, Vector2i scale, Color color) override;
 
+		/* World space draw commands */
 		virtual void DrawLine(const Transform& transform, Vector2f point1, Vector2f point2, float lineWidth, Color color) override;
 		virtual void DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color) override;
 		virtual void DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color) override;
