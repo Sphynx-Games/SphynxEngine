@@ -1,17 +1,48 @@
 #include "spxpch.h"
 #include "TextureAssetImporter.h"
-
+#include "TextureAsset.h"
 #include "Renderer/Renderer.h"
 #include "Logging/Log.h"
 #include "Platform/SDL/SDLTexture.h"
+#include "Serialization/Reflection/ReflectionDeserializer.h"
+#include "Serialization/Reflection/ReflectionSerializer.h"
+#include "Serialization/FileReader.h"
+#include "Serialization/FileWriter.h"
 
 
 namespace Sphynx
 {
-	std::shared_ptr<IAsset> TextureAssetImporter::Import(const AssetMetadata& metadata)
+	std::shared_ptr<IAsset> TextureAssetImporter::Import(const AssetMetadata& metadata, const std::filesystem::path& path)
 	{
-		SPX_CORE_LOG_TRACE("Importing texture: {}", metadata.Path.string().c_str());
-		Texture* texture = Load(metadata.Path);
+		SPX_CORE_LOG_TRACE("Importing texture: {}", path.string().c_str());
+
+		TextureAssetMetadata textureMetadata;
+		textureMetadata.RelativePath = path;
+		{
+			FileWriter writer(metadata.Path);
+			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file!!");
+			writer.Write(textureMetadata.RelativePath.wstring());
+			//ReflectionSerializer serializer(textureMetadata, writer); // TODO: make filesystem path serializable with our classes
+			//serializer.Serialize();
+		}
+
+		return Load(metadata);
+	}
+
+	std::shared_ptr<IAsset> TextureAssetImporter::Load(const AssetMetadata& metadata)
+	{
+		SPX_CORE_LOG_TRACE("Loading texture from .spxasset file: {}", metadata.Path.string().c_str());
+
+		TextureAssetMetadata textureMetadata;
+
+		FileReader reader(metadata.Path);
+		std::wstring path;
+		reader.Read(path);
+		textureMetadata.RelativePath = path;
+		//ReflectionDeserializer deserializer(textureMetadata, reader);
+		//deserializer.Deserialize();
+
+		Texture* texture = ImportFromFilePath(textureMetadata.RelativePath);
 
 		std::shared_ptr<Asset<Texture>> asset = std::make_shared<Asset<Texture>>();
 		asset->Handle = metadata.Handle;
@@ -21,7 +52,22 @@ namespace Sphynx
 		return asset;
 	}
 
-	Texture* TextureAssetImporter::Load(const std::filesystem::path& path)
+	void TextureAssetImporter::Save(const AssetMetadata& metadata)
+	{
+		SPX_CORE_LOG_TRACE("Saving texture to .spxasset file: {}", metadata.Path.string().c_str());
+
+		std::shared_ptr<Asset<Texture>> textureAsset = AssetManager::GetAsset<Texture>(metadata.Handle);
+
+		TextureAssetMetadata textureMetadata;
+		textureMetadata.RelativePath = textureAsset->RelativePath;
+
+		FileWriter writer(metadata.Path);
+		writer.Write(textureMetadata.RelativePath.wstring());
+		//ReflectionSerializer serializer(textureMetadata, writer);
+		//serializer.Serialize();
+	}
+
+	Texture* TextureAssetImporter::ImportFromFilePath(const std::filesystem::path& path)
 	{
 		switch (Renderer::GetAPI())
 		{

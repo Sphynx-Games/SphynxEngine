@@ -10,10 +10,16 @@
 
 namespace Sphynx
 {
+	class Font;
+
 	class SPHYNX_API FontAssetImporter
 	{
 	public:
-		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata);
-		static class Font* Load(const std::filesystem::path& path);
+		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata, const std::filesystem::path& path);
+		static std::shared_ptr<IAsset> Load(const AssetMetadata& metadata);
+		static void Save(const AssetMetadata& metadata);
+
+	private:
+		static class Font* ImportFromFilePath(const std::filesystem::path& path);
 	};
 }

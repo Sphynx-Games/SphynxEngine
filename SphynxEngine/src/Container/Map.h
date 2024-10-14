@@ -79,9 +79,9 @@ namespace Sphynx
 			return m_Hashmap[key];
 		}
 
-		const Array<TKey>& GetKeys() const
+		Array<TKey> GetKeys() const
 		{
-			Array array = Array<TKey>(m_Hashmap.size());
+			Array<TKey> array = Array<TKey>(m_Hashmap.size());
 			for (auto& [key, value] : m_Hashmap)
 			{
 				array.Add(key);
@@ -89,9 +89,9 @@ namespace Sphynx
 			return array;
 		}
 
-		const Array<TValue>& GetValues()
+		Array<TValue> GetValues()
 		{
-			Array array = Array<TValue>(m_Hashmap.size());
+			Array<TValue> array = Array<TValue>(m_Hashmap.size());
 			for (auto& [key, value] : m_Hashmap)
 			{
 				array.Add(value);

@@ -190,7 +190,7 @@ namespace Sphynx
 		SDL_FRect rect = { (float)position.X, (float)position.Y, (float)size.X, (float)size.Y };
 
 		const SDLTexture* sdlTexture = static_cast<const SDLTexture*>(&texture);
-		SDL_RenderTexture(m_Renderer, sdlTexture->GetTexture(), nullptr, &rect);
+		SDL_RenderTexture(m_Renderer, sdlTexture->GetTexture(), nullptr, &rect); // TODO: apply color
 	}
 
 	void SDLRendererAPI::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
@@ -203,7 +203,7 @@ namespace Sphynx
 		SDL_FRect srcRect = { (float)spritePosition.X, (float)spritePosition.Y, (float)sprite.GetSize().X, (float)sprite.GetSize().Y };
 
 		SDLTexture* sdlTexture = static_cast<SDLTexture*>(sprite.GetTexture());
-		SDL_RenderTexture(m_Renderer, sdlTexture->GetTexture(), &srcRect, &dstRect);
+		SDL_RenderTexture(m_Renderer, sdlTexture->GetTexture(), &srcRect, &dstRect); // TODO: apply color
 	}
 
 	void SDLRendererAPI::DrawText(const std::string& text, const Font& font, float size, Vector2i position, Vector2i scale, Color color)

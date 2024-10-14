@@ -41,3 +41,6 @@
 #include "Serialization/FileWriter.h"
 #include "Serialization/SceneDeserializer.h"
 #include "Serialization/SceneSerializer.h"
+
+
+#include "Asset/Sprite/SpriteAsset.h"

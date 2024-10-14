@@ -23,7 +23,7 @@ namespace Sphynx
 
 	template<typename T>
 	inline ReflectionDeserializer::ReflectionDeserializer(const T& obj, Reader& reader) :
-		m_Obj(obj), m_Reader(reader), m_Class(GetClass<T>())
+		m_Obj(&obj), m_Reader(reader), m_Class(Reflection::GetClass<T>())
 	{
 	}
 }

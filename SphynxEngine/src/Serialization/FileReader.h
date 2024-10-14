@@ -23,6 +23,8 @@ namespace Sphynx
 			m_File.close();
 		}
 
+		bool IsValid() const { return m_File.is_open(); }
+
 	protected:
 		virtual void ReadImpl(void* data, size_t size) override
 		{

@@ -4,6 +4,7 @@
 #include "Core/UUID.h"
 #include "Traits/Utility.h"
 #include "Asset.h"
+#include "Container/Array.h"
 
 #include <filesystem>
 
@@ -17,5 +18,6 @@ namespace Sphynx
 		AssetHandle Handle;
 		AssetType Type;
 		std::filesystem::path Path;
+		Array<AssetHandle> Dependencies;
 	};
 }

@@ -25,7 +25,7 @@ namespace Sphynx
 			Read((void*)&size, sizeof(size));
 			std::cout << "Read size: " << size << std::endl;
 
-			if constexpr (has_reserve<TIterable>::value)
+			if constexpr (Traits::has_reserve<TIterable>::value)
 			{
 				iterable.reserve(size);
 			}
@@ -97,8 +97,26 @@ namespace Sphynx
 				Read(&c, sizeof(char));
 				str += c;
 			} while (c != '\0');
+		}
 
-			std::cout << "      - Value: " << str << std::endl;
+		template<>
+		void Read<std::wstring>(std::wstring& str)
+		{
+			wchar_t c = '\0';
+			str = L"";
+			do
+			{
+				Read(&c, sizeof(wchar_t));
+				str += c;
+			} while (c != '\0');
+		}
+
+		template<>
+		void Read<std::filesystem::path>(std::filesystem::path& path)
+		{
+			std::wstring readPath;
+			Read(readPath);
+			path = readPath;
 		}
 		
 	protected:

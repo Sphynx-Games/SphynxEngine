@@ -1,21 +1,31 @@
 #include "spxpch.h"
 #include "AssetManager.h"
 #include "Logging/Log.h"
-
 #include "Asset/Texture/TextureAssetImporter.h"
 #include "Asset/Sprite/SpriteAssetImporter.h"
 #include "Asset/Font/FontAssetImporter.h"
+#include "Serialization/FileReader.h"
+#include "Serialization/FileWriter.h"
 
 
 #undef RegisterAssetType
 #undef RegisterAssetTypeExtensions
 #undef IsAssetRegistered
-#define TYPE_TO_ASSETTYPE(Type) #Type
 #define REGISTER_ASSETTYPE(Type, Importer, Extension, ...) \
 {\
 	RegisterAssetType(TYPE_TO_ASSETTYPE(Type));\
 	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { Extension, ##__VA_ARGS__ });\
-	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), Importer);\
+	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), &Importer::Import);\
+	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), &Importer::Load);\
+	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), &Importer::Save);\
+}
+#define REGISTER_INVALID_ASSETTYPE(Type, Importer, Extension, ...) \
+{\
+	RegisterAssetType(TYPE_TO_ASSETTYPE(Type));\
+	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { Extension, ##__VA_ARGS__ });\
+	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), nullptr);\
+	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), nullptr);\
+	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), nullptr);\
 }
 
 
@@ -30,6 +40,8 @@ namespace Sphynx
 	AssetTypeRegistry AssetManager::s_TypeRegistry = {};
 	AssetRegistry AssetManager::s_Registry = {};
 
+	const std::filesystem::path ASSET_REGISTRY_FILEPATH = "Assets\\assetRegistry.spxasset";
+
 	void AssetManager::Init()
 	{
 		SPX_CORE_LOG_TRACE("Initializing AssetManager");
@@ -38,22 +50,71 @@ namespace Sphynx
 		// custom assets will be registered elsewhere
 
 		// Register a "Invalid" type as a utility value
-		REGISTER_ASSETTYPE(Invalid, nullptr, "");
+		REGISTER_INVALID_ASSETTYPE(Invalid, nullptr, "");
 
 		// Register Asset types (Texture, Sprite...)
-		REGISTER_ASSETTYPE(Texture, &TextureAssetImporter::Import, ".png", ".jpg", ".jpeg"); // NOTE: add more extensions if needed
-		//REGISTER_ASSETTYPE(Spritesheet, &TextureAssetImporter::Import);
-		//REGISTER_ASSETTYPE(Sprite, &SpriteAssetImporter::Import, "");
-		REGISTER_ASSETTYPE(Font, &FontAssetImporter::Import, ".ttf");
+		REGISTER_ASSETTYPE(Texture, TextureAssetImporter, ".png", ".jpg", ".jpeg"); // NOTE: add more extensions if needed
+		//REGISTER_ASSETTYPE(Spritesheet, TextureAssetImporter);
+		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter, ".spxasset");
+		REGISTER_ASSETTYPE(Font, FontAssetImporter, ".ttf");
 
-		// TODO: load all managed assets (needs some kind of project asset registry file)
+		// load all managed assets into the asset registry
+		FileReader reader(ASSET_REGISTRY_FILEPATH);
+
+		if (reader.IsValid())
+		{
+			size_t numAssets;
+			reader.Read(numAssets);
+
+			for (size_t i = 0; i < numAssets; ++i)
+			{
+				AssetMetadata metadata;
+				std::string handle;
+				reader.Read(handle);
+				metadata.Handle = AssetHandle::FromString(handle);
+				reader.Read(metadata.Type);
+				std::wstring path;
+				reader.Read(path);
+				metadata.Path = path;
+
+				size_t numDependencies;
+				reader.Read(numDependencies);
+				for (size_t i = 0; i < numDependencies; ++i)
+				{
+					std::string dependencyHandle;
+					reader.Read(dependencyHandle);
+					metadata.Dependencies.Add(AssetHandle::FromString(dependencyHandle));
+				}
+
+				s_Registry.Add(metadata.Handle, metadata);
+			}
+		}		
 	}
 
 	void AssetManager::Shutdown()
 	{
 		SPX_CORE_LOG_TRACE("Shutting down AssetManager");
 
-		// TODO: release all managed assets
+		// write all managed assets into the asset registry file
+		FileWriter writer(ASSET_REGISTRY_FILEPATH);
+
+		writer.Write(s_Registry.GetKeys().Size());
+
+		for (const auto& [handle, metadata] : s_Registry)
+		{
+			AssetMetadata metadata;
+			writer.Write(AssetHandle::ToString(handle));
+			writer.Write(metadata.Type);
+			writer.Write(metadata.Path.wstring());
+
+			writer.Write(metadata.Dependencies.Size());
+
+			for (AssetHandle dependencyHandle : metadata.Dependencies)
+			{
+				writer.Write(AssetHandle::ToString(dependencyHandle));
+			}
+		}
+		s_Registry.RemoveAll();
 	}
 
 	void AssetManager::RegisterAssetType(const AssetType& assetType)
@@ -84,18 +145,12 @@ namespace Sphynx
 		AssetMetadata metadata;
 		metadata.Handle = AssetHandle::Generate();
 		metadata.Path = path;
+		metadata.Path.replace_extension(ASSET_EXTENSION);
 		metadata.Type = GetAssetTypeFromExtension(path.extension().string());
 
 		// import asset normally
-		std::shared_ptr<IAsset> asset = AssetImporter::Import(metadata);
-		if (asset != nullptr)
-		{
-			asset->Handle = metadata.Handle;
-			s_LoadedAssets[metadata.Handle] = asset;
-			s_Registry[metadata.Handle] = metadata;
-
-			// TODO: serialize into disc (asset registry file)
-		}
+		std::shared_ptr<IAsset> asset = AssetImporter::Import(metadata, path);
+		ManageAsset(asset, metadata);
 
 		return asset;
 	}
@@ -116,7 +171,7 @@ namespace Sphynx
 		// Check if the asset is loaded, if not load it
 		if (!IsAssetLoaded(handle))
 		{
-			s_LoadedAssets[handle] = AssetImporter::Import(GetMetadata(handle));
+			s_LoadedAssets[handle] = AssetImporter::Load(GetMetadata(handle));
 		}
 
 		return s_LoadedAssets[handle];
@@ -146,6 +201,31 @@ namespace Sphynx
 		}
 
 		return s_AssetTypeExtensions[extension];
+	}
+
+	AssetHandle AssetManager::GetAssetHandleFromAddress(void* address)
+	{
+		auto it = std::find_if(s_LoadedAssets.begin(), s_LoadedAssets.end(), [&](const auto& value) 
+			{
+				return value.second->GetRawAsset() == address;
+			});
+
+		if (it != s_LoadedAssets.end())
+		{
+			return it->first;
+		}
+
+		return AssetHandle::Invalid;
+	}
+
+	void AssetManager::ManageAsset(std::shared_ptr<IAsset> asset, const AssetMetadata& metadata)
+	{
+		if (asset != nullptr)
+		{
+			asset->Handle = metadata.Handle;
+			s_LoadedAssets[metadata.Handle] = asset;
+			s_Registry[metadata.Handle] = metadata;
+		}
 	}
 
 }

@@ -10,13 +10,14 @@
 
 namespace Sphynx
 {
-	class Sprite;
+	class Spritesheet;
 
-	class SPHYNX_API SpriteAssetImporter
+	class SPHYNX_API SpritesheetAssetImporter
 	{
 	public:
 		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata, const std::filesystem::path& path);
 		static std::shared_ptr<IAsset> Load(const AssetMetadata& metadata);
 		static void Save(const AssetMetadata& metadata);
+
 	};
 }

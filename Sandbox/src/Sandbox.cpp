@@ -6,7 +6,7 @@
 
 Sphynx::Font* font = nullptr;
 Sphynx::Spritesheet* sheet = nullptr;
-Sphynx::Texture* enemyTexture = nullptr;
+std::shared_ptr<Sphynx::Asset<Sphynx::Texture>> enemyTexture = nullptr;
 
 
 class SandboxLayer : public Sphynx::Layer
@@ -45,10 +45,15 @@ public:
 		Application::Init();
 
 		// assets
-		font = *AssetManager::Import<Font>("Assets\\Fonts\\roboto\\Roboto-Regular.ttf");
+		//font = *AssetManager::Import<Font>("Assets\\Fonts\\roboto\\Roboto-Regular.ttf");
 		AssetManager::Import("Assets\\Textures\\cat.jpg");
-		enemyTexture = *AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
-		sheet = new Spritesheet(enemyTexture, 4, 3);
+		enemyTexture = AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
+		//sheet = new Spritesheet(enemyTexture, 4, 3);
+
+		Sprite* sprite = new Sprite(enemyTexture->Asset);
+		AssetManager::RegisterAsset(sprite, "Assets\\Textures\\enemySprite");
+
+		//enemyTexture = AssetManager::GetAsset<Texture>(AssetHandle::FromString("3d8020bb-a60b-4009-bec8-65be84888a39"));
 
 		// layers
 		PushLayer(new SandboxLayer());
@@ -75,7 +80,7 @@ void SandboxLayer::Attach()
 #if 1
 	Actor& sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
+	//sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
 
 	/*Actor& quad = m_SandboxScene.CreateActor();
 	quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
@@ -134,7 +139,7 @@ void SandboxLayer::Update(float deltaTime)
 	// begin scene render
 	Renderer2D::Begin(&m_CameraController->GetCamera());
 	{
-		Renderer2D::DrawText("hello!!", *font, 16, { 2,2 });
+		//Renderer2D::DrawText("hello!!", *font, 16, { 2,2 });
 		m_SandboxScene.Update(deltaTime);
 	}
 	Renderer2D::End();

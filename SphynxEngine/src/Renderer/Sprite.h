@@ -2,12 +2,13 @@
 
 #include "Core/Core.h"
 #include "Math/Vector.h"
+#include "Container/Array.h"
 #include "Asset/Asset.h"
 
 #include <cstdint>
 #include <string>
 #include <memory>
-#include <vector>
+
 
 namespace Sphynx
 {
@@ -17,11 +18,9 @@ namespace Sphynx
 	{
 	public:
 		Sprite() = default;
-		//std::shared_ptr<Asset<Texture>> texture
 		Sprite(Texture* texture, Vector2i position = { 0, 0 }, Vector2i size = { 1, 1 }, Vector2f pivot = { 0.5f, 0.5f }, uint32_t pixelsPerUnit = 100);
 		~Sprite() = default;
 
-		//Texture* GetTexture() const { return m_Texture->Asset; }
 		Texture* GetTexture() const { return m_Texture; }
 		Vector2i GetPosition() const { return m_Position; }
 		Vector2i GetSize() const { return m_Size; }
@@ -37,9 +36,8 @@ namespace Sphynx
 			m_PixelsPerUnit = pixelsPerUnit;
 		}
 
-	public:
+	private:
 		Texture* m_Texture;
-		//std::shared_ptr<Asset<Texture>> m_Texture;
 		Vector2i m_Position;
 		Vector2i m_Size;
 		Vector2f m_Pivot;
@@ -51,25 +49,16 @@ namespace Sphynx
 	class Spritesheet
 	{
 	public:
-		Spritesheet(Texture* texture, int rows, int columns);
+		Spritesheet(Texture* texture, int rows, int columns); // TODO: delete this constructor. it should not be managed here
 		~Spritesheet();
 
-		Sprite* GetSprite(uint32_t num) { return m_Sprites.at(num); }
+		Sprite* GetSprite(uint32_t num) { return m_Sprites.Get(num); }
 
 	private:
 		Texture* m_Texture;
-		std::vector<Sprite*> m_Sprites;
+		Array<Sprite*> m_Sprites;
+
+		friend class SpriteAssetImporter;
+		friend class SpritesheetAssetImporter;
 	};
 }
-
-
-#include "Reflection/Reflection.h"
-
-SPX_REFLECT_CLASS_BEGIN(Sphynx::Sprite)
-
-SPX_REFLECT_PROPERTY(m_Position)
-SPX_REFLECT_PROPERTY(m_Size)
-SPX_REFLECT_PROPERTY(m_Pivot)
-SPX_REFLECT_PROPERTY(m_PixelsPerUnit)
-
-SPX_REFLECT_CLASS_END(Sphynx::Sprite)

@@ -23,7 +23,7 @@ namespace Sphynx
 
 	template<typename T>
 	inline ReflectionSerializer::ReflectionSerializer(const T& obj, Writer& writer) :
-		m_Obj(obj), m_Writer(writer), m_Class(GetClass<T>())
+		m_Obj(&obj), m_Writer(writer), m_Class(Reflection::GetClass<T>())
 	{
 	}
 }

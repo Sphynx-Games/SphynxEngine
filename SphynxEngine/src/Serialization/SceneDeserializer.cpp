@@ -1,9 +1,9 @@
+#include "spxpch.h"
 #include "SceneDeserializer.h"
 #include "SerializationConstants.h"
 #include "Reader.h"
 #include "Scene/Scene.h"
 #include "Scene/Actor.h"
-
 #include "Component/UUIDComponent.h"
 #include "Component/NameComponent.h"
 #include "Component/TransformComponent.h"
@@ -16,10 +16,7 @@
 #include "Component/Physics/CapsuleCollider2DComponent.h"
 #include "Renderer/Sprite.h"
 #include "Renderer/Texture.h"
-
 #include "Logging/Log.h"
-#include <iostream>
-#include <string>
 
 
 namespace Sphynx

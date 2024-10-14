@@ -10,11 +10,17 @@
 
 namespace Sphynx
 {
+	class Texture;
+
 	class SPHYNX_API TextureAssetImporter
 	{
 	public:
-		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata);
-		static class Texture* Load(const std::filesystem::path& path);
+		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata, const std::filesystem::path& path);
+		static std::shared_ptr<IAsset> Load(const AssetMetadata& metadata);
+		static void Save(const AssetMetadata& metadata);
+
+	private:
+		static class Texture* ImportFromFilePath(const std::filesystem::path& path);
 
 	};
 }

@@ -66,6 +66,16 @@ namespace Sphynx
 			Write(str.data(), str.size() + 1);
 		}
 
+		void Write(const std::wstring& str)
+		{
+			Write(str.data(), (str.size() + 1) * sizeof(wchar_t));
+		}
+
+		void Write(const std::filesystem::path &path)
+		{
+			Write(path.wstring());
+		}
+
 	protected:
 		virtual void WriteImpl(const void* data, size_t size) = 0;
 	};

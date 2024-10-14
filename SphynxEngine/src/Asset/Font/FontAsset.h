@@ -7,5 +7,10 @@
 
 namespace Sphynx
 {
-	REGISTER_ASSET_TYPE(Font, &FontAssetImporter::Import, ".ttf");
+	struct SPHYNX_API FontAssetMetadata
+	{
+
+	};
+
+	GENERATE_ASSETTYPE_CONVERSOR(Font);
 }
