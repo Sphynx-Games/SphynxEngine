@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "Reflection/Class.h"
+#include "Reflection/Reflection.h"
 
 
 namespace Sphynx
@@ -10,20 +10,22 @@ namespace Sphynx
 	{
 	public:
 		template<typename T>
-		ReflectionSerializer(const T& obj, class Writer& writer);
+		ReflectionSerializer(const T& obj, class Writer& writer) :
+			m_Obj(&obj),
+			m_Type(Reflection::GetType<T>()),
+			m_Writer(writer)
+		{
+		}
 
+		ReflectionSerializer(const void* obj, const Reflection::Type& type, class Writer& writer);
+
+	public:
 		void Serialize();
 
 	private:
 		const void* m_Obj;
+		const Reflection::Type& m_Type;
 		Writer& m_Writer;
-		const Reflection::Class& m_Class;
+
 	};
-
-
-	template<typename T>
-	inline ReflectionSerializer::ReflectionSerializer(const T& obj, Writer& writer) :
-		m_Obj(&obj), m_Writer(writer), m_Class(Reflection::GetClass<T>())
-	{
-	}
 }

@@ -21,9 +21,8 @@ namespace Sphynx
 		{
 			FileWriter writer(metadata.Path);
 			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file!!");
-			writer.Write(textureMetadata.RelativePath.wstring());
-			//ReflectionSerializer serializer(textureMetadata, writer); // TODO: make filesystem path serializable with our classes
-			//serializer.Serialize();
+			ReflectionSerializer serializer(textureMetadata, writer);
+			serializer.Serialize();
 		}
 
 		return Load(metadata);
@@ -36,11 +35,8 @@ namespace Sphynx
 		TextureAssetMetadata textureMetadata;
 
 		FileReader reader(metadata.Path);
-		std::wstring path;
-		reader.Read(path);
-		textureMetadata.RelativePath = path;
-		//ReflectionDeserializer deserializer(textureMetadata, reader);
-		//deserializer.Deserialize();
+		ReflectionDeserializer deserializer(textureMetadata, reader);
+		deserializer.Deserialize();
 
 		Texture* texture = ImportFromFilePath(textureMetadata.RelativePath);
 
@@ -62,9 +58,8 @@ namespace Sphynx
 		textureMetadata.RelativePath = textureAsset->RelativePath;
 
 		FileWriter writer(metadata.Path);
-		writer.Write(textureMetadata.RelativePath.wstring());
-		//ReflectionSerializer serializer(textureMetadata, writer);
-		//serializer.Serialize();
+		ReflectionSerializer serializer(textureMetadata, writer);
+		serializer.Serialize();
 	}
 
 	Texture* TextureAssetImporter::ImportFromFilePath(const std::filesystem::path& path)

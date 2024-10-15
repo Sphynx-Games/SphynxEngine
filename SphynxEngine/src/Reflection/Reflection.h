@@ -9,7 +9,6 @@
 #include "Attribute.h"
 #include "Traits/Traits.h"
 #include "Core/Invoke.h"
-#include <any>
 
 
 /**
@@ -50,7 +49,7 @@
 	{ \
 		static const auto* Storage = ::Sphynx::Reflection::details::ClassStorage<_Class>::Instance; \
 		static const Class c { \
-			::Sphynx::Reflection::Type{ #_Class, sizeof(_Class), alignof(_Class) }, \
+			::Sphynx::Reflection::Type{ #_Class, sizeof(_Class), alignof(_Class), false }, \
 			Storage->Properties.data(), \
 			Storage->Properties.size(), \
 			Storage->Functions.data(), \
@@ -159,7 +158,7 @@
 	{ \
 		static const auto* Storage = ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance; \
 		static const Enum e { \
-			::Sphynx::Reflection::Type{ #_Enum, sizeof(_Enum), alignof(_Enum) }, \
+			::Sphynx::Reflection::Type{ #_Enum, sizeof(_Enum), alignof(_Enum), false }, \
 			Storage->Entries.data(), \
 			Storage->Entries.size(), \
 			Storage->Attributes.data(), \
@@ -260,13 +259,14 @@ namespace Sphynx
 #define X(_Type) \
 	template<> inline const Type& details::GetTypeImpl<_Type>() \
 	{ \
-		static const Type type{ #_Type, sizeof(_Type), alignof(_Type) }; \
+		static const Type type{ #_Type, sizeof(_Type), alignof(_Type), true }; \
 		return type; \
 	}
 
 #define TYPES() \
 	X(bool)					\
 	X(char)					\
+	X(wchar_t)					\
 	X(short)				\
 	X(int)					\
 	X(long)					\
@@ -285,16 +285,27 @@ namespace Sphynx
 
 		template<> inline const Type& details::GetTypeImpl<void>()
 		{
-			static const Type type{ "void", 0, 0 };
+			static const Type type{ "void", 0, 0, true };
 			return type;
 		}
 
 		template<> inline const Type& details::GetTypeImpl<std::string>()
 		{
-			static const Type type{ "std::string", sizeof(std::string), alignof(std::string) };
+			static const Type type{ "std::string", sizeof(std::string), alignof(std::string), true };
 			return type;
 		}
 
+		template<> inline const Type& details::GetTypeImpl<std::wstring>()
+		{
+			static const Type type{ "std::wstring", sizeof(std::wstring), alignof(std::wstring), true };
+			return type;
+		}
+
+		template<> inline const Type& details::GetTypeImpl<std::filesystem::path>()
+		{
+			static const Type type{ "std::filesystem::path", sizeof(std::filesystem::path), alignof(std::filesystem::path), true };
+			return type;
+		}
 	}
 }
 

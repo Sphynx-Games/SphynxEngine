@@ -12,6 +12,7 @@ namespace Sphynx
 			const char* Name;
 			size_t Size;
 			size_t Alignment;
+			bool IsPrimitive;
 		};
 	}
 }
