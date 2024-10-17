@@ -18,13 +18,6 @@ namespace Sphynx
 				Value,
 			};
 
-			/*TemplateArgument() = default;
-			TemplateArgument(const TemplateArgument& other):
-				Kind(other.Kind),
-				Type(other.Type),
-				Value(other.Value)
-			{}*/
-
 			Kind Kind;
 			const Type& Type;
 			uint64_t Value;
