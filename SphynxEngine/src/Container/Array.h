@@ -94,7 +94,7 @@ namespace Sphynx
 		inline const T& operator [] (uint64_t index) const { return m_Array.at(index); }
 		inline T& operator [] (uint64_t index) { return m_Array.at(index); }
 
-		Array& operator = (const Array& other) 
+		Array& operator = (const Array& other)
 		{
 			RemoveAll();
 			Append(other);
@@ -140,3 +140,10 @@ namespace Sphynx
 		std::vector<T> m_Array;
 	};
 }
+
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Array)
+SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Array)

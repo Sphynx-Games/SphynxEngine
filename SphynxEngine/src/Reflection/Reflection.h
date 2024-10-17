@@ -10,6 +10,9 @@
 #include "Traits/Traits.h"
 #include "Core/Invoke.h"
 
+#include <string>
+#include <filesystem>
+
 
 /**
  * Usage:
@@ -44,10 +47,10 @@
 		}); \
 	} \
 	\
-	template<> \
-	inline const ::Sphynx::Reflection::Class& ::Sphynx::Reflection::details::GetClassImpl<_Class>() \
+	namespace Sphynx { namespace Reflection { namespace details { \
+	inline const Class& GetClassImpl(Tag<_Class>) \
 	{ \
-		static const auto* Storage = ::Sphynx::Reflection::details::ClassStorage<_Class>::Instance; \
+		static const auto* Storage = ClassStorage<_Class>::Instance; \
 		static const Class c { \
 			::Sphynx::Reflection::Type{ #_Class, sizeof(_Class), alignof(_Class), false }, \
 			Storage->Properties.data(), \
@@ -59,16 +62,61 @@
 		}; \
 		return c; \
 	} \
-	\
-	template<> \
-	inline const ::Sphynx::Reflection::Type& ::Sphynx::Reflection::details::GetTypeImpl<_Class>() \
+	 \
+	inline const Type& GetTypeImpl(Tag<_Class>) \
 	{ \
-		return GetClassImpl<_Class>(); \
-	}
+		return GetClassImpl(Tag<_Class>{}); \
+	} \
+	}}}
 
 #define SPX_REFLECT_CLASS(_Class) \
 	SPX_REFLECT_CLASS_BEGIN(_Class) \
 	SPX_REFLECT_CLASS_END(_Class)
+
+#define SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Class) \
+	namespace Sphynx { namespace Reflection { namespace details { \
+	template<typename ...T> \
+	inline const Class& GetClassImpl(Tag<::_Class<T...>>) \
+	{ \
+		static ClassStorage<::_Class<T...>> Storage([](auto* self) \
+			{ \
+				self->Size = sizeof(::_Class<T...>); \
+				[[maybe_unused]] auto& Properties = self->Properties; \
+				[[maybe_unused]] auto& Functions = self->Functions; \
+				[[maybe_unused]] auto& Attributes = self->Attributes; \
+				using context_type = ::_Class<T...>;
+
+#define SPX_REFLECT_TEMPLATE_CLASS_END(_Class) \
+			} \
+		); \
+		using TemplateArgsPack = ::Sphynx::Traits::args_pack<T...>; \
+		static auto TemplatedArgs = GetTemplateArgumentPackArray<TemplateArgsPack>( \
+			std::make_index_sequence<::Sphynx::Traits::args_pack_size<TemplateArgsPack>::value>()); \
+		 \
+		static const TemplateClass c{ \
+			::Sphynx::Reflection::Type{ #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false}, \
+			Storage.Properties.data(), \
+			Storage.Properties.size(), \
+			Storage.Functions.data(), \
+			Storage.Functions.size(), \
+			Storage.Attributes.data(), \
+			Storage.Attributes.size(), \
+			TemplatedArgs.data(), \
+			TemplatedArgs.size() \
+		}; \
+		return c; \
+	} \
+	 \
+	template<typename ...T> \
+	inline const Type& GetTypeImpl(Tag<::_Class<T...>>) \
+	{ \
+		return GetClassImpl(Tag<::_Class<T...>>{}); \
+	} \
+	}}}
+
+#define SPX_REFLECT_TEMPLATE_CLASS(_Class) \
+	SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Class) \
+	SPX_REFLECT_TEMPLATE_CLASS_END(_Class)
 
  // ---------- Struct -----------
 #define SPX_REFLECT_STRUCT_BEGIN(_Struct) \
@@ -81,6 +129,17 @@
 #define SPX_REFLECT_STRUCT(_Struct) \
 	SPX_REFLECT_STRUCT_BEGIN(_Struct) \
 	SPX_REFLECT_STRUCT_END(_Struct)
+
+#define SPX_REFLECT_TEMPLATE_STRUCT_BEGIN(_Struct) \
+	SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Struct) \
+	self->IsStruct = true;
+
+#define SPX_REFLECT_TEMPLATE_STRUCT_END(_Struct) \
+	SPX_REFLECT_TEMPLATE_CLASS_END(_Struct)
+
+#define SPX_REFLECT_TEMPLATE_STRUCT(_Struct) \
+	SPX_REFLECT_TEMPLATE_STRUCT_BEGIN(_Struct) \
+	SPX_REFLECT_TEMPLATE_STRUCT_END(_Struct)
 
  // ---------- Property -----------
 #define SPX_REFLECT_PROPERTY_BEGIN(_Property) \
@@ -153,19 +212,20 @@
 		}); \
 	} \
 	\
-	template<> \
-	inline const ::Sphynx::Reflection::Enum& ::Sphynx::Reflection::details::GetEnumImpl<_Enum>() \
+	namespace Sphynx { namespace Reflection { namespace details { \
+	inline const Enum& GetEnumImpl(Tag<_Enum>) \
 	{ \
-		static const auto* Storage = ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance; \
-		static const Enum e { \
+		static const auto* Storage = EnumStorage<_Enum>::Instance; \
+		static const Enum e{ \
 			::Sphynx::Reflection::Type{ #_Enum, sizeof(_Enum), alignof(_Enum), false }, \
 			Storage->Entries.data(), \
 			Storage->Entries.size(), \
 			Storage->Attributes.data(), \
 			Storage->Attributes.size() \
-		}; \
+	}; \
 		return e; \
 	} \
+	}}} \
 	template<> struct ::Sphynx::Reflection::EnumRange<_Enum> { \
 		struct Iterator \
 		{ \
@@ -226,13 +286,18 @@ namespace Sphynx
 		namespace details
 		{
 			template<typename T>
-			inline const Type& GetTypeImpl();
+			struct Tag {};
+
+			/*
+			template<typename T>
+			inline const Type& GetTypeImpl(Tag<T>);
 
 			template<typename T>
-			inline const Class& GetClassImpl();
+			inline const Class& GetClassImpl(Tag<T>);
 
 			template<typename T>
-			inline const Enum& GetEnumImpl();
+			inline const Enum& GetEnumImpl(Tag<T>);
+			*/
 		}
 
 		template<typename Enum>
@@ -241,23 +306,23 @@ namespace Sphynx
 		template<typename T>
 		inline const Type& GetType()
 		{
-			return details::GetTypeImpl<T>();
+			return details::GetTypeImpl(details::Tag<T>{});
 		}
 
 		template<typename T>
 		inline const Class& GetClass()
 		{
-			return details::GetClassImpl<T>();
+			return details::GetClassImpl(details::Tag<T>{});
 		}
 
 		template<typename T>
 		inline const Enum& GetEnum()
 		{
-			return details::GetEnumImpl<T>();
+			return details::GetEnumImpl(details::Tag<T>{});
 		}
 
 #define X(_Type) \
-	template<> inline const Type& details::GetTypeImpl<_Type>() \
+	inline const Type& GetTypeImpl(Tag<_Type>) \
 	{ \
 		static const Type type{ #_Type, sizeof(_Type), alignof(_Type), true }; \
 		return type; \
@@ -266,7 +331,7 @@ namespace Sphynx
 #define TYPES() \
 	X(bool)					\
 	X(char)					\
-	X(wchar_t)					\
+	X(wchar_t)				\
 	X(short)				\
 	X(int)					\
 	X(long)					\
@@ -280,34 +345,39 @@ namespace Sphynx
 	X(unsigned long)		\
 	X(unsigned long long)	\
 
-
-		TYPES()
-
-		template<> inline const Type& details::GetTypeImpl<void>()
+		namespace details
 		{
-			static const Type type{ "void", 0, 0, true };
-			return type;
-		}
 
-		template<> inline const Type& details::GetTypeImpl<std::string>()
-		{
-			static const Type type{ "std::string", sizeof(std::string), alignof(std::string), true };
-			return type;
-		}
+			TYPES()
 
-		template<> inline const Type& details::GetTypeImpl<std::wstring>()
-		{
-			static const Type type{ "std::wstring", sizeof(std::wstring), alignof(std::wstring), true };
-			return type;
-		}
+			inline const Type& GetTypeImpl(Tag<void>)
+			{
+				static const Type type{ "void", 0, 0, true };
+				return type;
+			}
 
-		template<> inline const Type& details::GetTypeImpl<std::filesystem::path>()
-		{
-			static const Type type{ "std::filesystem::path", sizeof(std::filesystem::path), alignof(std::filesystem::path), true };
-			return type;
+			inline const Type& GetTypeImpl(Tag<::std::string>)
+			{
+				static const Type type{ "std::string", sizeof(::std::string), alignof(::std::string), true };
+				return type;
+			}
+
+			inline const Type& GetTypeImpl(Tag<::std::wstring>)
+			{
+				static const Type type{ "std::wstring", sizeof(::std::wstring), alignof(::std::wstring), true };
+				return type;
+			}
+
+			inline const Type& GetTypeImpl(Tag<::std::filesystem::path>)
+			{
+				static const Type type{ "std::filesystem::path", sizeof(::std::filesystem::path), alignof(::std::filesystem::path), true };
+				return type;
+			}
 		}
 	}
 }
+#undef X
+#undef TYPES
 
 // DO NOT UNCOMMENT, THIS IS FOR TESTING PURPOSES
 //namespace S

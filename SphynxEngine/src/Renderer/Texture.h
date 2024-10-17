@@ -11,6 +11,9 @@ namespace Sphynx
 {
 	class SPHYNX_API Texture
 	{
+	protected:
+		Texture() : m_Size(0) {};
+		Texture(const Vector2i& size) : m_Size(size) {};
 	public:
 		virtual ~Texture() = default;
 

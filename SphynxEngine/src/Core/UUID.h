@@ -77,3 +77,8 @@ namespace std
 
 }
 
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_STRUCT(Sphynx::UUID)
+

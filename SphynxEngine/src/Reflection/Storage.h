@@ -1,6 +1,7 @@
 #pragma once
 #include "Property.h"
 #include "Function.h"
+#include "TemplateArgument.h"
 #include "Attribute.h"
 #include <vector>
 #include <string>

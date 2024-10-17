@@ -50,7 +50,7 @@ namespace Sphynx
 		}
 
 		// Init SDL_ttf
-		if (TTF_Init() == -1)
+		if (!TTF_Init())
 		{
 			SPX_CORE_LOG_ERROR("SDL_ttf could not initialize! TTF_Error: {}", SDL_GetError());
 		}
@@ -213,7 +213,7 @@ namespace Sphynx
 
 		TTF_Font* ttfFont = sdlFont.GetFont();
 		if (ttfFont == nullptr) return;
-		TTF_SetFontSize(ttfFont, size);
+		TTF_SetFontSize(ttfFont, (int)size);
 
 		// create surface
 		SDL_Surface* surfaceText = TTF_RenderText_Solid(ttfFont, text.c_str(), { color.R, color.G, color.B, color.A });
@@ -224,7 +224,7 @@ namespace Sphynx
 		SDL_GetTextureSize(textureText, &w, &h);
 
 		// render textureText into a rectangle in the screen
-		SDL_FRect rect = { position.X, position.Y, scale.X * w, scale.Y * h };
+		SDL_FRect rect = { (float)position.X, (float)position.Y, (float)scale.X * w, (float)scale.Y * h };
 		SDL_RenderTexture(m_Renderer, textureText, NULL, &rect);
 
 		// free surface, texture and font

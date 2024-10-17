@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "Type.h"
 #include "Property.h"
+#include "TemplateArgument.h"
 
 
 namespace Sphynx
@@ -11,6 +12,7 @@ namespace Sphynx
 	{
 		struct Property;
 		struct Function;
+		struct TemplateArgument;
 		class Attribute;
 
 		struct SPHYNX_API Class : public Type
@@ -28,6 +30,12 @@ namespace Sphynx
 			inline const Property* begin() const { return Properties; }
 			inline const Property* end() { return Properties + PropertiesCount; }
 			inline const Property* end() const { return Properties + PropertiesCount; }
+		};
+
+		struct SPHYNX_API TemplateClass : public Class
+		{
+			const TemplateArgument* TemplateArgs;
+			size_t TemplateArgsCount;
 		};
 	}
 }

@@ -8,10 +8,10 @@
 
 namespace Sphynx 
 {
-	SDLTexture::SDLTexture(void* data, Vector2i size)
+	SDLTexture::SDLTexture(void* data, Vector2i size) :
+		Texture(size),
+		m_Texture(nullptr)
 	{
-		m_Size = size;
-
 		const SDLRendererAPI* renderer = static_cast<const SDLRendererAPI*>(Renderer2D::GetRendererAPI());
 		if (renderer == nullptr)
 		{
@@ -21,7 +21,7 @@ namespace Sphynx
 
 		m_Texture = SDL_CreateTexture(renderer->GetSDLRenderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, size.X, size.Y);
 
-		if (SDL_UpdateTexture(m_Texture, nullptr, data, m_Size.X * sizeof(uint8_t)) < 0)
+		if (!SDL_UpdateTexture(m_Texture, nullptr, data, m_Size.X * sizeof(uint8_t)))
 		{
 			SPX_CORE_LOG_ERROR("Unable to create texture! SDL Error: {}", SDL_GetError());
 			return;
@@ -44,8 +44,8 @@ namespace Sphynx
 		float height = 0;
 
 		SDL_GetTextureSize(texture, &width, &height);
-		m_Size.X = width;
-		m_Size.Y = height;
+		m_Size.X = (int32_t)width;
+		m_Size.Y = (int32_t)height;
 	}
 
 	SDLTexture* SDLTextureLoader::Load(const std::filesystem::path& path)

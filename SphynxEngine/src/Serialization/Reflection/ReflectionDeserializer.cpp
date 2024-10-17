@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	ReflectionDeserializer::ReflectionDeserializer(const void* obj, const Reflection::Type& type, Reader& reader) :
+	ReflectionDeserializer::ReflectionDeserializer(void* obj, const Reflection::Type& type, Reader& reader) :
 		m_Obj(obj),
 		m_Type(type),
 		m_Reader(reader)
@@ -47,7 +47,7 @@ namespace Sphynx
 			SPX_CORE_ASSERT(!strcmp(name.c_str(), property.Name), "Error while deserializing!");
 
 			// Read property content recursively
-			ReflectionDeserializer deserializer{ (const std::byte*)m_Obj + property.Offset, property.Type, m_Reader };
+			ReflectionDeserializer deserializer{ (std::byte*)m_Obj + property.Offset, property.Type, m_Reader };
 			deserializer.Deserialize();
 		}
 	}

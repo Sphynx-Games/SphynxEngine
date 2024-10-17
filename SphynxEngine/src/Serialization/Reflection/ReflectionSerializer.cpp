@@ -21,19 +21,19 @@ namespace Sphynx
 			// These are "advance primitive" data (special primitives)
 			if (&m_Type == &Reflection::GetType<std::string>())
 			{
-				m_Writer.Write(*(std::string*)m_Obj);
+				m_Writer.Write(*(const std::string*)m_Obj);
 			}
 			else if (&m_Type == &Reflection::GetType<std::wstring>())
 			{
-				m_Writer.Write(*(std::wstring*)m_Obj);
+				m_Writer.Write(*(const std::wstring*)m_Obj);
 			}
 			else if (&m_Type == &Reflection::GetType<std::filesystem::path>())
 			{
-				m_Writer.Write(*(std::filesystem::path*)m_Obj);
+				m_Writer.Write(*(const std::filesystem::path*)m_Obj);
 			}
 			else
 			{
-				m_Writer.Write((std::byte*)m_Obj, m_Type.Size);
+				m_Writer.Write((const std::byte*)m_Obj, m_Type.Size);
 			}
 			return;
 		}

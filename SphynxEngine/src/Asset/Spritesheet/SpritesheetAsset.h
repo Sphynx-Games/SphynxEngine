@@ -21,6 +21,6 @@ namespace Sphynx
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpritesheetAssetMetadata)
 
-//SPX_REFLECT_PROPERTY(SpritesHandles)
+	SPX_REFLECT_PROPERTY(SpritesHandles)
 
 SPX_REFLECT_STRUCT_END(Sphynx::SpritesheetAssetMetadata)

@@ -21,11 +21,12 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_CLASS_BEGIN(Sphynx::SpriteAssetMetadata)
 
-SPX_REFLECT_PROPERTY(Position)
-SPX_REFLECT_PROPERTY(Size)
-SPX_REFLECT_PROPERTY(Pivot)
-SPX_REFLECT_PROPERTY(PixelsPerUnit)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpriteAssetMetadata)
 
-SPX_REFLECT_CLASS_END(Sphynx::SpriteAssetMetadata)
+	SPX_REFLECT_PROPERTY(Position)
+	SPX_REFLECT_PROPERTY(Size)
+	SPX_REFLECT_PROPERTY(Pivot)
+	SPX_REFLECT_PROPERTY(PixelsPerUnit)
+
+SPX_REFLECT_STRUCT_END(Sphynx::SpriteAssetMetadata)
