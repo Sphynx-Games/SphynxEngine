@@ -90,25 +90,31 @@ namespace Sphynx
 		template<>
 		void Read<std::string>(std::string& str)
 		{
-			char c = '\0';
+			char c = 'a';
 			str = "";
-			do
+			while (c != '\0')
 			{
 				Read(&c, sizeof(char));
-				str += c;
-			} while (c != '\0');
+				if (c != '\0')
+				{
+					str += c;
+				}
+			}
 		}
 
 		template<>
 		void Read<std::wstring>(std::wstring& str)
 		{
-			wchar_t c = '\0';
+			wchar_t c = L'a';
 			str = L"";
-			do
+			while (c != L'\0')
 			{
 				Read(&c, sizeof(wchar_t));
-				str += c;
-			} while (c != '\0');
+				if (c != L'\0')
+				{
+					str += c;
+				}
+			}
 		}
 
 		template<>

@@ -49,10 +49,15 @@ namespace Sphynx
 	class Spritesheet
 	{
 	public:
-		Spritesheet(Texture* texture, int rows, int columns); // TODO: delete this constructor. it should not be managed here
+		Spritesheet() = default;
+		Spritesheet(Texture* texture);
 		~Spritesheet();
 
-		Sprite* GetSprite(uint32_t num) { return m_Sprites.Get(num); }
+		Texture* GetTexture() const { return m_Texture; }
+		Sprite* GetSprite(uint32_t num) const { return m_Sprites.Get(num); }
+
+		Sprite* AddSprite(Vector2i position, Vector2i size);
+		static Spritesheet* Create(Texture* texture, int rows, int columns);
 
 	private:
 		Texture* m_Texture;

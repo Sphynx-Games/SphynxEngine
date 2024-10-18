@@ -51,7 +51,7 @@ namespace Sphynx
 		}
 
 		template<typename T>
-		static std::shared_ptr<IAsset> RegisterAsset(T* object, const std::filesystem::path& path)
+		static std::shared_ptr<Asset<T>> RegisterAsset(T* object, const std::filesystem::path& path)
 		{
 			SPX_CORE_ASSERT(!std::filesystem::is_directory(path), "The given path cannot be a directory!!");
 
@@ -68,6 +68,7 @@ namespace Sphynx
 			asset->Asset = object;
 
 			// make asset manager manage the asset and save data into .spxasset file
+			AssetDependencySolver<T>()(*object, metadata);
 			ManageAsset(asset, metadata);
 			AssetImporter::Save(metadata);
 

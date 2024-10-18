@@ -1,5 +1,4 @@
 #include "spxpch.h"
-#include "spxpch.h"
 #include "Texture.h"
 
 #include "Logging/Log.h"

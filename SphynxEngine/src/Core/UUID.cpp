@@ -24,16 +24,6 @@ namespace Sphynx
 
 	const UUID UUID::Invalid = UUID();
 
-	UUID::UUID() :
-		m_Data({ 0 })
-	{
-	}
-
-	UUID::UUID(const UUID& other)
-	{
-		m_Data = other.m_Data;
-	}
-
 	UUID UUID::Generate()
 	{
 		return FromSTDUUIDToSphynxUUID(s_Generator());
@@ -53,17 +43,5 @@ namespace Sphynx
 	bool operator==(const UUID& lhs, const UUID& rhs)
 	{
 		return lhs.m_Data == rhs.m_Data;
-	}
-
-	UUID& UUID::operator=(const UUID& rhs)
-	{
-		m_Data = rhs.m_Data;
-		return *this;
-	}
-
-	UUID& UUID::operator=(UUID&& rhs)
-	{
-		m_Data = std::move(rhs.m_Data);
-		return *this;
 	}
 }

@@ -3,6 +3,7 @@
 #include "Logging/Log.h"
 #include "Asset/Texture/TextureAssetImporter.h"
 #include "Asset/Sprite/SpriteAssetImporter.h"
+#include "Asset/Spritesheet/SpritesheetAssetImporter.h"
 #include "Asset/Font/FontAssetImporter.h"
 #include "Serialization/FileReader.h"
 #include "Serialization/FileWriter.h"
@@ -54,8 +55,8 @@ namespace Sphynx
 
 		// Register Asset types (Texture, Sprite...)
 		REGISTER_ASSETTYPE(Texture, TextureAssetImporter, ".png", ".jpg", ".jpeg"); // NOTE: add more extensions if needed
-		//REGISTER_ASSETTYPE(Spritesheet, TextureAssetImporter);
-		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter, ".spxasset");
+		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
+		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter);
 		REGISTER_ASSETTYPE(Font, FontAssetImporter, ".ttf");
 
 		// load all managed assets into the asset registry
@@ -65,25 +66,20 @@ namespace Sphynx
 		{
 			size_t numAssets;
 			reader.Read(numAssets);
-
 			for (size_t i = 0; i < numAssets; ++i)
 			{
 				AssetMetadata metadata;
-				std::string handle;
-				reader.Read(handle);
-				metadata.Handle = AssetHandle::FromString(handle);
+				reader.Read(metadata.Handle);
 				reader.Read(metadata.Type);
-				std::wstring path;
-				reader.Read(path);
-				metadata.Path = path;
+				reader.Read(metadata.Path);
 
 				size_t numDependencies;
 				reader.Read(numDependencies);
-				for (size_t i = 0; i < numDependencies; ++i)
+				for (size_t j = 0; j < numDependencies; ++j)
 				{
-					std::string dependencyHandle;
+					AssetHandle dependencyHandle;
 					reader.Read(dependencyHandle);
-					metadata.Dependencies.Add(AssetHandle::FromString(dependencyHandle));
+					metadata.Dependencies.Add(dependencyHandle);
 				}
 
 				s_Registry.Add(metadata.Handle, metadata);
@@ -99,22 +95,18 @@ namespace Sphynx
 		FileWriter writer(ASSET_REGISTRY_FILEPATH);
 
 		writer.Write(s_Registry.GetKeys().Size());
-
 		for (const auto& [handle, metadata] : s_Registry)
 		{
-			AssetMetadata metadata;
-			writer.Write(AssetHandle::ToString(handle));
+			writer.Write(handle);
 			writer.Write(metadata.Type);
-			writer.Write(metadata.Path.wstring());
+			writer.Write(metadata.Path);
 
 			writer.Write(metadata.Dependencies.Size());
-
 			for (AssetHandle dependencyHandle : metadata.Dependencies)
 			{
-				writer.Write(AssetHandle::ToString(dependencyHandle));
+				writer.Write(dependencyHandle);
 			}
 		}
-		s_Registry.RemoveAll();
 	}
 
 	void AssetManager::RegisterAssetType(const AssetType& assetType)

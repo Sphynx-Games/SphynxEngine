@@ -32,12 +32,14 @@ namespace Sphynx
 	{
 		SPX_CORE_LOG_TRACE("Loading texture from .spxasset file: {}", metadata.Path.string().c_str());
 
+		// read texture data from .spxasset file
 		TextureAssetMetadata textureMetadata;
 
 		FileReader reader(metadata.Path);
 		ReflectionDeserializer deserializer(textureMetadata, reader);
 		deserializer.Deserialize();
 
+		// create a texture asset from a raw image file
 		Texture* texture = ImportFromFilePath(textureMetadata.RelativePath);
 
 		std::shared_ptr<Asset<Texture>> asset = std::make_shared<Asset<Texture>>();

@@ -27,19 +27,21 @@ namespace Sphynx
 	{
 		SPX_CORE_LOG_TRACE("Loading sprite from .spxasset file: {}", metadata.Path.string().c_str());
 
+		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpriteAsset must have only one dependency.");
+
+		// read sprite data from .spxasset file
 		SpriteAssetMetadata spriteMetadata;
 
 		FileReader reader(metadata.Path);
 		ReflectionDeserializer deserializer(spriteMetadata, reader);
 		deserializer.Deserialize();
 
+		// set sprite values
 		Sprite* sprite = new Sprite();
 		sprite->SetPosition(spriteMetadata.Position);
 		sprite->SetSize(spriteMetadata.Size);
 		sprite->SetPivot(spriteMetadata.Pivot);
 		sprite->SetPixelsPerUnit(spriteMetadata.PixelsPerUnit);
-
-		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpriteAsset must have only one dependency.");
 
 		AssetHandle dependencyHandle = metadata.Dependencies[0];
 		std::shared_ptr<IAsset> dependencyAsset = AssetManager::GetAsset(dependencyHandle);
@@ -53,6 +55,7 @@ namespace Sphynx
 			sprite->m_Texture = spritesheet->Asset->m_Texture;
 		}
 
+		// create sprite asset object
 		std::shared_ptr<Asset<Sprite>> asset = std::make_shared<Asset<Sprite>>();
 		asset->Handle = metadata.Handle;
 		asset->Type = metadata.Type;

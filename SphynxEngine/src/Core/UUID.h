@@ -9,16 +9,16 @@ namespace Sphynx
 	struct SPHYNX_API UUID
 	{
 	public:
-		UUID();
-		UUID(const UUID& other);
+		UUID() = default;
+		UUID(const UUID& other) = default;
 
 	public:
 		static UUID Generate();
 		static UUID FromString(const std::string& str);
 		static std::string ToString(const UUID& uuid);
 
-		UUID& operator=(const UUID& rhs);
-		UUID& operator=(UUID&& rhs);
+		UUID& operator=(const UUID& rhs) = default;
+		UUID& operator=(UUID&& rhs) = default;
 
 	private:
 		friend bool operator==(const UUID& lhs, const UUID& rhs);

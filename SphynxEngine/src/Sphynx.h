@@ -42,5 +42,8 @@
 #include "Serialization/SceneDeserializer.h"
 #include "Serialization/SceneSerializer.h"
 
-
+// Assets
+#include "Asset/Texture/TextureAsset.h"
 #include "Asset/Sprite/SpriteAsset.h"
+#include "Asset/Spritesheet/SpritesheetAsset.h"
+#include "Asset/Font/FontAsset.h"

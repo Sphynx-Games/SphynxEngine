@@ -37,7 +37,7 @@ namespace Sphynx
 
 			Contact2D contactInfo = { collider2, Vector2f(contact->GetManifold()->localNormal.x, contact->GetManifold()->localNormal.y)/*, Contact2DData()*/ };
 
-			SPX_CORE_LOG_DISPLAY("START CONTACT!!");
+			//SPX_CORE_LOG_DISPLAY("START CONTACT!!");
 			collider1->BeginContact(contactInfo);
 		}
 
@@ -49,7 +49,7 @@ namespace Sphynx
 
 			Contact2D contactInfo = { collider2, Vector2f(contact->GetManifold()->localNormal.x, contact->GetManifold()->localNormal.y)/*, Contact2DData()*/ };
 
-			SPX_CORE_LOG_DISPLAY("END CONTACT!!");
+			//SPX_CORE_LOG_DISPLAY("END CONTACT!!");
 			collider1->EndContact(contactInfo);
 		}
 

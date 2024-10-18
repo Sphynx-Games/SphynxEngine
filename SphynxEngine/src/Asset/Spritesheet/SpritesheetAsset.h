@@ -4,6 +4,8 @@
 #include "Math/Vector.h"
 #include "Container/Array.h"
 #include "Asset/Asset.h"
+#include "Asset/AssetDependencySolver.h"
+#include "Asset/AssetManager.h"
 #include "Renderer/Sprite.h"
 
 
@@ -15,6 +17,16 @@ namespace Sphynx
 	};
 
 	GENERATE_ASSETTYPE_CONVERSOR(Spritesheet);
+
+	template<>
+	struct SPHYNX_API AssetDependencySolver<Spritesheet>
+	{
+		void operator()(const Spritesheet& spritesheet, AssetMetadata& metadata)
+		{
+			AssetHandle handle = AssetManager::GetAssetHandleFromAddress(spritesheet.GetTexture());
+			metadata.Dependencies.Add(handle);
+		}
+	};
 }
 
 #include "Reflection/Reflection.h"

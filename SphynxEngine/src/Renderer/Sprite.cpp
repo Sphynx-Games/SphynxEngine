@@ -13,19 +13,9 @@ namespace Sphynx
 	{
 	}
 
-	Spritesheet::Spritesheet(Texture* texture, int rows, int columns) :
-		m_Texture(texture), m_Sprites(rows* columns)
+	Spritesheet::Spritesheet(Texture* texture) :
+		m_Texture(texture), m_Sprites()
 	{
-		Vector2i sizeSprite = Vector2i{ (int32_t)texture->GetWidth() / columns, (int32_t)texture->GetHeight() / rows };
-
-		for (int i = 0; i < rows; ++i)
-		{
-			for (int j = 0; j < columns; ++j)
-			{
-				Vector2i position = { sizeSprite.X * j, sizeSprite.Y * i };
-				m_Sprites.Emplace(new Sprite(texture, position, sizeSprite));
-			}
-		}
 	}
 
 	Spritesheet::~Spritesheet()
@@ -38,5 +28,28 @@ namespace Sphynx
 			}
 		}
 		m_Sprites.RemoveAll();
+	}
+
+	Sprite* Spritesheet::AddSprite(Vector2i position, Vector2i size)
+	{
+		Sprite* sprite = new Sprite(m_Texture, position, size);
+		m_Sprites.Emplace(sprite);
+		return sprite;
+	}
+
+	Spritesheet* Spritesheet::Create(Texture* texture, int rows, int columns)
+	{
+		Spritesheet* spritesheet = new Spritesheet(texture);
+		Vector2i sizeSprite = Vector2i{ (int32_t)texture->GetWidth() / columns, (int32_t)texture->GetHeight() / rows };
+
+		for (int i = 0; i < rows; ++i)
+		{
+			for (int j = 0; j < columns; ++j)
+			{
+				Vector2i position = { sizeSprite.X * j, sizeSprite.Y * i };
+				spritesheet->m_Sprites.Emplace(new Sprite(texture, position, sizeSprite));
+			}
+		}
+		return spritesheet;
 	}
 }
