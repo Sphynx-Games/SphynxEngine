@@ -12,6 +12,16 @@ namespace Sphynx
 	template<>
 	struct SPHYNX_API Asset<Font> : public IAsset
 	{
+		virtual ~Asset()
+		{
+			Font*& font = Asset;
+			if (font != nullptr)
+			{
+				delete font;
+				font = nullptr;
+			}
+		}
+
 		Font* Asset;
 
 		inline operator Font* () { return Asset; }

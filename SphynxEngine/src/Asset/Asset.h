@@ -24,12 +24,23 @@ namespace Sphynx
 		AssetHandle Handle;
 		AssetType Type;
 
+		virtual ~IAsset() = default;
 		virtual void* GetRawAsset() const = 0;
 	};
 
 	template<typename T>
 	struct SPHYNX_API Asset : public IAsset
 	{
+		virtual ~Asset()
+		{
+			T*& asset = Asset;
+			if (asset != nullptr)
+			{
+				delete asset;
+				asset = nullptr;
+			}
+		}
+
 		T* Asset;
 
 		inline operator T*() { return Asset; }

@@ -12,6 +12,16 @@ namespace Sphynx
 	template<>
 	struct SPHYNX_API Asset<Texture> : public IAsset
 	{
+		virtual ~Asset()
+		{
+			Texture*& texture = Asset;
+			if (texture != nullptr)
+			{
+				delete texture;
+				texture = nullptr;
+			}
+		}
+
 		Texture* Asset;
 
 		inline operator Texture* () { return Asset; }
