@@ -80,5 +80,7 @@ namespace std
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT(Sphynx::UUID)
 
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUID)
+  SPX_REFLECT_ATTRIBUTE(POD)
+SPX_REFLECT_STRUCT_END(Sphynx::UUID)

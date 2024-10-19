@@ -3,6 +3,9 @@
 #include "Core/Core.h"
 #include "Reflection/Reflection.h"
 
+#undef IndexedCollection
+#undef AssociativeCollection
+#undef POD
 
 namespace Sphynx
 {

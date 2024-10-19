@@ -27,7 +27,7 @@ namespace Sphynx
 
 	SDLFont* SDLFontLoader::Load(const std::filesystem::path& path)
 	{
-		const float defaultSize = 16;
+		constexpr const int defaultSize = 16;
 		TTF_Font* font = TTF_OpenFont(path.string().c_str(), defaultSize);
 
 		if (font == nullptr)

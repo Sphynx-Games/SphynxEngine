@@ -71,7 +71,7 @@ namespace Sphynx
 			Write(str.data(), (str.size() + 1) * sizeof(wchar_t));
 		}
 
-		void Write(const std::filesystem::path &path)
+		void Write(const std::filesystem::path& path)
 		{
 			Write(path.wstring());
 		}

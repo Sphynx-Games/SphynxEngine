@@ -30,6 +30,22 @@ namespace Sphynx
 			inline const Property* begin() const { return Properties; }
 			inline const Property* end() { return Properties + PropertiesCount; }
 			inline const Property* end() const { return Properties + PropertiesCount; }
+
+			template<typename T>
+			inline bool HasAttribute() const { return GetAttribute<T>() != nullptr; }
+
+			template<typename T>
+			inline const T* GetAttribute() const
+			{
+				for (size_t i = 0; i < AttributesCount; ++i)
+				{
+					// TODO: change this ugly dynamic_cast
+					if (const T* attr = dynamic_cast<const T*>(Attributes[i]))
+						return attr;
+				}
+
+				return nullptr;
+			}
 		};
 
 		struct SPHYNX_API TemplateClass : public Class

@@ -31,28 +31,29 @@
  * SPX_REFLECT_CLASS_END(Texture)
  *
  */
+
 #define EXPAND_MACRO(x) x
 
  // ---------- Class -----------
 #define SPX_REFLECT_CLASS_BEGIN(_Class) \
 	namespace { \
-		inline static ::Sphynx::Reflection::details::ClassStorage<_Class> EXPAND_MACRO(s_ClassStorage)EXPAND_MACRO(__LINE__)([](auto* self) { \
-			self->Size = sizeof(_Class); \
+		inline static ::Sphynx::Reflection::details::ClassStorage<::_Class> EXPAND_MACRO(s_ClassStorage)EXPAND_MACRO(__LINE__)([](auto* self) { \
+			self->Size = sizeof(::_Class); \
 			[[maybe_unused]] auto& Properties = self->Properties; \
 			[[maybe_unused]] auto& Functions = self->Functions; \
 			[[maybe_unused]] auto& Attributes = self->Attributes; \
-			using context_type = _Class;
+			using context_type = ::_Class;
 
 #define SPX_REFLECT_CLASS_END(_Class) \
 		}); \
 	} \
 	\
 	namespace Sphynx { namespace Reflection { namespace details { \
-	inline const Class& GetClassImpl(Tag<_Class>) \
+	inline const Class& GetClassImpl(Tag<::_Class>) \
 	{ \
-		static const auto* Storage = ClassStorage<_Class>::Instance; \
+		static const auto* Storage = ClassStorage<::_Class>::Instance; \
 		static const Class c { \
-			::Sphynx::Reflection::Type{ #_Class, sizeof(_Class), alignof(_Class), false }, \
+			::Sphynx::Reflection::Type{ #_Class, sizeof(::_Class), alignof(::_Class), false }, \
 			Storage->Properties.data(), \
 			Storage->Properties.size(), \
 			Storage->Functions.data(), \
@@ -63,9 +64,9 @@
 		return c; \
 	} \
 	 \
-	inline const Type& GetTypeImpl(Tag<_Class>) \
+	inline const Type& GetTypeImpl(Tag<::_Class>) \
 	{ \
-		return GetClassImpl(Tag<_Class>{}); \
+		return GetClassImpl(Tag<::_Class>{}); \
 	} \
 	}}}
 
@@ -271,12 +272,14 @@
 	SPX_REFLECT_ENUM_END(_Enum)
 
  // ---------- Attribute -----------
-#define SPX_REFLECT_ATTRIBUTE(Attr, ...) \
+#define SPX_REFLECT_ATTRIBUTE_INTERNAL(Attr, ...) \
 	{ \
 		using namespace ::Sphynx::Reflection::CommonAttribute; \
-		static Attr s_Attribute{ __VA_ARGS__ }; \
+		static Attr s_Attribute{ ##__VA_ARGS__ }; \
 		Attributes.push_back(&s_Attribute); \
 	}
+
+#define SPX_REFLECT_ATTRIBUTE(...) EXPAND_MACRO( SPX_REFLECT_ATTRIBUTE_INTERNAL( __VA_ARGS__ ) )
 
 
 namespace Sphynx

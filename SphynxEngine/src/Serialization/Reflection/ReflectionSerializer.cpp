@@ -38,16 +38,38 @@ namespace Sphynx
 			return;
 		}
 
-		// Write name and value for each property in the object
-		const Reflection::Class* rClass = static_cast<const Reflection::Class*>(&m_Type);
-		for (const Reflection::Property& property : *rClass)
+		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(m_Type);
+		using POD = Reflection::CommonAttribute::POD;
+		// Treat Plain Old Data as directly copyable
+		if (const POD* pod = rClass.GetAttribute<POD>())
 		{
-			// Write property name
-			m_Writer.Write(property.Name);
+			m_Writer.Write((const std::byte*)m_Obj, m_Type.Size);
+			return;
+		}
+		using IndexedCollection = Reflection::CommonAttribute::IndexedCollection;
+		if (const IndexedCollection* indexedCollection = rClass.GetAttribute<IndexedCollection>())
+		{
+			size_t collectionSize = indexedCollection->GetSize(m_Obj);
+			m_Writer.Write(collectionSize);
 
-			// Write property content recursively
-			ReflectionSerializer serializer{ (const std::byte*)m_Obj + property.Offset, property.Type, m_Writer };
-			serializer.Serialize();
+			for (size_t i = 0; i < collectionSize; ++i)
+			{
+				ReflectionSerializer serializer{ indexedCollection->Get(m_Obj, i),  indexedCollection->GetValueType(), m_Writer };
+				serializer.Serialize();
+			}
+		}
+		else
+		{
+			// Write name and value for each property in the object
+			for (const Reflection::Property& property : rClass)
+			{
+				// Write property name
+				m_Writer.Write(property.Name);
+
+				// Write property content recursively
+				ReflectionSerializer serializer{ (const std::byte*)m_Obj + property.Offset, property.Type, m_Writer };
+				serializer.Serialize();
+			}
 		}
 	}
 

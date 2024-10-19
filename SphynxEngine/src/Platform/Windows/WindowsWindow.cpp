@@ -74,7 +74,7 @@ namespace Sphynx
 		if (s_SDLWindowCount == 0)
 		{
 			// Init SDL
-			if (SDL_Init(SDL_INIT_VIDEO) < 0)
+			if (!SDL_Init(SDL_INIT_VIDEO))
 			{
 				SPX_CORE_LOG_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
 			}

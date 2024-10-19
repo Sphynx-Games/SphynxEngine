@@ -10,6 +10,7 @@ namespace Sphynx
 	class SPHYNX_API Array
 	{
 	public:
+		using value_type = typename std::vector<T>::value_type;
 		using Iterator = typename std::vector<T>::iterator;
 		using ConstIterator = typename std::vector<T>::const_iterator;
 		using ReverseIterator = typename std::vector<T>::reverse_iterator;
@@ -146,4 +147,5 @@ namespace Sphynx
 
 
 SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Array)
+	SPX_REFLECT_ATTRIBUTE(IndexedCollection)
 SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Array)
