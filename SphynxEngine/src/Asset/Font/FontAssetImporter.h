@@ -3,13 +3,13 @@
 #include "Core/Core.h"
 #include "Asset/AssetImporter.h"
 #include "Asset/Asset.h"
-#include "Asset/AssetMetadata.h"
 
 #include <memory>
 
 
 namespace Sphynx
 {
+	struct AssetMetadata;
 	class Font;
 
 	class SPHYNX_API FontAssetImporter

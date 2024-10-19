@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "TextureAssetImporter.h"
+#include "Asset/AssetMetadata.h"
 #include "TextureAsset.h"
 #include "Renderer/Renderer.h"
 #include "Logging/Log.h"
@@ -18,26 +19,17 @@ namespace Sphynx
 
 		TextureAssetMetadata textureMetadata;
 		textureMetadata.RelativePath = path;
-		{
-			FileWriter writer(metadata.Path);
-			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file!!");
-			ReflectionSerializer serializer(textureMetadata, writer);
-			serializer.Serialize();
-		}
+		AssetImporter::SerializeAsset(metadata, textureMetadata);
 
 		return Load(metadata);
 	}
 
 	std::shared_ptr<IAsset> TextureAssetImporter::Load(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Loading texture from .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Loading texture from {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		// read texture data from .spxasset file
-		TextureAssetMetadata textureMetadata;
-
-		FileReader reader(metadata.Path);
-		ReflectionDeserializer deserializer(textureMetadata, reader);
-		deserializer.Deserialize();
+		TextureAssetMetadata textureMetadata = AssetImporter::DeserializeAsset<TextureAssetMetadata>(metadata);
 
 		// create a texture asset from a raw image file
 		Texture* texture = ImportFromFilePath(textureMetadata.RelativePath);
@@ -52,16 +44,13 @@ namespace Sphynx
 
 	void TextureAssetImporter::Save(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Saving texture to .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Saving texture to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		std::shared_ptr<Asset<Texture>> textureAsset = AssetManager::GetAsset<Texture>(metadata.Handle);
 
 		TextureAssetMetadata textureMetadata;
 		textureMetadata.RelativePath = textureAsset->RelativePath;
-
-		FileWriter writer(metadata.Path);
-		ReflectionSerializer serializer(textureMetadata, writer);
-		serializer.Serialize();
+		AssetImporter::SerializeAsset(metadata, textureMetadata);
 	}
 
 	Texture* TextureAssetImporter::ImportFromFilePath(const std::filesystem::path& path)

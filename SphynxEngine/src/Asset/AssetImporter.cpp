@@ -1,6 +1,5 @@
 #include "spxpch.h"
 #include "AssetImporter.h"
-#include "AssetMetadata.h"
 
 
 namespace Sphynx

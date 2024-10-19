@@ -41,7 +41,8 @@ namespace Sphynx
 	AssetTypeRegistry AssetManager::s_TypeRegistry = {};
 	AssetRegistry AssetManager::s_Registry = {};
 
-	const std::filesystem::path ASSET_REGISTRY_FILEPATH = "Assets\\assetRegistry.spxasset";
+	const std::filesystem::path ASSET_REGISTRY_FILEPATH = std::filesystem::path("Assets\\assetRegistry").replace_extension(ASSET_EXTENSION);
+	
 
 	void AssetManager::Init()
 	{
@@ -73,9 +74,10 @@ namespace Sphynx
 				reader.Read(metadata.Type);
 				reader.Read(metadata.Path);
 
-				size_t numDependencies;
-				reader.Read(numDependencies);
-				for (size_t j = 0; j < numDependencies; ++j)
+				// dependencies
+				size_t num;
+				reader.Read(num);
+				for (size_t j = 0; j < num; ++j)
 				{
 					AssetHandle dependencyHandle;
 					reader.Read(dependencyHandle);

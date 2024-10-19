@@ -41,5 +41,7 @@ namespace Sphynx
 }
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::TextureAssetMetadata)
+
 	SPX_REFLECT_PROPERTY(RelativePath)
+
 SPX_REFLECT_STRUCT_END(Sphynx::TextureAssetMetadata)

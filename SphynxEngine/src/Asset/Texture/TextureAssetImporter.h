@@ -3,13 +3,13 @@
 #include "Core/Core.h"
 #include "Asset/AssetImporter.h"
 #include "Asset/Asset.h"
-#include "Asset/AssetMetadata.h"
 
 #include <memory>
 
 
 namespace Sphynx
 {
+	struct AssetMetadata;
 	class Texture;
 
 	class SPHYNX_API TextureAssetImporter
@@ -20,7 +20,6 @@ namespace Sphynx
 		static void Save(const AssetMetadata& metadata);
 
 	private:
-		static class Texture* ImportFromFilePath(const std::filesystem::path& path);
-
+		static Texture* ImportFromFilePath(const std::filesystem::path& path);
 	};
 }

@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "FontAssetImporter.h"
+#include "Asset/AssetMetadata.h"
 #include "FontAsset.h"
 #include "Renderer/Renderer.h"
 #include "Logging/Log.h"
@@ -18,26 +19,17 @@ namespace Sphynx
 
 		FontAssetMetadata fontMetadata;
 		fontMetadata.RelativePath = path;
-		{
-			FileWriter writer(metadata.Path);
-			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file!!");
-			ReflectionSerializer serializer(fontMetadata, writer);
-			serializer.Serialize();
-		}
+		AssetImporter::SerializeAsset(metadata, fontMetadata);
 
 		return Load(metadata);
 	}
 
 	std::shared_ptr<IAsset> FontAssetImporter::Load(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Loading font from .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Loading font from {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		// read font data from .spxasset file
-		FontAssetMetadata fontMetadata;
-
-		FileReader reader(metadata.Path);
-		ReflectionDeserializer deserializer(fontMetadata, reader);
-		deserializer.Deserialize();
+		FontAssetMetadata fontMetadata = AssetImporter::DeserializeAsset<FontAssetMetadata>(metadata);
 
 		// create a font asset from a raw image file
 		Font* font = ImportFromFilePath(fontMetadata.RelativePath);
@@ -52,16 +44,13 @@ namespace Sphynx
 
 	void FontAssetImporter::Save(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Saving font to .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Saving font to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		std::shared_ptr<Asset<Font>> fontAsset = AssetManager::GetAsset<Font>(metadata.Handle);
 
 		FontAssetMetadata fontMetadata;
 		fontMetadata.RelativePath = fontAsset->RelativePath;
-
-		FileWriter writer(metadata.Path);
-		ReflectionSerializer serializer(fontMetadata, writer);
-		serializer.Serialize();
+		AssetImporter::SerializeAsset(metadata, fontMetadata);
 	}
 
 	Font* FontAssetImporter::ImportFromFilePath(const std::filesystem::path& path)

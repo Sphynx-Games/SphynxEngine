@@ -5,6 +5,11 @@
 #include "Asset.h"
 #include "AssetMetadata.h"
 #include "Container/Map.h"
+#include "AssetMetadata.h"
+#include "Serialization/Reflection/ReflectionDeserializer.h"
+#include "Serialization/Reflection/ReflectionSerializer.h"
+#include "Serialization/FileReader.h"
+#include "Serialization/FileWriter.h"
 
 
 namespace Sphynx
@@ -31,6 +36,41 @@ namespace Sphynx
 		static AssetImportFunction GetImporter(const AssetType& type);
 		static AssetLoadFunction GetLoader(const AssetType& type);
 		static AssetSaveFunction GetSaver(const AssetType& type);
+
+		template<typename T>
+		static T DeserializeAsset(const AssetMetadata& metadata)
+		{
+			FileReader reader(metadata.Path);
+			SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", metadata.Path);
+
+			AssetMetadataHeader header;
+			ReflectionDeserializer headerDeserializer(header, reader);
+			headerDeserializer.Deserialize();
+
+			SPX_CORE_ASSERT(header.Type == metadata.Type, "Asset must be of type \"{}\", but is of type \"{}\"!!", metadata.Type, header.Type);
+
+			T specificMetadata;
+			ReflectionDeserializer deserializer(specificMetadata, reader);
+			deserializer.Deserialize();
+
+			return specificMetadata;
+		}
+
+		template<typename T>
+		static void SerializeAsset(const AssetMetadata& metadata, const T& specificMetadata)
+		{
+			FileWriter writer(metadata.Path);
+			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file: {} !!", metadata.Path);
+
+			AssetMetadataHeader header;
+			header.Type = metadata.Type;
+
+			ReflectionSerializer headerSerializer(header, writer);
+			headerSerializer.Serialize();
+
+			ReflectionSerializer serializer(specificMetadata, writer);
+			serializer.Serialize();
+		}
 
 	private:
 		static HashMap<AssetType, AssetImportFunction> s_AssetImportFunctions;

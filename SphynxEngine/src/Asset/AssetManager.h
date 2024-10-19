@@ -9,6 +9,7 @@
 #include <string>
 #include <set>
 #include <memory>
+#include <filesystem>
 
 #define ASSET_EXTENSION ".spxasset"
 

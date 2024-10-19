@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "SpriteAssetImporter.h"
+#include "Asset/AssetMetadata.h"
 #include "SpriteAsset.h"
 #include "Asset/Texture/TextureAsset.h"
 #include "Asset/Spritesheet/SpritesheetAsset.h"
@@ -25,16 +26,12 @@ namespace Sphynx
 
 	std::shared_ptr<IAsset> SpriteAssetImporter::Load(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Loading sprite from .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Loading sprite from {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpriteAsset must have only one dependency.");
 
 		// read sprite data from .spxasset file
-		SpriteAssetMetadata spriteMetadata;
-
-		FileReader reader(metadata.Path);
-		ReflectionDeserializer deserializer(spriteMetadata, reader);
-		deserializer.Deserialize();
+		SpriteAssetMetadata spriteMetadata = AssetImporter::DeserializeAsset<SpriteAssetMetadata>(metadata);
 
 		// set sprite values
 		Sprite* sprite = new Sprite();
@@ -66,7 +63,7 @@ namespace Sphynx
 
 	void SpriteAssetImporter::Save(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Saving sprite to .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Saving sprite to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(metadata.Handle);
 
@@ -76,8 +73,6 @@ namespace Sphynx
 		spriteMetadata.Pivot = spriteAsset->Asset->GetPivot();
 		spriteMetadata.PixelsPerUnit = spriteAsset->Asset->GetPixelsPerUnit();
 
-		FileWriter writer(metadata.Path);
-		ReflectionSerializer serializer(spriteMetadata, writer);
-		serializer.Serialize();
+		AssetImporter::SerializeAsset(metadata, spriteMetadata);
 	}
 }

@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "SpritesheetAssetImporter.h"
+#include "Asset/AssetMetadata.h"
 #include "SpritesheetAsset.h"
 #include "Asset/Sprite/SpriteAsset.h"
 #include "Asset/Texture/TextureAsset.h"
@@ -25,7 +26,7 @@ namespace Sphynx
 
 	std::shared_ptr<IAsset> SpritesheetAssetImporter::Load(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Loading spritesheet from .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Loading spritesheet from {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpritesheetAsset must have only one dependency.");
 
@@ -33,20 +34,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value, "Error! SpritesheetAsset must depend on a Texture.");
 
 		// read spritesheet data from .spxasset file
-		SpritesheetAssetMetadata spritesheetMetadata;
-
-		FileReader reader(metadata.Path);
-
-		size_t numSprites;
-		reader.Read(numSprites);
-		for (size_t i = 0; i < numSprites; ++i)
-		{
-			AssetHandle handle;
-			reader.Read(handle);
-			spritesheetMetadata.SpritesHandles.Add(handle);
-		}
-		//ReflectionDeserializer deserializer(spritesheetMetadata, reader); // TODO: implement container deserialization in the reflection deserializer 
-		//deserializer.Deserialize();
+		SpritesheetAssetMetadata spritesheetMetadata = AssetImporter::DeserializeAsset<SpritesheetAssetMetadata>(metadata);
 
 		// set spritesheet values
 		std::shared_ptr<Asset<Texture>> dependencyAsset = AssetManager::GetAsset<Texture>(dependencyHandle);
@@ -71,11 +59,9 @@ namespace Sphynx
 
 	void SpritesheetAssetImporter::Save(const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Saving spritesheet to .spxasset file: {}", metadata.Path.string().c_str());
+		SPX_CORE_LOG_TRACE("Saving spritesheet to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		std::shared_ptr<Asset<Spritesheet>> spritesheetAsset = AssetManager::GetAsset<Spritesheet>(metadata.Handle);
-
-		SpritesheetAssetMetadata spritesheetMetadata;
 
 		// create directory to store the .spxasset files for the sprites of the spritesheet
 		uint8_t i = 0;
@@ -85,6 +71,7 @@ namespace Sphynx
 		std::filesystem::create_directories(spritesDirectory);
 
 		// create a .spxasset file for each sprite in the spritesheet
+		SpritesheetAssetMetadata spritesheetMetadata;
 		for (Sprite* sprite : spritesheetAsset->Asset->m_Sprites)
 		{
 			AssetHandle spriteHandle = AssetManager::GetAssetHandleFromAddress(sprite);
@@ -104,13 +91,6 @@ namespace Sphynx
 		}
 
 		// create .spxasset for the spritesheet
-		FileWriter writer(metadata.Path);
-		writer.Write(spritesheetMetadata.SpritesHandles.Size());
-		for (AssetHandle handle : spritesheetMetadata.SpritesHandles)
-		{
-			writer.Write(handle);
-		}
-		//ReflectionSerializer serializer(spritesheetMetadata, writer); // TODO: implement container serialization in the reflection serializer 
-		//serializer.Serialize();
+		AssetImporter::SerializeAsset(metadata, spritesheetMetadata);
 	}
 }

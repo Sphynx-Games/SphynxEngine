@@ -44,6 +44,6 @@ namespace Sphynx
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::FontAssetMetadata)
 
-SPX_REFLECT_PROPERTY(RelativePath)
+	SPX_REFLECT_PROPERTY(RelativePath)
 
 SPX_REFLECT_STRUCT_END(Sphynx::FontAssetMetadata)
