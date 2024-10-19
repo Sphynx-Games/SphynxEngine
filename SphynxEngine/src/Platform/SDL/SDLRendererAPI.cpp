@@ -45,20 +45,14 @@ namespace Sphynx
 		// Create renderer
 		SDL_SetHint(SDL_HINT_RENDER_LINE_METHOD, "3");
 		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr);
-		if (m_Renderer == nullptr) {
-			SPX_CORE_LOG_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
-		}
-
-		// Init SDL_ttf
-		if (!TTF_Init())
+		if (m_Renderer == nullptr) 
 		{
-			SPX_CORE_LOG_ERROR("SDL_ttf could not initialize! TTF_Error: {}", SDL_GetError());
+			SPX_CORE_LOG_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
 		}
 	}
 
 	void SDLRendererAPI::Shutdown()
 	{
-		TTF_Quit();
 		SDL_DestroyRenderer(m_Renderer);
 		m_Renderer = nullptr;
 	}

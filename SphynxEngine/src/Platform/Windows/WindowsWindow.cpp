@@ -74,7 +74,7 @@ namespace Sphynx
 		if (s_SDLWindowCount == 0)
 		{
 			// Init SDL
-			if (!SDL_Init(SDL_INIT_VIDEO))
+			if (!SDL_InitSubSystem(SDL_INIT_VIDEO))
 			{
 				SPX_CORE_LOG_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
 			}
@@ -102,10 +102,10 @@ namespace Sphynx
 		SDL_DestroyWindow(m_Window);
 		--s_SDLWindowCount;
 
-		// Quit SDL subsystems
+		// Quit SDL subsystem
 		if (s_SDLWindowCount == 0)
 		{
-			SDL_Quit();
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
 		}
 	}
 

@@ -107,6 +107,8 @@ namespace Sphynx
 				writer.Write(dependencyHandle);
 			}
 		}
+
+		s_LoadedAssets.clear();
 	}
 
 	void AssetManager::RegisterAssetType(const AssetType& assetType)

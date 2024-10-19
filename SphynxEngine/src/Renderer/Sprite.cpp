@@ -14,7 +14,8 @@ namespace Sphynx
 	}
 
 	Spritesheet::Spritesheet(Texture* texture) :
-		m_Texture(texture), m_Sprites()
+		m_Texture(texture),
+		m_Sprites()
 	{
 	}
 
@@ -24,7 +25,10 @@ namespace Sphynx
 		{
 			if (sprite != nullptr)
 			{
-				delete sprite;
+				// TODO: this leaves memory leaks !!!
+				// if the asset is loaded instead of created
+				// these sprites are non-owning 
+				//delete sprite;
 			}
 		}
 		m_Sprites.RemoveAll();
@@ -40,14 +44,14 @@ namespace Sphynx
 	Spritesheet* Spritesheet::Create(Texture* texture, int rows, int columns)
 	{
 		Spritesheet* spritesheet = new Spritesheet(texture);
-		Vector2i sizeSprite = Vector2i{ (int32_t)texture->GetWidth() / columns, (int32_t)texture->GetHeight() / rows };
+		const Vector2i sizeSprite{ (int32_t)texture->GetWidth() / columns, (int32_t)texture->GetHeight() / rows };
 
 		for (int i = 0; i < rows; ++i)
 		{
 			for (int j = 0; j < columns; ++j)
 			{
-				Vector2i position = { sizeSprite.X * j, sizeSprite.Y * i };
-				spritesheet->m_Sprites.Emplace(new Sprite(texture, position, sizeSprite));
+				Vector2i position{ sizeSprite.X * j, sizeSprite.Y * i };
+				spritesheet->AddSprite(position, sizeSprite);
 			}
 		}
 		return spritesheet;

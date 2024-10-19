@@ -4,8 +4,8 @@
 #include <Core/EntryPoint.h>
 
 
-Sphynx::Font* font = nullptr;
-Sphynx::Spritesheet* sheet = nullptr;
+std::shared_ptr<Sphynx::Asset<Sphynx::Font>> font = nullptr;
+std::shared_ptr<Sphynx::Asset<Sphynx::Spritesheet>> sheet = nullptr;
 std::shared_ptr<Sphynx::Asset<Sphynx::Texture>> enemyTexture = nullptr;
 
 
@@ -13,7 +13,7 @@ class SandboxLayer : public Sphynx::Layer
 {
 public:
 	SandboxLayer() :
-		m_CameraController(new Sphynx::OrthographicCameraController(16.0f/9.0f, true)),
+		m_CameraController(new Sphynx::OrthographicCameraController(16.0f / 9.0f, true)),
 		m_SandboxScene(Sphynx::Scene())
 	{
 		m_CameraController->SetZoom(2.0f);
@@ -45,12 +45,10 @@ public:
 		Application::Init();
 
 		// assets
-		font = *AssetManager::Import<Font>("Assets\\Fonts\\roboto\\Roboto-Regular.ttf");
+		font = AssetManager::Import<Font>("Assets\\Fonts\\roboto\\Roboto-Regular.ttf");
 		AssetManager::Import("Assets\\Textures\\cat.jpg");
 		enemyTexture = AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
-		
-		sheet = Spritesheet::Create(enemyTexture->Asset, 4, 3);
-		AssetManager::RegisterAsset(sheet, "Assets\\Textures\\enemySpritesheet");
+		sheet = AssetManager::RegisterAsset<Spritesheet>(Spritesheet::Create(enemyTexture->Asset, 4, 3), "Assets\\Textures\\enemySpritesheet");
 
 		/*Sprite* sprite = new Sprite(enemyTexture->Asset);
 		AssetManager::RegisterAsset(sprite, "Assets\\Textures\\enemySprite");*/
@@ -68,7 +66,14 @@ public:
 
 	virtual void Run() override { Sphynx::Application::Run(); }
 
-	virtual void Shutdown() override { Sphynx::Application::Shutdown(); }
+	virtual void Shutdown() override 
+	{ 
+		font.reset();
+		sheet.reset();
+		enemyTexture.reset();
+
+		Sphynx::Application::Shutdown(); 
+	}
 };
 
 Sphynx::Application* CreateApplication()
@@ -82,7 +87,7 @@ void SandboxLayer::Attach()
 #if 1
 	Actor& sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
+	sprt.AddComponent<SpriteRendererComponent>(sheet->Asset->GetSprite(0), Color::Blue);
 
 	/*Actor& quad = m_SandboxScene.CreateActor();
 	quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
@@ -141,7 +146,7 @@ void SandboxLayer::Update(float deltaTime)
 	// begin scene render
 	Renderer2D::Begin(&m_CameraController->GetCamera());
 	{
-		Renderer2D::DrawText("hello!!", *font, 16, { 2,2 });
+		Renderer2D::DrawText("hello!!", *font->Asset, 16, { 2,2 });
 		m_SandboxScene.Update(deltaTime);
 	}
 	Renderer2D::End();
