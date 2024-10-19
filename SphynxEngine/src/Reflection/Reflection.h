@@ -36,8 +36,10 @@
 
  // ---------- Class -----------
 #define SPX_REFLECT_CLASS_BEGIN(_Class) \
-	namespace { \
-		inline static ::Sphynx::Reflection::details::ClassStorage<::_Class> EXPAND_MACRO(s_ClassStorage)EXPAND_MACRO(__LINE__)([](auto* self) { \
+	namespace Sphynx { namespace Reflection { namespace details { \
+	inline const Class& GetClassImpl(Tag<::_Class>) \
+	{ \
+		static ::Sphynx::Reflection::details::ClassStorage<::_Class> Storage([](auto* self) { \
 			self->Size = sizeof(::_Class); \
 			[[maybe_unused]] auto& Properties = self->Properties; \
 			[[maybe_unused]] auto& Functions = self->Functions; \
@@ -46,20 +48,14 @@
 
 #define SPX_REFLECT_CLASS_END(_Class) \
 		}); \
-	} \
-	\
-	namespace Sphynx { namespace Reflection { namespace details { \
-	inline const Class& GetClassImpl(Tag<::_Class>) \
-	{ \
-		static const auto* Storage = ClassStorage<::_Class>::Instance; \
 		static const Class c { \
 			::Sphynx::Reflection::Type{ #_Class, sizeof(::_Class), alignof(::_Class), false }, \
-			Storage->Properties.data(), \
-			Storage->Properties.size(), \
-			Storage->Functions.data(), \
-			Storage->Functions.size(), \
-			Storage->Attributes.data(), \
-			Storage->Attributes.size() \
+			Storage.Properties.data(), \
+			Storage.Properties.size(), \
+			Storage.Functions.data(), \
+			Storage.Functions.size(), \
+			Storage.Attributes.data(), \
+			Storage.Attributes.size() \
 		}; \
 		return c; \
 	} \
