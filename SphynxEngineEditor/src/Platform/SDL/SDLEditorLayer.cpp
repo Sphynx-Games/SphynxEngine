@@ -65,7 +65,7 @@ namespace Sphynx
 			case SDLK_SPACE: return ImGuiKey_Space;
 			case SDLK_RETURN: return ImGuiKey_Enter;
 			case SDLK_ESCAPE: return ImGuiKey_Escape;
-			case SDLK_QUOTE: return ImGuiKey_Apostrophe;
+			case SDLK_APOSTROPHE: return ImGuiKey_Apostrophe;
 			case SDLK_COMMA: return ImGuiKey_Comma;
 			case SDLK_MINUS: return ImGuiKey_Minus;
 			case SDLK_PERIOD: return ImGuiKey_Period;
@@ -75,7 +75,7 @@ namespace Sphynx
 			case SDLK_LEFTBRACKET: return ImGuiKey_LeftBracket;
 			case SDLK_BACKSLASH: return ImGuiKey_Backslash;
 			case SDLK_RIGHTBRACKET: return ImGuiKey_RightBracket;
-			case SDLK_BACKQUOTE: return ImGuiKey_GraveAccent;
+			case SDLK_GRAVE: return ImGuiKey_GraveAccent;
 			case SDLK_CAPSLOCK: return ImGuiKey_CapsLock;
 			case SDLK_SCROLLLOCK: return ImGuiKey_ScrollLock;
 			case SDLK_NUMLOCKCLEAR: return ImGuiKey_NumLock;
@@ -117,32 +117,32 @@ namespace Sphynx
 			case SDLK_7: return ImGuiKey_7;
 			case SDLK_8: return ImGuiKey_8;
 			case SDLK_9: return ImGuiKey_9;
-			case SDLK_a: return ImGuiKey_A;
-			case SDLK_b: return ImGuiKey_B;
-			case SDLK_c: return ImGuiKey_C;
-			case SDLK_d: return ImGuiKey_D;
-			case SDLK_e: return ImGuiKey_E;
-			case SDLK_f: return ImGuiKey_F;
-			case SDLK_g: return ImGuiKey_G;
-			case SDLK_h: return ImGuiKey_H;
-			case SDLK_i: return ImGuiKey_I;
-			case SDLK_j: return ImGuiKey_J;
-			case SDLK_k: return ImGuiKey_K;
-			case SDLK_l: return ImGuiKey_L;
-			case SDLK_m: return ImGuiKey_M;
-			case SDLK_n: return ImGuiKey_N;
-			case SDLK_o: return ImGuiKey_O;
-			case SDLK_p: return ImGuiKey_P;
-			case SDLK_q: return ImGuiKey_Q;
-			case SDLK_r: return ImGuiKey_R;
-			case SDLK_s: return ImGuiKey_S;
-			case SDLK_t: return ImGuiKey_T;
-			case SDLK_u: return ImGuiKey_U;
-			case SDLK_v: return ImGuiKey_V;
-			case SDLK_w: return ImGuiKey_W;
-			case SDLK_x: return ImGuiKey_X;
-			case SDLK_y: return ImGuiKey_Y;
-			case SDLK_z: return ImGuiKey_Z;
+			case SDLK_A: return ImGuiKey_A;
+			case SDLK_B: return ImGuiKey_B;
+			case SDLK_C: return ImGuiKey_C;
+			case SDLK_D: return ImGuiKey_D;
+			case SDLK_E: return ImGuiKey_E;
+			case SDLK_F: return ImGuiKey_F;
+			case SDLK_G: return ImGuiKey_G;
+			case SDLK_H: return ImGuiKey_H;
+			case SDLK_I: return ImGuiKey_I;
+			case SDLK_J: return ImGuiKey_J;
+			case SDLK_K: return ImGuiKey_K;
+			case SDLK_L: return ImGuiKey_L;
+			case SDLK_M: return ImGuiKey_M;
+			case SDLK_N: return ImGuiKey_N;
+			case SDLK_O: return ImGuiKey_O;
+			case SDLK_P: return ImGuiKey_P;
+			case SDLK_Q: return ImGuiKey_Q;
+			case SDLK_R: return ImGuiKey_R;
+			case SDLK_S: return ImGuiKey_S;
+			case SDLK_T: return ImGuiKey_T;
+			case SDLK_U: return ImGuiKey_U;
+			case SDLK_V: return ImGuiKey_V;
+			case SDLK_W: return ImGuiKey_W;
+			case SDLK_X: return ImGuiKey_X;
+			case SDLK_Y: return ImGuiKey_Y;
+			case SDLK_Z: return ImGuiKey_Z;
 			case SDLK_F1: return ImGuiKey_F1;
 			case SDLK_F2: return ImGuiKey_F2;
 			case SDLK_F3: return ImGuiKey_F3;
@@ -184,7 +184,7 @@ namespace Sphynx
 		EditorLayer::Attach();
 
 		// Enable native IME.
-		SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
+		SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "1");
 
 		// Setup Platform/Renderer backends
 		Sphynx::Application* application = Sphynx::Application::GetInstance();
@@ -246,7 +246,7 @@ namespace Sphynx
 		//SDL_SetRenderDrawColor(m_Renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
 		SDL_RenderClear(m_Renderer);
 
-		ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_Renderer);
 		SDL_RenderPresent(m_Renderer);
 	}
 
@@ -428,7 +428,12 @@ namespace Sphynx
 
 		ImGuiKey key = ImGui_ImplSDL3_KeycodeToImGuiKey(event.GetKeycode());
 		io.AddKeyEvent(key, true);
-		io.SetKeyEventNativeData(key, event.GetKeycode(), SDL_GetScancodeFromKey(event.GetKeycode()), SDL_GetScancodeFromKey(event.GetKeycode())); // To support legacy indexing (<1.87 user code). Legacy backend uses SDLK_*** as indices to IsKeyXXX() functions.
+		io.SetKeyEventNativeData(
+			key, 
+			event.GetKeycode(), 
+			SDL_GetScancodeFromKey(event.GetKeycode(), nullptr), 
+			SDL_GetScancodeFromKey(event.GetKeycode(), nullptr)
+		); // To support legacy indexing (<1.87 user code). Legacy backend uses SDLK_*** as indices to IsKeyXXX() functions.
 		return true;
 	}
 
@@ -461,7 +466,12 @@ namespace Sphynx
 
 		ImGuiKey key = ImGui_ImplSDL3_KeycodeToImGuiKey(event.GetKeycode());
 		io.AddKeyEvent(key, false);
-		io.SetKeyEventNativeData(key, event.GetKeycode(), SDL_GetScancodeFromKey(event.GetKeycode()), SDL_GetScancodeFromKey(event.GetKeycode())); // To support legacy indexing (<1.87 user code). Legacy backend uses SDLK_*** as indices to IsKeyXXX() functions.
+		io.SetKeyEventNativeData(
+			key, 
+			event.GetKeycode(), 
+			SDL_GetScancodeFromKey(event.GetKeycode(), nullptr), 
+			SDL_GetScancodeFromKey(event.GetKeycode(), nullptr)
+		); // To support legacy indexing (<1.87 user code). Legacy backend uses SDLK_*** as indices to IsKeyXXX() functions.
 		return true;
 	}
 

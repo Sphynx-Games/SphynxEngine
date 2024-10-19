@@ -23,7 +23,6 @@ namespace Sphynx
 	namespace
 	{
 		static OrthographicCameraController s_CameraController(1.0f, true);
-		static Scene s_Scene;
 	}
 
 	SceneEditor::SceneEditor() :
@@ -46,14 +45,15 @@ namespace Sphynx
 
 		// TODO: remove (testing)
 		{
-			AssetManager::Import("..\\Assets\\Textures\\cat.jpg");
-			Texture* enemyTexture = *AssetManager::Import<Texture>("..\\Assets\\Textures\\enemy_scaled5x.png");
-			Spritesheet* sheet = new Spritesheet(enemyTexture, 4, 3);
+			static Scene s_Scene;
+			//AssetManager::Import("Assets\\Textures\\cat.jpg");
+			//Texture* enemyTexture = *AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
+			//Spritesheet* sheet = new Spritesheet(enemyTexture, 4, 3);
 
-			Actor sprt = s_Scene.CreateActor();
-			sprt.AddComponent<NameComponent>("Sprite Actor");
-			sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-			sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
+			//Actor sprt = s_Scene.CreateActor();
+			//sprt.AddComponent<NameComponent>("Sprite Actor");
+			//sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+			//sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
 
 			Actor quad = s_Scene.CreateActor();
 			quad.AddComponent<NameComponent>("Hollow Box");

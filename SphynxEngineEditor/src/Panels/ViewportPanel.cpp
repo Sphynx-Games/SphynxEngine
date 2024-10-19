@@ -42,7 +42,7 @@ namespace Sphynx
 			if (m_Framebuffer != nullptr)
 			{
 				CheckFramebufferSizeValidity();
-				ImGui::Image(m_Framebuffer->GetColorAttachment(m_Index), ImGui::GetContentRegionAvail());
+				ImGui::Image((ImTextureID)m_Framebuffer->GetColorAttachment(m_Index), ImGui::GetContentRegionAvail());
 			}
 		}
 

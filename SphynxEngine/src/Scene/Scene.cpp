@@ -14,7 +14,7 @@
 namespace Sphynx
 {
 	Scene::Scene() :
-		m_UUID(UUID().Generate()),
+		m_UUID(UUID::Generate()),
 		m_Name("Default Scene"),
 		m_HasBegunPlay(false),
 		m_Registry(),
@@ -24,7 +24,7 @@ namespace Sphynx
 	}
 
 	Scene::Scene(std::string name) :
-		m_UUID(UUID().Generate()),
+		m_UUID(UUID::Generate()),
 		m_Name(name),
 		m_HasBegunPlay(false),
 		m_Registry(),
