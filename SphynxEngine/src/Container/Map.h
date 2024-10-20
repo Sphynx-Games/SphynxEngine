@@ -13,6 +13,8 @@ namespace Sphynx
 	class SPHYNX_API HashMap
 	{
 	public:
+		using key_type = typename std::unordered_map<TKey, TValue>::key_type;
+		using mapped_type = typename std::unordered_map<TKey, TValue>::mapped_type;
 		using Iterator = typename std::unordered_map<TKey, TValue>::iterator;
 		using ConstIterator = typename std::unordered_map<TKey, TValue>::const_iterator;
 
@@ -112,7 +114,7 @@ namespace Sphynx
 		inline size_t Size() const { return m_Hashmap.size(); }
 		inline bool IsEmpty() const { return m_Hashmap.empty(); }
 
-		inline const TValue& operator [] (const TKey& key) const { return m_Hashmap[key]; }
+		inline const TValue& operator [] (const TKey& key) const { return m_Hashmap.at(key); }
 		inline TValue& operator [] (const TKey& key) { return m_Hashmap[key]; }
 
 		/*HashMap& operator = (const TValue& other)
@@ -145,9 +147,14 @@ namespace Sphynx
 	};
 }
 
-namespace std {
-	template <typename TKey, typename TValue> struct tuple_size<Sphynx::HashMap<TKey, TValue>> : std::integral_constant<size_t, 2> { };
+template<typename TKey, typename TValue> struct std::tuple_size<Sphynx::HashMap<TKey, TValue>> : std::integral_constant<size_t, 2> {};
+template<typename TKey, typename TValue> struct std::tuple_element<0, Sphynx::HashMap<TKey, TValue>> { using type = TKey; };
+template<typename TKey, typename TValue> struct std::tuple_element<1, Sphynx::HashMap<TKey, TValue>> { using type = TValue; };
 
-	template <typename TKey, typename TValue> struct tuple_element<0, Sphynx::HashMap<TKey, TValue>> { using type = TKey; };
-	template <typename TKey, typename TValue> struct tuple_element<1, Sphynx::HashMap<TKey, TValue>> { using type = TValue; };
-}
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::HashMap)
+	SPX_REFLECT_ATTRIBUTE(AssociativeCollection)
+SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::HashMap)

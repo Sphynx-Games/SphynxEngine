@@ -49,7 +49,7 @@
 #define SPX_REFLECT_CLASS_END(_Class) \
 		}); \
 		static const Class c { \
-			::Sphynx::Reflection::Type{ #_Class, sizeof(::_Class), alignof(::_Class), false }, \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class>{}, #_Class, sizeof(::_Class), alignof(::_Class), false }, \
 			Storage.Properties.data(), \
 			Storage.Properties.size(), \
 			Storage.Functions.data(), \
@@ -91,7 +91,7 @@
 			std::make_index_sequence<::Sphynx::Traits::args_pack_size<TemplateArgsPack>::value>()); \
 		 \
 		static const TemplateClass c{ \
-			::Sphynx::Reflection::Type{ #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false}, \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class<T...>>{}, #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false}, \
 			Storage.Properties.data(), \
 			Storage.Properties.size(), \
 			Storage.Functions.data(), \
@@ -214,7 +214,7 @@
 	{ \
 		static const auto* Storage = EnumStorage<_Enum>::Instance; \
 		static const Enum e{ \
-			::Sphynx::Reflection::Type{ #_Enum, sizeof(_Enum), alignof(_Enum), false }, \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<_Enum>{}, #_Enum, sizeof(_Enum), alignof(_Enum), false }, \
 			Storage->Entries.data(), \
 			Storage->Entries.size(), \
 			Storage->Attributes.data(), \
@@ -323,7 +323,7 @@ namespace Sphynx
 #define X(_Type) \
 	inline const Type& GetTypeImpl(Tag<_Type>) \
 	{ \
-		static const Type type{ #_Type, sizeof(_Type), alignof(_Type), true }; \
+		static const Type type{ ::Sphynx::Reflection::details::Tag<_Type>{}, #_Type, sizeof(_Type), alignof(_Type), true }; \
 		return type; \
 	}
 
@@ -351,25 +351,25 @@ namespace Sphynx
 
 			inline const Type& GetTypeImpl(Tag<void>)
 			{
-				static const Type type{ "void", 0, 0, true };
+				static const Type type{ Tag<void>{}, "void", 0, 0, true };
 				return type;
 			}
 
 			inline const Type& GetTypeImpl(Tag<::std::string>)
 			{
-				static const Type type{ "std::string", sizeof(::std::string), alignof(::std::string), true };
+				static const Type type{ Tag<::std::string>{}, "std::string", sizeof(::std::string), alignof(::std::string), true };
 				return type;
 			}
 
 			inline const Type& GetTypeImpl(Tag<::std::wstring>)
 			{
-				static const Type type{ "std::wstring", sizeof(::std::wstring), alignof(::std::wstring), true };
+				static const Type type{ Tag<::std::wstring>{}, "std::wstring", sizeof(::std::wstring), alignof(::std::wstring), true };
 				return type;
 			}
 
 			inline const Type& GetTypeImpl(Tag<::std::filesystem::path>)
 			{
-				static const Type type{ "std::filesystem::path", sizeof(::std::filesystem::path), alignof(::std::filesystem::path), true };
+				static const Type type{ Tag<::std::filesystem::path>{}, "std::filesystem::path", sizeof(::std::filesystem::path), alignof(::std::filesystem::path), true };
 				return type;
 			}
 		}

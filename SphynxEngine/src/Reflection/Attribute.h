@@ -36,13 +36,13 @@ namespace Sphynx
 			{
 				using TAccessFunction = void* (*)(void*, uint64_t);
 				using TConstAccessFunction = const void* (*)(const void*, uint64_t);
-				using TSizeFunction = size_t(*)(const void*);
+				using TSizeFunction = size_t (*)(const void*);
 				using TAddFunction = void* (*)(void*);
 
 			public:
 				template<typename TCollection>
 				Collection(::Sphynx::Reflection::details::Tag<TCollection>) :
-					m_ValueType(GetType<TCollection::value_type>()),
+					m_ValueType(GetType<typename TCollection::value_type>()),
 					m_AccessFunction([](void* obj, uint64_t index) -> void* { return &(*static_cast<TCollection*>(obj))[index]; }),
 					m_ConstAccessFunction([](const void* obj, uint64_t index) -> const void* { return &(*static_cast<const TCollection*>(obj))[index]; }),
 					m_SizeFunction([](const void* obj) -> size_t { return static_cast<const TCollection*>(obj)->Size(); }),
@@ -69,6 +69,49 @@ namespace Sphynx
 			template<>
 			class SPHYNX_API Collection<struct Associative> : public ::Sphynx::Reflection::Attribute
 			{
+				using TAccessFunction = void* (*)(void*, const void*);
+				using TConstAccessFunction = const void* (*)(const void*, const void*);
+				using TKeyAccessFunction = void* (*)(const void*, uint64_t);
+				using TSizeFunction = size_t (*)(const void*);
+				using TAddFunction = void* (*)(void*, const void*, const void*);
+			public:
+				template<typename TCollection>
+				Collection(::Sphynx::Reflection::details::Tag<TCollection>) :
+					m_KeyType(GetType<typename TCollection::key_type>()),
+					m_ValueType(GetType<typename TCollection::mapped_type>()),
+					m_AccessFunction([](void* obj, const void* key) -> void* { return &(*static_cast<TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)]; }),
+					m_ConstAccessFunction([](const void* obj, const void* key) -> const void* { return &(*static_cast<const TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)]; }),
+					m_KeyAccessFunction([](const void* obj, uint64_t index) -> void* { return (void*)(&(*std::next(static_cast<const TCollection*>(obj)->begin(), index))); }),
+					m_SizeFunction([](const void* obj) -> size_t { return static_cast<const TCollection*>(obj)->Size(); }),
+					m_AddFunction([](void* obj, const void* key, const void* value) -> void* 
+						{ 
+							static_cast<TCollection*>(obj)->Add(
+								*static_cast<const typename TCollection::key_type*>(key), 
+								*static_cast<const typename TCollection::mapped_type*>(value)); 
+							return &(*static_cast<TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)];
+						})
+				{}
+
+			public:
+				inline const Type& GetKeyType() const { return m_KeyType; }
+				inline const Type& GetValueType() const { return m_ValueType; }
+
+				inline void* Get(void* obj, const void* key) const { return m_AccessFunction(obj, key); }
+				inline const void* Get(const void* obj, const void* key) const { return m_ConstAccessFunction(obj, key); }
+				inline const void* GetKey(const void* obj, uint64_t index) const { return m_KeyAccessFunction(obj, index); }
+				inline const void* GetValue(const void* obj, uint64_t index) const { return Get(obj, GetKey(obj, index)); }
+				inline const size_t GetSize(const void* obj) const { return m_SizeFunction(obj); }
+
+				inline void* Add(void* obj, const void* key, const void* value) const { return m_AddFunction(obj, key, value); };
+
+			private:
+				const Type& m_KeyType;
+				const Type& m_ValueType;
+				TAccessFunction m_AccessFunction;
+				TConstAccessFunction m_ConstAccessFunction;
+				TKeyAccessFunction m_KeyAccessFunction;
+				TSizeFunction m_SizeFunction;
+				TAddFunction m_AddFunction;
 			};
 
 			using IndexedCollection = Collection<Indexed>;

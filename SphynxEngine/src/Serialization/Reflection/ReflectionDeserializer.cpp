@@ -50,6 +50,7 @@ namespace Sphynx
 		}
 
 		using IndexedCollection = Reflection::CommonAttribute::IndexedCollection;
+		using AssociativeCollection = Reflection::CommonAttribute::AssociativeCollection;
 		if (const IndexedCollection* indexedCollection = rClass.GetAttribute<IndexedCollection>())
 		{
 			size_t collectionSize{ 0 };
@@ -59,6 +60,32 @@ namespace Sphynx
 			{
 				ReflectionDeserializer deserializer{ indexedCollection->Add(m_Obj),  indexedCollection->GetValueType(), m_Reader };
 				deserializer.Deserialize();
+			}
+		}
+		else if (const AssociativeCollection* associativeCollection = rClass.GetAttribute<AssociativeCollection>())
+		{
+			size_t collectionSize{ 0 };
+			m_Reader.Read(collectionSize);
+
+			for (size_t i = 0; i < collectionSize; ++i)
+			{
+				void* kBytes = associativeCollection->GetKeyType().Alloc();
+				void* vBytes = associativeCollection->GetValueType().Alloc();
+				// Deserialize key
+				{
+					ReflectionDeserializer deserializer{ kBytes,  associativeCollection->GetKeyType(), m_Reader};
+					deserializer.Deserialize();
+				}
+				// Deserialize value
+				{
+					ReflectionDeserializer deserializer{ vBytes,  associativeCollection->GetValueType(), m_Reader};
+					deserializer.Deserialize();
+				}
+
+				associativeCollection->Add(m_Obj, kBytes, vBytes);
+
+				associativeCollection->GetKeyType().Dealloc(kBytes);
+				associativeCollection->GetValueType().Dealloc(vBytes);
 			}
 		}
 		else
