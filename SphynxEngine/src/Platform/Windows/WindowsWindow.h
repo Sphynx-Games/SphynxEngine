@@ -27,6 +27,7 @@ namespace Sphynx
 
 		virtual void SetEventCallbackFunction(EventCallbackFunction function) override;
 
+		HWND GetHWND() const;
 	private:
 		void Init(const WindowParams& params);
 		void Shutdown();
@@ -41,6 +42,7 @@ namespace Sphynx
 		EventCallbackFunction m_CallbackFunction;
 
 		SDL_Window* m_Window;
+		HWND m_WindowHandle;
 	};
 }
 

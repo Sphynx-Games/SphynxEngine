@@ -82,7 +82,7 @@ namespace Sphynx
 					auto& component = m_Context.GetComponent<SpriteRendererComponent>();
 					if (ImGui::BeginCombo(LABEL("Sprite").c_str(), "TODO: Some sprite"))
 					{
-						// TODO: list all posible sprites
+						// TODO: list all possible sprites
 						ImGui::EndCombo();
 					}
 					float color[4] =
@@ -93,7 +93,10 @@ namespace Sphynx
 						component.Tint.A / 255.0f
 					};
 					ImGui::ColorEdit4(LABEL("Color").c_str(), color);
-					component.Tint = Color(color[0] * 255, color[1] * 255, color[2] * 255, color[3] * 255);
+					component.Tint.R = (uint8_t)(color[0] * 255.0f);
+					component.Tint.G = (uint8_t)(color[1] * 255.0f);
+					component.Tint.G = (uint8_t)(color[2] * 255.0f);
+					component.Tint.A = (uint8_t)(color[3] * 255.0f);
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
@@ -126,7 +129,10 @@ namespace Sphynx
 						component.Color.A / 255.0f
 					};
 					ImGui::ColorEdit4(LABEL("Color").c_str(), color);
-					component.Color = Color(color[0] * 255, color[1] * 255, color[2] * 255, color[3] * 255);
+					component.Color.R = (uint8_t)(color[0] * 255.0f);
+					component.Color.G = (uint8_t)(color[1] * 255.0f);
+					component.Color.G = (uint8_t)(color[2] * 255.0f);
+					component.Color.A = (uint8_t)(color[3] * 255.0f);
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
@@ -152,7 +158,10 @@ namespace Sphynx
 						component.Color.A / 255.0f
 					};
 					ImGui::ColorEdit4(LABEL("Color").c_str(), color);
-					component.Color = Color(color[0] * 255, color[1] * 255, color[2] * 255, color[3] * 255);
+					component.Color.R = (uint8_t)(color[0] * 255.0f);
+					component.Color.G = (uint8_t)(color[1] * 255.0f);
+					component.Color.G = (uint8_t)(color[2] * 255.0f);
+					component.Color.A = (uint8_t)(color[3] * 255.0f);
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}

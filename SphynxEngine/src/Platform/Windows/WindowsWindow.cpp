@@ -14,7 +14,8 @@ namespace Sphynx
 
 	WindowsWindow::WindowsWindow(const WindowParams& params) :
 		m_Params(),
-		m_Window(nullptr)
+		m_Window(nullptr),
+		m_WindowHandle(nullptr)
 	{
 		Init(params);
 	}
@@ -65,6 +66,11 @@ namespace Sphynx
 		m_CallbackFunction = function;
 	}
 
+	HWND WindowsWindow::GetHWND() const
+	{
+		return m_WindowHandle;
+	}
+
 	void WindowsWindow::Init(const WindowParams& params)
 	{
 		m_Params = params;
@@ -86,6 +92,9 @@ namespace Sphynx
 			{
 				SPX_CORE_LOG_ERROR("Window could not be created! SDL_Error: {}", SDL_GetError());
 			}
+			
+			// Get Windows window handle
+			m_WindowHandle = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(m_Window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
 		}
 
 		if (m_Window != nullptr)
@@ -122,19 +131,19 @@ namespace Sphynx
 		{
 		case SDL_EventType::SDL_EVENT_QUIT:
 		{
-			WindowClosedEvent windowClosedEvent;
+			WindowClosedEvent windowClosedEvent{ event.window.windowID };
 			m_CallbackFunction(windowClosedEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_SHOWN:
 		{
-			WindowShownEvent windowShownEvent;
+			WindowShownEvent windowShownEvent{ event.window.windowID };
 			m_CallbackFunction(windowShownEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_HIDDEN:
 		{
-			WindowHiddenEvent windowHiddenEvent;
+			WindowHiddenEvent windowHiddenEvent{ event.window.windowID };
 			m_CallbackFunction(windowHiddenEvent);
 			return true;
 		}
@@ -145,13 +154,13 @@ namespace Sphynx
 		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_MOVED:
 		{
-			WindowMovedEvent windowMovedEvent(event.window.data1, event.window.data2);
+			WindowMovedEvent windowMovedEvent{ event.window.windowID, (uint32_t)event.window.data1, (uint32_t)event.window.data2 };
 			m_CallbackFunction(windowMovedEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_RESIZED:
 		{
-			WindowResizedEvent windowResizedEvent(event.window.data1, event.window.data2);
+			WindowResizedEvent windowResizedEvent{ event.window.windowID, (uint32_t)event.window.data1, (uint32_t)event.window.data2 };
 			m_CallbackFunction(windowResizedEvent);
 			return true;
 		}
@@ -162,43 +171,43 @@ namespace Sphynx
 		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_MINIMIZED:
 		{
-			WindowMinimizedEvent windowMinimizedEvent;
+			WindowMinimizedEvent windowMinimizedEvent{ event.window.windowID };
 			m_CallbackFunction(windowMinimizedEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_MAXIMIZED:
 		{
-			WindowMaximizedEvent windowMaximizedEvent;
+			WindowMaximizedEvent windowMaximizedEvent{ event.window.windowID };
 			m_CallbackFunction(windowMaximizedEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_RESTORED:
 		{
-			WindowRestoredEvent windowRestoredEvent;
+			WindowRestoredEvent windowRestoredEvent{ event.window.windowID };
 			m_CallbackFunction(windowRestoredEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_MOUSE_ENTER:
 		{
-			WindowMouseEnterEvent windowMouseEnterEvent;
+			WindowMouseEnterEvent windowMouseEnterEvent{ event.window.windowID };
 			m_CallbackFunction(windowMouseEnterEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_MOUSE_LEAVE:
 		{
-			WindowMouseExitEvent windowMouseExitEvent;
+			WindowMouseExitEvent windowMouseExitEvent{ event.window.windowID };
 			m_CallbackFunction(windowMouseExitEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_FOCUS_GAINED:
 		{
-			WindowFocusGainedEvent windowFocusGainedEvent;
+			WindowFocusGainedEvent windowFocusGainedEvent{ event.window.windowID };
 			m_CallbackFunction(windowFocusGainedEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_FOCUS_LOST:
 		{
-			WindowFocusLostEvent windowFocusLostEvent;
+			WindowFocusLostEvent windowFocusLostEvent{ event.window.windowID };
 			m_CallbackFunction(windowFocusLostEvent);
 			return true;
 		}
@@ -235,13 +244,13 @@ namespace Sphynx
 		break;
 		case SDL_EventType::SDL_EVENT_WINDOW_ENTER_FULLSCREEN:
 		{
-			WindowFullscreenChangedEvent windowFullscreenEvent(true);
+			WindowFullscreenChangedEvent windowFullscreenEvent{ event.window.windowID, true };
 			m_CallbackFunction(windowFullscreenEvent);
 			return true;
 		}
 		case SDL_EventType::SDL_EVENT_WINDOW_LEAVE_FULLSCREEN:
 		{
-			WindowFullscreenChangedEvent windowFullscreenEvent(false);
+			WindowFullscreenChangedEvent windowFullscreenEvent{ event.window.windowID, false };
 			m_CallbackFunction(windowFullscreenEvent);
 			return true;
 		}
@@ -261,25 +270,25 @@ namespace Sphynx
 		{
 		case SDL_EVENT_KEY_DOWN:
 		{
-			KeyPressedEvent keyPressedEvent(event.key.key, event.key.repeat != 0);
+			KeyPressedEvent keyPressedEvent{ event.window.windowID, (int32_t)event.key.key, event.key.repeat != 0 };
 			m_CallbackFunction(keyPressedEvent);
 			return true;
 		}
 		case SDL_EVENT_KEY_UP:
 		{
-			KeyReleasedEvent keyReleasedEvent(event.key.key);
+			KeyReleasedEvent keyReleasedEvent{ event.window.windowID, (int32_t)event.key.key };
 			m_CallbackFunction(keyReleasedEvent);
 			return true;
 		}
 		case SDL_EVENT_TEXT_EDITING:
 		{
-			KeyTypedEvent keyTypedEvent(event.key.key, event.text.text);
+			KeyTypedEvent keyTypedEvent{ event.window.windowID, (int32_t)event.key.key, event.text.text };
 			m_CallbackFunction(keyTypedEvent);
 			return true;
 		}
 		case SDL_EVENT_TEXT_INPUT:
 		{
-			KeyTypedEvent keyTypedEvent(event.key.key, event.text.text);
+			KeyTypedEvent keyTypedEvent{ event.window.windowID, (int32_t)event.key.key, event.text.text };
 			m_CallbackFunction(keyTypedEvent);
 			return true;
 		}
@@ -299,25 +308,25 @@ namespace Sphynx
 		{
 		case SDL_EVENT_MOUSE_MOTION:
 		{
-			MouseMovedEvent mouseMovedEvent(event.motion.x, event.motion.y);
+			MouseMovedEvent mouseMovedEvent{ event.window.windowID, event.motion.x, event.motion.y };
 			m_CallbackFunction(mouseMovedEvent);
 			return true;
 		}
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		{
-			MouseButtonPressedEvent mouseButtonPressedEvent(event.button.button);
+			MouseButtonPressedEvent mouseButtonPressedEvent{ event.window.windowID, event.button.button };
 			m_CallbackFunction(mouseButtonPressedEvent);
 			return true;
 		}
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 		{
-			MouseButtonReleasedEvent mouseButtonReleasedEvent(event.button.button);
+			MouseButtonReleasedEvent mouseButtonReleasedEvent{ event.window.windowID, event.button.button };
 			m_CallbackFunction(mouseButtonReleasedEvent);
 			return true;
 		}
 		case SDL_EVENT_MOUSE_WHEEL:
 		{
-			MouseScrolledEvent mouseScrolledEvent(event.wheel.x, event.wheel.y);
+			MouseScrolledEvent mouseScrolledEvent{ event.window.windowID, event.wheel.x, event.wheel.y };
 			m_CallbackFunction(mouseScrolledEvent);
 			return true;
 		}

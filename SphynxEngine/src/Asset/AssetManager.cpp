@@ -12,18 +12,18 @@
 #undef RegisterAssetType
 #undef RegisterAssetTypeExtensions
 #undef IsAssetRegistered
-#define REGISTER_ASSETTYPE(Type, Importer, Extension, ...) \
+#define REGISTER_ASSETTYPE(Type, Importer, ...) \
 {\
 	RegisterAssetType(TYPE_TO_ASSETTYPE(Type));\
-	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { Extension, ##__VA_ARGS__ });\
+	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { ##__VA_ARGS__ });\
 	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), &Importer::Import);\
 	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), &Importer::Load);\
 	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), &Importer::Save);\
 }
-#define REGISTER_INVALID_ASSETTYPE(Type, Importer, Extension, ...) \
+#define REGISTER_INVALID_ASSETTYPE(Type, Importer, ...) \
 {\
 	RegisterAssetType(TYPE_TO_ASSETTYPE(Type));\
-	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { Extension, ##__VA_ARGS__ });\
+	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { ##__VA_ARGS__ });\
 	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), nullptr);\
 	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), nullptr);\
 	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), nullptr);\

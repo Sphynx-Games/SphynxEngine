@@ -22,6 +22,7 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT S
 
 if (WIN32)
 	target_compile_definitions(SphynxEngine PUBLIC SPX_PLATFORM_WINDOWS)
+	target_compile_definitions(SphynxEngineEditor PUBLIC SPX_PLATFORM_WINDOWS)
 	target_compile_definitions(Sandbox PUBLIC SPX_PLATFORM_WINDOWS)
 endif()
 

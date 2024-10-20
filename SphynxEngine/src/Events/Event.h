@@ -30,11 +30,14 @@ namespace Sphynx
 	class Event
 	{
 	public:
-		Event() : m_IsHandled(false) {}
+		Event(uint32_t windowID) : 
+			m_IsHandled(false),
+			m_WindowID(windowID) {}
 		virtual ~Event() {}
 
 		inline void SetHandled(bool handled) { m_IsHandled = handled; }
 		inline bool IsHandled() { return m_IsHandled; }
+		inline uint32_t GetWindowID() const { return m_WindowID; }
 
 		inline bool IsInCategory(EventCategory categories) const { return categories & GetCategory(); }
 		virtual int GetCategory() const = 0;
@@ -43,6 +46,7 @@ namespace Sphynx
 
 	private:
 		bool m_IsHandled;
+		uint32_t m_WindowID;
 	};
 
 	class EventDispatcher

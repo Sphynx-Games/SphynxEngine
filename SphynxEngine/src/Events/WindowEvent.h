@@ -8,7 +8,10 @@ namespace Sphynx
 	class WindowResizedEvent : public Event
 	{
 	public:
-		WindowResizedEvent(uint32_t width, uint32_t height) : m_Width(width), m_Height(height) {}
+		WindowResizedEvent(uint32_t windowID, uint32_t width, uint32_t height) :
+			Event(windowID),
+			m_Width(width), 
+			m_Height(height) {}
 		virtual ~WindowResizedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -25,7 +28,8 @@ namespace Sphynx
 	class WindowClosedEvent : public Event
 	{
 	public:
-		WindowClosedEvent() {}
+		WindowClosedEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowClosedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -35,7 +39,8 @@ namespace Sphynx
 	class WindowFocusGainedEvent : public Event
 	{
 	public:
-		WindowFocusGainedEvent() {}
+		WindowFocusGainedEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowFocusGainedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -45,7 +50,8 @@ namespace Sphynx
 	class WindowFocusLostEvent : public Event
 	{
 	public:
-		WindowFocusLostEvent() {}
+		WindowFocusLostEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowFocusLostEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -55,7 +61,8 @@ namespace Sphynx
 	class WindowShownEvent : public Event
 	{
 	public:
-		WindowShownEvent() {}
+		WindowShownEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowShownEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -65,7 +72,8 @@ namespace Sphynx
 	class WindowHiddenEvent : public Event
 	{
 	public:
-		WindowHiddenEvent() {}
+		WindowHiddenEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowHiddenEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -75,7 +83,10 @@ namespace Sphynx
 	class WindowMovedEvent : public Event
 	{
 	public:
-		WindowMovedEvent(uint32_t x, uint32_t y) :m_PositionX(x), m_PositionY(y) {}
+		WindowMovedEvent(uint32_t windowID, uint32_t x, uint32_t y) :
+			Event(windowID),
+			m_PositionX(x),
+			m_PositionY(y) {}
 		virtual ~WindowMovedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -92,7 +103,8 @@ namespace Sphynx
 	class WindowMinimizedEvent : public Event
 	{
 	public:
-		WindowMinimizedEvent() {}
+		WindowMinimizedEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowMinimizedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -102,7 +114,8 @@ namespace Sphynx
 	class WindowMaximizedEvent : public Event
 	{
 	public:
-		WindowMaximizedEvent() {}
+		WindowMaximizedEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowMaximizedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -112,7 +125,8 @@ namespace Sphynx
 	class WindowRestoredEvent : public Event
 	{
 	public:
-		WindowRestoredEvent() {}
+		WindowRestoredEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowRestoredEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -122,7 +136,9 @@ namespace Sphynx
 	class WindowFullscreenChangedEvent : public Event
 	{
 	public:
-		WindowFullscreenChangedEvent(bool fullscreen) : m_IsFullscreen(fullscreen) {}
+		WindowFullscreenChangedEvent(uint32_t windowID, bool fullscreen) :
+			Event(windowID),
+			m_IsFullscreen(fullscreen) {}
 		virtual ~WindowFullscreenChangedEvent() {}
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -137,7 +153,8 @@ namespace Sphynx
 	class WindowMouseEnterEvent : public Event
 	{
 	public:
-		WindowMouseEnterEvent() {}
+		WindowMouseEnterEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowMouseEnterEvent() {}
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);
@@ -147,7 +164,8 @@ namespace Sphynx
 	class WindowMouseExitEvent : public Event
 	{
 	public:
-		WindowMouseExitEvent() {}
+		WindowMouseExitEvent(uint32_t windowID) :
+			Event(windowID) {}
 		virtual ~WindowMouseExitEvent() {}
 
 		EVENT_CLASS_CATEGORY(EventCategory::WindowEvent);

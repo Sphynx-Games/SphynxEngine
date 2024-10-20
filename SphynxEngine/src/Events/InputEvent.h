@@ -8,7 +8,10 @@ namespace Sphynx
 	class KeyPressedEvent : public Event
 	{
 	public:
-		KeyPressedEvent(int32_t keycode, bool repeat = false) : m_Keycode(keycode), m_Repeat(repeat) {}
+		KeyPressedEvent(uint32_t windowID, int32_t keycode, bool repeat = false) :
+			Event(windowID),
+			m_Keycode(keycode),
+			m_Repeat(repeat) {}
 		virtual ~KeyPressedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::KeyboardEvent);
@@ -25,7 +28,9 @@ namespace Sphynx
 	class KeyReleasedEvent : public Event
 	{
 	public:
-		KeyReleasedEvent(int32_t keycode) : m_Keycode(keycode) {}
+		KeyReleasedEvent(uint32_t windowID, int32_t keycode) :
+			Event(windowID),
+			m_Keycode(keycode) {}
 		virtual ~KeyReleasedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::KeyboardEvent);
@@ -40,7 +45,10 @@ namespace Sphynx
 	class KeyTypedEvent : public Event
 	{
 	public:
-		KeyTypedEvent(int32_t keycode, const std::string& text) : m_Keycode(keycode) , m_Text(text) {}
+		KeyTypedEvent(uint32_t windowID, int32_t keycode, const std::string& text) :
+			Event(windowID),
+			m_Keycode(keycode),
+			m_Text(text) {}
 		virtual ~KeyTypedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::KeyboardEvent);
@@ -57,7 +65,9 @@ namespace Sphynx
 	class MouseButtonPressedEvent : public Event
 	{
 	public:
-		MouseButtonPressedEvent(int32_t button) : m_Button(button) {}
+		MouseButtonPressedEvent(uint32_t windowID, int32_t button) :
+			Event(windowID),
+			m_Button(button) {}
 		virtual ~MouseButtonPressedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::MouseEvent);
@@ -72,7 +82,9 @@ namespace Sphynx
 	class MouseButtonReleasedEvent : public Event
 	{
 	public:
-		MouseButtonReleasedEvent(int32_t button) : m_Button(button) {}
+		MouseButtonReleasedEvent(uint32_t windowID, int32_t button) :
+			Event(windowID),
+			m_Button(button) {}
 		virtual ~MouseButtonReleasedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::MouseEvent);
@@ -87,7 +99,10 @@ namespace Sphynx
 	class MouseScrolledEvent : public Event
 	{
 	public:
-		MouseScrolledEvent(float x, float y) : m_ScolledX(x), m_ScolledY(y) {}
+		MouseScrolledEvent(uint32_t windowID, float x, float y) :
+			Event(windowID),
+			m_ScolledX(x),
+			m_ScolledY(y) {}
 		virtual ~MouseScrolledEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::MouseEvent);
@@ -104,7 +119,10 @@ namespace Sphynx
 	class MouseMovedEvent : public Event
 	{
 	public:
-		MouseMovedEvent(float x, float y) : m_PositionX(x), m_PositionY(y) {}
+		MouseMovedEvent(uint32_t windowID, float x, float y) :
+			Event(windowID),
+			m_PositionX(x),
+			m_PositionY(y) {}
 		virtual ~MouseMovedEvent() {};
 
 		EVENT_CLASS_CATEGORY(EventCategory::InputEvent | EventCategory::MouseEvent);

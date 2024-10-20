@@ -6,6 +6,7 @@
 #include <Renderer/Renderer.h>
 
 #include "Platform/SDL/SDLEditorLayer.h"
+#include "Dialogs/FileDialog.h"
 
 
 namespace Sphynx
@@ -110,9 +111,18 @@ namespace Sphynx
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				ImGui::MenuItem("Open", nullptr, nullptr);
+				if (ImGui::MenuItem("Open...", nullptr, nullptr))
+				{
+					auto path = Sphynx::FileDialog::Open();
+				}
+
 				ImGui::Separator();
-				ImGui::MenuItem("Save", nullptr, nullptr);
+
+				if (ImGui::MenuItem("Save As...", nullptr, nullptr))
+				{
+					auto path = Sphynx::FileDialog::Save();
+
+				}
 
 				if (ImGui::MenuItem("Quit", nullptr, false, false))
 				{
