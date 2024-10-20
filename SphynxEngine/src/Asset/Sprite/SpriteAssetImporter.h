@@ -18,5 +18,10 @@ namespace Sphynx
 		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata, const std::filesystem::path& path);
 		static std::shared_ptr<IAsset> Load(const AssetMetadata& metadata);
 		static void Save(const AssetMetadata& metadata);
+
+	private:
+		static std::shared_ptr<IAsset> LoadSprite(class Reader& reader, const AssetMetadata& metadata);
+		static std::shared_ptr<IAsset> LoadSpriteInSpritesheet(Reader& reader, const AssetMetadata& metadata);
+
 	};
 }

@@ -37,23 +37,38 @@ namespace Sphynx
 		static AssetLoadFunction GetLoader(const AssetType& type);
 		static AssetSaveFunction GetSaver(const AssetType& type);
 
+		static AssetMetadataHeader DeserializeAssetHeader(Reader& reader)
+		{
+			AssetMetadataHeader header;
+			ReflectionDeserializer headerDeserializer(header, reader);
+			headerDeserializer.Deserialize();
+
+			SPX_CORE_ASSERT(header.SphynxAsset == SPHYNX_ASSET_HEADER, "The file is not recognised as an Sphynx Asset!!");
+
+			return header;
+		}
+
+		template<typename T>
+		static T DeserializeAssetMetadata(Reader& reader)
+		{
+			T specificMetadata;
+			ReflectionDeserializer deserializer(specificMetadata, reader);
+			deserializer.Deserialize();
+
+			return specificMetadata;
+		}
+
 		template<typename T>
 		static T DeserializeAsset(const AssetMetadata& metadata)
 		{
 			FileReader reader(metadata.Path);
 			SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", metadata.Path);
 
-			AssetMetadataHeader header;
-			ReflectionDeserializer headerDeserializer(header, reader);
-			headerDeserializer.Deserialize();
+			AssetMetadataHeader header = DeserializeAssetHeader(reader);
 
 			SPX_CORE_ASSERT(header.Type == metadata.Type, "Asset must be of type \"{}\", but is of type \"{}\"!!", metadata.Type, header.Type);
 
-			T specificMetadata;
-			ReflectionDeserializer deserializer(specificMetadata, reader);
-			deserializer.Deserialize();
-
-			return specificMetadata;
+			return DeserializeAssetMetadata<T>(reader);
 		}
 
 		template<typename T>
@@ -63,6 +78,7 @@ namespace Sphynx
 			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file: {} !!", metadata.Path);
 
 			AssetMetadataHeader header;
+			header.SphynxAsset = SPHYNX_ASSET_HEADER;
 			header.Type = metadata.Type;
 
 			ReflectionSerializer headerSerializer(header, writer);

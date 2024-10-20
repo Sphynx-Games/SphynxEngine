@@ -54,6 +54,7 @@ namespace Sphynx
 		~Spritesheet();
 
 		Texture* GetTexture() const { return m_Texture; }
+		const Array<Sprite*>& GetSprites() const { return m_Sprites; }
 		Sprite* GetSprite(uint32_t num) const { return m_Sprites.Get(num); }
 
 		Sprite* AddSprite(Vector2i position, Vector2i size);

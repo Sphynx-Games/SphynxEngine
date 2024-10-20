@@ -9,12 +9,15 @@
 #include <filesystem>
 
 
+#define SPHYNX_ASSET_HEADER "SphynxAsset"
+
 namespace Sphynx
 {
 	using AssetHandle = Traits::unique_type<UUID, struct __AssetHandle__>;
 
 	struct AssetMetadataHeader
 	{
+		std::string SphynxAsset;
 		AssetType Type;
 	};
 
@@ -30,6 +33,7 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::AssetMetadataHeader)
+SPX_REFLECT_PROPERTY(SphynxAsset)
 SPX_REFLECT_PROPERTY(Type)
 SPX_REFLECT_STRUCT_END(Sphynx::AssetMetadataHeader)
 

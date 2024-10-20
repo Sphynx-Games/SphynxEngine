@@ -31,7 +31,55 @@ namespace Sphynx
 		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpriteAsset must have only one dependency.");
 
 		// read sprite data from .spxasset file
-		SpriteAssetMetadata spriteMetadata = AssetImporter::DeserializeAsset<SpriteAssetMetadata>(metadata);
+		// (NOTE: we need to deserialize each metadata individually in oder to be able to perform some checks)
+		FileReader reader(metadata.Path);
+		SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", metadata.Path);
+
+		AssetMetadataHeader header = AssetImporter::DeserializeAssetHeader(reader);
+
+		if (header.Type == TypeToAssetType<Spritesheet>::Value)
+		{
+			return LoadSpriteInSpritesheet(reader, metadata);
+		}
+		else if(header.Type == TypeToAssetType<Sprite>::Value)
+		{
+			return LoadSprite(reader, metadata);
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	void SpriteAssetImporter::Save(const AssetMetadata& metadata)
+	{
+		// only save in .spxasset file if is an individual sprite.
+		// if the sprite is part of a spritesheet, it will be saved when the spritesheet is saved
+		AssetMetadataHeader header;
+		FileReader reader(metadata.Path);
+		if (!reader.IsValid()) return;
+
+		ReflectionDeserializer deserializer(header, reader);
+		deserializer.Deserialize();
+
+		if (header.Type == TypeToAssetType<Spritesheet>::Value) return;
+
+		SPX_CORE_LOG_TRACE("Saving sprite to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
+
+		std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(metadata.Handle);
+
+		SpriteAssetMetadata spriteMetadata;
+		spriteMetadata.Position = spriteAsset->Asset->GetPosition();
+		spriteMetadata.Size = spriteAsset->Asset->GetSize();
+		spriteMetadata.Pivot = spriteAsset->Asset->GetPivot();
+		spriteMetadata.PixelsPerUnit = spriteAsset->Asset->GetPixelsPerUnit();
+
+		AssetImporter::SerializeAsset(metadata, spriteMetadata);
+	}
+
+	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSprite(Reader& reader, const AssetMetadata& metadata)
+	{
+		SpriteAssetMetadata spriteMetadata = AssetImporter::DeserializeAssetMetadata<SpriteAssetMetadata>(reader);
 
 		// set sprite values
 		Sprite* sprite = new Sprite();
@@ -61,18 +109,43 @@ namespace Sphynx
 		return asset;
 	}
 
-	void SpriteAssetImporter::Save(const AssetMetadata& metadata)
+	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSpriteInSpritesheet(Reader& reader, const AssetMetadata& metadata)
 	{
-		SPX_CORE_LOG_TRACE("Saving sprite to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
+		// check if the spritesheet depends on a texture
+		AssetHandle dependencyHandle = metadata.Dependencies[0];
+		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value, "Error! SpritesheetAsset must depend on a Texture.");
 
-		std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(metadata.Handle);
+		std::shared_ptr<Asset<Texture>> dependencyAsset = AssetManager::GetAsset<Texture>(dependencyHandle);
 
-		SpriteAssetMetadata spriteMetadata;
-		spriteMetadata.Position = spriteAsset->Asset->GetPosition();
-		spriteMetadata.Size = spriteAsset->Asset->GetSize();
-		spriteMetadata.Pivot = spriteAsset->Asset->GetPivot();
-		spriteMetadata.PixelsPerUnit = spriteAsset->Asset->GetPixelsPerUnit();
+		// deserialize the spritesheet, but only load into memory the requested the sprite
+		SpritesheetAssetMetadata spritesheetMetadata = AssetImporter::DeserializeAssetMetadata<SpritesheetAssetMetadata>(reader);
 
-		AssetImporter::SerializeAsset(metadata, spriteMetadata);
+		Sprite* sprite = nullptr;
+		for (uint8_t i = 0; i < spritesheetMetadata.SpritesHandles.Size(); ++i)
+		{
+			if (spritesheetMetadata.SpritesHandles.Get(i) == metadata.Handle)
+			{
+				SpriteAssetMetadata spriteMetadata = spritesheetMetadata.SpritesMetadatas.Get(i);
+
+				sprite = new Sprite();
+				sprite->SetPosition(spriteMetadata.Position);
+				sprite->SetSize(spriteMetadata.Size);
+				sprite->SetPivot(spriteMetadata.Pivot);
+				sprite->SetPixelsPerUnit(spriteMetadata.PixelsPerUnit);
+				sprite->m_Texture = std::static_pointer_cast<Asset<Texture>>(dependencyAsset)->Asset;
+
+				break;
+			}
+		}
+
+		SPX_CORE_ASSERT(sprite != nullptr, "Error! Sprite not found in spritesheet.");
+
+		// create sprite asset object
+		std::shared_ptr<Asset<Sprite>> asset = std::make_shared<Asset<Sprite>>();
+		asset->Handle = metadata.Handle;
+		asset->Type = metadata.Type;
+		asset->Asset = sprite;
+
+		return asset;
 	}
 }

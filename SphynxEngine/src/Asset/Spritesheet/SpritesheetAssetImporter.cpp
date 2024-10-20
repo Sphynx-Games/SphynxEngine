@@ -63,31 +63,24 @@ namespace Sphynx
 
 		std::shared_ptr<Asset<Spritesheet>> spritesheetAsset = AssetManager::GetAsset<Spritesheet>(metadata.Handle);
 
-		// create directory to store the .spxasset files for the sprites of the spritesheet
-		uint8_t i = 0;
-		std::filesystem::path spritesDirectory = metadata.Path;
-		spritesDirectory.replace_extension();
-		spritesDirectory += "_Sprites";
-		std::filesystem::create_directories(spritesDirectory);
-
 		// create a .spxasset file for each sprite in the spritesheet
 		SpritesheetAssetMetadata spritesheetMetadata;
 		for (Sprite* sprite : spritesheetAsset->Asset->m_Sprites)
 		{
 			AssetHandle spriteHandle = AssetManager::GetAssetHandleFromAddress(sprite);
-			std::shared_ptr<Asset<Sprite>> spriteAsset;
-
-			if (spriteHandle == AssetHandle::Invalid)
-			{
-				std::filesystem::path spritePath = spritesDirectory;
-				spritePath += ("\\sprite" + std::to_string(i));
-				spritePath.replace_extension(".spxasset");
-				spriteAsset = AssetManager::RegisterAsset<Sprite>(sprite, spritePath);
-				++i;
-			}
-			spriteHandle = spriteAsset->Handle;
 			SPX_CORE_ASSERT(!(spriteHandle == AssetHandle::Invalid), "Error! Sprite Asset Handle is invalid.");
+
+			std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(spriteHandle);
+
 			spritesheetMetadata.SpritesHandles.Add(spriteHandle);
+
+			SpriteAssetMetadata spriteMetadata;
+			spriteMetadata.Position = sprite->GetPosition();
+			spriteMetadata.Size = sprite->GetSize();
+			spriteMetadata.Pivot = sprite->GetPivot();
+			spriteMetadata.PixelsPerUnit = sprite->GetPixelsPerUnit();
+
+			spritesheetMetadata.SpritesMetadatas.Add(spriteMetadata);
 		}
 
 		// create .spxasset for the spritesheet
