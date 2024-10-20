@@ -23,4 +23,5 @@
 
 #ifdef SPX_PLATFORM_WINDOWS
 	#include <Windows.h>
+	#undef DrawText
 #endif
