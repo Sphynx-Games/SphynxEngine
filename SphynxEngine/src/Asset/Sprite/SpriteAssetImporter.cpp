@@ -121,12 +121,10 @@ namespace Sphynx
 		SpritesheetAssetMetadata spritesheetMetadata = AssetImporter::DeserializeAssetMetadata<SpritesheetAssetMetadata>(reader);
 
 		Sprite* sprite = nullptr;
-		for (uint8_t i = 0; i < spritesheetMetadata.SpritesHandles.Size(); ++i)
+		for (auto& [spriteHandle, spriteMetadata] : spritesheetMetadata.SpritesData)
 		{
-			if (spritesheetMetadata.SpritesHandles.Get(i) == metadata.Handle)
+			if (spriteHandle == metadata.Handle)
 			{
-				SpriteAssetMetadata spriteMetadata = spritesheetMetadata.SpritesMetadatas.Get(i);
-
 				sprite = new Sprite();
 				sprite->SetPosition(spriteMetadata.Position);
 				sprite->SetSize(spriteMetadata.Size);

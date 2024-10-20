@@ -42,7 +42,7 @@ namespace Sphynx
 		Spritesheet* spritesheet = new Spritesheet();
 		spritesheet->m_Texture = dependencyAsset->Asset;
 
-		for (AssetHandle handle : spritesheetMetadata.SpritesHandles)
+		for (AssetHandle handle : spritesheetMetadata.SpritesData.GetKeys())
 		{
 			std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(handle);
 			spritesheet->m_Sprites.Add(spriteAsset->Asset);
@@ -72,15 +72,13 @@ namespace Sphynx
 
 			std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(spriteHandle);
 
-			spritesheetMetadata.SpritesHandles.Add(spriteHandle);
-
 			SpriteAssetMetadata spriteMetadata;
 			spriteMetadata.Position = sprite->GetPosition();
 			spriteMetadata.Size = sprite->GetSize();
 			spriteMetadata.Pivot = sprite->GetPivot();
 			spriteMetadata.PixelsPerUnit = sprite->GetPixelsPerUnit();
 
-			spritesheetMetadata.SpritesMetadatas.Add(spriteMetadata);
+			spritesheetMetadata.SpritesData.Add(spriteHandle, spriteMetadata);
 		}
 
 		// create .spxasset for the spritesheet

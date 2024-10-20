@@ -1,22 +1,19 @@
 #pragma once
 
 #include "Core/Core.h"
-//#include "Math/Vector.h"
-#include "Container/Array.h"
+#include "Container/Map.h"
 #include "Asset/Asset.h"
 #include "Asset/AssetDependencySolver.h"
 #include "Asset/SubAssetSolver.h"
 #include "Asset/AssetManager.h"
 #include "Asset/Sprite/SpriteAsset.h"
-//#include "Renderer/Sprite.h"
 
 
 namespace Sphynx
 {
 	struct SPHYNX_API SpritesheetAssetMetadata
 	{
-		Array<AssetHandle> SpritesHandles;
-		Array<SpriteAssetMetadata> SpritesMetadatas;
+		HashMap<AssetHandle, SpriteAssetMetadata> SpritesData;
 	};
 
 	GENERATE_ASSETTYPE_CONVERSOR(Spritesheet);
@@ -48,7 +45,6 @@ namespace Sphynx
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpritesheetAssetMetadata)
 
-	SPX_REFLECT_PROPERTY(SpritesHandles)
-	SPX_REFLECT_PROPERTY(SpritesMetadatas)
+	SPX_REFLECT_PROPERTY(SpritesData)
 
 SPX_REFLECT_STRUCT_END(Sphynx::SpritesheetAssetMetadata)
