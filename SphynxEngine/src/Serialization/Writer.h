@@ -58,17 +58,30 @@ namespace Sphynx
 
 		void Write(const char* str)
 		{
-			Write(str, strlen(str) + 1);
+			size_t size = strlen(str);
+			Write(size);
+			Write(str, size + 1);
+		}
+
+		void Write(const wchar_t* str)
+		{
+			size_t size = wcslen(str);
+			Write(size);
+			Write(str, size + 1);
 		}
 
 		void Write(const std::string& str)
 		{
-			Write(str.data(), str.size() + 1);
+			size_t size = str.size();
+			Write(size);
+			Write(str.data(), (size + 1) * sizeof(typename std::string::value_type));
 		}
 
 		void Write(const std::wstring& str)
 		{
-			Write(str.data(), (str.size() + 1) * sizeof(wchar_t));
+			size_t size = str.size();
+			Write(size);
+			Write(str.data(), (size + 1) * sizeof(typename std::wstring::value_type));
 		}
 
 		void Write(const std::filesystem::path& path)

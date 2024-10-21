@@ -77,44 +77,30 @@ namespace Sphynx
 
 		void Read(char* str)
 		{
-			size_t i = 0;
-			char c = '\0';
-			do
-			{
-				Read(&c, sizeof(char));
-				str[i] = c;
-				++i;
-			} while (c != '\0');
+			size_t size{ 0 }; Read(size);
+			Read(str, (size + 1) * sizeof(char));
+		}
+
+		void Read(wchar_t* str)
+		{
+			size_t size{ 0 }; Read(size);
+			Read(str, (size + 1) * sizeof(wchar_t));
 		}
 
 		template<>
 		void Read<std::string>(std::string& str)
 		{
-			char c = 'a';
-			str = "";
-			while (c != '\0')
-			{
-				Read(&c, sizeof(char));
-				if (c != '\0')
-				{
-					str += c;
-				}
-			}
+			size_t size{ 0 }; Read(size);
+			str.resize(size);
+			Read(str.data(), (size + 1) * sizeof(typename std::string::value_type));
 		}
 
 		template<>
 		void Read<std::wstring>(std::wstring& str)
 		{
-			wchar_t c = L'a';
-			str = L"";
-			while (c != L'\0')
-			{
-				Read(&c, sizeof(wchar_t));
-				if (c != L'\0')
-				{
-					str += c;
-				}
-			}
+			size_t size{ 0 }; Read(size);
+			str.resize(size);
+			Read(str.data(), (size + 1) * sizeof(typename std::wstring::value_type));
 		}
 
 		template<>

@@ -42,10 +42,10 @@ namespace Sphynx
 		using POD = Reflection::CommonAttribute::POD;
 		if (const POD* pod = rClass.GetAttribute<POD>())
 		{	
-			std::vector<std::byte> buffer; buffer.resize(m_Type.Size);
-			m_Reader.Read(buffer.data(), m_Type.Size);
-
-			pod->CopyTo(buffer.data(), m_Obj);
+			void* data = m_Type.Alloc();
+			m_Reader.Read(data, m_Type.Size);
+			pod->CopyTo(data, m_Obj);
+			m_Type.Dealloc(data);
 			return;
 		}
 
