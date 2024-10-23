@@ -197,8 +197,10 @@
 
  // ---------- Enum -----------
 #define SPX_REFLECT_ENUM_BEGIN(_Enum) \
-	namespace { \
-		inline static ::Sphynx::Reflection::details::EnumStorage<_Enum> EXPAND_MACRO(s_EnumStorage)EXPAND_MACRO(__LINE__)([](auto* self) { \
+	namespace Sphynx { namespace Reflection { namespace details { \
+	inline const Enum& GetEnumImpl(Tag<_Enum>) \
+	{ \
+		static ::Sphynx::Reflection::details::EnumStorage<_Enum> Storage([](auto* self) { \
 			using context_enum = _Enum; \
 			[[maybe_unused]] auto& Entries = self->Entries; \
 			[[maybe_unused]] auto& Values = self->Values; \
@@ -207,29 +209,23 @@
 
 #define SPX_REFLECT_ENUM_END(_Enum) \
 		}); \
-	} \
-	\
-	namespace Sphynx { namespace Reflection { namespace details { \
-	inline const Enum& GetEnumImpl(Tag<_Enum>) \
-	{ \
-		static const auto* Storage = EnumStorage<_Enum>::Instance; \
 		static const Enum e{ \
-			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<_Enum>{}, #_Enum, sizeof(_Enum), alignof(_Enum), false }, \
-			Storage->Entries.data(), \
-			Storage->Entries.size(), \
-			Storage->Attributes.data(), \
-			Storage->Attributes.size() \
-	}; \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Enum>{}, #_Enum, sizeof(::_Enum), alignof(::_Enum), false }, \
+			Storage.Entries.data(), \
+			Storage.Entries.size(), \
+			Storage.Attributes.data(), \
+			Storage.Attributes.size() \
+		}; \
 		return e; \
 	} \
 	}}} \
-	template<> struct ::Sphynx::Reflection::EnumRange<_Enum> { \
+	template<> struct ::Sphynx::Reflection::EnumRange<::_Enum> { \
 		struct Iterator \
 		{ \
 			using difference_type = std::ptrdiff_t; \
-			using value_type = _Enum; \
-			using pointer = _Enum*; \
-			using reference = _Enum&; \
+			using value_type = ::_Enum; \
+			using pointer = ::_Enum*; \
+			using reference = ::_Enum&; \
 			\
 			Iterator(int64_t* values) : m_Values(values) {} \
 			\
@@ -243,10 +239,10 @@
 		private: \
 			int64_t* m_Values; \
 		}; \
-		inline Iterator begin() { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data(); } \
-		inline Iterator begin() const { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data(); } \
-		inline Iterator end() { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
-		inline Iterator end() const { return ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
+		inline Iterator begin() { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data(); } \
+		inline Iterator begin() const { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data(); } \
+		inline Iterator end() { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
+		inline Iterator end() const { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
 	};
 
 #define SPX_REFLECT_ENUM_VALUE_BEGIN(_Value) \
