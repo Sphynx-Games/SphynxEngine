@@ -16,7 +16,8 @@ namespace Sphynx
 		SDLTexture(SDL_Texture* texture);
 
 	public:
-		SDL_Texture* GetTexture() const { return m_Texture; };
+		SDL_Texture* GetTexture() const { return m_Texture; }
+		virtual void* GetNativeTexture() const override { return GetTexture(); }
 
 	private:
 		SDL_Texture* m_Texture;

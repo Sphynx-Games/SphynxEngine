@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Base/Panel.h"
-#include <imgui.h>
+
+#include <filesystem>
 
 
 namespace Sphynx
@@ -9,13 +10,13 @@ namespace Sphynx
 	class ContentBrowserPanel : public Panel
 	{
 	public:
-		using Panel::Panel;
+		ContentBrowserPanel();
 
 	protected:
-		virtual void RenderGUI() override
-		{
-			ImGui::Begin("Content Brower");
-			ImGui::End();
-		}
+		virtual void RenderGUI() override;
+
+	private:
+		std::filesystem::path m_CurrentDirectory;
+		bool m_ShowAllFiles;
 	};
 }

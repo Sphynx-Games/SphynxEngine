@@ -21,6 +21,8 @@ namespace Sphynx
 		virtual uint32_t GetWidth() const { return m_Size.X; }
 		virtual uint32_t GetHeight() const { return m_Size.Y; }
 
+		virtual void* GetNativeTexture() const = 0;
+
 	protected:
 		Vector2i m_Size;
 
