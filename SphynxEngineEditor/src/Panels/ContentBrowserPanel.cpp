@@ -1,6 +1,7 @@
 #include "spxpch.h"
 #include "ContentBrowserPanel.h"
 #include "Asset/AssetManager.h"
+#include "Asset/Texture/TextureAssetImporter.h"
 #include "Dialogs/FileDialog.h"
 #include "Renderer/Texture.h"
 
@@ -12,6 +13,8 @@
 
 namespace Sphynx
 {
+	static const std::filesystem::path s_ResourcesPath = "SphynxEngineEditor\\Resources";
+
 	static const std::filesystem::path s_AssetsPath = "Assets";
 
 	std::filesystem::path MakeRelativePath(const std::filesystem::path& absolutePath) {
@@ -40,8 +43,8 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderGUI()
 	{
-		static auto data{ 0xFFFFFFFF };
-		static Sphynx::Texture* whiteTexture = Sphynx::Texture::Create(&data, Vector2i(1,1));
+		static Sphynx::Texture* folderTexture = Sphynx::TextureLoader::Load(s_ResourcesPath / "folder.png");
+		static Sphynx::Texture* fileTexture = Sphynx::TextureLoader::Load(s_ResourcesPath / "file.png");
 
 
 		ImGui::Begin("Content Browser");
@@ -75,39 +78,71 @@ namespace Sphynx
 		ImGui::SameLine();
 
 		// show all files checkbox
-		if (ImGui::Checkbox("Show all", &m_ShowAllFiles))
-		{
-		}
+		ImGui::Checkbox("Show all", &m_ShowAllFiles);
 
 		// content
+		int numItems = 0;
+		ImVec2 sizeItem{85.0f, 85.0f};
+		float window_visible_x2 = ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionAvail().x;
+
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
+			++numItems;
+			ImGui::PushID(numItems);
+
+			float last_button_x2 = ImGui::GetItemRectMax().x;
+			float next_button_x2 = last_button_x2 + ImGui::GetStyle().ItemSpacing.x + sizeItem.x; // Expected position if next button was on same line
+			if (numItems != 1 && next_button_x2 < window_visible_x2)
+			{
+				ImGui::SameLine();
+			}
+
 			const auto& path = directoryEntry.path();
 			auto relativePath = std::filesystem::relative(path, s_AssetsPath);
 			std::string fileName = relativePath.filename().string();
+
+			static float wrap_width = sizeItem.x;
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+			ImVec2 marker_min = ImVec2(pos.x + wrap_width, pos.y);
+			ImVec2 marker_max = ImVec2(pos.x + wrap_width + 10, pos.y + ImGui::GetTextLineHeight());
+
+			ImGui::BeginGroup();
 			if (directoryEntry.is_directory()) // directories
 			{
-				if (ImGui::Button(fileName.c_str()))
+				if (ImGui::ImageButton(fileName.c_str(), (ImTextureID)folderTexture->GetNativeTexture(), sizeItem))
 				{
 					m_CurrentDirectory /= path.filename();
 				}
+
+				ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
+				ImGui::TextWrapped(fileName.c_str());
+				ImGui::PopTextWrapPos();
 			}
 			else // files
-			{
+			{				
 				if (m_ShowAllFiles)
 				{
-					ImGui::ImageButton(fileName.c_str(), (ImTextureID)whiteTexture->GetNativeTexture(), ImVec2(32, 32));
+					ImGui::ImageButton(fileName.c_str(), (ImTextureID)fileTexture->GetNativeTexture(), sizeItem);
+
+					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
 					ImGui::TextWrapped(fileName.c_str());
+					ImGui::PopTextWrapPos();
 				}
 				else
 				{
 					if (relativePath.extension() == ASSET_EXTENSION)
 					{
-						ImGui::ImageButton(fileName.c_str(), (ImTextureID)whiteTexture->GetNativeTexture(), ImVec2(32, 32));
+						ImGui::ImageButton(fileName.c_str(), (ImTextureID)fileTexture->GetNativeTexture(), sizeItem);
+
+						ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
 						ImGui::TextWrapped(fileName.c_str());
+						ImGui::PopTextWrapPos();
 					}
 				}
 			}
+			ImGui::EndGroup();
+
+			ImGui::PopID();
 		}
 		
 

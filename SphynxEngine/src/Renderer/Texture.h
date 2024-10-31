@@ -7,6 +7,7 @@
 #include <string>
 #include <memory>
 
+
 namespace Sphynx
 {
 	class SPHYNX_API Texture
@@ -28,6 +29,13 @@ namespace Sphynx
 
 	public:
 		static Texture* Create(void* data, Vector2i size);
+
+	};
+
+	class TextureLoader
+	{
+	public:
+		static Texture* Load(const std::filesystem::path& path);
 
 	};
 }

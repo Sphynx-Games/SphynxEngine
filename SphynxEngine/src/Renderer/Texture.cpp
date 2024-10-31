@@ -20,4 +20,16 @@ namespace Sphynx
 		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
 		return nullptr;
 	}
+
+	Texture* TextureLoader::Load(const std::filesystem::path& path)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::SDL:     return SDLTextureLoader::Load(path);
+		}
+
+		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
+		return nullptr;
+	}
 }

@@ -32,7 +32,7 @@ namespace Sphynx
 		TextureAssetMetadata textureMetadata = AssetImporter::DeserializeAsset<TextureAssetMetadata>(metadata);
 
 		// create a texture asset from a raw image file
-		Texture* texture = ImportFromFilePath(textureMetadata.RelativePath);
+		Texture* texture = TextureLoader::Load(textureMetadata.RelativePath);
 
 		std::shared_ptr<Asset<Texture>> asset = std::make_shared<Asset<Texture>>();
 		asset->Handle = metadata.Handle;
@@ -51,17 +51,5 @@ namespace Sphynx
 		TextureAssetMetadata textureMetadata;
 		textureMetadata.RelativePath = textureAsset->RelativePath;
 		AssetImporter::SerializeAsset(metadata, textureMetadata);
-	}
-
-	Texture* TextureAssetImporter::ImportFromFilePath(const std::filesystem::path& path)
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::SDL:     return SDLTextureLoader::Load(path);
-		}
-
-		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
-		return nullptr;
 	}
 }
