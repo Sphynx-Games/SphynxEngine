@@ -29,9 +29,13 @@ namespace Sphynx
 		static void RegisterAssetTypeExtensions(const AssetType& assetType, const std::initializer_list<std::string>& extensions);
 		static bool IsAssetTypeRegistered(const AssetType& assetType);
 
+		static void AddToRegistry(const AssetMetadata& metadata);
+		static void RemoveFromRegistry(AssetHandle handle);
+
 		static std::shared_ptr<IAsset> Import(const std::filesystem::path& path);
 		static std::shared_ptr<IAsset> GetAsset(AssetHandle handle);
 		static const AssetMetadata& GetMetadata(AssetHandle handle);
+		static const AssetMetadata& GetMetadataFromPath(const std::filesystem::path& path);
 		static bool IsAssetLoaded(AssetHandle handle);
 		static AssetType GetAssetType(AssetHandle handle);
 		static AssetType GetAssetTypeFromExtension(const std::string& extension);

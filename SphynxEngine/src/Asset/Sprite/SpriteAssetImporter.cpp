@@ -53,26 +53,18 @@ namespace Sphynx
 
 	void SpriteAssetImporter::Save(const AssetMetadata& metadata)
 	{
-		// only save in .spxasset file if is an individual sprite.
-		// if the sprite is part of a spritesheet, it will be saved when the spritesheet is saved
-		AssetMetadataHeader header;
-		FileReader reader(metadata.Path);
-		if (!reader.IsValid()) return;
-
-		ReflectionDeserializer deserializer(header, reader);
-		deserializer.Deserialize();
-
-		if (header.Type == TypeToAssetType<Spritesheet>::Value) return;
-
 		SPX_CORE_LOG_TRACE("Saving sprite to {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		std::shared_ptr<Asset<Sprite>> spriteAsset = AssetManager::GetAsset<Sprite>(metadata.Handle);
 
 		SpriteAssetMetadata spriteMetadata;
-		spriteMetadata.Position = spriteAsset->Asset->GetPosition();
-		spriteMetadata.Size = spriteAsset->Asset->GetSize();
-		spriteMetadata.Pivot = spriteAsset->Asset->GetPivot();
-		spriteMetadata.PixelsPerUnit = spriteAsset->Asset->GetPixelsPerUnit();
+		if (spriteAsset != nullptr)
+		{
+			spriteMetadata.Position = spriteAsset->Asset->GetPosition();
+			spriteMetadata.Size = spriteAsset->Asset->GetSize();
+			spriteMetadata.Pivot = spriteAsset->Asset->GetPivot();
+			spriteMetadata.PixelsPerUnit = spriteAsset->Asset->GetPixelsPerUnit();
+		}
 
 		AssetImporter::SerializeAsset(metadata, spriteMetadata);
 	}

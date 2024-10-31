@@ -135,6 +135,18 @@ namespace Sphynx
 		return s_TypeRegistry.find(assetType) != s_TypeRegistry.end();
 	}
 
+	void AssetManager::AddToRegistry(const AssetMetadata& metadata)
+	{
+		SPX_CORE_ASSERT(!s_Registry.ContainsKey(metadata.Handle), "Handle {} already added to registry!", metadata.Handle);
+		s_Registry[metadata.Handle] = metadata;
+	}
+
+	void AssetManager::RemoveFromRegistry(AssetHandle handle)
+	{
+		SPX_CORE_ASSERT(s_Registry.ContainsKey(handle), "Handle {} Iis not added to registry!", handle);
+		s_Registry.Remove(handle);
+	}
+
 	std::shared_ptr<IAsset> AssetManager::Import(const std::filesystem::path& path)
 	{
 		// create metadata
@@ -164,6 +176,12 @@ namespace Sphynx
 			return nullptr;
 		}
 
+		// if the asset metadata is not stored in the registry, then the asset is not created yet
+		if (!s_Registry.ContainsKey(handle))
+		{
+			return nullptr;
+		}
+
 		// Check if the asset is loaded, if not load it
 		if (!IsAssetLoaded(handle))
 		{
@@ -175,8 +193,19 @@ namespace Sphynx
 
 	const AssetMetadata& AssetManager::GetMetadata(AssetHandle handle)
 	{
-		SPX_CORE_ASSERT(IsAssetLoaded(handle), "Asset \"{}\" is not loaded!");
+		SPX_CORE_ASSERT(s_Registry.ContainsKey(handle), "Asset Registry does not contain the asset with handle \"{}\"!", AssetHandle::ToString(handle));
 		return s_Registry[handle];
+	}
+
+	const AssetMetadata& AssetManager::GetMetadataFromPath(const std::filesystem::path& path)
+	{
+		auto it = std::find_if(s_Registry.begin(), s_Registry.end(), [&](const auto& registryEntry) {
+			return registryEntry.second.Path == path;
+			});
+
+		if (it == s_Registry.end()) return AssetMetadata();
+
+		return it->second;
 	}
 
 	bool AssetManager::IsAssetLoaded(AssetHandle handle)
@@ -220,7 +249,7 @@ namespace Sphynx
 		{
 			asset->Handle = metadata.Handle;
 			s_LoadedAssets[metadata.Handle] = asset;
-			s_Registry[metadata.Handle] = metadata;
+			AddToRegistry(metadata);
 		}
 	}
 

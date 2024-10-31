@@ -1,7 +1,8 @@
 #include "spxpch.h"
 #include "ContentBrowserPanel.h"
 #include "Asset/AssetManager.h"
-#include "Asset/Texture/TextureAssetImporter.h"
+#include "Asset/Texture/TextureAsset.h"
+#include "Asset/Sprite/SpriteAsset.h"
 #include "Dialogs/FileDialog.h"
 #include "Renderer/Texture.h"
 
@@ -35,8 +36,8 @@ namespace Sphynx
 	}
 
 
-	ContentBrowserPanel::ContentBrowserPanel()
-		: m_CurrentDirectory(s_AssetsPath),
+	ContentBrowserPanel::ContentBrowserPanel() : 
+		m_CurrentDirectory(s_AssetsPath),
 		m_ShowAllFiles(false)
 	{
 	}
@@ -106,9 +107,11 @@ namespace Sphynx
 			ImVec2 marker_min = ImVec2(pos.x + wrap_width, pos.y);
 			ImVec2 marker_max = ImVec2(pos.x + wrap_width + 10, pos.y + ImGui::GetTextLineHeight());
 
-			ImGui::BeginGroup();
+			
 			if (directoryEntry.is_directory()) // directories
 			{
+				ImGui::BeginGroup();
+
 				if (ImGui::ImageButton(fileName.c_str(), (ImTextureID)folderTexture->GetNativeTexture(), sizeItem))
 				{
 					m_CurrentDirectory /= path.filename();
@@ -117,30 +120,67 @@ namespace Sphynx
 				ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
 				ImGui::TextWrapped(fileName.c_str());
 				ImGui::PopTextWrapPos();
+
+				ImGui::EndGroup();
 			}
 			else // files
 			{				
 				if (m_ShowAllFiles)
 				{
+					ImGui::BeginGroup();
+
 					ImGui::ImageButton(fileName.c_str(), (ImTextureID)fileTexture->GetNativeTexture(), sizeItem);
 
 					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
 					ImGui::TextWrapped(fileName.c_str());
 					ImGui::PopTextWrapPos();
+
+					ImGui::EndGroup();
 				}
 				else
 				{
 					if (relativePath.extension() == ASSET_EXTENSION)
 					{
+						ImGui::BeginGroup();
+
 						ImGui::ImageButton(fileName.c_str(), (ImTextureID)fileTexture->GetNativeTexture(), sizeItem);
 
 						ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
 						ImGui::TextWrapped(fileName.c_str());
 						ImGui::PopTextWrapPos();
+
+						ImGui::EndGroup();
+
+						const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / relativePath);
+
+						if (metadata.Type == TypeToAssetType<Texture>::Value && ImGui::BeginPopupContextItem(fileName.c_str()))
+						{
+							if (ImGui::Button("Create sprite"))
+							{
+								AssetMetadata spriteMetadata;
+								spriteMetadata.Handle = AssetHandle::Generate();
+								spriteMetadata.Type = TypeToAssetType<Sprite>::Value;
+								
+								std::filesystem::path name = metadata.Path.filename();
+								name.replace_extension();
+								name += "_sprite";
+								name.replace_extension(ASSET_EXTENSION);
+
+								spriteMetadata.Path = metadata.Path;
+								spriteMetadata.Path.replace_filename(name);
+
+								spriteMetadata.Dependencies.Add(metadata.Handle);
+
+								AssetImporter::Save(spriteMetadata);
+								AssetManager::AddToRegistry(spriteMetadata);
+
+								ImGui::CloseCurrentPopup();
+							}
+							ImGui::EndPopup();
+						}
 					}
 				}
 			}
-			ImGui::EndGroup();
 
 			ImGui::PopID();
 		}

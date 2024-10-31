@@ -12,10 +12,10 @@ namespace Sphynx
 {
 	struct SPHYNX_API SpriteAssetMetadata
 	{
-		Vector2i Position;
-		Vector2i Size;
-		Vector2f Pivot;
-		uint32_t PixelsPerUnit;
+		Vector2i Position{ 0, 0 };
+		Vector2i Size{ 1, 1 };
+		Vector2f Pivot{ 0.5f, 0.5f };
+		uint32_t PixelsPerUnit{ 100 };
 	};
 
 	GENERATE_ASSETTYPE_CONVERSOR(Sprite);
