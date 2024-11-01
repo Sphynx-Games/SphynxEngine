@@ -18,7 +18,8 @@ namespace Sphynx
 
 	static const std::filesystem::path s_AssetsPath = "Assets";
 
-	std::filesystem::path MakeRelativePath(const std::filesystem::path& absolutePath) {
+	std::filesystem::path MakeRelativePath(const std::filesystem::path& absolutePath)
+	{
 		// Get the parent path up to the target folder
 		std::filesystem::path currentPath = absolutePath;
 
@@ -83,7 +84,7 @@ namespace Sphynx
 
 		// content
 		int numItems = 0;
-		ImVec2 sizeItem{85.0f, 85.0f};
+		Vector2f sizeItem{ 85.0f, 85.0f };
 		float window_visible_x2 = ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionAvail().x;
 
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
@@ -91,66 +92,44 @@ namespace Sphynx
 			++numItems;
 			ImGui::PushID(numItems);
 
+			// apply SameLine if we are not printing the first item and if it fits into the remaining windows space
 			float last_button_x2 = ImGui::GetItemRectMax().x;
-			float next_button_x2 = last_button_x2 + ImGui::GetStyle().ItemSpacing.x + sizeItem.x; // Expected position if next button was on same line
+			float next_button_x2 = last_button_x2 + ImGui::GetStyle().ItemSpacing.x + sizeItem.X; // Expected position if next button was on same line
 			if (numItems != 1 && next_button_x2 < window_visible_x2)
 			{
 				ImGui::SameLine();
 			}
 
+			//ImVec2 pos = ImGui::GetCursorScreenPos();
+			//ImVec2 marker_min = ImVec2(pos.x + sizeItem.X, pos.y);
+			//ImVec2 marker_max = ImVec2(pos.x + sizeItem.X + 10, pos.y + ImGui::GetTextLineHeight());
+
+			// get the name of the current item
 			const auto& path = directoryEntry.path();
 			auto relativePath = std::filesystem::relative(path, s_AssetsPath);
 			std::string fileName = relativePath.filename().string();
-
-			static float wrap_width = sizeItem.x;
-			ImVec2 pos = ImGui::GetCursorScreenPos();
-			ImVec2 marker_min = ImVec2(pos.x + wrap_width, pos.y);
-			ImVec2 marker_max = ImVec2(pos.x + wrap_width + 10, pos.y + ImGui::GetTextLineHeight());
-
 			
-			if (directoryEntry.is_directory()) // directories
+			// render directories
+			if (directoryEntry.is_directory())
 			{
-				ImGui::BeginGroup();
-
-				if (ImGui::ImageButton(fileName.c_str(), (ImTextureID)folderTexture->GetNativeTexture(), sizeItem))
+				if (RenderImageButtonWithText(fileName, folderTexture, sizeItem))
 				{
 					m_CurrentDirectory /= path.filename();
 				}
-
-				ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
-				ImGui::TextWrapped(fileName.c_str());
-				ImGui::PopTextWrapPos();
-
-				ImGui::EndGroup();
 			}
-			else // files
+			else // render files
 			{				
 				if (m_ShowAllFiles)
 				{
-					ImGui::BeginGroup();
-
-					ImGui::ImageButton(fileName.c_str(), (ImTextureID)fileTexture->GetNativeTexture(), sizeItem);
-
-					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
-					ImGui::TextWrapped(fileName.c_str());
-					ImGui::PopTextWrapPos();
-
-					ImGui::EndGroup();
+					RenderImageButtonWithText(fileName, fileTexture, sizeItem);
 				}
 				else
 				{
 					if (relativePath.extension() == ASSET_EXTENSION)
 					{
-						ImGui::BeginGroup();
+						RenderImageButtonWithText(fileName, fileTexture, sizeItem);
 
-						ImGui::ImageButton(fileName.c_str(), (ImTextureID)fileTexture->GetNativeTexture(), sizeItem);
-
-						ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
-						ImGui::TextWrapped(fileName.c_str());
-						ImGui::PopTextWrapPos();
-
-						ImGui::EndGroup();
-
+						// context menu "Create sprite" for .spxasset of Texture type
 						const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / relativePath);
 
 						if (metadata.Type == TypeToAssetType<Texture>::Value && ImGui::BeginPopupContextItem(fileName.c_str()))
@@ -187,5 +166,22 @@ namespace Sphynx
 		
 
 		ImGui::End();
+	}
+
+	bool ContentBrowserPanel::RenderImageButtonWithText(const std::string& text, const Texture* texture, Vector2f size)
+	{
+		ImVec2 buttonSize{ size.X, size.Y };
+
+		ImGui::BeginGroup();
+
+		bool pressed = ImGui::ImageButton(text.c_str(), (ImTextureID)texture->GetNativeTexture(), buttonSize);
+
+		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + buttonSize.x);
+		ImGui::TextWrapped(text.c_str());
+		ImGui::PopTextWrapPos();
+
+		ImGui::EndGroup();
+
+		return pressed;
 	}
 }
