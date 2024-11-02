@@ -2,6 +2,7 @@
 
 #include "Base/Panel.h"
 #include "Math/Vector.h"
+#include "Math/Color.h"
 
 #include <filesystem>
 
@@ -17,7 +18,7 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
-		bool RenderImageButtonWithText(const std::string& text, const class Texture* texture, Vector2f size);
+		bool RenderImageButtonWithText(const std::string& text, const class Texture* texture, Vector2f size, Color color);
 
 	private:
 		std::filesystem::path m_CurrentDirectory;

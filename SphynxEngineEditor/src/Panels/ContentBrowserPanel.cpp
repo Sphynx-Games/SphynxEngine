@@ -51,6 +51,13 @@ namespace Sphynx
 
 		ImGui::Begin("Content Browser");
 
+
+		ImVec2 buttonSize{ 70.f, 70.f };
+		ImVec4 tintColor{ 1.f, 0.f, 0.f, 1.f };
+		ImGui::Image((ImTextureID)fileTexture->GetNativeTexture(), buttonSize, ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), tintColor);
+
+
+
 		// back button
 		ImGui::BeginDisabled(m_CurrentDirectory == s_AssetsPath);
 		if (ImGui::Button("<-"))
@@ -112,7 +119,7 @@ namespace Sphynx
 			// render directories
 			if (directoryEntry.is_directory())
 			{
-				if (RenderImageButtonWithText(fileName, folderTexture, sizeItem))
+				if (RenderImageButtonWithText(fileName, folderTexture, sizeItem, Color::White))
 				{
 					m_CurrentDirectory /= path.filename();
 				}
@@ -121,13 +128,13 @@ namespace Sphynx
 			{				
 				if (m_ShowAllFiles)
 				{
-					RenderImageButtonWithText(fileName, fileTexture, sizeItem);
+					RenderImageButtonWithText(fileName, fileTexture, sizeItem, Color::White);
 				}
 				else
 				{
 					if (relativePath.extension() == ASSET_EXTENSION)
 					{
-						RenderImageButtonWithText(fileName, fileTexture, sizeItem);
+						RenderImageButtonWithText(fileName, fileTexture, sizeItem, Color::White);
 
 						// context menu "Create sprite" for .spxasset of Texture type
 						const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / relativePath);
@@ -168,13 +175,30 @@ namespace Sphynx
 		ImGui::End();
 	}
 
-	bool ContentBrowserPanel::RenderImageButtonWithText(const std::string& text, const Texture* texture, Vector2f size)
+	bool ContentBrowserPanel::RenderImageButtonWithText(const std::string& text, const Texture* texture, Vector2f size, Color color)
 	{
 		ImVec2 buttonSize{ size.X, size.Y };
+		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
+
+		bool pressed = false;
+
+		ImVec2 cursorPos = ImGui::GetCursorPos();
+
+		std::string invisibleText = "##" + text;
+		if (ImGui::Selectable(invisibleText.c_str(), false, ImGuiSelectableFlags_AllowDoubleClick, buttonSize))
+		{
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				pressed = true;
+			}
+		}
+
+		ImGui::SetCursorPos(cursorPos);
+		ImGui::SetItemAllowOverlap();
 
 		ImGui::BeginGroup();
 
-		bool pressed = ImGui::ImageButton(text.c_str(), (ImTextureID)texture->GetNativeTexture(), buttonSize);
+		ImGui::Image((ImTextureID)texture->GetNativeTexture(), buttonSize, ImVec2(0, 0), ImVec2(1, 1), tintColor);
 
 		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + buttonSize.x);
 		ImGui::TextWrapped(text.c_str());
