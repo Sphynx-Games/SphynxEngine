@@ -18,10 +18,11 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
-		bool RenderImageButtonWithText(const std::string& text, const class Texture* texture, Vector2f size, Color color);
+		bool RenderSelectableItemWithImageAndText(const int numItem, const std::string& text, const class Texture* texture, Vector2f size, Color color = Color::White);
 
 	private:
 		std::filesystem::path m_CurrentDirectory;
 		bool m_ShowAllFiles;
+		int m_SelectedItem;
 	};
 }

@@ -5,6 +5,7 @@
 #include "Asset/Sprite/SpriteAsset.h"
 #include "Dialogs/FileDialog.h"
 #include "Renderer/Texture.h"
+#include "ImGuiExtra.h"
 
 #include <imgui.h>
 
@@ -39,7 +40,8 @@ namespace Sphynx
 
 	ContentBrowserPanel::ContentBrowserPanel() : 
 		m_CurrentDirectory(s_AssetsPath),
-		m_ShowAllFiles(false)
+		m_ShowAllFiles(false),
+		m_SelectedItem(-1)
 	{
 	}
 
@@ -51,18 +53,12 @@ namespace Sphynx
 
 		ImGui::Begin("Content Browser");
 
-
-		ImVec2 buttonSize{ 70.f, 70.f };
-		ImVec4 tintColor{ 1.f, 0.f, 0.f, 1.f };
-		ImGui::Image((ImTextureID)fileTexture->GetNativeTexture(), buttonSize, ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), tintColor);
-
-
-
-		// back button
+		// BACK BUTTON
 		ImGui::BeginDisabled(m_CurrentDirectory == s_AssetsPath);
 		if (ImGui::Button("<-"))
 		{
 			m_CurrentDirectory = m_CurrentDirectory.parent_path();
+			m_SelectedItem = -1;
 		}
 		ImGui::EndDisabled();
 
@@ -74,7 +70,7 @@ namespace Sphynx
 		float widthNeeded = itemWidth1 + itemPadding + itemWidth2;
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - widthNeeded);
 
-		// import button
+		// IMPORT BUTTON
 		if (ImGui::Button("Import"))
 		{
 			std::filesystem::path path = FileDialog::Open();
@@ -86,11 +82,12 @@ namespace Sphynx
 
 		ImGui::SameLine();
 
-		// show all files checkbox
+		// SHOW ALL FILES CHECKBOX
 		ImGui::Checkbox("Show all", &m_ShowAllFiles);
 
-		// content
+		// CONTENT
 		int numItems = 0;
+		int selectedItem = -1;
 		Vector2f sizeItem{ 85.0f, 85.0f };
 		float window_visible_x2 = ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionAvail().x;
 
@@ -119,22 +116,23 @@ namespace Sphynx
 			// render directories
 			if (directoryEntry.is_directory())
 			{
-				if (RenderImageButtonWithText(fileName, folderTexture, sizeItem, Color::White))
+				if (RenderSelectableItemWithImageAndText(numItems, fileName, folderTexture, sizeItem))
 				{
 					m_CurrentDirectory /= path.filename();
+					m_SelectedItem = -1;
 				}
 			}
 			else // render files
 			{				
 				if (m_ShowAllFiles)
 				{
-					RenderImageButtonWithText(fileName, fileTexture, sizeItem, Color::White);
+					RenderSelectableItemWithImageAndText(numItems, fileName, fileTexture, sizeItem);
 				}
 				else
 				{
 					if (relativePath.extension() == ASSET_EXTENSION)
 					{
-						RenderImageButtonWithText(fileName, fileTexture, sizeItem, Color::White);
+						RenderSelectableItemWithImageAndText(numItems, fileName, fileTexture, sizeItem);
 
 						// context menu "Create sprite" for .spxasset of Texture type
 						const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / relativePath);
@@ -175,37 +173,19 @@ namespace Sphynx
 		ImGui::End();
 	}
 
-	bool ContentBrowserPanel::RenderImageButtonWithText(const std::string& text, const Texture* texture, Vector2f size, Color color)
+	bool ContentBrowserPanel::RenderSelectableItemWithImageAndText(const int numItem, const std::string& text, const Texture* texture, Vector2f size, Color color)
 	{
 		ImVec2 buttonSize{ size.X, size.Y };
 		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
 
-		bool pressed = false;
-
-		ImVec2 cursorPos = ImGui::GetCursorPos();
-
-		std::string invisibleText = "##" + text;
-		if (ImGui::Selectable(invisibleText.c_str(), false, ImGuiSelectableFlags_AllowDoubleClick, buttonSize))
-		{
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				pressed = true;
-			}
-		}
-
-		ImGui::SetCursorPos(cursorPos);
-		ImGui::SetItemAllowOverlap();
-
-		ImGui::BeginGroup();
-
-		ImGui::Image((ImTextureID)texture->GetNativeTexture(), buttonSize, ImVec2(0, 0), ImVec2(1, 1), tintColor);
-
-		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + buttonSize.x);
-		ImGui::TextWrapped(text.c_str());
-		ImGui::PopTextWrapPos();
-
-		ImGui::EndGroup();
-
-		return pressed;
+		return ImGui::SelectableItemWithImageAndText(
+			m_SelectedItem,
+			numItem,
+			text,
+			(ImTextureID)texture->GetNativeTexture(),
+			buttonSize,
+			tintColor,
+			ImGuiSelectableFlags_AllowDoubleClick
+		);
 	}
 }
