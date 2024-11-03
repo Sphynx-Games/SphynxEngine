@@ -121,12 +121,22 @@ namespace Sphynx
 					m_CurrentDirectory /= path.filename();
 					m_SelectedItem = -1;
 				}
+				if (ImGui::BeginPopupContextItem(fileName.c_str()))
+				{
+					RenderDeleteButton(path);
+					ImGui::EndPopup();
+				}
 			}
 			else // render files
 			{				
 				if (m_ShowAllFiles)
 				{
 					RenderSelectableItemWithImageAndText(numItems, fileName, fileTexture, sizeItem);
+					if (ImGui::BeginPopupContextItem(fileName.c_str()))
+					{
+						RenderDeleteButton(path);
+						ImGui::EndPopup();
+					}
 				}
 				else
 				{
@@ -137,29 +147,34 @@ namespace Sphynx
 						// context menu "Create sprite" for .spxasset of Texture type
 						const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / relativePath);
 
-						if (metadata.Type == TypeToAssetType<Texture>::Value && ImGui::BeginPopupContextItem(fileName.c_str()))
+						if (ImGui::BeginPopupContextItem(fileName.c_str()))
 						{
-							if (ImGui::Button("Create sprite"))
+							if(metadata.Type == TypeToAssetType<Texture>::Value)
 							{
-								AssetMetadata spriteMetadata;
-								spriteMetadata.Handle = AssetHandle::Generate();
-								spriteMetadata.Type = TypeToAssetType<Sprite>::Value;
-								
-								std::filesystem::path name = metadata.Path.filename();
-								name.replace_extension();
-								name += "_sprite";
-								name.replace_extension(ASSET_EXTENSION);
+								if (ImGui::Button("Create sprite"))
+								{
+									AssetMetadata spriteMetadata;
+									spriteMetadata.Handle = AssetHandle::Generate();
+									spriteMetadata.Type = TypeToAssetType<Sprite>::Value;
 
-								spriteMetadata.Path = metadata.Path;
-								spriteMetadata.Path.replace_filename(name);
+									std::filesystem::path name = metadata.Path.filename();
+									name.replace_extension();
+									name += "_sprite";
+									name.replace_extension(ASSET_EXTENSION);
 
-								spriteMetadata.Dependencies.Add(metadata.Handle);
+									spriteMetadata.Path = metadata.Path;
+									spriteMetadata.Path.replace_filename(name);
 
-								AssetImporter::Save(spriteMetadata);
-								AssetManager::AddToRegistry(spriteMetadata);
+									spriteMetadata.Dependencies.Add(metadata.Handle);
 
-								ImGui::CloseCurrentPopup();
+									AssetImporter::Save(spriteMetadata);
+									AssetManager::AddToRegistry(spriteMetadata);
+
+									ImGui::CloseCurrentPopup();
+								}
 							}
+
+							RenderDeleteButton(path);
 							ImGui::EndPopup();
 						}
 					}
@@ -187,5 +202,14 @@ namespace Sphynx
 			tintColor,
 			ImGuiSelectableFlags_AllowDoubleClick
 		);
+	}
+
+	void ContentBrowserPanel::RenderDeleteButton(const std::filesystem::path& path)
+	{
+		if (ImGui::Button("Delete"))
+		{
+			std::filesystem::remove_all(path);
+			m_SelectedItem = -1;
+		}
 	}
 }
