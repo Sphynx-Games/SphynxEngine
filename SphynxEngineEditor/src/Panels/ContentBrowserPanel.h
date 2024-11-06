@@ -19,7 +19,7 @@ namespace Sphynx
 
 	private:
 		bool RenderSelectableItemWithImageAndText(const int numItem, const std::string& text, const class Texture* texture, Vector2f size, Color color = Color::White);
-		void RenderDeleteButton(const std::filesystem::path& path);
+		void RenderDeleteOption(const std::filesystem::path& path);
 
 	private:
 		std::filesystem::path m_CurrentDirectory;

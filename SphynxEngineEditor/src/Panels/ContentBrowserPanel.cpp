@@ -123,7 +123,7 @@ namespace Sphynx
 				}
 				if (ImGui::BeginPopupContextItem(fileName.c_str()))
 				{
-					RenderDeleteButton(path);
+					RenderDeleteOption(path);
 					ImGui::EndPopup();
 				}
 			}
@@ -134,7 +134,7 @@ namespace Sphynx
 					RenderSelectableItemWithImageAndText(numItems, fileName, fileTexture, sizeItem);
 					if (ImGui::BeginPopupContextItem(fileName.c_str()))
 					{
-						RenderDeleteButton(path);
+						RenderDeleteOption(path);
 						ImGui::EndPopup();
 					}
 				}
@@ -151,7 +151,7 @@ namespace Sphynx
 						{
 							if(metadata.Type == TypeToAssetType<Texture>::Value)
 							{
-								if (ImGui::Button("Create sprite"))
+								if (ImGui::MenuItem("Create sprite"))
 								{
 									AssetMetadata spriteMetadata;
 									spriteMetadata.Handle = AssetHandle::Generate();
@@ -174,7 +174,7 @@ namespace Sphynx
 								}
 							}
 
-							RenderDeleteButton(path);
+							RenderDeleteOption(path);
 							ImGui::EndPopup();
 						}
 					}
@@ -183,7 +183,21 @@ namespace Sphynx
 
 			ImGui::PopID();
 		}
-		
+
+		// NEW FOLDER CONTEXT ITEM OPTION
+		if (ImGui::BeginPopupContextWindow("New folder", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
+		{
+			if (ImGui::MenuItem("New folder"))
+			{
+				if(!std::filesystem::is_directory("src") || !std::filesystem::exists("src"))
+				{
+					std::filesystem::path folder = m_CurrentDirectory / "New folder";
+					std::filesystem::create_directory(folder.c_str());
+				}
+			}
+			ImGui::EndPopup();
+		}
+
 
 		ImGui::End();
 	}
@@ -204,9 +218,9 @@ namespace Sphynx
 		);
 	}
 
-	void ContentBrowserPanel::RenderDeleteButton(const std::filesystem::path& path)
+	void ContentBrowserPanel::RenderDeleteOption(const std::filesystem::path& path)
 	{
-		if (ImGui::Button("Delete"))
+		if (ImGui::MenuItem("Delete"))
 		{
 			std::filesystem::remove_all(path);
 			m_SelectedItem = -1;
