@@ -41,8 +41,11 @@ namespace Sphynx
 	ContentBrowserPanel::ContentBrowserPanel() : 
 		m_CurrentDirectory(s_AssetsPath),
 		m_ShowAllFiles(false),
-		m_SelectedItem(-1)
+		m_SelectedItem(-1),
+		m_PathToRename(),
+		m_RenameBuffer()
 	{
+		std::fill(std::begin(m_RenameBuffer), std::end(m_RenameBuffer), '\0');
 	}
 
 	void ContentBrowserPanel::RenderGUI()
@@ -111,71 +114,39 @@ namespace Sphynx
 			// get the name of the current item
 			const auto& path = directoryEntry.path();
 			auto relativePath = std::filesystem::relative(path, s_AssetsPath);
-			std::string fileName = relativePath.filename().string();
+			std::string filename = relativePath.filename().string();
 			
 			// render directories
 			if (directoryEntry.is_directory())
 			{
-				if (RenderSelectableItemWithImageAndText(numItems, fileName, folderTexture, sizeItem))
+				if(!RenderRenamingContentItem(path, numItems, filename, folderTexture, sizeItem))
 				{
-					m_CurrentDirectory /= path.filename();
-					m_SelectedItem = -1;
-				}
-				if (ImGui::BeginPopupContextItem(fileName.c_str()))
-				{
-					RenderDeleteOption(path);
-					ImGui::EndPopup();
+					if (RenderContentItem(numItems, filename, folderTexture, sizeItem))
+					{
+						m_CurrentDirectory /= path.filename();
+						m_SelectedItem = -1;
+					}
+					RenderContentItemContextMenu(filename, path);
 				}
 			}
 			else // render files
 			{				
 				if (m_ShowAllFiles)
 				{
-					RenderSelectableItemWithImageAndText(numItems, fileName, fileTexture, sizeItem);
-					if (ImGui::BeginPopupContextItem(fileName.c_str()))
+					if (!RenderRenamingContentItem(path, numItems, filename, fileTexture, sizeItem))
 					{
-						RenderDeleteOption(path);
-						ImGui::EndPopup();
+						RenderContentItem(numItems, filename, fileTexture, sizeItem);
+						RenderContentItemContextMenu(filename, path);
 					}
 				}
 				else
 				{
 					if (relativePath.extension() == ASSET_EXTENSION)
 					{
-						RenderSelectableItemWithImageAndText(numItems, fileName, fileTexture, sizeItem);
-
-						// context menu "Create sprite" for .spxasset of Texture type
-						const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / relativePath);
-
-						if (ImGui::BeginPopupContextItem(fileName.c_str()))
+						if (!RenderRenamingContentItem(path, numItems, filename, fileTexture, sizeItem))
 						{
-							if(metadata.Type == TypeToAssetType<Texture>::Value)
-							{
-								if (ImGui::MenuItem("Create sprite"))
-								{
-									AssetMetadata spriteMetadata;
-									spriteMetadata.Handle = AssetHandle::Generate();
-									spriteMetadata.Type = TypeToAssetType<Sprite>::Value;
-
-									std::filesystem::path name = metadata.Path.filename();
-									name.replace_extension();
-									name += "_sprite";
-									name.replace_extension(ASSET_EXTENSION);
-
-									spriteMetadata.Path = metadata.Path;
-									spriteMetadata.Path.replace_filename(name);
-
-									spriteMetadata.Dependencies.Add(metadata.Handle);
-
-									AssetImporter::Save(spriteMetadata);
-									AssetManager::AddToRegistry(spriteMetadata);
-
-									ImGui::CloseCurrentPopup();
-								}
-							}
-
-							RenderDeleteOption(path);
-							ImGui::EndPopup();
+							RenderContentItem(numItems, filename, fileTexture, sizeItem);
+							RenderContentItemAssetContextMenu(filename, relativePath);
 						}
 					}
 				}
@@ -202,7 +173,7 @@ namespace Sphynx
 		ImGui::End();
 	}
 
-	bool ContentBrowserPanel::RenderSelectableItemWithImageAndText(const int numItem, const std::string& text, const Texture* texture, Vector2f size, Color color)
+	bool ContentBrowserPanel::RenderContentItem(const int numItem, const std::string& text, const Texture* texture, Vector2f size, Color color)
 	{
 		ImVec2 buttonSize{ size.X, size.Y };
 		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
@@ -218,6 +189,54 @@ namespace Sphynx
 		);
 	}
 
+	bool ContentBrowserPanel::RenderRenamingContentItem(const std::filesystem::path& path, const int numItem, const std::string& text, const Texture* texture, Vector2f size, Color color)
+	{
+		if (!IsRenaming(path)) return false;
+
+		ImVec2 buttonSize{ size.X, size.Y };
+		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
+
+		 bool renamed = ImGui::SelectableItemWithImageAndTextInput(
+			m_SelectedItem,
+			numItem,
+			text,
+			m_RenameBuffer,
+			(ImTextureID)texture->GetNativeTexture(),
+			buttonSize,
+			tintColor,
+			ImGuiSelectableFlags_AllowDoubleClick
+		);
+
+		if (renamed || ImGui::IsItemDeactivatedAfterEdit())
+		{
+			if (m_RenameBuffer[0] != '\0')
+			{
+				std::filesystem::path newPathName = m_PathToRename;
+				std::filesystem::path extension = newPathName.extension();
+
+				newPathName.remove_filename();
+				newPathName += std::string(m_RenameBuffer);
+				newPathName.replace_extension(extension);
+
+				std::filesystem::rename(m_PathToRename, newPathName);
+
+				std::fill(std::begin(m_RenameBuffer), std::end(m_RenameBuffer), '\0');
+			}
+
+			m_PathToRename = "";
+		}
+
+		return true;
+	}
+
+	void ContentBrowserPanel::RenderRenameOption(const std::filesystem::path& path)
+	{
+		if (ImGui::MenuItem("Rename"))
+		{
+			m_PathToRename = path;
+		}
+	}
+
 	void ContentBrowserPanel::RenderDeleteOption(const std::filesystem::path& path)
 	{
 		if (ImGui::MenuItem("Delete"))
@@ -225,5 +244,62 @@ namespace Sphynx
 			std::filesystem::remove_all(path);
 			m_SelectedItem = -1;
 		}
+	}
+
+	void ContentBrowserPanel::RenderContentItemCommonOptions(const std::filesystem::path& path)
+	{
+		RenderRenameOption(path);
+		RenderDeleteOption(path);
+	}
+
+	void ContentBrowserPanel::RenderContentItemContextMenu(const std::string& filename, const std::filesystem::path& path)
+	{
+		if (ImGui::BeginPopupContextItem(filename.c_str()))
+		{
+			RenderContentItemCommonOptions(path);
+			ImGui::EndPopup();
+		}
+	}
+
+	void ContentBrowserPanel::RenderContentItemAssetContextMenu(const std::string& filename, const std::filesystem::path& path)
+	{
+		const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / path);
+
+		if (ImGui::BeginPopupContextItem(filename.c_str()))
+		{
+			if (metadata.Type == TypeToAssetType<Texture>::Value)
+			{
+				// "Create sprite" for .spxasset of Texture type
+				if (ImGui::MenuItem("Create sprite"))
+				{
+					AssetMetadata spriteMetadata;
+					spriteMetadata.Handle = AssetHandle::Generate();
+					spriteMetadata.Type = TypeToAssetType<Sprite>::Value;
+
+					std::filesystem::path name = metadata.Path.filename();
+					name.replace_extension();
+					name += "_sprite";
+					name.replace_extension(ASSET_EXTENSION);
+
+					spriteMetadata.Path = metadata.Path;
+					spriteMetadata.Path.replace_filename(name);
+
+					spriteMetadata.Dependencies.Add(metadata.Handle);
+
+					AssetImporter::Save(spriteMetadata);
+					AssetManager::AddToRegistry(spriteMetadata);
+
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			RenderContentItemCommonOptions(path);
+			ImGui::EndPopup();
+		}
+	}
+
+	bool ContentBrowserPanel::IsRenaming(const std::filesystem::path& path)
+	{
+		return !m_PathToRename.string().empty() && m_PathToRename == path;
 	}
 }
