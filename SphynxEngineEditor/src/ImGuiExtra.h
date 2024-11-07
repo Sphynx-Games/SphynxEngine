@@ -30,6 +30,7 @@ namespace ImGui
 		const int& numItem,
 		const std::string& text,
 		char* buffer,
+		size_t bufferSize,
 		ImTextureID texture,
 		ImVec2 size = ImVec2{ 10.f, 10.f },
 		ImVec4 tint = ImVec4{ 1.f, 1.f, 1.f, 1.f },

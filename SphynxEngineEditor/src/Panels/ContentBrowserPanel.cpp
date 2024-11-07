@@ -201,6 +201,7 @@ namespace Sphynx
 			numItem,
 			text,
 			m_RenameBuffer,
+			sizeof(m_RenameBuffer) / sizeof(char),
 			(ImTextureID)texture->GetNativeTexture(),
 			buttonSize,
 			tintColor,

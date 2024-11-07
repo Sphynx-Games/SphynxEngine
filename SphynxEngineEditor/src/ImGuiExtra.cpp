@@ -57,7 +57,7 @@ namespace ImGui
 		return pressed;
 	}
 
-	bool SelectableItemWithImageAndTextInput(int& itemSelected, const int& numItem, const std::string& text, char* buffer, ImTextureID texture, ImVec2 size, ImVec4 tint, ImGuiSelectableFlags flags)
+	bool SelectableItemWithImageAndTextInput(int& itemSelected, const int& numItem, const std::string& text, char* buffer, size_t bufferSize, ImTextureID texture, ImVec2 size, ImVec4 tint, ImGuiSelectableFlags flags)
 	{
 		ImVec2 cursorPos = ImGui::GetCursorPos();
 
@@ -76,8 +76,8 @@ namespace ImGui
 		if (/*ImGui::IsAnyItemFocused() &&*/ !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 			ImGui::SetKeyboardFocusHere(0);
 
-		strncpy(buffer, text.c_str(), sizeof(buffer));
-		bool renamed = ImGui::InputText("##rename", buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue /* | ImGuiInputTextFlags_CallbackResize*/);
+		strncpy(buffer, text.c_str(), text.size());
+		bool renamed = ImGui::InputText("##rename", buffer, bufferSize, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue /* | ImGuiInputTextFlags_CallbackResize*/);
 
 		/*ImGuiInputTextState& edit_state = ImGui::GetCurrentContext()->InputTextState;
 		edit_state.TextA.Size = 1024;
