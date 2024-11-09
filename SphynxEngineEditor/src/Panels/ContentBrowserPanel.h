@@ -25,23 +25,20 @@ namespace Sphynx
 		bool RenderContentItem(const ContentItem& contentItem, const class Texture* texture, Vector2f size, Color color = Color::White);
 		bool RenderRenamingContentItem(const ContentItem& contentItem, const class Texture* texture, Vector2f size, Color color = Color::White);
 		
-		void RenderRenameOption(const std::filesystem::path& path);
-		void RenderDeleteOption(const std::filesystem::path& path);
-		void RenderContentItemCommonOptions(const std::filesystem::path& path);
-
-		void RenderContentItemContextMenu(const ContentItem& contentItem);
-		void RenderContentItemAssetContextMenu(const ContentItem& contentItem);
+		void RenderContentItem_ContextMenu(const ContentItem& contentItem);
+		void RenderContentItem_AssetContextMenu(const ContentItem& contentItem);
 		
+		void RenderContentItem_CommonOptions(const std::filesystem::path& path);
+		void RenderContentItem_RenameOption(const std::filesystem::path& path);
+		void RenderContentItem_DeleteOption(const std::filesystem::path& path);
+
 		bool IsRenaming(const std::filesystem::path& path);
-		void ResetSelectedContentItem();
+		void DeleteContentItem(const std::filesystem::path& path);
 
 	private:
 		std::filesystem::path m_CurrentDirectory;
 		bool m_ShowAllFiles;
-
-		//ContentItem& m_SelectedContentItem;
-
-		int m_SelectedItem;
+		ContentItem* m_SelectedContentItem;
 		std::filesystem::path m_PathToRename;
 		char m_RenameBuffer[1024];
 	};

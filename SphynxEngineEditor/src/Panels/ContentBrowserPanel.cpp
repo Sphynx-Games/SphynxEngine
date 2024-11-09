@@ -24,15 +24,33 @@ namespace Sphynx
 
 	struct ContentItem
 	{
+	public:
 		ContentItem() = default;
 
-		ContentItem(std::filesystem::path absolutePath, const int& number = -1) :
+		ContentItem(const std::filesystem::path& absolutePath, const int& number = -1) :
 			Number(number),
 			AbsolutePath(absolutePath),
 			RelativePath(std::filesystem::relative(AbsolutePath, s_AssetsPath)),
 			Filename(RelativePath.filename().string())
 		{}
 
+		void CopyValues(const ContentItem& item)
+		{
+			Number = item.Number;
+			AbsolutePath = item.AbsolutePath;
+			RelativePath = item.RelativePath;
+			Filename = item.Filename;
+		}
+
+		void ResetValues()
+		{
+			Number = -1;
+			AbsolutePath = "";
+			RelativePath = "";
+			Filename = "";
+		}
+
+	public:
 		int Number = -1;
 		std::filesystem::path AbsolutePath;
 		std::filesystem::path RelativePath;
@@ -62,8 +80,7 @@ namespace Sphynx
 	ContentBrowserPanel::ContentBrowserPanel() : 
 		m_CurrentDirectory(s_AssetsPath),
 		m_ShowAllFiles(false),
-		//m_SelectedContentItem(),
-		m_SelectedItem(-1),
+		m_SelectedContentItem(new ContentItem()),
 		m_PathToRename(),
 		m_RenameBuffer()
 	{
@@ -83,7 +100,7 @@ namespace Sphynx
 		if (ImGui::Button("<-"))
 		{
 			m_CurrentDirectory = m_CurrentDirectory.parent_path();
-			ResetSelectedContentItem();
+			m_SelectedContentItem->ResetValues();
 		}
 		ImGui::EndDisabled();
 
@@ -118,12 +135,12 @@ namespace Sphynx
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			++numItems;
-			ImGui::PushID(numItems);
+			ImGui::PushID("ContentItem_" + numItems);
 
 			// apply SameLine if we are not printing the first item and if it fits into the remaining windows space
-			float last_button_x2 = ImGui::GetItemRectMax().x;
-			float next_button_x2 = last_button_x2 + ImGui::GetStyle().ItemSpacing.x + sizeItem.X; // Expected position if next button was on same line
-			if (numItems != 1 && next_button_x2 < window_visible_x2)
+			float last_item_x2 = ImGui::GetItemRectMax().x;
+			float next_item_x2 = last_item_x2 + ImGui::GetStyle().ItemSpacing.x + sizeItem.X; // Expected position if next item was on same line
+			if (numItems != 1 && next_item_x2 < window_visible_x2)
 			{
 				ImGui::SameLine();
 			}
@@ -143,9 +160,9 @@ namespace Sphynx
 					if (RenderContentItem(currentItem, folderTexture, sizeItem))
 					{
 						m_CurrentDirectory /= currentItem.Filename;
-						ResetSelectedContentItem();
+						m_SelectedContentItem->ResetValues();
 					}
-					RenderContentItemContextMenu(currentItem);
+					RenderContentItem_ContextMenu(currentItem);
 				}
 			}
 			else // render files
@@ -155,7 +172,7 @@ namespace Sphynx
 					if (!RenderRenamingContentItem(currentItem, fileTexture, sizeItem))
 					{
 						RenderContentItem(currentItem, fileTexture, sizeItem);
-						RenderContentItemContextMenu(currentItem);
+						RenderContentItem_ContextMenu(currentItem);
 					}
 				}
 				else
@@ -165,7 +182,7 @@ namespace Sphynx
 						if (!RenderRenamingContentItem(currentItem, fileTexture, sizeItem))
 						{
 							RenderContentItem(currentItem, fileTexture, sizeItem);
-							RenderContentItemAssetContextMenu(currentItem);
+							RenderContentItem_AssetContextMenu(currentItem);
 						}
 					}
 				}
@@ -188,7 +205,6 @@ namespace Sphynx
 			ImGui::EndPopup();
 		}
 
-
 		ImGui::End();
 	}
 
@@ -199,7 +215,7 @@ namespace Sphynx
 			{
 				if (e.GetKeycode() == SPX_SCANCODE_DELETE)
 				{
-
+					DeleteContentItem(m_SelectedContentItem->AbsolutePath);
 				}
 
 				return false;
@@ -212,7 +228,7 @@ namespace Sphynx
 		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
 
 		bool pressed = ImGui::SelectableItemWithImageAndText(
-			m_SelectedItem,
+			m_SelectedContentItem->Number,
 			contentItem.Number,
 			contentItem.Filename,
 			(ImTextureID)texture->GetNativeTexture(),
@@ -221,11 +237,11 @@ namespace Sphynx
 			ImGuiSelectableFlags_AllowDoubleClick
 		);
 
-		/*if (selected)
+		// if item was clicked => save values of the new current selected item
+		if (m_SelectedContentItem->Number == contentItem.Number)
 		{
-			m_SelectedContentItem.Number = numItem;
-			m_SelectedContentItem.Text = text;
-		}*/
+			m_SelectedContentItem->CopyValues(contentItem);
+		}
 
 		return pressed;
 	}
@@ -238,7 +254,7 @@ namespace Sphynx
 		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
 
 		ImGui::SelectableItemWithImageAndTextInput(
-			m_SelectedItem,
+			m_SelectedContentItem->Number,
 			contentItem.Number,
 			contentItem.Filename,
 			m_RenameBuffer,
@@ -271,44 +287,25 @@ namespace Sphynx
 		return true;
 	}
 
-	void ContentBrowserPanel::RenderRenameOption(const std::filesystem::path& path)
-	{
-		if (ImGui::MenuItem("Rename"))
-		{
-			m_PathToRename = path;
-		}
-	}
-
-	void ContentBrowserPanel::RenderDeleteOption(const std::filesystem::path& path)
-	{
-		if (ImGui::MenuItem("Delete"))
-		{
-			std::filesystem::remove_all(path);
-			ResetSelectedContentItem();
-		}
-	}
-
-	void ContentBrowserPanel::RenderContentItemCommonOptions(const std::filesystem::path& path)
-	{
-		RenderRenameOption(path);
-		RenderDeleteOption(path);
-	}
-
-	void ContentBrowserPanel::RenderContentItemContextMenu(const ContentItem& contentItem)
+	void ContentBrowserPanel::RenderContentItem_ContextMenu(const ContentItem& contentItem)
 	{
 		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
 		{
-			RenderContentItemCommonOptions(contentItem.AbsolutePath);
+			m_SelectedContentItem->CopyValues(contentItem);
+
+			RenderContentItem_CommonOptions(contentItem.AbsolutePath);
 			ImGui::EndPopup();
 		}
 	}
 
-	void ContentBrowserPanel::RenderContentItemAssetContextMenu(const ContentItem& contentItem)
+	void ContentBrowserPanel::RenderContentItem_AssetContextMenu(const ContentItem& contentItem)
 	{
 		const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / contentItem.RelativePath);
 
 		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
 		{
+			m_SelectedContentItem->CopyValues(contentItem);
+
 			if (metadata.Type == TypeToAssetType<Texture>::Value)
 			{
 				// "Create sprite" for .spxasset of Texture type
@@ -335,8 +332,30 @@ namespace Sphynx
 				}
 			}
 
-			RenderContentItemCommonOptions(contentItem.RelativePath);
+			RenderContentItem_CommonOptions(contentItem.RelativePath);
 			ImGui::EndPopup();
+		}
+	}
+
+	void ContentBrowserPanel::RenderContentItem_CommonOptions(const std::filesystem::path& path)
+	{
+		RenderContentItem_RenameOption(path);
+		RenderContentItem_DeleteOption(path);
+	}
+
+	void ContentBrowserPanel::RenderContentItem_RenameOption(const std::filesystem::path& path)
+	{
+		if (ImGui::MenuItem("Rename"))
+		{
+			m_PathToRename = path;
+		}
+	}
+
+	void ContentBrowserPanel::RenderContentItem_DeleteOption(const std::filesystem::path& path)
+	{
+		if (ImGui::MenuItem("Delete"))
+		{
+			DeleteContentItem(path);
 		}
 	}
 
@@ -344,10 +363,10 @@ namespace Sphynx
 	{
 		return !m_PathToRename.string().empty() && m_PathToRename == path;
 	}
-	
-	void ContentBrowserPanel::ResetSelectedContentItem()
+
+	void ContentBrowserPanel::DeleteContentItem(const std::filesystem::path& path)
 	{
-		//m_SelectedContentItem.Number = -1;
-		m_SelectedItem = -1;
+		std::filesystem::remove_all(path);
+		m_SelectedContentItem->ResetValues();
 	}
 }

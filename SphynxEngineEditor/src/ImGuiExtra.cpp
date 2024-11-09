@@ -15,12 +15,6 @@ namespace ImGui
 
 		switch (flags)
 		{
-		case ImGuiSelectableFlags_None:
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-			{
-				pressed = true;
-			}
-			break;
 		case ImGuiSelectableFlags_AllowDoubleClick:
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
@@ -28,6 +22,7 @@ namespace ImGui
 			}
 			break;
 		default:
+			pressed = true;
 			break;
 		}
 
