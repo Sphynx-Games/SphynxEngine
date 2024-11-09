@@ -208,7 +208,7 @@ namespace Sphynx
 			ImGuiSelectableFlags_AllowDoubleClick
 		);
 
-		if (renamed || ImGui::IsItemDeactivatedAfterEdit())
+		if (/*renamed || */ImGui::IsItemDeactivated())
 		{
 			if (m_RenameBuffer[0] != '\0')
 			{

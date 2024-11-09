@@ -73,15 +73,13 @@ namespace ImGui
 
 		ImGui::PushItemWidth(size.x);
 
-		if (/*ImGui::IsAnyItemFocused() &&*/ !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+		if (!ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+		{
 			ImGui::SetKeyboardFocusHere(0);
+		}
 
 		strncpy(buffer, text.c_str(), text.size());
-		bool renamed = ImGui::InputText("##rename", buffer, bufferSize, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue /* | ImGuiInputTextFlags_CallbackResize*/);
-
-		/*ImGuiInputTextState& edit_state = ImGui::GetCurrentContext()->InputTextState;
-		edit_state.TextA.Size = 1024;
-		edit_state.InitialTextA.Size = 1024;*/
+		bool renamed = ImGui::InputText("##rename", buffer, bufferSize, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue);
 
 		ImGui::PopItemWidth();
 
