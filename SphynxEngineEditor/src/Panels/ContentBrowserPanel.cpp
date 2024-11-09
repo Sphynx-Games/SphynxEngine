@@ -5,6 +5,9 @@
 #include "Asset/Sprite/SpriteAsset.h"
 #include "Dialogs/FileDialog.h"
 #include "Renderer/Texture.h"
+#include "Events/Event.h"
+#include "Events/InputEvent.h"
+#include "Input/Keycode.h"
 #include "ImGuiExtra.h"
 
 #include <imgui.h>
@@ -18,6 +21,24 @@ namespace Sphynx
 	static const std::filesystem::path s_ResourcesPath = "SphynxEngineEditor\\Resources";
 
 	static const std::filesystem::path s_AssetsPath = "Assets";
+
+	struct ContentItem
+	{
+		ContentItem() = default;
+
+		ContentItem(std::filesystem::path absolutePath, const int& number = -1) :
+			Number(number),
+			AbsolutePath(absolutePath),
+			RelativePath(std::filesystem::relative(AbsolutePath, s_AssetsPath)),
+			Filename(RelativePath.filename().string())
+		{}
+
+		int Number = -1;
+		std::filesystem::path AbsolutePath;
+		std::filesystem::path RelativePath;
+		std::string Filename;
+	};
+
 
 	std::filesystem::path MakeRelativePath(const std::filesystem::path& absolutePath)
 	{
@@ -41,6 +62,7 @@ namespace Sphynx
 	ContentBrowserPanel::ContentBrowserPanel() : 
 		m_CurrentDirectory(s_AssetsPath),
 		m_ShowAllFiles(false),
+		//m_SelectedContentItem(),
 		m_SelectedItem(-1),
 		m_PathToRename(),
 		m_RenameBuffer()
@@ -61,7 +83,7 @@ namespace Sphynx
 		if (ImGui::Button("<-"))
 		{
 			m_CurrentDirectory = m_CurrentDirectory.parent_path();
-			m_SelectedItem = -1;
+			ResetSelectedContentItem();
 		}
 		ImGui::EndDisabled();
 
@@ -90,7 +112,6 @@ namespace Sphynx
 
 		// CONTENT
 		int numItems = 0;
-		int selectedItem = -1;
 		Vector2f sizeItem{ 85.0f, 85.0f };
 		float window_visible_x2 = ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionAvail().x;
 
@@ -112,41 +133,39 @@ namespace Sphynx
 			//ImVec2 marker_max = ImVec2(pos.x + sizeItem.X + 10, pos.y + ImGui::GetTextLineHeight());
 
 			// get the name of the current item
-			const auto& path = directoryEntry.path();
-			auto relativePath = std::filesystem::relative(path, s_AssetsPath);
-			std::string filename = relativePath.filename().string();
+			ContentItem currentItem(directoryEntry.path(), numItems);
 			
 			// render directories
 			if (directoryEntry.is_directory())
 			{
-				if(!RenderRenamingContentItem(path, numItems, filename, folderTexture, sizeItem))
+				if(!RenderRenamingContentItem(currentItem, folderTexture, sizeItem))
 				{
-					if (RenderContentItem(numItems, filename, folderTexture, sizeItem))
+					if (RenderContentItem(currentItem, folderTexture, sizeItem))
 					{
-						m_CurrentDirectory /= path.filename();
-						m_SelectedItem = -1;
+						m_CurrentDirectory /= currentItem.Filename;
+						ResetSelectedContentItem();
 					}
-					RenderContentItemContextMenu(filename, path);
+					RenderContentItemContextMenu(currentItem);
 				}
 			}
 			else // render files
 			{				
 				if (m_ShowAllFiles)
 				{
-					if (!RenderRenamingContentItem(path, numItems, filename, fileTexture, sizeItem))
+					if (!RenderRenamingContentItem(currentItem, fileTexture, sizeItem))
 					{
-						RenderContentItem(numItems, filename, fileTexture, sizeItem);
-						RenderContentItemContextMenu(filename, path);
+						RenderContentItem(currentItem, fileTexture, sizeItem);
+						RenderContentItemContextMenu(currentItem);
 					}
 				}
 				else
 				{
-					if (relativePath.extension() == ASSET_EXTENSION)
+					if (currentItem.RelativePath.extension() == ASSET_EXTENSION)
 					{
-						if (!RenderRenamingContentItem(path, numItems, filename, fileTexture, sizeItem))
+						if (!RenderRenamingContentItem(currentItem, fileTexture, sizeItem))
 						{
-							RenderContentItem(numItems, filename, fileTexture, sizeItem);
-							RenderContentItemAssetContextMenu(filename, relativePath);
+							RenderContentItem(currentItem, fileTexture, sizeItem);
+							RenderContentItemAssetContextMenu(currentItem);
 						}
 					}
 				}
@@ -173,33 +192,55 @@ namespace Sphynx
 		ImGui::End();
 	}
 
-	bool ContentBrowserPanel::RenderContentItem(const int numItem, const std::string& text, const Texture* texture, Vector2f size, Color color)
+	void ContentBrowserPanel::HandleEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>([&](KeyPressedEvent& e)
+			{
+				if (e.GetKeycode() == SPX_SCANCODE_DELETE)
+				{
+
+				}
+
+				return false;
+			});
+	}
+
+	bool ContentBrowserPanel::RenderContentItem(const ContentItem& contentItem, const Texture* texture, Vector2f size, Color color)
 	{
 		ImVec2 buttonSize{ size.X, size.Y };
 		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
 
-		return ImGui::SelectableItemWithImageAndText(
+		bool pressed = ImGui::SelectableItemWithImageAndText(
 			m_SelectedItem,
-			numItem,
-			text,
+			contentItem.Number,
+			contentItem.Filename,
 			(ImTextureID)texture->GetNativeTexture(),
 			buttonSize,
 			tintColor,
 			ImGuiSelectableFlags_AllowDoubleClick
 		);
+
+		/*if (selected)
+		{
+			m_SelectedContentItem.Number = numItem;
+			m_SelectedContentItem.Text = text;
+		}*/
+
+		return pressed;
 	}
 
-	bool ContentBrowserPanel::RenderRenamingContentItem(const std::filesystem::path& path, const int numItem, const std::string& text, const Texture* texture, Vector2f size, Color color)
+	bool ContentBrowserPanel::RenderRenamingContentItem(const ContentItem& contentItem, const Texture* texture, Vector2f size, Color color)
 	{
-		if (!IsRenaming(path)) return false;
+		if (!IsRenaming(contentItem.AbsolutePath)) return false;
 
 		ImVec2 buttonSize{ size.X, size.Y };
 		ImVec4 tintColor{ color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f };
 
-		 bool renamed = ImGui::SelectableItemWithImageAndTextInput(
+		ImGui::SelectableItemWithImageAndTextInput(
 			m_SelectedItem,
-			numItem,
-			text,
+			contentItem.Number,
+			contentItem.Filename,
 			m_RenameBuffer,
 			sizeof(m_RenameBuffer) / sizeof(char),
 			(ImTextureID)texture->GetNativeTexture(),
@@ -208,7 +249,7 @@ namespace Sphynx
 			ImGuiSelectableFlags_AllowDoubleClick
 		);
 
-		if (/*renamed || */ImGui::IsItemDeactivated())
+		if (ImGui::IsItemDeactivated())
 		{
 			if (m_RenameBuffer[0] != '\0')
 			{
@@ -243,7 +284,7 @@ namespace Sphynx
 		if (ImGui::MenuItem("Delete"))
 		{
 			std::filesystem::remove_all(path);
-			m_SelectedItem = -1;
+			ResetSelectedContentItem();
 		}
 	}
 
@@ -253,20 +294,20 @@ namespace Sphynx
 		RenderDeleteOption(path);
 	}
 
-	void ContentBrowserPanel::RenderContentItemContextMenu(const std::string& filename, const std::filesystem::path& path)
+	void ContentBrowserPanel::RenderContentItemContextMenu(const ContentItem& contentItem)
 	{
-		if (ImGui::BeginPopupContextItem(filename.c_str()))
+		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
 		{
-			RenderContentItemCommonOptions(path);
+			RenderContentItemCommonOptions(contentItem.AbsolutePath);
 			ImGui::EndPopup();
 		}
 	}
 
-	void ContentBrowserPanel::RenderContentItemAssetContextMenu(const std::string& filename, const std::filesystem::path& path)
+	void ContentBrowserPanel::RenderContentItemAssetContextMenu(const ContentItem& contentItem)
 	{
-		const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / path);
+		const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / contentItem.RelativePath);
 
-		if (ImGui::BeginPopupContextItem(filename.c_str()))
+		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
 		{
 			if (metadata.Type == TypeToAssetType<Texture>::Value)
 			{
@@ -294,7 +335,7 @@ namespace Sphynx
 				}
 			}
 
-			RenderContentItemCommonOptions(path);
+			RenderContentItemCommonOptions(contentItem.RelativePath);
 			ImGui::EndPopup();
 		}
 	}
@@ -302,5 +343,11 @@ namespace Sphynx
 	bool ContentBrowserPanel::IsRenaming(const std::filesystem::path& path)
 	{
 		return !m_PathToRename.string().empty() && m_PathToRename == path;
+	}
+	
+	void ContentBrowserPanel::ResetSelectedContentItem()
+	{
+		//m_SelectedContentItem.Number = -1;
+		m_SelectedItem = -1;
 	}
 }
