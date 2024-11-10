@@ -207,24 +207,26 @@ namespace Sphynx
 		EditorLayer::Detach();
 	}
 
-	void SDLEditorLayer::HandleEvent(Sphynx::Event& event)
+	void SDLEditorLayer::HandleEvent(Event& event)
 	{
+		EditorLayer::HandleEvent(event);
+
 		//ImGui_ImplSDL3_ProcessEvent(&event);
 		Sphynx::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<Sphynx::WindowMouseEnterEvent>([this](auto& e) { return OnWindowMouseEnter(e); });
-		dispatcher.Dispatch<Sphynx::WindowMouseExitEvent>([this](auto& e) { return OnWindowMouseExit(e); });
-		dispatcher.Dispatch<Sphynx::WindowFocusGainedEvent>([this](auto& e) { return OnWindowFocusGained(e); });
-		dispatcher.Dispatch<Sphynx::WindowFocusLostEvent>([this](auto& e) { return OnWindowFocusLost(e); });
-		dispatcher.Dispatch<Sphynx::WindowClosedEvent>([this](auto& e) { return OnWindowClosed(e); });
-		dispatcher.Dispatch<Sphynx::WindowResizedEvent>([this](auto& e) { return OnWindowResized(e); });
-		dispatcher.Dispatch<Sphynx::WindowMovedEvent>([this](auto& e) { return OnWindowMoved(e); });
-		dispatcher.Dispatch<Sphynx::MouseMovedEvent>([this](auto& e) { return OnMouseMoved(e); });
-		dispatcher.Dispatch<Sphynx::MouseScrolledEvent>([this](auto& e) { return OnMouseScrolled(e); });
-		dispatcher.Dispatch<Sphynx::MouseButtonPressedEvent>([this](auto& e) { return OnMouseButtonPressed(e); });
-		dispatcher.Dispatch<Sphynx::MouseButtonReleasedEvent>([this](auto& e) { return OnMouseButtonReleased(e); });
-		dispatcher.Dispatch<Sphynx::KeyPressedEvent>([this](auto& e) { return OnKeyPressed(e); });
-		dispatcher.Dispatch<Sphynx::KeyReleasedEvent>([this](auto& e) { return OnKeyReleased(e); });
-		dispatcher.Dispatch<Sphynx::KeyTypedEvent>([this](auto& e) { return OnKeyTyped(e); });
+		dispatcher.Dispatch<WindowMouseEnterEvent>([this](auto& e) { return OnWindowMouseEnter(e); });
+		dispatcher.Dispatch<WindowMouseExitEvent>([this](auto& e) { return OnWindowMouseExit(e); });
+		dispatcher.Dispatch<WindowFocusGainedEvent>([this](auto& e) { return OnWindowFocusGained(e); });
+		dispatcher.Dispatch<WindowFocusLostEvent>([this](auto& e) { return OnWindowFocusLost(e); });
+		dispatcher.Dispatch<WindowClosedEvent>([this](auto& e) { return OnWindowClosed(e); });
+		dispatcher.Dispatch<WindowResizedEvent>([this](auto& e) { return OnWindowResized(e); });
+		dispatcher.Dispatch<WindowMovedEvent>([this](auto& e) { return OnWindowMoved(e); });
+		dispatcher.Dispatch<MouseMovedEvent>([this](auto& e) { return OnMouseMoved(e); });
+		dispatcher.Dispatch<MouseScrolledEvent>([this](auto& e) { return OnMouseScrolled(e); });
+		dispatcher.Dispatch<MouseButtonPressedEvent>([this](auto& e) { return OnMouseButtonPressed(e); });
+		dispatcher.Dispatch<MouseButtonReleasedEvent>([this](auto& e) { return OnMouseButtonReleased(e); });
+		dispatcher.Dispatch<KeyPressedEvent>([this](auto& e) { return OnKeyPressed(e); });
+		dispatcher.Dispatch<KeyReleasedEvent>([this](auto& e) { return OnKeyReleased(e); });
+		dispatcher.Dispatch<KeyTypedEvent>([this](auto& e) { return OnKeyTyped(e); });
 
 		if (IsBlockEventsEnabled())
 		{

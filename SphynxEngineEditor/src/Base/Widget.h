@@ -1,13 +1,20 @@
 #pragma once
 
 
-class Widget
+namespace Sphynx
 {
-public:
-	Widget() = default;
-	virtual ~Widget() = default;
+	class Event;
 
-public:
-	virtual void RenderGUI() = 0;
+	class Widget
+	{
+	public:
+		Widget() = default;
+		virtual ~Widget() = default;
 
-};
+	public:
+		virtual void HandleEvent(Event& event) {};
+
+		virtual void RenderGUI() = 0;
+
+	};
+}

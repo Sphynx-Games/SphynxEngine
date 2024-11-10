@@ -87,6 +87,20 @@ namespace Sphynx
 		std::fill(std::begin(m_RenameBuffer), std::end(m_RenameBuffer), '\0');
 	}
 
+	void ContentBrowserPanel::HandleEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>([&](KeyPressedEvent& e)
+			{
+				if (e.GetKeycode() == SPX_KEY_DELETE)
+				{
+					DeleteContentItem(m_SelectedContentItem->AbsolutePath);
+				}
+
+				return false;
+			});
+	}
+
 	void ContentBrowserPanel::RenderGUI()
 	{
 		static Sphynx::Texture* folderTexture = Sphynx::TextureLoader::Load(s_ResourcesPath / "folder.png");
@@ -206,20 +220,6 @@ namespace Sphynx
 		}
 
 		ImGui::End();
-	}
-
-	void ContentBrowserPanel::HandleEvent(Event& event)
-	{
-		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<KeyPressedEvent>([&](KeyPressedEvent& e)
-			{
-				if (e.GetKeycode() == SPX_SCANCODE_DELETE)
-				{
-					DeleteContentItem(m_SelectedContentItem->AbsolutePath);
-				}
-
-				return false;
-			});
 	}
 
 	bool ContentBrowserPanel::RenderContentItem(const ContentItem& contentItem, const Texture* texture, Vector2f size, Color color)

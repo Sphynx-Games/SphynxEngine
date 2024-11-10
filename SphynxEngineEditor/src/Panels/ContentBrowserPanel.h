@@ -17,11 +17,11 @@ namespace Sphynx
 		ContentBrowserPanel();
 
 	protected:
+		virtual void HandleEvent(class Event& event) override;
+
 		virtual void RenderGUI() override;
 
 	private:
-		void HandleEvent(class Event& event);
-
 		bool RenderContentItem(const ContentItem& contentItem, const class Texture* texture, Vector2f size, Color color = Color::White);
 		bool RenderRenamingContentItem(const ContentItem& contentItem, const class Texture* texture, Vector2f size, Color color = Color::White);
 		

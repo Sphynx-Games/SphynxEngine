@@ -3,10 +3,11 @@
 #include <Sphynx.h>
 
 
-class Widget;
-
 namespace Sphynx
 {
+	class Widget;
+	class Event;
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -16,6 +17,7 @@ namespace Sphynx
 		virtual void Attach() override;
 		virtual void Detach() override;
 		virtual void Update(float deltaTime) override;
+		virtual void HandleEvent(Event& event) override;
 
 		virtual void Begin() = 0;
 		virtual void End() = 0;

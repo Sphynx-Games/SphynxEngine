@@ -3,9 +3,12 @@
 #include "Base/Widget.h"
 
 
-class Panel : public Widget
+namespace Sphynx
 {
-public:
-	using Widget::Widget;
+	class Panel : public Widget
+	{
+	public:
+		using Widget::Widget;
 
-};
+	};
+}

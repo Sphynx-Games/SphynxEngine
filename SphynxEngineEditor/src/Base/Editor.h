@@ -4,23 +4,27 @@
 #include <vector>
 #include <string>
 
-class Panel;
-
-class Editor : public Widget
+namespace Sphynx
 {
-public:
-	Editor(const std::string& name);
-	virtual ~Editor();
+	class Panel;
+	class Event;
 
-public:
-	void AddPanel(Panel* panel);
-	void RemovePanel(Panel* panel);
+	class Editor : public Widget
+	{
+	public:
+		Editor(const std::string& name);
+		virtual ~Editor();
 
-protected:
-	virtual void RenderGUI() override;
+	public:
+		void AddPanel(Panel* panel);
+		void RemovePanel(Panel* panel);
 
-protected:
-	std::vector<Panel*> m_Panels;
-	std::string m_Name;
+	protected:
+		virtual void HandleEvent(Event& event) override;
+		virtual void RenderGUI() override;
 
-};
+	protected:
+		std::vector<Panel*> m_Panels;
+		std::string m_Name;
+	};
+}

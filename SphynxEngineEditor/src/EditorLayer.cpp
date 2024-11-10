@@ -1,12 +1,12 @@
 #include "spxpch.h"
 #include "EditorLayer.h"
-
 #include "Base/Widget.h"
-#include <imgui.h>
-#include <Renderer/Renderer.h>
-
+#include "Events/Event.h"
+#include "Renderer/Renderer.h"
 #include "Platform/SDL/SDLEditorLayer.h"
 #include "Dialogs/FileDialog.h"
+
+#include <imgui.h>
 
 
 namespace Sphynx
@@ -52,6 +52,14 @@ namespace Sphynx
 		Begin();
 		RenderGUI();
 		End();
+	}
+
+	void EditorLayer::HandleEvent(Event& event)
+	{
+		for (Widget* widget : m_Widgets)
+		{
+			widget->HandleEvent(event);
+		}
 	}
 
 	void EditorLayer::RenderGUI()
