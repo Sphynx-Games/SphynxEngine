@@ -39,3 +39,13 @@ namespace Sphynx
 
 	};
 }
+
+
+//#include "Reflection/Reflection.h"
+//
+//
+//SPX_REFLECT_CLASS_BEGIN(Sphynx::Texture)
+//
+//SPX_REFLECT_PROPERTY(m_Size)
+//
+//SPX_REFLECT_CLASS_END(Sphynx::Texture)

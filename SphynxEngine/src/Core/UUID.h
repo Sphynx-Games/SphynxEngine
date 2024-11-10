@@ -76,7 +76,6 @@ struct std::hash<Sphynx::UUID>
 #include "Reflection/Reflection.h"
 
 
-
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUID)
-SPX_REFLECT_ATTRIBUTE(POD)
+SPX_REFLECT_ATTRIBUTE(Internal_POD)
 SPX_REFLECT_STRUCT_END(Sphynx::UUID)

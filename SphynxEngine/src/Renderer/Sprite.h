@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Math/Vector.h"
 #include "Container/Array.h"
-#include "Asset/Asset.h"
+//#include "Asset/Asset.h"
 
 #include <cstdint>
 #include <string>
@@ -16,10 +16,12 @@ namespace Sphynx
 
 	class SPHYNX_API Sprite
 	{
+		//friend const Reflection::Class& Reflection::details::GetClassImpl(Reflection::details::Tag<Sprite>);
+
 	public:
 		Sprite() = default;
 		Sprite(Texture* texture, Vector2i position = { 0, 0 }, Vector2i size = { 1, 1 }, Vector2f pivot = { 0.5f, 0.5f }, uint32_t pixelsPerUnit = 100);
-		~Sprite() = default;
+		~Sprite() {};
 
 		Texture* GetTexture() const { return m_Texture; }
 		Vector2i GetPosition() const { return m_Position; }
@@ -68,3 +70,17 @@ namespace Sphynx
 		friend class SpritesheetAssetImporter;
 	};
 }
+
+
+//#include "Reflection/Reflection.h"
+//
+//
+//SPX_REFLECT_CLASS_BEGIN(Sphynx::Sprite)
+//
+//SPX_REFLECT_PROPERTY(m_Texture)
+//SPX_REFLECT_PROPERTY(m_Position)
+//SPX_REFLECT_PROPERTY(m_Size)
+//SPX_REFLECT_PROPERTY(m_Pivot)
+//SPX_REFLECT_PROPERTY(m_PixelsPerUnit)
+//
+//SPX_REFLECT_CLASS_END(Sphynx::Sprite)

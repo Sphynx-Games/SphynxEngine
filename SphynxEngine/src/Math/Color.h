@@ -26,3 +26,15 @@ namespace Sphynx
 		static const Color Blue;
 	};
 }
+
+
+#include "Reflection/Reflection.h"
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Color)
+
+SPX_REFLECT_PROPERTY(R)
+SPX_REFLECT_PROPERTY(G)
+SPX_REFLECT_PROPERTY(B)
+SPX_REFLECT_PROPERTY(A)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Color)

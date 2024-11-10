@@ -44,6 +44,8 @@ public:
 
 		Application::Init();
 
+
+#if 0
 		// assets
 		font = AssetManager::Import<Font>("Assets\\Fonts\\roboto\\Roboto-Regular.ttf");
 		AssetManager::Import("Assets\\Textures\\cat.jpg");
@@ -54,6 +56,7 @@ public:
 		AssetManager::RegisterAsset(sprite, "Assets\\Textures\\enemySprite");*/
 
 		//enemyTexture = AssetManager::GetAsset<Texture>(AssetHandle::FromString("3d8020bb-a60b-4009-bec8-65be84888a39"));
+#endif
 
 		// layers
 		PushLayer(new SandboxLayer());
@@ -84,10 +87,11 @@ Sphynx::Application* CreateApplication()
 void SandboxLayer::Attach()
 {
 	using namespace Sphynx;
-#if 1
+#if 0
 	Actor& sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	sprt.AddComponent<SpriteRendererComponent>(sheet->Asset->GetSprite(0), Color::Blue);
+	AssetHandle handle = AssetManager::GetAssetHandleFromAddress(sheet->Asset->GetSprite(0));
+	sprt.AddComponent<SpriteRendererComponent>(handle, Color::Blue);
 
 	/*Actor& quad = m_SandboxScene.CreateActor();
 	quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
@@ -146,7 +150,7 @@ void SandboxLayer::Update(float deltaTime)
 	// begin scene render
 	Renderer2D::Begin(&m_CameraController->GetCamera());
 	{
-		Renderer2D::DrawText("hello!!", *font->Asset, 16, { 2,2 });
+		//Renderer2D::DrawText("hello!!", *font->Asset, 16, { 2,2 });
 		m_SandboxScene.Update(deltaTime);
 	}
 	Renderer2D::End();

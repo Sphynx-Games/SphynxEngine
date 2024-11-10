@@ -23,3 +23,14 @@ namespace Sphynx
 		glm::mat4 ViewProjectionMatrix;
 	};
 }
+
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_ENUM_BEGIN(Sphynx::DrawMode)
+
+SPX_REFLECT_ENUM_VALUE(WIREFRAME)
+SPX_REFLECT_ENUM_VALUE(FILLED)
+
+SPX_REFLECT_ENUM_END(Sphynx::DrawMode)

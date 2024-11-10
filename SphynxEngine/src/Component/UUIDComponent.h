@@ -20,3 +20,12 @@ namespace Sphynx
 
 	};
 }
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUIDComponent)
+
+SPX_REFLECT_PROPERTY(UUID)
+
+SPX_REFLECT_STRUCT_END(Sphynx::UUIDComponent)

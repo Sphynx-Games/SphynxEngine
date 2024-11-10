@@ -19,11 +19,12 @@ namespace Sphynx
 		{
 		public:
 			template<typename T>
-			Type(details::Tag<T>, const char* name, size_t size, size_t alignment, bool isPrimitive) :
+			Type(details::Tag<T>, const char* name, size_t size, size_t alignment, bool isPrimitive, bool isEnum) :
 				Name(name),
 				Size(size),
 				Alignment(alignment),
 				IsPrimitive(isPrimitive),
+				IsEnum(isEnum),
 				m_ConstructFunction(nullptr),
 				m_DestructFunction(nullptr)
 			{
@@ -71,6 +72,7 @@ namespace Sphynx
 			size_t Size;
 			size_t Alignment;
 			bool IsPrimitive;
+			bool IsEnum;
 
 		private:
 			// Utility function pointers

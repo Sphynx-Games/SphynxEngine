@@ -38,7 +38,7 @@ namespace Sphynx
 		static void Step(PhysicsWorld2D* physicsWorld, float timeStep);
 
 	public:
-		inline static Vector2f WorldGravity = Vector2f(0.0f, -10.0f);
+		inline static Vector2f WorldGravity = Vector2f(0.0f, -9.81f);
 		inline static uint32_t WorldVelocityIterations = 8;
 		inline static uint32_t WorldPositionIterations = 3;
 

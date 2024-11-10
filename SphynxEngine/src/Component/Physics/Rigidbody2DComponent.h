@@ -34,7 +34,7 @@ namespace Sphynx
 		float GetGravityScale() const;
 		void SetGravityScale(float gravityScale);
 
-	private:
+	public:
 		bool m_Enabled;
 		RigidbodyType m_Type;
 		Vector2f m_LinearVelocity;
@@ -49,3 +49,19 @@ namespace Sphynx
 		friend class Physics2D;
 	};
 }
+
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Rigidbody2DComponent)
+
+SPX_REFLECT_PROPERTY(m_Enabled)
+SPX_REFLECT_PROPERTY(m_Type)
+SPX_REFLECT_PROPERTY(m_LinearVelocity)
+SPX_REFLECT_PROPERTY(m_AngularVelocity)
+SPX_REFLECT_PROPERTY(m_LinearDamping)
+SPX_REFLECT_PROPERTY(m_AngularDamping)
+SPX_REFLECT_PROPERTY(m_GravityScale)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Rigidbody2DComponent)

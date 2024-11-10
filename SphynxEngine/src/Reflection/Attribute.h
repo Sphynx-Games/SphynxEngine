@@ -138,7 +138,7 @@ namespace Sphynx
 				TCopyToFunction m_CopyToFunction;
 			};
 
-#define		POD		::Sphynx::Reflection::CommonAttribute::POD , ::Sphynx::Reflection::details::Tag<context_type>{}
+#define		Internal_POD		::Sphynx::Reflection::CommonAttribute::POD , ::Sphynx::Reflection::details::Tag<context_type>{}
 
 			class SPHYNX_API Description : public ::Sphynx::Reflection::Attribute
 			{

@@ -37,6 +37,15 @@ namespace Sphynx
 			return;
 		}
 
+		if (m_Type.IsEnum)
+		{
+			std::string name;
+			m_Reader.Read(name);
+			const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(m_Type);
+			rEnum.SetName(m_Obj, name);
+			return;
+		}
+
 		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(m_Type);
 		// Treat Plain Old Data as directly copyable
 		using POD = Reflection::CommonAttribute::POD;

@@ -26,7 +26,7 @@ namespace Sphynx
 		bool NeedsDebug() const;
 		void SetDebug(bool debug);
 
-	private:
+	public:
 		Vector2f m_Size;
 		Vector2f m_Offset;
 		bool m_Trigger;
@@ -37,3 +37,16 @@ namespace Sphynx
 		friend class Scene;
 	};
 }
+
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::CapsuleCollider2DComponent)
+
+SPX_REFLECT_PROPERTY(m_Size)
+SPX_REFLECT_PROPERTY(m_Offset)
+SPX_REFLECT_PROPERTY(m_Trigger)
+SPX_REFLECT_PROPERTY(m_Debug)
+
+SPX_REFLECT_STRUCT_END(Sphynx::CapsuleCollider2DComponent)

@@ -49,7 +49,7 @@
 #define SPX_REFLECT_CLASS_END(_Class) \
 		}); \
 		static const Class c { \
-			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class>{}, #_Class, sizeof(::_Class), alignof(::_Class), false }, \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class>{}, #_Class, sizeof(::_Class), alignof(::_Class), false, false }, \
 			Storage.Properties.data(), \
 			Storage.Properties.size(), \
 			Storage.Functions.data(), \
@@ -91,7 +91,7 @@
 			std::make_index_sequence<::Sphynx::Traits::args_pack_size<TemplateArgsPack>::value>()); \
 		 \
 		static const TemplateClass c{ \
-			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class<T...>>{}, #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false}, \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class<T...>>{}, #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false, false}, \
 			Storage.Properties.data(), \
 			Storage.Properties.size(), \
 			Storage.Functions.data(), \
@@ -210,13 +210,18 @@
 #define SPX_REFLECT_ENUM_END(_Enum) \
 		}); \
 		static const Enum e{ \
-			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Enum>{}, #_Enum, sizeof(::_Enum), alignof(::_Enum), false }, \
+			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Enum>{}, #_Enum, sizeof(::_Enum), alignof(::_Enum), false, true }, \
 			Storage.Entries.data(), \
 			Storage.Entries.size(), \
 			Storage.Attributes.data(), \
-			Storage.Attributes.size() \
+			Storage.Attributes.size(), \
+			::Sphynx::Reflection::details::Tag<typename std::underlying_type<::_Enum>::type>{} \
 		}; \
 		return e; \
+	} \
+	inline const Type& GetTypeImpl(Tag<::_Enum>) \
+	{ \
+		return GetEnumImpl(Tag<::_Enum>{}); \
 	} \
 	}}} \
 	template<> struct ::Sphynx::Reflection::EnumRange<::_Enum> { \
@@ -319,7 +324,7 @@ namespace Sphynx
 #define X(_Type) \
 	inline const Type& GetTypeImpl(Tag<_Type>) \
 	{ \
-		static const Type type{ ::Sphynx::Reflection::details::Tag<_Type>{}, #_Type, sizeof(_Type), alignof(_Type), true }; \
+		static const Type type{ ::Sphynx::Reflection::details::Tag<_Type>{}, #_Type, sizeof(_Type), alignof(_Type), true, false }; \
 		return type; \
 	}
 
@@ -347,25 +352,25 @@ namespace Sphynx
 
 			inline const Type& GetTypeImpl(Tag<void>)
 			{
-				static const Type type{ Tag<void>{}, "void", 0, 0, true };
+				static const Type type{ Tag<void>{}, "void", 0, 0, true, false };
 				return type;
 			}
 
 			inline const Type& GetTypeImpl(Tag<::std::string>)
 			{
-				static const Type type{ Tag<::std::string>{}, "std::string", sizeof(::std::string), alignof(::std::string), true };
+				static const Type type{ Tag<::std::string>{}, "std::string", sizeof(::std::string), alignof(::std::string), true, false };
 				return type;
 			}
 
 			inline const Type& GetTypeImpl(Tag<::std::wstring>)
 			{
-				static const Type type{ Tag<::std::wstring>{}, "std::wstring", sizeof(::std::wstring), alignof(::std::wstring), true };
+				static const Type type{ Tag<::std::wstring>{}, "std::wstring", sizeof(::std::wstring), alignof(::std::wstring), true, false };
 				return type;
 			}
 
 			inline const Type& GetTypeImpl(Tag<::std::filesystem::path>)
 			{
-				static const Type type{ Tag<::std::filesystem::path>{}, "std::filesystem::path", sizeof(::std::filesystem::path), alignof(::std::filesystem::path), true };
+				static const Type type{ Tag<::std::filesystem::path>{}, "std::filesystem::path", sizeof(::std::filesystem::path), alignof(::std::filesystem::path), true, false };
 				return type;
 			}
 		}

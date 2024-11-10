@@ -20,3 +20,12 @@ namespace Sphynx
 
 	};
 }
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::TransformComponent)
+
+SPX_REFLECT_PROPERTY(Transform)
+
+SPX_REFLECT_STRUCT_END(Sphynx::TransformComponent)

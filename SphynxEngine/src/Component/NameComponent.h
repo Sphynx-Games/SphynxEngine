@@ -20,3 +20,12 @@ namespace Sphynx
 
 	};
 }
+
+#include "Reflection/Reflection.h"
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::NameComponent)
+
+SPX_REFLECT_PROPERTY(Name)
+
+SPX_REFLECT_STRUCT_END(Sphynx::NameComponent)
