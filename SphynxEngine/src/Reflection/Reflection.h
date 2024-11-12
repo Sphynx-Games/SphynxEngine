@@ -37,34 +37,44 @@
  // ---------- Class -----------
 #define SPX_REFLECT_CLASS_BEGIN(_Class) \
 	namespace Sphynx { namespace Reflection { namespace details { \
-	inline const Class& GetClassImpl(Tag<::_Class>) \
-	{ \
-		static ::Sphynx::Reflection::details::ClassStorage<::_Class> Storage([](auto* self) { \
-			self->Size = sizeof(::_Class); \
-			[[maybe_unused]] auto& Properties = self->Properties; \
-			[[maybe_unused]] auto& Functions = self->Functions; \
-			[[maybe_unused]] auto& Attributes = self->Attributes; \
-			using context_type = ::_Class;
+	template<> struct ClassImplWrapper<::_Class> { \
+		static const Class& GetClassImpl(Tag<::_Class>) \
+		{ \
+			static ::Sphynx::Reflection::details::ClassStorage<::_Class> Storage([](auto* self) { \
+				self->Size = sizeof(::_Class); \
+				[[maybe_unused]] auto& Properties = self->Properties; \
+				[[maybe_unused]] auto& Functions = self->Functions; \
+				[[maybe_unused]] auto& Attributes = self->Attributes; \
+				using context_type = ::_Class;
 
 #define SPX_REFLECT_CLASS_END(_Class) \
-		}); \
-		static const Class c { \
-			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class>{}, #_Class, sizeof(::_Class), alignof(::_Class), false, false }, \
-			Storage.Properties.data(), \
-			Storage.Properties.size(), \
-			Storage.Functions.data(), \
-			Storage.Functions.size(), \
-			Storage.Attributes.data(), \
-			Storage.Attributes.size() \
-		}; \
-		return c; \
+			}); \
+			static const Class c { \
+				::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class>{}, #_Class, sizeof(::_Class), alignof(::_Class), false, false }, \
+				Storage.Properties.data(), \
+				Storage.Properties.size(), \
+				Storage.Functions.data(), \
+				Storage.Functions.size(), \
+				Storage.Attributes.data(), \
+				Storage.Attributes.size() \
+			}; \
+			return c; \
+		} \
+		 \
+		static const Type& GetTypeImpl(Tag<::_Class>) \
+		{ \
+			return GetClassImpl(Tag<::_Class>{}); \
+		} \
+	}; \
+	inline const Class& GetClassImpl(Tag<::_Class>) \
+	{ \
+		return ClassImplWrapper<::_Class>::GetClassImpl(Tag<::_Class>{}); \
 	} \
-	 \
 	inline const Type& GetTypeImpl(Tag<::_Class>) \
 	{ \
 		return GetClassImpl(Tag<::_Class>{}); \
 	} \
-	}}}
+}}}
 
 #define SPX_REFLECT_CLASS(_Class) \
 	SPX_REFLECT_CLASS_BEGIN(_Class) \
@@ -72,44 +82,54 @@
 
 #define SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Class) \
 	namespace Sphynx { namespace Reflection { namespace details { \
-	template<typename ...T> \
-	inline const Class& GetClassImpl(Tag<::_Class<T...>>) \
-	{ \
-		static ClassStorage<::_Class<T...>> Storage([](auto* self) \
-			{ \
-				self->Size = sizeof(::_Class<T...>); \
-				[[maybe_unused]] auto& Properties = self->Properties; \
-				[[maybe_unused]] auto& Functions = self->Functions; \
-				[[maybe_unused]] auto& Attributes = self->Attributes; \
-				using context_type = ::_Class<T...>;
+	template<typename ...T> struct ClassImplWrapper<::_Class<T...>> { \
+		static const Class& GetClassImpl(Tag<::_Class<T...>>) \
+		{ \
+			static ClassStorage<::_Class<T...>> Storage([](auto* self) \
+				{ \
+					self->Size = sizeof(::_Class<T...>); \
+					[[maybe_unused]] auto& Properties = self->Properties; \
+					[[maybe_unused]] auto& Functions = self->Functions; \
+					[[maybe_unused]] auto& Attributes = self->Attributes; \
+					using context_type = ::_Class<T...>;
 
 #define SPX_REFLECT_TEMPLATE_CLASS_END(_Class) \
-			} \
-		); \
-		using TemplateArgsPack = ::Sphynx::Traits::args_pack<T...>; \
-		static auto TemplatedArgs = GetTemplateArgumentPackArray<TemplateArgsPack>( \
-			std::make_index_sequence<::Sphynx::Traits::args_pack_size<TemplateArgsPack>::value>()); \
+				} \
+			); \
+			using TemplateArgsPack = ::Sphynx::Traits::args_pack<T...>; \
+			static auto TemplatedArgs = GetTemplateArgumentPackArray<TemplateArgsPack>( \
+				std::make_index_sequence<::Sphynx::Traits::args_pack_size<TemplateArgsPack>::value>()); \
+			 \
+			static const TemplateClass c{ \
+				::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class<T...>>{}, #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false, false}, \
+				Storage.Properties.data(), \
+				Storage.Properties.size(), \
+				Storage.Functions.data(), \
+				Storage.Functions.size(), \
+				Storage.Attributes.data(), \
+				Storage.Attributes.size(), \
+				TemplatedArgs.data(), \
+				TemplatedArgs.size() \
+			}; \
+			return c; \
+		} \
 		 \
-		static const TemplateClass c{ \
-			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class<T...>>{}, #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), false, false}, \
-			Storage.Properties.data(), \
-			Storage.Properties.size(), \
-			Storage.Functions.data(), \
-			Storage.Functions.size(), \
-			Storage.Attributes.data(), \
-			Storage.Attributes.size(), \
-			TemplatedArgs.data(), \
-			TemplatedArgs.size() \
-		}; \
-		return c; \
+		static const Type& GetTypeImpl(Tag<::_Class<T...>>) \
+		{ \
+			return GetClassImpl(Tag<::_Class<T...>>{}); \
+		} \
+	}; \
+	template<typename... T> \
+	inline const Class& GetClassImpl(Tag<::_Class<T...>>) \
+	{ \
+		return ClassImplWrapper<::_Class<T...>>::GetClassImpl(Tag<::_Class<T...>>{}); \
 	} \
-	 \
-	template<typename ...T> \
+	template<typename... T> \
 	inline const Type& GetTypeImpl(Tag<::_Class<T...>>) \
 	{ \
 		return GetClassImpl(Tag<::_Class<T...>>{}); \
 	} \
-	}}}
+}}}
 
 #define SPX_REFLECT_TEMPLATE_CLASS(_Class) \
 	SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Class) \
@@ -278,6 +298,11 @@
 
 #define SPX_REFLECT_ATTRIBUTE(...) EXPAND_MACRO( SPX_REFLECT_ATTRIBUTE_INTERNAL( __VA_ARGS__ ) )
 
+// ---------- Reflection Body -----------
+#define SPX_REFLECT_GENERATED_BODY() \
+	template<typename T> \
+	friend struct ::Sphynx::Reflection::details::ClassImplWrapper
+
 
 namespace Sphynx
 {
@@ -287,6 +312,9 @@ namespace Sphynx
 		{
 			template<typename T>
 			struct Tag {};
+
+			template<typename T>
+			struct ClassImplWrapper;
 
 			/*
 			template<typename T>
@@ -350,7 +378,7 @@ namespace Sphynx
 
 			TYPES()
 
-			inline const Type& GetTypeImpl(Tag<void>)
+				inline const Type& GetTypeImpl(Tag<void>)
 			{
 				static const Type type{ Tag<void>{}, "void", 0, 0, true, false };
 				return type;
@@ -384,6 +412,8 @@ namespace Sphynx
 //{
 //	struct Vector
 //	{
+//		SPX_REFLECT_GENERATED_BODY();
+//	private:
 //		int a;
 //		int b;
 //		int c;

@@ -8,6 +8,7 @@ namespace Sphynx
 {
 	struct SPHYNX_API Rigidbody2DComponent
 	{
+		SPX_REFLECT_GENERATED_BODY();
 		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(Rigidbody2DComponent);
 
 	public:
@@ -34,7 +35,7 @@ namespace Sphynx
 		float GetGravityScale() const;
 		void SetGravityScale(float gravityScale);
 
-	public:
+	private:
 		bool m_Enabled;
 		RigidbodyType m_Type;
 		Vector2f m_LinearVelocity;

@@ -9,6 +9,7 @@ namespace Sphynx
 {
 	struct SPHYNX_API CircleCollider2DComponent
 	{
+		SPX_REFLECT_GENERATED_BODY();
 		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(CircleCollider2DComponent);
 
 	public:
@@ -26,7 +27,7 @@ namespace Sphynx
 		bool NeedsDebug() const;
 		void SetDebug(bool debug);
 
-	public:
+	private:
 		float m_Radius;
 		Vector2f m_Offset;
 		bool m_Trigger;
