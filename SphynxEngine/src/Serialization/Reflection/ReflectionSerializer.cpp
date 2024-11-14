@@ -16,7 +16,7 @@ namespace Sphynx
 
 	void ReflectionSerializer::Serialize()
 	{
-		if (m_Type.IsPrimitive)
+		if (m_Type.Kind == Reflection::TypeKind::PRIMITIVE)
 		{
 			// These are "advance primitive" data (special primitives)
 			if (&m_Type == &Reflection::GetType<std::string>())
@@ -38,7 +38,7 @@ namespace Sphynx
 			return;
 		}
 
-		if (m_Type.IsEnum)
+		if (m_Type.Kind == Reflection::TypeKind::ENUM)
 		{
 			const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(m_Type);
 			m_Writer.Write(rEnum.GetName(m_Obj));

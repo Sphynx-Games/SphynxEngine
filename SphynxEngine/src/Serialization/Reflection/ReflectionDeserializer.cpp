@@ -15,7 +15,7 @@ namespace Sphynx
 
 	void ReflectionDeserializer::Deserialize()
 	{
-		if (m_Type.IsPrimitive)
+		if (m_Type.Kind == Reflection::TypeKind::PRIMITIVE)
 		{
 			// These are "advance primitive" data (special primitives)
 			if (&m_Type == &Reflection::GetType<std::string>())
@@ -37,7 +37,7 @@ namespace Sphynx
 			return;
 		}
 
-		if (m_Type.IsEnum)
+		if (m_Type.Kind == Reflection::TypeKind::ENUM)
 		{
 			std::string name;
 			m_Reader.Read(name);

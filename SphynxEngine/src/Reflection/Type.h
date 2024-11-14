@@ -15,16 +15,23 @@ namespace Sphynx
 			using TDestructFunction = void (*)(void*);
 		}
 
+		enum class TypeKind
+		{
+			PRIMITIVE,
+			ENUM,
+			CLASS,
+			STRUCT
+		};
+
 		struct SPHYNX_API Type
 		{
 		public:
 			template<typename T>
-			Type(details::Tag<T>, const char* name, size_t size, size_t alignment, bool isPrimitive, bool isEnum) :
+			Type(details::Tag<T>, const char* name, size_t size, size_t alignment, TypeKind kind) :
 				Name(name),
 				Size(size),
 				Alignment(alignment),
-				IsPrimitive(isPrimitive),
-				IsEnum(isEnum),
+				Kind(kind),
 				m_ConstructFunction(nullptr),
 				m_DestructFunction(nullptr)
 			{
@@ -71,8 +78,7 @@ namespace Sphynx
 			const char* Name;
 			size_t Size;
 			size_t Alignment;
-			bool IsPrimitive;
-			bool IsEnum;
+			TypeKind Kind;
 
 		private:
 			// Utility function pointers
