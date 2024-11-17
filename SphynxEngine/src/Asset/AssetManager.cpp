@@ -203,7 +203,7 @@ namespace Sphynx
 			return registryEntry.second.Path == path;
 			});
 
-		if (it == s_Registry.end()) return AssetMetadata();
+		if (it == s_Registry.end()) return AssetMetadata::Invalid;
 
 		return it->second;
 	}
