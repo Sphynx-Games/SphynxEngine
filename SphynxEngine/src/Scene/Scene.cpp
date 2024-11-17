@@ -10,6 +10,7 @@
 #include "Serialization/SceneSerialiZer.h"
 #include "Serialization/SceneDeserializer.h"
 #include "Asset/AssetManager.h"
+#include "Renderer/Sprite.h"
 
 
 namespace Sphynx

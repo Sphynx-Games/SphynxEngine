@@ -300,8 +300,14 @@
 
 // ---------- Reflection Body -----------
 #define SPX_REFLECT_GENERATED_BODY() \
-	template<typename T> \
-	friend struct ::Sphynx::Reflection::details::ClassImplWrapper
+private: \
+	template<typename T> friend struct ::Sphynx::Reflection::details::ClassImplWrapper; \
+	auto __reflection__dummy__B__() -> std::remove_reference<decltype(*this)>::type { return {}; }; \
+	template<typename T> static T __reflection__dummy__A__(T(T::*)()) { return {}; }; \
+	using Self = decltype(__reflection__dummy__A__(&__reflection__dummy__B__)); \
+public: \
+	inline static const ::Sphynx::Reflection::Class& StaticClass() { return ::Sphynx::Reflection::GetClass<Self>(); } \
+	inline const ::Sphynx::Reflection::Class& GetStaticClass() const { return Self::StaticClass(); }
 
 
 namespace Sphynx

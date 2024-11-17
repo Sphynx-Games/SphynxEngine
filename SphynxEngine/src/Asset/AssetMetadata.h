@@ -27,7 +27,11 @@ namespace Sphynx
 		AssetType Type;
 		std::filesystem::path Path;
 		Array<AssetHandle> Dependencies;
+
+		static const AssetMetadata Invalid;
 	};
+
+	inline const AssetMetadata AssetMetadata::Invalid { AssetHandle::Invalid };
 }
 
 #include "Reflection/Reflection.h"

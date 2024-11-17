@@ -22,7 +22,7 @@ namespace Sphynx
 		}
 	}
 
-	const UUID UUID::Invalid = UUID();
+	const UUID UUID::Invalid{};
 
 	UUID UUID::Generate()
 	{
