@@ -1,10 +1,10 @@
 #include "spxpch.h"
 #include "EditorApplication.h"
-
-#include <Core/EntryPoint.h>
-
+#include "Base/Resources.h"
 #include "EditorLayer.h"
 #include "Editors/SceneEditor.h"
+
+#include <Core/EntryPoint.h>
 
 
 Sphynx::Application* CreateApplication()
@@ -20,7 +20,10 @@ namespace Sphynx
 
 	void EditorApplication::Init()
 	{
+		// Init engine resources
 		Application::Init();
+
+		Resources::Init();
 
 		// create a editor layer
 		EditorLayer* editorLayer = EditorLayer::Create();
@@ -39,6 +42,8 @@ namespace Sphynx
 
 	void EditorApplication::Shutdown()
 	{
+		Resources::Shutdown();
+
 		Application::Shutdown();
 	}
 }

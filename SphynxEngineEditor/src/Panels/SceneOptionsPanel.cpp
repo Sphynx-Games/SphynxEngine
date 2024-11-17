@@ -1,6 +1,7 @@
 #include "spxpch.h"
 #include "SceneOptionsPanel.h"
-#include "Widgets/SaveButtonWidget.h"
+#include "Widgets/ButtonWidget.h"
+#include "Base/Resources.h"
 #include "Scene/Scene.h"
 #include "Serialization/FileWriter.h"
 #include "Serialization/SceneSerializer.h"
@@ -12,7 +13,7 @@ namespace Sphynx
 {
 	SceneOptionsPanel::SceneOptionsPanel(const Scene* scene) :
 		m_Scene(scene),
-		m_SaveButton(new SaveButtonWidget())
+		m_SaveButton(new ButtonWidget("Save", Resources::SaveTexture))
 		//m_SceneNameBuffer()
 	{
 	}

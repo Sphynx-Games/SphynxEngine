@@ -5,7 +5,6 @@
 #include "Renderer/Renderer.h"
 #include "Platform/SDL/SDLEditorLayer.h"
 #include "Dialogs/FileDialog.h"
-#include "Base/Resources.h"
 
 #include <imgui.h>
 
@@ -29,9 +28,6 @@ namespace Sphynx
 
 	void EditorLayer::Attach()
 	{
-		// Init engine resources
-		Resources::Init();
-
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -49,7 +45,6 @@ namespace Sphynx
 	void EditorLayer::Detach()
 	{
 		ImGui::DestroyContext();
-		Resources::Shutdown();
 	}
 
 	void EditorLayer::Update(float deltaTime)
