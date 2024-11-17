@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "ContentBrowserPanel.h"
+#include "Base/Resources.h"
 #include "Asset/AssetManager.h"
 #include "Asset/Texture/TextureAsset.h"
 #include "Asset/Sprite/SpriteAsset.h"
@@ -15,8 +16,6 @@
 
 namespace Sphynx
 {
-	static const std::filesystem::path s_ResourcesPath = "SphynxEngineEditor\\Resources";
-
 	static const std::filesystem::path s_AssetsPath = "Assets";
 
 	struct ContentItem
@@ -100,10 +99,6 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderGUI()
 	{
-		static Texture* folderTexture = TextureLoader::Load(s_ResourcesPath / "folder.png");
-		static Texture* fileTexture = TextureLoader::Load(s_ResourcesPath / "file.png");
-
-
 		ImGui::Begin("Content Browser");
 
 		// BACK BUTTON
@@ -166,9 +161,9 @@ namespace Sphynx
 			// render directories
 			if (directoryEntry.is_directory())
 			{
-				if(!RenderRenamingContentItem(currentItem, folderTexture, sizeItem))
+				if(!RenderRenamingContentItem(currentItem, Resources::FolderTexture, sizeItem))
 				{
-					if (RenderContentItem(currentItem, folderTexture, sizeItem))
+					if (RenderContentItem(currentItem, Resources::FolderTexture, sizeItem))
 					{
 						m_CurrentDirectory /= currentItem.Filename;
 						m_SelectedContentItem->ResetValues();
@@ -180,9 +175,9 @@ namespace Sphynx
 			{				
 				if (m_ShowAllFiles)
 				{
-					if (!RenderRenamingContentItem(currentItem, fileTexture, sizeItem))
+					if (!RenderRenamingContentItem(currentItem, Resources::FileTexture, sizeItem))
 					{
-						RenderContentItem(currentItem, fileTexture, sizeItem);
+						RenderContentItem(currentItem, Resources::FileTexture, sizeItem);
 						RenderContentItem_ContextMenu(currentItem);
 					}
 				}
@@ -190,9 +185,9 @@ namespace Sphynx
 				{
 					if (currentItem.RelativePath.extension() == ASSET_EXTENSION)
 					{
-						if (!RenderRenamingContentItem(currentItem, fileTexture, sizeItem))
+						if (!RenderRenamingContentItem(currentItem, Resources::FileTexture, sizeItem))
 						{
-							RenderContentItem(currentItem, fileTexture, sizeItem);
+							RenderContentItem(currentItem, Resources::FileTexture, sizeItem);
 							RenderContentItem_AssetContextMenu(currentItem);
 						}
 					}
