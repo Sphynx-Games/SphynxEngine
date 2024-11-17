@@ -15,6 +15,7 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
+		class SceneOptionsPanel* m_SceneOptionsPanel;
 		class SceneOutlinerPanel* m_SceneOutlinerPanel;
 		class ContentBrowserPanel* m_ContentBrowserPanel;
 		class ViewportPanel* m_ViewportPanel;
@@ -22,5 +23,6 @@ namespace Sphynx
 
 		class Framebuffer* m_Framebuffer;
 		class Scene* m_ActiveScene;
+		char m_SceneNameBuffer[1024];
 	};
 }

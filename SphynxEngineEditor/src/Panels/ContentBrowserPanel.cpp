@@ -12,9 +12,6 @@
 
 #include <imgui.h>
 
-#include <Windows.h>
-#include <commdlg.h>
-
 
 namespace Sphynx
 {
@@ -103,8 +100,8 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderGUI()
 	{
-		static Sphynx::Texture* folderTexture = Sphynx::TextureLoader::Load(s_ResourcesPath / "folder.png");
-		static Sphynx::Texture* fileTexture = Sphynx::TextureLoader::Load(s_ResourcesPath / "file.png");
+		static Texture* folderTexture = TextureLoader::Load(s_ResourcesPath / "folder.png");
+		static Texture* fileTexture = TextureLoader::Load(s_ResourcesPath / "file.png");
 
 
 		ImGui::Begin("Content Browser");

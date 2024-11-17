@@ -37,5 +37,15 @@ namespace ImGui
 		ImGuiSelectableFlags flags = ImGuiSelectableFlags_None
 	);
 
+	IMGUI_API bool ButtonWithImageAndText(
+		const std::string& text,
+		ImTextureID texture,
+		ImVec2 size = ImVec2{ 10.f, 10.f },
+		float imageRatio = 0.75f,
+		ImVec4 tint = ImVec4{ 1.f, 1.f, 1.f, 1.f }
+	);
+
+	IMGUI_API const char* CalcWordWrapPosition(const char* text, const char* text_end = nullptr, bool hide_text_after_double_hash = false, float wrap_width = -1.0f);
+
 	//IMGUI_API bool SelectableInput(const char* str_id, bool selected, ImGuiSelectableFlags flags, char* buf, size_t buf_size);
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Widget.h"
+#include "Base/Widget.h"
 #include <vector>
 #include <string>
 
+
 namespace Sphynx
 {
-	class Panel;
 	class Event;
 
 	class Editor : public Widget
@@ -16,15 +16,15 @@ namespace Sphynx
 		virtual ~Editor();
 
 	public:
-		void AddPanel(Panel* panel);
-		void RemovePanel(Panel* panel);
+		void AddWidget(Widget* widget);
+		void RemoveWidget(Widget* widget);
 
 	protected:
 		virtual void HandleEvent(Event& event) override;
 		virtual void RenderGUI() override;
 
 	protected:
-		std::vector<Panel*> m_Panels;
+		std::vector<Widget*> m_Widgets;
 		std::string m_Name;
 	};
 }

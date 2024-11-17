@@ -28,6 +28,9 @@ namespace Sphynx
 
 		const std::vector<Actor>& GetActors() const;
 
+		const std::string& GetName() const { return m_Name; }
+		void SetName(const std::string& name) { m_Name = name; }
+
 	private:
 		void InitPhysics();
 		void DebugPhysics();

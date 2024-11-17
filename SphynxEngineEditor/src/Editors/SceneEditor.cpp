@@ -1,10 +1,13 @@
 #include "spxpch.h"
 #include "SceneEditor.h"
 
+#include "Panels/SceneOptionsPanel.h"
 #include "Panels/SceneOutlinerPanel.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/ViewportPanel.h"
 #include "Panels/DetailsPanel.h"
+
+//#include "Widgets/SaveButtonWidget.h"
 
 #include "Core/Time.h"
 #include "Scene/Scene.h"
@@ -17,6 +20,9 @@
 #include "Asset/AssetManager.h"
 #include <Renderer/Sprite.h>
 
+#include <imgui.h>
+
+
 namespace Sphynx
 {
 	// TODO: remove, this is just for testing purposes
@@ -27,17 +33,20 @@ namespace Sphynx
 
 	SceneEditor::SceneEditor() :
 		Editor("SceneEditor"),
+		m_SceneOptionsPanel(new SceneOptionsPanel()),
 		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
 		m_ContentBrowserPanel(new ContentBrowserPanel()),
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),
 		m_Framebuffer(nullptr),
-		m_ActiveScene(nullptr)
+		m_ActiveScene(nullptr),
+		m_SceneNameBuffer()
 	{
-		AddPanel(m_SceneOutlinerPanel);
-		AddPanel(m_ContentBrowserPanel);
-		AddPanel(m_ViewportPanel);
-		AddPanel(m_DetailsPanel);
+		AddWidget(m_SceneOptionsPanel);
+		AddWidget(m_SceneOutlinerPanel);
+		AddWidget(m_ContentBrowserPanel);
+		AddWidget(m_ViewportPanel);
+		AddWidget(m_DetailsPanel);
 
 		m_Framebuffer = Framebuffer::Create({ 1920, 1080, { FramebufferTextureFormat::RGBA8 } });
 		m_ViewportPanel->SetFramebuffer(m_Framebuffer);
@@ -46,15 +55,7 @@ namespace Sphynx
 		// TODO: remove (testing)
 		{
 			static Scene s_Scene;
-			//AssetManager::Import("Assets\\Textures\\cat.jpg");
-			//Texture* enemyTexture = *AssetManager::Import<Texture>("Assets\\Textures\\enemy_scaled5x.png");
-			//Spritesheet* sheet = new Spritesheet(enemyTexture, 4, 3);
-
-			//Actor sprt = s_Scene.CreateActor();
-			//sprt.AddComponent<NameComponent>("Sprite Actor");
-			//sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-			//sprt.AddComponent<SpriteRendererComponent>(sheet->GetSprite(0), Color::Blue);
-
+#if 0
 			Actor quad = s_Scene.CreateActor();
 			quad.AddComponent<NameComponent>("Hollow Box");
 			quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
@@ -88,11 +89,26 @@ namespace Sphynx
 			capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { -1.5f, 1.0f, 0.0f }, { 2.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, -10.0f } });
 			capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 			capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
-
+#else
+			FileReader reader = FileReader("Assets\\Scenes\\scene1.txt");
+			SceneDeserializer sceneDeserializer = SceneDeserializer(s_Scene, reader);
+			sceneDeserializer.Deserialize();
+#endif
 			m_ActiveScene = &s_Scene;
+
+			// set the execute function of the SaveButtonWidget in SceneOptionsPanel
+			/*m_SceneOptionsPanel->GetSaveButton()->OnClick.Bind([&]() {
+
+				FileWriter writer = FileWriter("Assets\\Scenes\\" + m_ActiveScene->GetName() + ".txt");
+				SceneSerializer sceneSerializer = SceneSerializer(*m_ActiveScene, writer);
+				sceneSerializer.Serialize();
+				
+			});*/
+
 			m_ActiveScene->BeginPlay(); // TODO: change this in the future
 		}
 
+		m_SceneOptionsPanel->SetContext(m_ActiveScene);
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 	}
 
