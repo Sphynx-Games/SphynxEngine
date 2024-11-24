@@ -47,12 +47,12 @@ namespace Sphynx
 
 	void YAMLWriter::Write(uint16_t v)
 	{
-		*m_Emitter << v;
+		*m_Emitter << static_cast<uint32_t>(v);
 	}
 
 	void YAMLWriter::Write(uint8_t v)
 	{
-		*m_Emitter << v;
+		*m_Emitter << static_cast<uint32_t>(v);
 	}
 
 	void YAMLWriter::Write(int64_t v)
@@ -67,12 +67,12 @@ namespace Sphynx
 
 	void YAMLWriter::Write(int16_t v)
 	{
-		*m_Emitter << v;
+		*m_Emitter << static_cast<int32_t>(v);
 	}
 
 	void YAMLWriter::Write(int8_t v)
 	{
-		*m_Emitter << v;
+		*m_Emitter << static_cast<int32_t>(v);
 	}
 
 	void YAMLWriter::Write(wchar_t v)
