@@ -1,12 +1,13 @@
 #include "spxpch.h"
 #include "AssetManager.h"
-#include "Logging/Log.h"
+
 #include "Asset/Texture/TextureAssetImporter.h"
 #include "Asset/Sprite/SpriteAssetImporter.h"
 #include "Asset/Spritesheet/SpritesheetAssetImporter.h"
 #include "Asset/Font/FontAssetImporter.h"
-#include "Serialization/FileReader.h"
-#include "Serialization/FileWriter.h"
+
+#include "Serialization/YAML/YAMLWriter.h"
+#include "Serialization/YAML/YAMLReader.h"
 
 
 #undef RegisterAssetType
@@ -42,7 +43,7 @@ namespace Sphynx
 	AssetRegistry AssetManager::s_Registry = {};
 
 	static const std::filesystem::path ASSET_REGISTRY_FILEPATH = std::filesystem::path("Assets\\assetRegistry").replace_extension(ASSET_EXTENSION);
-	
+
 
 	void AssetManager::Init()
 	{
@@ -61,32 +62,8 @@ namespace Sphynx
 		REGISTER_ASSETTYPE(Font, FontAssetImporter, ".ttf");
 
 		// load all managed assets into the asset registry
-		FileReader reader(ASSET_REGISTRY_FILEPATH);
-
-		if (reader.IsValid())
-		{
-			size_t numAssets;
-			reader.Read(numAssets);
-			for (size_t i = 0; i < numAssets; ++i)
-			{
-				AssetMetadata metadata;
-				reader.Read(metadata.Handle);
-				reader.Read(metadata.Type);
-				reader.Read(metadata.Path);
-
-				// dependencies
-				size_t num;
-				reader.Read(num);
-				for (size_t j = 0; j < num; ++j)
-				{
-					AssetHandle dependencyHandle;
-					reader.Read(dependencyHandle);
-					metadata.Dependencies.Add(dependencyHandle);
-				}
-
-				s_Registry.Add(metadata.Handle, metadata);
-			}
-		}		
+		YAMLReader reader{ ASSET_REGISTRY_FILEPATH };
+		ReflectionDeserializer::Deserialize(s_Registry, reader);
 	}
 
 	void AssetManager::Shutdown()
@@ -94,21 +71,8 @@ namespace Sphynx
 		SPX_CORE_LOG_TRACE("Shutting down AssetManager");
 
 		// write all managed assets into the asset registry file
-		FileWriter writer(ASSET_REGISTRY_FILEPATH);
-
-		writer.Write(s_Registry.GetKeys().Size());
-		for (const auto& [handle, metadata] : s_Registry)
-		{
-			writer.Write(handle);
-			writer.Write(metadata.Type);
-			writer.Write(metadata.Path);
-
-			writer.Write(metadata.Dependencies.Size());
-			for (AssetHandle dependencyHandle : metadata.Dependencies)
-			{
-				writer.Write(dependencyHandle);
-			}
-		}
+		YAMLWriter writer{ ASSET_REGISTRY_FILEPATH };
+		ReflectionSerializer::Serialize(s_Registry, writer);
 
 		s_LoadedAssets.clear();
 	}
@@ -168,7 +132,7 @@ namespace Sphynx
 		// -----------------------------------------------------------
 		// NOTE: for now it is assumed the assets are not packed
 		// -----------------------------------------------------------
-		
+
 		// Check if the handle is valid
 		if (handle == AssetHandle::Invalid)
 		{
@@ -230,7 +194,7 @@ namespace Sphynx
 
 	AssetHandle AssetManager::GetAssetHandleFromAddress(void* address)
 	{
-		auto it = std::find_if(s_LoadedAssets.begin(), s_LoadedAssets.end(), [&](const auto& value) 
+		auto it = std::find_if(s_LoadedAssets.begin(), s_LoadedAssets.end(), [&](const auto& value)
 			{
 				return value.second->GetRawAsset() == address;
 			});

@@ -45,3 +45,34 @@ namespace Sphynx
 		return lhs.m_Data == rhs.m_Data;
 	}
 }
+
+
+
+#include "Serialization/Serialization.h"
+#include "Serialization/Writer.h"
+#include "Serialization/Reader.h"
+#include "Serialization/YAML/YAMLWriter.h"
+#include "Serialization/YAML/YAMLReader.h"
+
+
+template<> void Sphynx::Serialization::Write<>(Sphynx::Writer& writer, const UUID& uuid)
+{
+	writer.Write(UUID::ToString(uuid));
+}
+
+template<> void Sphynx::Serialization::Read<>(const Sphynx::Reader& reader, UUID& uuid)
+{
+	std::string str; reader.Read(str);
+	uuid = UUID::FromString(str);
+}
+
+template<> void Sphynx::Serialization::Write<>(Sphynx::YAMLWriter& writer, const UUID& uuid)
+{
+	writer.Write(UUID::ToString(uuid));
+}
+
+template<> void Sphynx::Serialization::Read<>(const Sphynx::YAMLReader& reader, UUID& uuid)
+{
+	std::string str; reader.Read(str);
+	uuid = UUID::FromString(str);
+}

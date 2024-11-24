@@ -365,6 +365,7 @@ namespace Sphynx
 #define TYPES() \
 	X(bool)					\
 	X(char)					\
+	X(signed char)			\
 	X(wchar_t)				\
 	X(short)				\
 	X(int)					\

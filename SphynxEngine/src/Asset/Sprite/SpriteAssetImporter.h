@@ -20,8 +20,8 @@ namespace Sphynx
 		static void Save(const AssetMetadata& metadata);
 
 	private:
-		static std::shared_ptr<IAsset> LoadSprite(class Reader& reader, const AssetMetadata& metadata);
-		static std::shared_ptr<IAsset> LoadSpriteInSpritesheet(Reader& reader, const AssetMetadata& metadata);
+		static std::shared_ptr<IAsset> LoadSprite(const class Reader& reader, const AssetMetadata& metadata);
+		static std::shared_ptr<IAsset> LoadSpriteInSpritesheet(const class Reader& reader, const AssetMetadata& metadata);
 
 	};
 }

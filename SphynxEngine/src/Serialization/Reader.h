@@ -1,117 +1,140 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "Traits/Traits.h"
+#include <cstdint>
+#include <string>
+#include <filesystem>
 
-#include <fstream>
-#include <iostream>
-#include <cstring>
+
+#define READER_COMMON_BODY \
+	void Read(bool& v) const; \
+	void Read(char& v) const; \
+	void Read(wchar_t& v) const; \
+	void Read(int8_t& v) const; \
+	void Read(int16_t& v) const; \
+	void Read(int32_t& v) const; \
+	void Read(int64_t& v) const; \
+	void Read(uint8_t& v) const; \
+	void Read(uint16_t& v) const; \
+	void Read(uint32_t& v) const; \
+	void Read(uint64_t& v) const; \
+	void Read(float& v) const; \
+	void Read(double& v) const; \
+	 \
+	void Read(char* v) const; \
+	void Read(wchar_t* v) const; \
+	void Read(std::string& v) const; \
+	void Read(std::wstring& v) const; \
+	void Read(std::filesystem::path& v) const; \
+	 \
+	void Read(void* v, size_t size) const; \
+	 \
+	template<typename T> \
+	void Read(T& v) const { ::Sphynx::Serialization::Read(*this, v); } \
+	 \
+	template<typename TKey, typename TValue> \
+	void Read(size_t index, TKey& k, TValue& v) const { PushKey(index); Read(k); PopKey(); PushValue(index); Read(v); PopValue(); } \
+	 \
+	size_t PushSequence() const; \
+	void PopSequence() const; \
+	void PushIndex(size_t index) const; \
+	void PopIndex() const; \
+	\
+	size_t PushMap() const; \
+	void PopMap() const; \
+	void PushKey(size_t index) const; \
+	void PopKey() const; \
+	void PushValue(size_t index) const; \
+	void PopValue() const; \
+	\
+	bool SupportsBinary() const
 
 
 namespace Sphynx
 {
-	/*template<typename T>
-	void Deserialize(const class Reader&, T& obj);*/
-
 	class SPHYNX_API Reader
 	{
 	public:
-		// iterable types
-		template<typename TIterable>
-		typename std::enable_if<Traits::is_iterable<TIterable>::value>::type
-		Read(TIterable& iterable)
+		Reader() = delete;
+		Reader(Reader&& other) = delete;
+		Reader& operator=(Reader&& other) = delete;
+
+		template<typename TReader>
+		Reader(TReader& reader) :
+			m_Reader(&reader),
+			m_ReadBoolFunc([](void* reader, bool& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadCharFunc([](void* reader, char& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadWCharFunc([](void* reader, wchar_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadInt8Func([](void* reader, int8_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadInt16Func([](void* reader, int16_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadInt32Func([](void* reader, int32_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadInt64Func([](void* reader, int64_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadUInt8Func([](void* reader, uint8_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadUInt16Func([](void* reader, uint16_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadUInt32Func([](void* reader, uint32_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadUInt64Func([](void* reader, uint64_t& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadFloatFunc([](void* reader, float& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadDoubleFunc([](void* reader, double& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadCStrFunc([](void* reader, char* v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadCWStrFunc([](void* reader, wchar_t* v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadStrFunc([](void* reader, std::string& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadWStrFunc([](void* reader, std::wstring& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadBinaryFunc([](void* reader, void* v, size_t size) { static_cast<TReader*>(reader)->Read(v, size); }),
+			m_PushMapFunc([](void* reader) { return static_cast<TReader*>(reader)->PushMap(); }),
+			m_PopMapFunc([](void* reader) { static_cast<TReader*>(reader)->PopMap(); }),
+			m_PushKeyFunc([](void* reader, size_t index) { static_cast<TReader*>(reader)->PushKey(index); }),
+			m_PopKeyFunc([](void* reader) { static_cast<TReader*>(reader)->PopKey(); }),
+			m_PushValueFunc([](void* reader, size_t index) { static_cast<TReader*>(reader)->PushValue(index); }),
+			m_PopValueFunc([](void* reader) { static_cast<TReader*>(reader)->PopValue(); }),
+			m_PushSequenceFunc([](void* reader) { return static_cast<TReader*>(reader)->PushSequence(); }),
+			m_PopSequenceFunc([](void* reader) { static_cast<TReader*>(reader)->PopSequence(); }),
+			m_PushIndexFunc([](void* reader, size_t index) { static_cast<TReader*>(reader)->PushIndex(index); }),
+			m_PopIndexFunc([](void* reader) { static_cast<TReader*>(reader)->PopIndex(); }),
+			m_SupportsBinary(reader.SupportsBinary())
 		{
-			size_t size = 0;
-			Read((void*)&size, sizeof(size));
-			std::cout << "Read size: " << size << std::endl;
 
-			if constexpr (Traits::has_reserve<TIterable>::value)
-			{
-				iterable.reserve(size);
-			}
-
-			// TODO: emplace or push_back or whatever
-			using T = typename TIterable::value_type;
-			for (size_t i = 0; i < size; ++i)
-			{
-				if constexpr (has_insert<TIterable>::value)
-				{
-					T t; Read(t);
-					iterable.insert(std::end(iterable), t);
-				}
-				else
-				{
-					T& t = iterable[i];
-					Read(t);
-				}
-			}
 		}
 
-		// normal types (eg. builtin types and user-defined classes/structs)
-		template<typename T>
-		typename std::enable_if<!Traits::is_iterable<T>::value>::type
-		Read(T& t)
-		{
-			if constexpr (Traits::is_tuple_like<T>::value)
-			{
-				using Sequence = std::make_index_sequence<std::tuple_size<T>::value>;
-				foreach_element_in_tuple(
-					[&](auto& item) { Read(item); },
-					t,
-					Sequence{});
-			}
-			else if constexpr (std::is_trivial_v<T>)
-			{
-				Read((void*)&t, sizeof(T));
-			}
-			/*else
-			{
-				Deserialize<T>(*this, t);
-			}*/
-		}
+		template<typename TReader>
+		static Reader Create(const TReader& reader) { return Reader{ reader }; }
 
-		void Read(void* data, size_t size)
-		{
-			ReadImpl(data, size);
-		}
+	public:
+		READER_COMMON_BODY;
 
-		void Read(char* str)
-		{
-			size_t size{ 0 }; Read(size);
-			Read(str, (size + 1) * sizeof(char));
-		}
+	private:
+		void* m_Reader;
 
-		void Read(wchar_t* str)
-		{
-			size_t size{ 0 }; Read(size);
-			Read(str, (size + 1) * sizeof(wchar_t));
-		}
+		void (*m_ReadBoolFunc)(void*, bool&);
+		void (*m_ReadCharFunc)(void*, char&);
+		void (*m_ReadWCharFunc)(void*, wchar_t&);
+		void (*m_ReadInt8Func)(void*, int8_t&);
+		void (*m_ReadInt16Func)(void*, int16_t&);
+		void (*m_ReadInt32Func)(void*, int32_t&);
+		void (*m_ReadInt64Func)(void*, int64_t&);
+		void (*m_ReadUInt8Func)(void*, uint8_t&);
+		void (*m_ReadUInt16Func)(void*, uint16_t&);
+		void (*m_ReadUInt32Func)(void*, uint32_t&);
+		void (*m_ReadUInt64Func)(void*, uint64_t&);
+		void (*m_ReadFloatFunc)(void*, float&);
+		void (*m_ReadDoubleFunc)(void*, double&);
+		void (*m_ReadCStrFunc)(void*, char*);
+		void (*m_ReadCWStrFunc)(void*, wchar_t*);
+		void (*m_ReadStrFunc)(void*, std::string&);
+		void (*m_ReadWStrFunc)(void*, std::wstring&);
+		void (*m_ReadBinaryFunc)(void*, void*, size_t);
 
-		template<>
-		void Read<std::string>(std::string& str)
-		{
-			size_t size{ 0 }; Read(size);
-			str.resize(size);
-			Read(str.data(), (size + 1) * sizeof(typename std::string::value_type));
-		}
+		size_t(*m_PushMapFunc)(void*);
+		void (*m_PopMapFunc)(void*);
+		void (*m_PushKeyFunc)(void*, size_t);
+		void (*m_PopKeyFunc)(void*);
+		void (*m_PushValueFunc)(void*, size_t);
+		void (*m_PopValueFunc)(void*);
+		size_t(*m_PushSequenceFunc)(void*);
+		void (*m_PopSequenceFunc)(void*);
+		void (*m_PushIndexFunc)(void*, size_t);
+		void (*m_PopIndexFunc)(void*);
 
-		template<>
-		void Read<std::wstring>(std::wstring& str)
-		{
-			size_t size{ 0 }; Read(size);
-			str.resize(size);
-			Read(str.data(), (size + 1) * sizeof(typename std::wstring::value_type));
-		}
+		bool m_SupportsBinary;
 
-		template<>
-		void Read<std::filesystem::path>(std::filesystem::path& path)
-		{
-			std::wstring readPath;
-			Read(readPath);
-			path = readPath;
-		}
-		
-	protected:
-		virtual void ReadImpl(void* data, size_t size) = 0;
 	};
 }

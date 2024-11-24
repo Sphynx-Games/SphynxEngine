@@ -3,7 +3,7 @@
 #include "Widgets/ButtonWidget.h"
 #include "Base/Resources.h"
 #include "Scene/Scene.h"
-#include "Serialization/FileWriter.h"
+#include "Serialization/YAML/YAMLWriter.h"
 #include "Serialization/SceneSerializer.h"
 
 #include <imgui.h>
@@ -24,8 +24,8 @@ namespace Sphynx
 
 		m_SaveButton->OnClick.Bind([&]() {
 
-			FileWriter writer = FileWriter("Assets\\Scenes\\" + m_Scene->GetName() + ".txt");
-			SceneSerializer sceneSerializer = SceneSerializer(*m_Scene, writer);
+			YAMLWriter writer{ "Assets\\Scenes\\" + m_Scene->GetName() + ".txt" };
+			SceneSerializer sceneSerializer{ *m_Scene, writer };
 			sceneSerializer.Serialize();
 
 			ImGui::OpenPopup("SceneSaved");

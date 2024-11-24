@@ -10,28 +10,18 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API FileReader : public Reader
+	class SPHYNX_API FileReader
 	{
 	public:
-		FileReader(std::filesystem::path filepath) :
-			m_File(filepath, std::ios::binary)
-		{
-		}
+		FileReader(const std::filesystem::path& filepath);
+		~FileReader();
 
-		~FileReader()
-		{
-			m_File.close();
-		}
-
-		bool IsValid() const { return m_File.is_open(); }
-
-	protected:
-		virtual void ReadImpl(void* data, size_t size) override
-		{
-			m_File.read((char*)data, size);
-		}
+	public:
+		READER_COMMON_BODY;
+		inline bool IsValid() const { return m_File.is_open(); }
 
 	private:
-		std::ifstream m_File;
+		mutable std::ifstream m_File;
+
 	};
 }

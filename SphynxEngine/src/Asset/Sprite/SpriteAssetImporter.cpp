@@ -69,7 +69,7 @@ namespace Sphynx
 		AssetImporter::SerializeAsset(metadata, spriteMetadata);
 	}
 
-	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSprite(Reader& reader, const AssetMetadata& metadata)
+	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSprite(const Reader& reader, const AssetMetadata& metadata)
 	{
 		SpriteAssetMetadata spriteMetadata = AssetImporter::DeserializeAssetMetadata<SpriteAssetMetadata>(reader);
 
@@ -101,7 +101,7 @@ namespace Sphynx
 		return asset;
 	}
 
-	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSpriteInSpritesheet(Reader& reader, const AssetMetadata& metadata)
+	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSpriteInSpritesheet(const Reader& reader, const AssetMetadata& metadata)
 	{
 		// check if the spritesheet depends on a texture
 		AssetHandle dependencyHandle = metadata.Dependencies[0];

@@ -10,7 +10,7 @@ namespace Sphynx
 	class SPHYNX_API SceneSerializer
 	{
 	public:
-		SceneSerializer(const class Scene& scene, class Writer& writer);
+		SceneSerializer(const class Scene& scene, class Writer&& writer);
 
 		void Serialize();
 
@@ -20,10 +20,15 @@ namespace Sphynx
 		{
 			if (actor.HasComponent<T>())
 			{
+				m_Writer.PushMap();
+				m_Writer.PushKey();
 				m_Writer.Write(Reflection::GetType<T>().Name);
+
+				m_Writer.PushKey();
 				const T& component = actor.GetComponent<T>();
 				ReflectionSerializer serializer(component, m_Writer);
 				serializer.Serialize();
+				m_Writer.PopMap();
 			}
 		}
 

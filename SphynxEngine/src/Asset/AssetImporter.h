@@ -11,6 +11,8 @@
 #include "Serialization/FileReader.h"
 #include "Serialization/FileWriter.h"
 
+#include "Serialization/YAML/YAMLWriter.h"
+
 
 namespace Sphynx
 {
@@ -37,7 +39,7 @@ namespace Sphynx
 		static AssetLoadFunction GetLoader(const AssetType& type);
 		static AssetSaveFunction GetSaver(const AssetType& type);
 
-		static AssetMetadataHeader DeserializeAssetHeader(Reader& reader)
+		static AssetMetadataHeader DeserializeAssetHeader(const Reader& reader)
 		{
 			AssetMetadataHeader header;
 			ReflectionDeserializer headerDeserializer(header, reader);
@@ -49,7 +51,7 @@ namespace Sphynx
 		}
 
 		template<typename T>
-		static T DeserializeAssetMetadata(Reader& reader)
+		static T DeserializeAssetMetadata(const Reader& reader)
 		{
 			T specificMetadata;
 			ReflectionDeserializer deserializer(specificMetadata, reader);
@@ -74,18 +76,15 @@ namespace Sphynx
 		template<typename T>
 		static void SerializeAsset(const AssetMetadata& metadata, const T& specificMetadata)
 		{
-			FileWriter writer(metadata.Path);
+			YAMLWriter writer(metadata.Path);
 			SPX_CORE_ASSERT(writer.IsValid(), "Could not open file: {} !!", metadata.Path);
 
 			AssetMetadataHeader header;
 			header.SphynxAsset = SPHYNX_ASSET_HEADER;
 			header.Type = metadata.Type;
 
-			ReflectionSerializer headerSerializer(header, writer);
-			headerSerializer.Serialize();
-
-			ReflectionSerializer serializer(specificMetadata, writer);
-			serializer.Serialize();
+			ReflectionSerializer::Serialize(header, writer);
+			ReflectionSerializer::Serialize(specificMetadata, writer);
 		}
 
 	private:

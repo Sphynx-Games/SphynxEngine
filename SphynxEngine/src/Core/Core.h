@@ -16,5 +16,5 @@
 	#error Sphynx only supports Windows (for now)
 #endif
 
-// TODO: add log
-#define SPX_CORE_ASSERT(Condition, ...) if (!(Condition)) __debugbreak();
+#include "Logging/Log.h"
+#define SPX_CORE_ASSERT(Condition, ...) do { if (!(Condition)) { /* SPX_CORE_LOG_ERROR(##__VA_ARGS__); */ __debugbreak(); } } while(false)

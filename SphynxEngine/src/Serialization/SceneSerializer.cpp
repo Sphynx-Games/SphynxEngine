@@ -1,6 +1,5 @@
 #include "spxpch.h"
 #include "SceneSerializer.h"
-#include "SerializationConstants.h"
 #include "Writer.h"
 #include "Scene/Scene.h"
 #include "Component/UUIDComponent.h"
@@ -20,27 +19,36 @@
 
 namespace Sphynx
 {
-	SceneSerializer::SceneSerializer(const Scene& scene, Writer& writer) :
+	SceneSerializer::SceneSerializer(const Scene& scene, Writer&& writer) :
 		m_Scene(scene),
 		m_Writer(writer)
 	{}
 
 	void SceneSerializer::Serialize()
 	{
+		m_Writer.PushMap();
+		m_Writer.PushKey();
+		m_Writer.Write("Scene");
+
+		m_Writer.PushValue();
 		// scene uuid and name
-		m_Writer.Write(m_Scene.m_UUID);
-		m_Writer.Write(m_Scene.m_Name);
+		m_Writer.PushMap();
+		m_Writer.Write("m_UUID", m_Scene.m_UUID);
+		m_Writer.Write("m_Name", m_Scene.m_Name);
 
-		// num actors in scene
-		m_Writer.Write(m_Scene.m_Actors.size());
-
+		m_Writer.PushKey();
+		m_Writer.Write("m_Actors");
+		m_Writer.PushValue();
+		m_Writer.PushSequence();
 		for (const Actor& actor : m_Scene.m_Actors)
 		{
-			// num of components in actor
-			m_Writer.Write(actor.GetNumComponents());
+			m_Writer.PushMap();
+			m_Writer.Write("UUID", actor.GetComponent<UUIDComponent>().UUID);
+			m_Writer.Write("Name", actor.GetComponent<NameComponent>().Name);
 
-			SerializeComponent<UUIDComponent>(actor);
-			SerializeComponent<NameComponent>(actor);
+			m_Writer.PushKey(); m_Writer.Write("Components");
+			m_Writer.PushValue();
+			m_Writer.PushSequence();
 			SerializeComponent<TransformComponent>(actor);
 			SerializeComponent<LineRendererComponent>(actor);
 			SerializeComponent<SpriteRendererComponent>(actor);
@@ -49,6 +57,13 @@ namespace Sphynx
 			SerializeComponent<BoxCollider2DComponent>(actor);
 			SerializeComponent<CircleCollider2DComponent>(actor);
 			SerializeComponent<CapsuleCollider2DComponent>(actor);
+			m_Writer.PopSequence();
+			m_Writer.PopMap();
+
 		}
+		m_Writer.PopSequence();
+
+		m_Writer.PopMap();
+		m_Writer.PopMap();
 	}
 }

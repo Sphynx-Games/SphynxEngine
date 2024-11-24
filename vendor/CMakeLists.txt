@@ -72,6 +72,11 @@ set(BOX2D_BUILD_TESTBED OFF)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 add_subdirectory(box2d)
 
+# Add yaml-cpp Library
+set(YAML_CPP_BUILD_CONTRIB OFF)
+set(YAML_CPP_BUILD_TOOLS OFF)
+add_subdirectory(yaml-cpp)
+
 # Configure filters (folders)
 set_property(TARGET stduuid PROPERTY FOLDER vendor/stduuid)
 set_all_targets_in_folder(SDL vendor/SDL)
@@ -82,6 +87,7 @@ set_all_targets_in_folder(spdlog vendor/spdlog)
 set_all_targets_in_folder(entt vendor/entt)
 set_property(TARGET box2d PROPERTY FOLDER vendor/box2d)
 set_property(TARGET imgui PROPERTY FOLDER vendor/imgui)
+set_all_targets_in_folder(yaml-cpp vendor/yaml-cpp)
 
 # Link to the diferent libraries
 target_link_libraries(vendor INTERFACE
@@ -93,4 +99,5 @@ target_link_libraries(vendor INTERFACE
 	spdlog::spdlog
 	EnTT::EnTT
 	box2d
-	imgui)
+	imgui
+	yaml-cpp)

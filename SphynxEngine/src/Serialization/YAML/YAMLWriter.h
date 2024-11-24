@@ -1,26 +1,30 @@
 #pragma once
 
+
 #include "Core/Core.h"
-#include "Writer.h"
+#include "Serialization/Writer.h"
 
 #include <fstream>
 #include <iostream>
-#include <filesystem>
 
+
+namespace YAML { class Emitter; }
 
 namespace Sphynx
 {
-	class SPHYNX_API FileWriter
+	class SPHYNX_API YAMLWriter
 	{
 	public:
-		FileWriter(std::filesystem::path filepath);
-		~FileWriter();
+		YAMLWriter(const std::filesystem::path& path);
+		~YAMLWriter();
 
 	public:
 		WRITER_COMMON_BODY;
 		inline bool IsValid() const { return m_File.is_open(); }
 
-	private:
+	protected:
 		std::ofstream m_File;
+		std::unique_ptr<YAML::Emitter> m_Emitter;
+
 	};
 }

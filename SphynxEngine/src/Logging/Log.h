@@ -1,15 +1,13 @@
 #pragma once
 
-#include "Core/Core.h"
-#include "LogDefines.h"
-
 #pragma warning(push, 0)
 #include <spdlog/spdlog.h>
 #pragma warning(pop)
 
+
 namespace Sphynx
 {
-	class SPHYNX_API Log
+	class Log
 	{
 	public:
 		static void Init();
@@ -131,3 +129,5 @@ namespace Sphynx
 		m_ClientLogger->critical(std::forward<Args>(args)...);
 	}
 }
+
+#include "LogDefines.h"
