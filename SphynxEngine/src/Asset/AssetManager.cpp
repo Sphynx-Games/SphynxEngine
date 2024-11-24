@@ -63,7 +63,10 @@ namespace Sphynx
 
 		// load all managed assets into the asset registry
 		YAMLReader reader{ ASSET_REGISTRY_FILEPATH };
-		ReflectionDeserializer::Deserialize(s_Registry, reader);
+		if (reader.IsValid())
+		{
+			ReflectionDeserializer::Deserialize(s_Registry, reader);
+		}
 	}
 
 	void AssetManager::Shutdown()

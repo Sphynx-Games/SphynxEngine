@@ -1,0 +1,221 @@
+Scene:
+  m_UUID: 17a43c9a-983f-4de8-9687-229b375a359f
+  m_Name: TestScene
+  m_Actors:
+    - UUID: 409210f1-d9f2-437e-8b9c-a5006bf04528
+      Name: Sprite
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::SpriteRendererComponent:
+            Sprite:
+              {}
+            Tint:
+              R: 0
+              G: 0
+              B: 255
+              A: 255
+    - UUID: 43489a61-ac28-4da3-b5f5-93b1bfeb6228
+      Name: Quad
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::BoxRendererComponent:
+            DrawMode: WIREFRAME
+            Size:
+              X: 1
+              Y: 1
+            Pivot:
+              X: 0.5
+              Y: 0.5
+            Color:
+              R: 255
+              G: 255
+              B: 255
+              A: 255
+    - UUID: 64d5a88a-bc64-4ae1-b60d-ca0e6458fcf6
+      Name: Line
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::LineRendererComponent:
+            Point1:
+              X: 0
+              Y: 0
+            Point2:
+              X: 1
+              Y: 0
+            LineWidth: 1
+            Color:
+              R: 0
+              G: 255
+              B: 0
+              A: 255
+    - UUID: b1656a4a-8a7f-4390-8dab-30477800440f
+      Name: Box 1
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: -2
+                Z: 0
+              Scale:
+                X: 5
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::BoxCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 1
+            m_Offset:
+              X: 0
+              Y: 1
+            m_Trigger: false
+            m_Debug: true
+    - UUID: a037a5ca-4ee4-4015-89eb-6c50caa0a96c
+      Name: Box 2
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 0.5
+                Y: 0.5
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 45
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
+        - Sphynx::BoxCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 1
+            m_Offset:
+              X: 0
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
+    - UUID: 2a53e8f3-4c28-4795-bd0e-98557da40118
+      Name: Sphere 1
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0.5
+                Y: 3
+                Z: 0
+              Scale:
+                X: 0.5
+                Y: 0.5
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 35
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
+        - Sphynx::CircleCollider2DComponent:
+            m_Radius: 1
+            m_Offset:
+              X: 0
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
+    - UUID: cbf1a153-81f1-4fe3-b4ac-c3109c5eb140
+      Name: Capsule 1
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: -1.5
+                Y: 1
+                Z: 0
+              Scale:
+                X: 2
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: -10
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
+        - Sphynx::CapsuleCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 2
+            m_Offset:
+              X: 1.5
+              Y: 0
+            m_Trigger: false
+            m_Debug: true

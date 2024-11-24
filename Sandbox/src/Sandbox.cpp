@@ -14,7 +14,7 @@ class SandboxLayer : public Sphynx::Layer
 public:
 	SandboxLayer() :
 		m_CameraController(new Sphynx::OrthographicCameraController(16.0f / 9.0f, true)),
-		m_SandboxScene(Sphynx::Scene("scene1"))
+		m_SandboxScene(Sphynx::Scene("TestScene"))
 	{
 		m_CameraController->SetZoom(2.0f);
 	}
@@ -87,16 +87,17 @@ Sphynx::Application* CreateApplication()
 void SandboxLayer::Attach()
 {
 	using namespace Sphynx;
-#if 0
+#if 1
 	Actor& sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<NameComponent>("Sprite");
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 	AssetHandle handle = AssetManager::GetAssetHandleFromAddress(sheet->Asset->GetSprite(0));
 	sprt.AddComponent<SpriteRendererComponent>(handle, Color::Blue);
 
-	/*Actor& quad = m_SandboxScene.CreateActor();
+	Actor& quad = m_SandboxScene.CreateActor();
+	quad.AddComponent<NameComponent>("Quad");
 	quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-	quad.AddComponent<BoxRendererComponent>();*/
+	quad.AddComponent<BoxRendererComponent>();
 
 	Actor& line = m_SandboxScene.CreateActor();
 	line.AddComponent<NameComponent>("Line");
@@ -130,12 +131,12 @@ void SandboxLayer::Attach()
 	capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 
-	FileWriter writer = FileWriter("Assets\\Scenes\\" + m_SandboxScene.GetName() + ".txt");
-	SceneSerializer sceneSerializer = SceneSerializer(m_SandboxScene, writer);
+	YAMLWriter writer{ "Assets\\Scenes\\" + m_SandboxScene.GetName() + ".sxpasset" };
+	SceneSerializer sceneSerializer{ m_SandboxScene, writer };
 	sceneSerializer.Serialize();
 #else
-	FileReader reader = FileReader("Assets\\Scenes\\scene1.txt");
-	SceneDeserializer sceneDeserializer = SceneDeserializer(m_SandboxScene, reader);
+	YAMLWriter reader{ "Assets\\Scenes\\TestScene.sxpasset" };
+	SceneDeserializer sceneDeserializer{ m_SandboxScene, reader };
 	sceneDeserializer.Deserialize();
 #endif
 

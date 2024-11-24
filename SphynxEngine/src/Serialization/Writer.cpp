@@ -108,7 +108,8 @@ namespace Sphynx
 
 	void Writer::Write(const std::filesystem::path& v)
 	{
-		Write(v.wstring());
+		SPX_CORE_ASSERT(m_WritePathFunc != nullptr, "Write function pointer not valid!");
+		m_WritePathFunc(m_Writer, v);
 	}
 
 	void Writer::Write(const void* v, size_t size)

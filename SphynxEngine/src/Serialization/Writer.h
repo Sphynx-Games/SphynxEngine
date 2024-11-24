@@ -57,7 +57,10 @@ namespace Sphynx
 		Writer(Writer&& other) = delete;
 		Writer& operator=(Writer&& other) = delete;
 
-		template<typename TWriter>
+		template<typename TWriter,
+			typename = std::enable_if_t<!std::is_same_v<
+			std::remove_cv_t<std::remove_reference_t<TWriter>>,
+			Writer>>>
 		Writer(TWriter& writer) :
 			m_Writer(&writer),
 			m_WriteBoolFunc([](void* writer, bool v) { static_cast<TWriter*>(writer)->Write(v); }),
@@ -77,6 +80,7 @@ namespace Sphynx
 			m_WriteCWStrFunc([](void* writer, const wchar_t* v) { static_cast<TWriter*>(writer)->Write(v); }),
 			m_WriteStrFunc([](void* writer, const std::string& v) { static_cast<TWriter*>(writer)->Write(v); }),
 			m_WriteWStrFunc([](void* writer, const std::wstring& v) { static_cast<TWriter*>(writer)->Write(v); }),
+			m_WritePathFunc([](void* writer, const std::filesystem::path& v) { static_cast<TWriter*>(writer)->Write(v); }),
 			m_WriteBinaryFunc([](void* writer, const void* v, size_t size) { static_cast<TWriter*>(writer)->Write(v, size); }),
 			m_PushMapFunc([](void* writer) { static_cast<TWriter*>(writer)->PushMap(); }),
 			m_PopMapFunc([](void* writer) { static_cast<TWriter*>(writer)->PopMap(); }),
@@ -116,6 +120,7 @@ namespace Sphynx
 		void (*m_WriteCWStrFunc)(void*, const wchar_t*);
 		void (*m_WriteStrFunc)(void*, const std::string&);
 		void (*m_WriteWStrFunc)(void*, const std::wstring&);
+		void (*m_WritePathFunc)(void*, const std::filesystem::path&);
 		void (*m_WriteBinaryFunc)(void*, const void*, size_t);
 
 		void (*m_PushMapFunc)(void*);

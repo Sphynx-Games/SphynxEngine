@@ -108,8 +108,8 @@ namespace Sphynx
 
 	void Reader::Read(std::filesystem::path& v) const
 	{
-		std::wstring s; Read(s);
-		v = s;
+		SPX_CORE_ASSERT(m_ReadPathFunc != nullptr, "Read function pointer not valid!");
+		m_ReadPathFunc(m_Reader, v);
 	}
 
 	void Reader::Read(void* v, size_t size) const

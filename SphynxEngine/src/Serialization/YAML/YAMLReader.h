@@ -20,7 +20,7 @@ namespace Sphynx
 
 	public:
 		READER_COMMON_BODY;
-		inline bool IsValid() const { return m_File.is_open(); }
+		bool IsValid() const;
 
 	private:
 		void Pop() const;

@@ -59,7 +59,10 @@ namespace Sphynx
 		Reader(Reader&& other) = delete;
 		Reader& operator=(Reader&& other) = delete;
 
-		template<typename TReader>
+		template<typename TReader, 
+			typename = std::enable_if_t<!std::is_same_v<
+			std::remove_cv_t<std::remove_reference_t<TReader>>, 
+			Reader>>>
 		Reader(TReader& reader) :
 			m_Reader(&reader),
 			m_ReadBoolFunc([](void* reader, bool& v) { static_cast<TReader*>(reader)->Read(v); }),
@@ -79,6 +82,7 @@ namespace Sphynx
 			m_ReadCWStrFunc([](void* reader, wchar_t* v) { static_cast<TReader*>(reader)->Read(v); }),
 			m_ReadStrFunc([](void* reader, std::string& v) { static_cast<TReader*>(reader)->Read(v); }),
 			m_ReadWStrFunc([](void* reader, std::wstring& v) { static_cast<TReader*>(reader)->Read(v); }),
+			m_ReadPathFunc([](void* reader, std::filesystem::path& v) { static_cast<TReader*>(reader)->Read(v); }),
 			m_ReadBinaryFunc([](void* reader, void* v, size_t size) { static_cast<TReader*>(reader)->Read(v, size); }),
 			m_PushMapFunc([](void* reader) { return static_cast<TReader*>(reader)->PushMap(); }),
 			m_PopMapFunc([](void* reader) { static_cast<TReader*>(reader)->PopMap(); }),
@@ -121,6 +125,7 @@ namespace Sphynx
 		void (*m_ReadCWStrFunc)(void*, wchar_t*);
 		void (*m_ReadStrFunc)(void*, std::string&);
 		void (*m_ReadWStrFunc)(void*, std::wstring&);
+		void (*m_ReadPathFunc)(void*, std::filesystem::path&);
 		void (*m_ReadBinaryFunc)(void*, void*, size_t);
 
 		size_t(*m_PushMapFunc)(void*);

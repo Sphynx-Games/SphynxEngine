@@ -11,6 +11,7 @@
 #include "Serialization/FileReader.h"
 #include "Serialization/FileWriter.h"
 
+#include "Serialization/YAML/YAMLReader.h"
 #include "Serialization/YAML/YAMLWriter.h"
 
 
@@ -63,14 +64,24 @@ namespace Sphynx
 		template<typename T>
 		static T DeserializeAsset(const AssetMetadata& metadata)
 		{
-			FileReader reader(metadata.Path);
+			YAMLReader reader(metadata.Path);
 			SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", metadata.Path);
 
+			size_t size = reader.PushSequence();
+			SPX_CORE_ASSERT(size == 2, "Size should be exactly 2. Header + Metadata!");
+
+			reader.PushIndex(0);
 			AssetMetadataHeader header = DeserializeAssetHeader(reader);
-
 			SPX_CORE_ASSERT(header.Type == metadata.Type, "Asset must be of type \"{}\", but is of type \"{}\"!!", metadata.Type, header.Type);
+			reader.PopIndex();
 
-			return DeserializeAssetMetadata<T>(reader);
+			reader.PushIndex(1);
+			T result = DeserializeAssetMetadata<T>(reader);
+			reader.PopIndex();
+
+			reader.PopSequence();
+
+			return result;
 		}
 
 		template<typename T>
@@ -83,8 +94,10 @@ namespace Sphynx
 			header.SphynxAsset = SPHYNX_ASSET_HEADER;
 			header.Type = metadata.Type;
 
+			writer.PushSequence();
 			ReflectionSerializer::Serialize(header, writer);
 			ReflectionSerializer::Serialize(specificMetadata, writer);
+			writer.PopSequence();
 		}
 
 	private:

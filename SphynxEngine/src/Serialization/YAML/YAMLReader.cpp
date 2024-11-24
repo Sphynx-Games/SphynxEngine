@@ -22,6 +22,11 @@ namespace Sphynx
 		}
 	}
 
+	bool YAMLReader::IsValid() const
+	{
+		return m_File.is_open() && !m_Node->IsNull();
+	}
+
 	void YAMLReader::Read(bool& v) const
 	{
 		v = m_Node->as<bool>();
