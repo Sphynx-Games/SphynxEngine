@@ -1,7 +1,8 @@
 #include "spxpch.h"
 #include "SceneEditor.h"
 
-#include "Panels/SceneOptionsPanel.h"
+#include "Base/Resources.h"
+#include "Panels/SceneToolbar.h"
 #include "Panels/SceneOutlinerPanel.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/ViewportPanel.h"
@@ -32,7 +33,7 @@ namespace Sphynx
 
 	SceneEditor::SceneEditor() :
 		Editor("SceneEditor"),
-		m_SceneOptionsPanel(new SceneOptionsPanel()),
+		m_SceneToolbar(new SceneToolbar()),
 		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
 		m_ContentBrowserPanel(new ContentBrowserPanel()),
 		m_ViewportPanel(new ViewportPanel()),
@@ -41,10 +42,10 @@ namespace Sphynx
 		m_SceneToEdit(Scene()),
 		m_SceneToPlay(Scene()),
 		m_ActiveScene(nullptr),
-		m_IsSceneActive(false),
+		m_SceneState(PlaybackState::STOPPED),
 		m_SceneNameBuffer()
 	{
-		AddWidget(m_SceneOptionsPanel);
+		AddWidget(m_SceneToolbar);
 		AddWidget(m_SceneOutlinerPanel);
 		AddWidget(m_ContentBrowserPanel);
 		AddWidget(m_ViewportPanel);
@@ -56,7 +57,6 @@ namespace Sphynx
 
 		// TODO: remove (testing)
 		{
-			//static Scene s_Scene;
 #if 0
 			Actor quad = s_Scene.CreateActor();
 			quad.AddComponent<NameComponent>("Hollow Box");
@@ -99,39 +99,38 @@ namespace Sphynx
 		}
 
 		m_ActiveScene = &m_SceneToEdit;
-
-		m_SceneOptionsPanel->SetContext(m_ActiveScene);
+		m_SceneToolbar->GetStopButton()->IsEnabled = false;
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 
-		// set the execute function of the SaveButtonWidget in SceneOptionsPanel
-		/*m_SceneOptionsPanel->GetSaveButton()->OnClick.Bind([&]() {
-
-			FileWriter writer = FileWriter("Assets\\Scenes\\" + m_ActiveScene->GetName() + ".txt");
-			SceneSerializer sceneSerializer = SceneSerializer(*m_ActiveScene, writer);
+		// save button
+		m_SceneToolbar->GetSaveButton()->OnClick.Bind([&]() {
+			YAMLWriter writer{ "Assets\\Scenes\\" + m_ActiveScene->GetName() + ".txt" };
+			SceneSerializer sceneSerializer{ *m_ActiveScene, writer };
 			sceneSerializer.Serialize();
+		});
 
-		});*/
-
-		static bool isPlaying = false;
-
-		m_SceneOptionsPanel->GetPlayButton()->OnClick.Bind([&]() {
-			if (!isPlaying)
+		// play and pause button
+		m_SceneToolbar->GetPlayAndPauseButton()->OnClick.Bind([&]() {
+			switch (m_SceneState)
 			{
-				m_SceneToPlay = m_SceneToEdit;
-				m_ActiveScene = &m_SceneToPlay;
-				m_ActiveScene->BeginPlay();
-				isPlaying = true;
+			case PlaybackState::PLAYING:
+				PauseScene();
+				break;
+			case PlaybackState::PAUSED:
+				ResumeScene();
+				break;
+			case PlaybackState::STOPPED:
+				PlayScene();
+				break;
+			default:
+				break;
 			}
-			else
-			{
-				m_ActiveScene->EndPlay();
-				m_ActiveScene = &m_SceneToEdit;
-				isPlaying = false;
-			}
+		});
 
-			m_SceneOptionsPanel->SetContext(m_ActiveScene);
-			m_SceneOutlinerPanel->SetContext(m_ActiveScene);
-		});		
+		// stop button
+		m_SceneToolbar->GetStopButton()->OnClick.Bind([&]() {
+			StopScene();
+		});
 	}
 
 	SceneEditor::~SceneEditor()
@@ -160,7 +159,14 @@ namespace Sphynx
 			Renderer2D::Begin(&s_CameraController.GetCamera());
 			if (m_ActiveScene != nullptr)
 			{
-				m_ActiveScene->Update(deltaTime);
+				if (m_SceneState == PlaybackState::PLAYING)
+				{
+					m_ActiveScene->Update(deltaTime);
+				}
+				else 
+				{
+					m_ActiveScene->Update(0.0f);
+				}
 			}
 			Renderer2D::End();
 		}
@@ -169,5 +175,37 @@ namespace Sphynx
 		m_DetailsPanel->SetContext(m_SceneOutlinerPanel->GetSelectedActor());
 
 		Editor::RenderGUI();
+	}
+
+	void SceneEditor::PlayScene()
+	{
+		m_SceneToPlay = m_SceneToEdit;
+		m_ActiveScene = &m_SceneToPlay;
+		m_ActiveScene->BeginPlay();
+		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
+
+		ResumeScene();
+	}
+
+	void SceneEditor::PauseScene()
+	{
+		m_SceneState = PlaybackState::PAUSED;
+		m_SceneToolbar->SetPlaybackState(m_SceneState);
+	}
+
+	void SceneEditor::ResumeScene()
+	{
+		m_SceneState = PlaybackState::PLAYING;
+		m_SceneToolbar->SetPlaybackState(m_SceneState);
+	}
+
+	void SceneEditor::StopScene()
+	{
+		m_SceneState = PlaybackState::STOPPED;
+		m_SceneToolbar->SetPlaybackState(m_SceneState);
+
+		m_ActiveScene->EndPlay();
+		m_ActiveScene = &m_SceneToEdit;
+		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 	}
 }

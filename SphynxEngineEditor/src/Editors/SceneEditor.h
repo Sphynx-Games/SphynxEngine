@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base/Editor.h"
+#include "Utils/PlaybackState.h"
 #include "Scene/Scene.h"
 
 
@@ -16,7 +17,13 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
-		class SceneOptionsPanel* m_SceneOptionsPanel;
+		void PlayScene();
+		void PauseScene();
+		void ResumeScene();
+		void StopScene();
+
+	private:
+		class SceneToolbar* m_SceneToolbar;
 		class SceneOutlinerPanel* m_SceneOutlinerPanel;
 		class ContentBrowserPanel* m_ContentBrowserPanel;
 		class ViewportPanel* m_ViewportPanel;
@@ -26,7 +33,7 @@ namespace Sphynx
 		Scene m_SceneToEdit;
 		Scene m_SceneToPlay;
 		Scene* m_ActiveScene;
-		bool m_IsSceneActive;
+		PlaybackState m_SceneState;
 		char m_SceneNameBuffer[1024];
 	};
 }

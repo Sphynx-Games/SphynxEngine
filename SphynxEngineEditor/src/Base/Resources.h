@@ -15,6 +15,8 @@ namespace Sphynx
 			FileTexture = TextureLoader::Load(ResourcesPath / "file.png");
 			SaveTexture = TextureLoader::Load(ResourcesPath / "save.png");
 			PlayTexture = TextureLoader::Load(ResourcesPath / "play.png");
+			StopTexture = TextureLoader::Load(ResourcesPath / "stop.png");
+			PauseTexture = TextureLoader::Load(ResourcesPath / "pause.png");
 		}
 
 		static void Shutdown()
@@ -23,6 +25,8 @@ namespace Sphynx
 			delete FileTexture;
 			delete SaveTexture;
 			delete PlayTexture;
+			delete StopTexture;
+			delete PauseTexture;
 		}
 
 	public:
@@ -32,5 +36,7 @@ namespace Sphynx
 		inline static Texture* FileTexture;
 		inline static Texture* SaveTexture;
 		inline static Texture* PlayTexture;
+		inline static Texture* StopTexture;
+		inline static Texture* PauseTexture;
 	};
 }
