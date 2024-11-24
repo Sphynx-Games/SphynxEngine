@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base/Editor.h"
+#include "Scene/Scene.h"
 
 
 namespace Sphynx
@@ -22,7 +23,10 @@ namespace Sphynx
 		class DetailsPanel* m_DetailsPanel;
 
 		class Framebuffer* m_Framebuffer;
-		class Scene* m_ActiveScene;
+		Scene m_SceneToEdit;
+		Scene m_SceneToPlay;
+		Scene* m_ActiveScene;
+		bool m_IsSceneActive;
 		char m_SceneNameBuffer[1024];
 	};
 }

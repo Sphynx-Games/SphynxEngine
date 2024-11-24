@@ -95,6 +95,8 @@ namespace ImGui
 		cursorPos.y += padding.y;
 		ImVec2 availableSize = {size.x - 2.f * padding.x, size.y - 3.f * padding.y };
 
+		ImGui::BeginGroup();
+
 		int num = 1;
 		std::string invisibleText = "##" + text;
 		bool pressed = ImGui::Button(invisibleText.c_str(), size);
@@ -138,6 +140,8 @@ namespace ImGui
 		ImGui::EndGroup();
 
 		ImGui::PopClipRect();
+
+		ImGui::EndGroup();
 
 		return pressed;
 	}

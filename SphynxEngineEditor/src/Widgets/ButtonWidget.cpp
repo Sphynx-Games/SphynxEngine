@@ -9,12 +9,13 @@
 
 namespace Sphynx
 {
-	ButtonWidget::ButtonWidget(const std::string& text, Texture* image, Vector2f size, Color color) :
+	ButtonWidget::ButtonWidget(const std::string& text, Texture* image, Vector2f size, Color color, bool isActive) :
 		OnClick(),
 		Text(text),
 		Image(image),
 		Size(size),
-		ImageColor(color)
+		ImageColor(color),
+		IsActive(isActive)
 	{
 	}
 
@@ -23,9 +24,13 @@ namespace Sphynx
 		ImVec2 buttonSize{ Size.X, Size.Y };
 		ImVec4 tintColor{ ImageColor.R / 255.f, ImageColor.G / 255.f, ImageColor.B / 255.f, ImageColor.A / 255.f };
 
+		if (!IsActive) ImGui::BeginDisabled();
+
 		if (ImGui::ButtonWithImageAndText(Text, (ImTextureID)Image->GetNativeTexture(), buttonSize, 0.75f, tintColor))
 		{
 			OnClick.Execute();
 		}
+
+		if (!IsActive) ImGui::EndDisabled();
 	}
 }

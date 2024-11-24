@@ -6,6 +6,7 @@
 namespace Sphynx
 {
 	class Scene;
+	class ButtonWidget;
 
 	class SceneOptionsPanel : public Panel
 	{
@@ -15,13 +16,15 @@ namespace Sphynx
 	public:
 		void SetContext(const Scene* scene);
 		class ButtonWidget* GetSaveButton() const { return m_SaveButton; }
+		class ButtonWidget* GetPlayButton() const { return m_PlayButton; }
 
 	protected:
 		virtual void RenderGUI() override;
 	
 	private:
 		const Scene* m_Scene;
-		class ButtonWidget* m_SaveButton;
+		ButtonWidget* m_SaveButton;
+		ButtonWidget* m_PlayButton;
 		//char m_SceneNameBuffer[1024];
 	};
 }

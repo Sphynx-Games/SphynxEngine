@@ -13,7 +13,8 @@ namespace Sphynx
 {
 	SceneOptionsPanel::SceneOptionsPanel(const Scene* scene) :
 		m_Scene(scene),
-		m_SaveButton(new ButtonWidget("Save", Resources::SaveTexture))
+		m_SaveButton(new ButtonWidget("Save", Resources::SaveTexture)),
+		m_PlayButton(new ButtonWidget("Play", Resources::PlayTexture))
 		//m_SceneNameBuffer()
 	{
 	}
@@ -22,13 +23,14 @@ namespace Sphynx
 	{
 		m_Scene = scene;
 
+		m_SaveButton->OnClick.Unbind();
 		m_SaveButton->OnClick.Bind([&]() {
 
 			YAMLWriter writer{ "Assets\\Scenes\\" + m_Scene->GetName() + ".txt" };
 			SceneSerializer sceneSerializer{ *m_Scene, writer };
 			sceneSerializer.Serialize();
 
-			ImGui::OpenPopup("SceneSaved");
+			//ImGui::OpenPopup("SceneSaved");
 
 		});
 	}
@@ -38,14 +40,16 @@ namespace Sphynx
 		ImGui::Begin("Options");
 
 		m_SaveButton->RenderGUI();
-
 		ImGui::SameLine();
+		m_PlayButton->RenderGUI();
+		
+		/*ImGui::SameLine();
 
 		if (ImGui::BeginPopup("SceneSaved"))
 		{
 			ImGui::Text("Scene saved...");
 			ImGui::EndPopup();
-		}
+		}*/
 
 		//strncpy(m_SceneNameBuffer, m_ActiveScene->GetName().c_str(), m_ActiveScene->GetName().size());
 		//bool renamed = ImGui::InputText("##SceneName", m_SceneNameBuffer, sizeof(m_SceneNameBuffer) / sizeof(char));

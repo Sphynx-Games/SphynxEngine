@@ -15,5 +15,8 @@ namespace Sphynx
 		virtual void Run() override;
 		virtual void Shutdown() override;
 
+	private:
+		class EditorLayer* m_EditorLayer;
+
 	};
 }

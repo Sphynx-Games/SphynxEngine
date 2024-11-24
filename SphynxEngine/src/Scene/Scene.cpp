@@ -15,6 +15,35 @@
 
 namespace Sphynx
 {
+	void Scene::CloneRegistry(const Scene& other)
+	{
+		auto& sourceRegistry = other.m_Registry;
+		auto& targetRegistry = m_Registry;
+		std::unordered_map<UUID, entt::entity> enttMap;
+
+		// create entities
+		auto idView = sourceRegistry.view<UUIDComponent>();
+		for (auto& e : idView)
+		{
+			UUID uuid = sourceRegistry.get<UUIDComponent>(e).UUID;
+
+			Actor& actor = CreateActor();
+			actor.GetComponent<UUIDComponent>().UUID = uuid;
+			enttMap[uuid] = (entt::entity)actor;
+		}
+
+		// copy components
+		CopyComponent<NameComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<TransformComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<LineRendererComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<SpriteRendererComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<BoxRendererComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<Rigidbody2DComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<BoxCollider2DComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<CircleCollider2DComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<CapsuleCollider2DComponent>(sourceRegistry, targetRegistry, enttMap);
+	}
+
 	Scene::Scene() :
 		m_UUID(UUID::Generate()),
 		m_Name("Default Scene"),
@@ -35,8 +64,32 @@ namespace Sphynx
 	{
 	}
 
+	Scene::Scene(const Scene& other) :
+		m_UUID(other.m_UUID),
+		m_Name(other.m_Name),
+		m_HasBegunPlay(false),
+		m_Registry(),
+		m_Actors(),
+		m_PhysicsWorld(nullptr)
+	{
+		CloneRegistry(other);
+	}
+
 	Scene::~Scene()
 	{
+	}
+
+	Scene& Scene::operator=(const Scene& other)
+	{
+		SPX_CORE_ASSERT(!m_HasBegunPlay, "Scene must not be playing!!");
+		m_UUID = other.m_UUID;
+		m_Name = other.m_Name;
+		m_HasBegunPlay = false;
+		m_PhysicsWorld = nullptr;
+		m_Registry.clear();
+		m_Actors.clear();
+		CloneRegistry(other);
+		return *this;
 	}
 
 	void Scene::BeginPlay()
@@ -50,7 +103,15 @@ namespace Sphynx
 
 	void Scene::EndPlay()
 	{
-		m_PhysicsWorld = nullptr;
+		if (!m_HasBegunPlay) return;
+
+		m_HasBegunPlay = false;
+
+		if (m_PhysicsWorld != nullptr)
+		{
+			Physics2D::DestroyPhysicsWorld(m_PhysicsWorld);
+			m_PhysicsWorld = nullptr;
+		}
 	}
 
 	void Scene::Update(float deltaTime)
@@ -105,6 +166,12 @@ namespace Sphynx
 	void Scene::DestroyActor(const Actor& actor)
 	{
 		m_Registry.destroy(actor);
+
+		auto it = std::find(m_Actors.begin(), m_Actors.end(), actor);
+		if (it != m_Actors.end())
+		{
+			m_Actors.erase(it);
+		}
 	}
 
 	const std::vector<Actor>& Scene::GetActors() const

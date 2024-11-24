@@ -7,10 +7,9 @@
 #include "Panels/ViewportPanel.h"
 #include "Panels/DetailsPanel.h"
 
-//#include "Widgets/ButtonWidget.h"
+#include "Widgets/ButtonWidget.h"
 
 #include "Core/Time.h"
-#include "Scene/Scene.h"
 #include "Renderer/Renderer2D.h"
 #include "Renderer/Framebuffer.h"
 
@@ -39,7 +38,10 @@ namespace Sphynx
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),
 		m_Framebuffer(nullptr),
+		m_SceneToEdit(Scene()),
+		m_SceneToPlay(Scene()),
 		m_ActiveScene(nullptr),
+		m_IsSceneActive(false),
 		m_SceneNameBuffer()
 	{
 		AddWidget(m_SceneOptionsPanel);
@@ -54,7 +56,7 @@ namespace Sphynx
 
 		// TODO: remove (testing)
 		{
-			static Scene s_Scene;
+			//static Scene s_Scene;
 #if 0
 			Actor quad = s_Scene.CreateActor();
 			quad.AddComponent<NameComponent>("Hollow Box");
@@ -91,25 +93,45 @@ namespace Sphynx
 			capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 #else
 			YAMLReader reader{ "Assets\\Scenes\\scene1.txt" };
-			SceneDeserializer sceneDeserializer{ s_Scene, reader };
+			SceneDeserializer sceneDeserializer{ m_SceneToEdit, reader };
 			sceneDeserializer.Deserialize();
 #endif
-			m_ActiveScene = &s_Scene;
-
-			// set the execute function of the SaveButtonWidget in SceneOptionsPanel
-			/*m_SceneOptionsPanel->GetSaveButton()->OnClick.Bind([&]() {
-
-				FileWriter writer = FileWriter("Assets\\Scenes\\" + m_ActiveScene->GetName() + ".txt");
-				SceneSerializer sceneSerializer = SceneSerializer(*m_ActiveScene, writer);
-				sceneSerializer.Serialize();
-				
-			});*/
-
-			m_ActiveScene->BeginPlay(); // TODO: change this in the future
 		}
+
+		m_ActiveScene = &m_SceneToEdit;
 
 		m_SceneOptionsPanel->SetContext(m_ActiveScene);
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
+
+		// set the execute function of the SaveButtonWidget in SceneOptionsPanel
+		/*m_SceneOptionsPanel->GetSaveButton()->OnClick.Bind([&]() {
+
+			FileWriter writer = FileWriter("Assets\\Scenes\\" + m_ActiveScene->GetName() + ".txt");
+			SceneSerializer sceneSerializer = SceneSerializer(*m_ActiveScene, writer);
+			sceneSerializer.Serialize();
+
+		});*/
+
+		static bool isPlaying = false;
+
+		m_SceneOptionsPanel->GetPlayButton()->OnClick.Bind([&]() {
+			if (!isPlaying)
+			{
+				m_SceneToPlay = m_SceneToEdit;
+				m_ActiveScene = &m_SceneToPlay;
+				m_ActiveScene->BeginPlay();
+				isPlaying = true;
+			}
+			else
+			{
+				m_ActiveScene->EndPlay();
+				m_ActiveScene = &m_SceneToEdit;
+				isPlaying = false;
+			}
+
+			m_SceneOptionsPanel->SetContext(m_ActiveScene);
+			m_SceneOutlinerPanel->SetContext(m_ActiveScene);
+		});		
 	}
 
 	SceneEditor::~SceneEditor()

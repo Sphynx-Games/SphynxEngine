@@ -136,4 +136,14 @@ namespace Sphynx
 	{
 		m_LayerStack.PushOverlay(layer);
 	}
+
+	void Application::PopLayer(Layer* layer)
+	{
+		m_LayerStack.PopLayer(layer);
+	}
+
+	void Application::PopOverlay(Layer* layer)
+	{
+		m_LayerStack.PopOverlay(layer);
+	}
 }
