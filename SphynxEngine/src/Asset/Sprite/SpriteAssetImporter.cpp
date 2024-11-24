@@ -32,23 +32,29 @@ namespace Sphynx
 
 		// read sprite data from .spxasset file
 		// (NOTE: we need to deserialize each metadata individually in oder to be able to perform some checks)
-		FileReader reader(metadata.Path);
+		YAMLReader reader(metadata.Path);
 		SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", metadata.Path);
 
-		AssetMetadataHeader header = AssetImporter::DeserializeAssetHeader(reader);
+		size_t size = reader.PushSequence();
+		SPX_CORE_ASSERT(size == 2, "Size should be exactly 2. Header + Metadata!");
 
+		reader.PushIndex(0);
+		AssetMetadataHeader header = AssetImporter::DeserializeAssetHeader(reader);
+		reader.PopIndex();
+
+		reader.PushIndex(1);
+		std::shared_ptr<IAsset> sprite = nullptr;
 		if (header.Type == TypeToAssetType<Spritesheet>::Value)
 		{
-			return LoadSpriteInSpritesheet(reader, metadata);
+			sprite = LoadSpriteInSpritesheet(reader, metadata);
 		}
 		else if(header.Type == TypeToAssetType<Sprite>::Value)
 		{
-			return LoadSprite(reader, metadata);
+			sprite = LoadSprite(reader, metadata);
 		}
-		else
-		{
-			return nullptr;
-		}
+		reader.PopIndex();
+		reader.PopSequence();
+		return sprite;
 	}
 
 	void SpriteAssetImporter::Save(const AssetMetadata& metadata)

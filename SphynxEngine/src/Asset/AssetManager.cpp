@@ -42,7 +42,7 @@ namespace Sphynx
 	AssetTypeRegistry AssetManager::s_TypeRegistry = {};
 	AssetRegistry AssetManager::s_Registry = {};
 
-	static const std::filesystem::path ASSET_REGISTRY_FILEPATH = std::filesystem::path("Assets\\assetRegistry").replace_extension(ASSET_EXTENSION);
+	static const std::filesystem::path ASSET_REGISTRY_FILEPATH = std::filesystem::path("Assets\\AssetRegistry").replace_extension(ASSET_EXTENSION);
 
 
 	void AssetManager::Init()

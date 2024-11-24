@@ -23,6 +23,7 @@ namespace Sphynx
 
 	private:
 		friend bool operator==(const UUID& lhs, const UUID& rhs);
+		friend bool operator<(const UUID& lhs, const UUID& rhs);
 
 	private:
 		std::array<uint8_t, 16> m_Data;
@@ -75,12 +76,16 @@ struct std::hash<Sphynx::UUID>
 
 #include "Reflection/Reflection.h"
 #include "Serialization/Serialization.h"
+#include "Serialization/Writer.h"
+#include "Serialization/Reader.h"
 #include "Serialization/YAML/YAMLWriter.h"
 #include "Serialization/YAML/YAMLReader.h"
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUID)
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
-SPX_REFLECT_ATTRIBUTE(PlainOldData)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
+	SPX_REFLECT_ATTRIBUTE(PlainOldData)
 SPX_REFLECT_STRUCT_END(Sphynx::UUID)

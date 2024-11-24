@@ -17,7 +17,7 @@
 namespace Sphynx
 {
 	using AssetTypeRegistry = std::set<AssetType>;
-	using AssetRegistry = HashMap<AssetHandle, AssetMetadata>;
+	using AssetRegistry = Map<AssetHandle, AssetMetadata>;
 
 	class AssetManager
 	{

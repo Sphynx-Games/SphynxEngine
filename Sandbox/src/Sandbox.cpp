@@ -87,7 +87,7 @@ Sphynx::Application* CreateApplication()
 void SandboxLayer::Attach()
 {
 	using namespace Sphynx;
-#if 1
+#if 0
 	Actor& sprt = m_SandboxScene.CreateActor();
 	sprt.AddComponent<NameComponent>("Sprite");
 	sprt.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
@@ -131,11 +131,11 @@ void SandboxLayer::Attach()
 	capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 
-	YAMLWriter writer{ "Assets\\Scenes\\" + m_SandboxScene.GetName() + ".sxpasset" };
+	YAMLWriter writer{ "Assets\\Scenes\\" + m_SandboxScene.GetName() + ".spxasset" };
 	SceneSerializer sceneSerializer{ m_SandboxScene, writer };
 	sceneSerializer.Serialize();
 #else
-	YAMLWriter reader{ "Assets\\Scenes\\TestScene.sxpasset" };
+	YAMLReader reader{ "Assets\\Scenes\\TestScene.spxasset" };
 	SceneDeserializer sceneDeserializer{ m_SandboxScene, reader };
 	sceneDeserializer.Deserialize();
 #endif

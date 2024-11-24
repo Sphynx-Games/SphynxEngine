@@ -21,14 +21,14 @@ namespace Sphynx
 		{
 		}
 
-		ReflectionDeserializer(void* obj, const Reflection::Type& type, class Reader& reader);
+		ReflectionDeserializer(void* obj, const Reflection::Type& type, const class Reader& reader);
 
 	public:
 		template<typename T, typename TReader>
-		static void Deserialize(T& obj, TReader& reader);
+		static void Deserialize(T& obj, const TReader& reader);
 
 		template<typename TReader>
-		static void Deserialize(void* obj, const Reflection::Type& type, TReader& reader);
+		static void Deserialize(void* obj, const Reflection::Type& type, const TReader& reader);
 
 		void Deserialize();
 
@@ -40,13 +40,13 @@ namespace Sphynx
 	};
 
 	template<typename T, typename TReader>
-	inline void ReflectionDeserializer::Deserialize(T& obj, TReader& reader)
+	inline void ReflectionDeserializer::Deserialize(T& obj, const TReader& reader)
 	{
 		Deserialize(&obj, Reflection::GetType<T>(), reader);
 	}
 
 	template<typename TReader>
-	inline void ReflectionDeserializer::Deserialize(void* obj, const Reflection::Type& type, TReader& reader)
+	inline void ReflectionDeserializer::Deserialize(void* obj, const Reflection::Type& type, const TReader& reader)
 	{
 		if (type.Kind == Reflection::TypeKind::PRIMITIVE)
 		{

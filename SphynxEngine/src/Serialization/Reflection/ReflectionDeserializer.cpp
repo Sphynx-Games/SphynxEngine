@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	ReflectionDeserializer::ReflectionDeserializer(void* obj, const Reflection::Type& type, Reader& reader) :
+	ReflectionDeserializer::ReflectionDeserializer(void* obj, const Reflection::Type& type, const Reader& reader) :
 		m_Obj(obj),
 		m_Type(type),
 		m_Reader(reader)

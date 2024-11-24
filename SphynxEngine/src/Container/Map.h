@@ -4,6 +4,7 @@
 #include "Array.h"
 #include "Pair.h"
 #include <unordered_map>
+#include <map>
 #include <utility>
 
 
@@ -19,21 +20,21 @@ namespace Sphynx
 		using ConstIterator = typename std::unordered_map<TKey, TValue>::const_iterator;
 
 	public:
-		HashMap() : m_Hashmap() {}
+		HashMap() : m_HashMap() {}
 
 		HashMap(size_t initialCapacity)
 		{
-			m_Hashmap.reserve(initialCapacity);
+			m_HashMap.reserve(initialCapacity);
 		}
 
 		HashMap(const HashMap& other) : HashMap(other.Size())
 		{
-			m_Hashmap = other.m_Hashmap;
+			m_HashMap = other.m_HashMap;
 		}
 
 		HashMap(HashMap&& other)
 		{
-			m_Hashmap = std::move(other.m_Hashmap);
+			m_HashMap = std::move(other.m_HashMap);
 			other.RemoveAll();
 		}
 
@@ -41,32 +42,32 @@ namespace Sphynx
 
 		void Add(const TKey& key, const TValue& value)
 		{
-			m_Hashmap[key] = value;
+			m_HashMap[key] = value;
 		}
 
 		void Emplace(TKey&& key, TValue&& value)
 		{
-			m_Hashmap.emplace(key, value);
+			m_HashMap.emplace(key, value);
 		}
 
 		void Remove(const TKey& key)
 		{
-			m_Hashmap.erase(key);
+			m_HashMap.erase(key);
 		}
 
 		void RemoveAll()
 		{
-			m_Hashmap.clear();
+			m_HashMap.clear();
 		}
 
 		bool ContainsKey(const TKey& key) const
 		{
-			return m_Hashmap.count(key);
+			return m_HashMap.count(key);
 		}
 
 		bool ContainsValue(const TValue& value) const
 		{
-			for (auto& [key, val] : m_Hashmap)
+			for (auto& [key, val] : m_HashMap)
 			{
 				if (value == val)
 				{
@@ -78,13 +79,13 @@ namespace Sphynx
 
 		const TValue& GetValue(const TKey& key) const
 		{
-			return m_Hashmap[key];
+			return m_HashMap[key];
 		}
 
 		Array<TKey> GetKeys() const
 		{
-			Array<TKey> array = Array<TKey>(m_Hashmap.size());
-			for (auto& [key, value] : m_Hashmap)
+			Array<TKey> array{ m_HashMap.size() };
+			for (auto& [key, value] : m_HashMap)
 			{
 				array.Add(key);
 			}
@@ -93,8 +94,8 @@ namespace Sphynx
 
 		Array<TValue> GetValues()
 		{
-			Array<TValue> array = Array<TValue>(m_Hashmap.size());
-			for (auto& [key, value] : m_Hashmap)
+			Array<TValue> array{ m_HashMap.size() };
+			for (auto& [key, value] : m_HashMap)
 			{
 				array.Add(value);
 			}
@@ -103,47 +104,152 @@ namespace Sphynx
 
 		Array<Pair<TKey, TValue>> GetKeyValues() const
 		{
-			Array<Pair<TKey, TValue>> array(m_Hashmap.size());
-			for (auto& [key, value] : m_Hashmap)
+			Array<Pair<TKey, TValue>> array(m_HashMap.size());
+			for (auto& [key, value] : m_HashMap)
 			{
 				array.Add(Pair(key, value));
 			}
 			return array;
 		}
 
-		inline size_t Size() const { return m_Hashmap.size(); }
-		inline bool IsEmpty() const { return m_Hashmap.empty(); }
+		inline size_t Size() const { return m_HashMap.size(); }
+		inline bool IsEmpty() const { return m_HashMap.empty(); }
 
-		inline const TValue& operator [] (const TKey& key) const { return m_Hashmap.at(key); }
-		inline TValue& operator [] (const TKey& key) { return m_Hashmap[key]; }
+		inline const TValue& operator [] (const TKey& key) const { return m_HashMap.at(key); }
+		inline TValue& operator [] (const TKey& key) { return m_HashMap[key]; }
 
-		/*HashMap& operator = (const TValue& other)
-		{
-			RemoveAll();
-			Append(other);
-			Remove
+		inline Iterator begin() { return m_HashMap.begin(); }
+		inline Iterator end() { return m_HashMap.end(); }
 
-			return *this;
-		}
-
-		HashMap& operator = (TValue&& other)
-		{
-			RemoveAll();
-			m_Array = std::move(other.m_Array);
-			other.RemoveAll();
-			return *this;
-		}*/
-
-		inline Iterator begin() { return m_Hashmap.begin(); }
-		inline Iterator end() { return m_Hashmap.end(); }
-
-		inline ConstIterator begin() const { return m_Hashmap.begin(); }
-		inline ConstIterator end() const { return m_Hashmap.end(); }
-		inline ConstIterator cbegin() const { return m_Hashmap.cbegin(); }
-		inline ConstIterator cend() const { return m_Hashmap.cend(); }
+		inline ConstIterator begin() const { return m_HashMap.begin(); }
+		inline ConstIterator end() const { return m_HashMap.end(); }
+		inline ConstIterator cbegin() const { return m_HashMap.cbegin(); }
+		inline ConstIterator cend() const { return m_HashMap.cend(); }
 
 	private:
-		std::unordered_map<TKey, TValue> m_Hashmap;
+		std::unordered_map<TKey, TValue> m_HashMap;
+
+	};
+
+	template <typename TKey, typename TValue>
+	class SPHYNX_API Map
+	{
+	public:
+		using key_type = typename std::map<TKey, TValue>::key_type;
+		using mapped_type = typename std::map<TKey, TValue>::mapped_type;
+		using Iterator = typename std::map<TKey, TValue>::iterator;
+		using ConstIterator = typename std::map<TKey, TValue>::const_iterator;
+
+	public:
+		Map() : m_Map() {}
+
+		Map(size_t initialCapacity)
+		{
+			m_Map.reserve(initialCapacity);
+		}
+
+		Map(const Map& other) : Map(other.Size())
+		{
+			m_Map = other.m_Map;
+		}
+
+		Map(Map&& other)
+		{
+			m_Map = std::move(other.m_Map);
+			other.RemoveAll();
+		}
+
+		~Map() = default;
+
+		void Add(const TKey& key, const TValue& value)
+		{
+			m_Map[key] = value;
+		}
+
+		void Emplace(TKey&& key, TValue&& value)
+		{
+			m_Map.emplace(key, value);
+		}
+
+		void Remove(const TKey& key)
+		{
+			m_Map.erase(key);
+		}
+
+		void RemoveAll()
+		{
+			m_Map.clear();
+		}
+
+		bool ContainsKey(const TKey& key) const
+		{
+			return m_Map.count(key);
+		}
+
+		bool ContainsValue(const TValue& value) const
+		{
+			for (auto& [key, val] : m_Map)
+			{
+				if (value == val)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		const TValue& GetValue(const TKey& key) const
+		{
+			return m_Map[key];
+		}
+
+		Array<TKey> GetKeys() const
+		{
+			Array<TKey> array{ m_Map.size() };
+			for (auto& [key, value] : m_Map)
+			{
+				array.Add(key);
+			}
+			return array;
+		}
+
+		Array<TValue> GetValues()
+		{
+			Array<TValue> array{ m_Map.size() };
+			for (auto& [key, value] : m_Map)
+			{
+				array.Add(value);
+			}
+			return array;
+		}
+
+		Array<Pair<TKey, TValue>> GetKeyValues() const
+		{
+			Array<Pair<TKey, TValue>> array(m_Map.size());
+			for (auto& [key, value] : m_Map)
+			{
+				array.Add(Pair(key, value));
+			}
+			return array;
+		}
+
+		inline size_t Size() const { return m_Map.size(); }
+		inline bool IsEmpty() const { return m_Map.empty(); }
+
+		inline const TValue& operator [] (const TKey& key) const { return m_Map.at(key); }
+		inline TValue& operator [] (const TKey& key) { return m_Map[key]; }
+
+		inline Iterator begin() { return m_Map.begin(); }
+		inline Iterator end() { return m_Map.end(); }
+
+		inline ConstIterator begin() const { return m_Map.begin(); }
+		inline ConstIterator end() const { return m_Map.end(); }
+		inline ConstIterator cbegin() const { return m_Map.cbegin(); }
+		inline ConstIterator cend() const { return m_Map.cend(); }
+
+	private:
+		std::map<TKey, TValue> m_Map;
+
 	};
 }
 
@@ -151,10 +257,18 @@ template<typename TKey, typename TValue> struct std::tuple_size<Sphynx::HashMap<
 template<typename TKey, typename TValue> struct std::tuple_element<0, Sphynx::HashMap<TKey, TValue>> { using type = TKey; };
 template<typename TKey, typename TValue> struct std::tuple_element<1, Sphynx::HashMap<TKey, TValue>> { using type = TValue; };
 
+template<typename TKey, typename TValue> struct std::tuple_size<Sphynx::Map<TKey, TValue>> : std::integral_constant<size_t, 2> {};
+template<typename TKey, typename TValue> struct std::tuple_element<0, Sphynx::Map<TKey, TValue>> { using type = TKey; };
+template<typename TKey, typename TValue> struct std::tuple_element<1, Sphynx::Map<TKey, TValue>> { using type = TValue; };
+
 
 #include "Reflection/Reflection.h"
 
 
 SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::HashMap)
-	SPX_REFLECT_ATTRIBUTE(AssociativeCollection)
+SPX_REFLECT_ATTRIBUTE(AssociativeCollection)
 SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::HashMap)
+
+SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Map)
+SPX_REFLECT_ATTRIBUTE(AssociativeCollection)
+SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Map)

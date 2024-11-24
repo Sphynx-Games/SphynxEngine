@@ -44,6 +44,11 @@ namespace Sphynx
 	{
 		return lhs.m_Data == rhs.m_Data;
 	}
+
+	bool operator<(const UUID& lhs, const UUID& rhs)
+	{
+		return lhs.m_Data < rhs.m_Data;
+	}
 }
 
 
