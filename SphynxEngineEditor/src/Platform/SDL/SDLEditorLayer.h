@@ -8,38 +8,36 @@ struct SDL_Renderer;
 
 namespace Sphynx
 {
-	class SDLEditorLayer : public EditorLayer
+	class SDLEditorLayer
 	{
 	public:
-		SDLEditorLayer();
+		static void Attach();
+		static void Detach();
+		static void HandleEvent(Event& event);
 
-		virtual void Attach() override;
-		virtual void Detach() override;
-		virtual void HandleEvent(Event& event) override;
-
-		virtual void Begin() override;
-		virtual void End() override;
-		virtual void RenderGUI() override;
+		static void Begin();
+		static void End();
+		static void RenderGUI();
 
 	private:
-		bool OnWindowMouseEnter(WindowMouseEnterEvent& event);
-		bool OnWindowMouseExit(WindowMouseExitEvent& event);
-		bool OnWindowFocusGained(WindowFocusGainedEvent& event);
-		bool OnWindowFocusLost(WindowFocusLostEvent& event);
-		bool OnWindowClosed(WindowClosedEvent& event);
-		bool OnWindowResized(WindowResizedEvent& event);
-		bool OnWindowMoved(WindowMovedEvent& event);
-		bool OnMouseMoved(MouseMovedEvent& event);
-		bool OnMouseScrolled(MouseScrolledEvent& event);
-		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
-		bool OnMouseButtonReleased(MouseButtonReleasedEvent& event);
-		bool OnKeyPressed(KeyPressedEvent& event);
-		bool OnKeyReleased(KeyReleasedEvent& event);
-		bool OnKeyTyped(KeyTypedEvent& event);
+		static bool OnWindowMouseEnter(WindowMouseEnterEvent& event);
+		static bool OnWindowMouseExit(WindowMouseExitEvent& event);
+		static bool OnWindowFocusGained(WindowFocusGainedEvent& event);
+		static bool OnWindowFocusLost(WindowFocusLostEvent& event);
+		static bool OnWindowClosed(WindowClosedEvent& event);
+		static bool OnWindowResized(WindowResizedEvent& event);
+		static bool OnWindowMoved(WindowMovedEvent& event);
+		static bool OnMouseMoved(MouseMovedEvent& event);
+		static bool OnMouseScrolled(MouseScrolledEvent& event);
+		static bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
+		static bool OnMouseButtonReleased(MouseButtonReleasedEvent& event);
+		static bool OnKeyPressed(KeyPressedEvent& event);
+		static bool OnKeyReleased(KeyReleasedEvent& event);
+		static bool OnKeyTyped(KeyTypedEvent& event);
 
 	private:
-		SDL_Window* m_Window;
-		SDL_Renderer* m_Renderer;
+		inline static SDL_Window* m_Window{ nullptr };
+		inline static SDL_Renderer* m_Renderer{ nullptr };
 
 	};
 }

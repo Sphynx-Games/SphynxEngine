@@ -5,6 +5,7 @@
 
 namespace Sphynx
 {
+    class GraphicsContext;
     typedef std::function<void(class Event&)> EventCallbackFunction;
 
     struct SPHYNX_API WindowParams
@@ -19,6 +20,7 @@ namespace Sphynx
     class SPHYNX_API Window
     {
     public:
+        Window() : m_GraphicsContext(nullptr) {};
         virtual ~Window() = default;
 
         virtual void Update() = 0;
@@ -33,8 +35,13 @@ namespace Sphynx
 
         virtual void SetEventCallbackFunction(EventCallbackFunction function) = 0;
 
+        inline GraphicsContext* GetGraphicsContext() const { return m_GraphicsContext; }
+
     public:
         static Window* Create(const WindowParams& params = WindowParams());
+
+    protected:
+        GraphicsContext* m_GraphicsContext;
 
     };
 

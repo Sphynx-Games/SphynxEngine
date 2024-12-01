@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base/Panel.h"
+#include "Math/Vector.h"
 
 
 namespace Sphynx
@@ -19,6 +20,7 @@ namespace Sphynx
 
 	protected:
 		virtual void RenderGUI() override;
+		virtual void PostRenderGUI() override;
 
 	private:
 		void CheckFramebufferSizeValidity();
@@ -26,5 +28,8 @@ namespace Sphynx
 	private:
 		Framebuffer* m_Framebuffer;
 		uint32_t m_Index;
+
+		Vector2i m_AvailableSize;
+
 	};
 }

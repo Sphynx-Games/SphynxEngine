@@ -177,16 +177,8 @@ static ImGuiKey ImGui_ImplSDL3_KeycodeToImGuiKey(int keycode)
 
 namespace Sphynx
 {
-	SDLEditorLayer::SDLEditorLayer() :
-		m_Window(nullptr),
-		m_Renderer(nullptr)
-	{
-	}
-
 	void SDLEditorLayer::Attach()
 	{
-		EditorLayer::Attach();
-
 		// Enable native IME.
 		SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "1");
 
@@ -203,37 +195,26 @@ namespace Sphynx
 		// Cleanup
 		ImGui_ImplSDLRenderer3_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
-
-		EditorLayer::Detach();
 	}
 
 	void SDLEditorLayer::HandleEvent(Event& event)
 	{
-		EditorLayer::HandleEvent(event);
-
 		//ImGui_ImplSDL3_ProcessEvent(&event);
 		Sphynx::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<WindowMouseEnterEvent>([this](auto& e) { return OnWindowMouseEnter(e); });
-		dispatcher.Dispatch<WindowMouseExitEvent>([this](auto& e) { return OnWindowMouseExit(e); });
-		dispatcher.Dispatch<WindowFocusGainedEvent>([this](auto& e) { return OnWindowFocusGained(e); });
-		dispatcher.Dispatch<WindowFocusLostEvent>([this](auto& e) { return OnWindowFocusLost(e); });
-		dispatcher.Dispatch<WindowClosedEvent>([this](auto& e) { return OnWindowClosed(e); });
-		dispatcher.Dispatch<WindowResizedEvent>([this](auto& e) { return OnWindowResized(e); });
-		dispatcher.Dispatch<WindowMovedEvent>([this](auto& e) { return OnWindowMoved(e); });
-		dispatcher.Dispatch<MouseMovedEvent>([this](auto& e) { return OnMouseMoved(e); });
-		dispatcher.Dispatch<MouseScrolledEvent>([this](auto& e) { return OnMouseScrolled(e); });
-		dispatcher.Dispatch<MouseButtonPressedEvent>([this](auto& e) { return OnMouseButtonPressed(e); });
-		dispatcher.Dispatch<MouseButtonReleasedEvent>([this](auto& e) { return OnMouseButtonReleased(e); });
-		dispatcher.Dispatch<KeyPressedEvent>([this](auto& e) { return OnKeyPressed(e); });
-		dispatcher.Dispatch<KeyReleasedEvent>([this](auto& e) { return OnKeyReleased(e); });
-		dispatcher.Dispatch<KeyTypedEvent>([this](auto& e) { return OnKeyTyped(e); });
-
-		if (IsBlockEventsEnabled())
-		{
-			ImGuiIO& io = ImGui::GetIO();
-			event.SetHandled(event.IsHandled() || event.IsInCategory(Sphynx::MouseEvent) && io.WantCaptureMouse);
-			event.SetHandled(event.IsHandled() || event.IsInCategory(Sphynx::KeyboardEvent) && io.WantCaptureKeyboard);
-		}
+		dispatcher.Dispatch<WindowMouseEnterEvent>([](auto& e) { return OnWindowMouseEnter(e); });
+		dispatcher.Dispatch<WindowMouseExitEvent>([](auto& e) { return OnWindowMouseExit(e); });
+		dispatcher.Dispatch<WindowFocusGainedEvent>([](auto& e) { return OnWindowFocusGained(e); });
+		dispatcher.Dispatch<WindowFocusLostEvent>([](auto& e) { return OnWindowFocusLost(e); });
+		dispatcher.Dispatch<WindowClosedEvent>([](auto& e) { return OnWindowClosed(e); });
+		dispatcher.Dispatch<WindowResizedEvent>([](auto& e) { return OnWindowResized(e); });
+		dispatcher.Dispatch<WindowMovedEvent>([](auto& e) { return OnWindowMoved(e); });
+		dispatcher.Dispatch<MouseMovedEvent>([](auto& e) { return OnMouseMoved(e); });
+		dispatcher.Dispatch<MouseScrolledEvent>([](auto& e) { return OnMouseScrolled(e); });
+		dispatcher.Dispatch<MouseButtonPressedEvent>([](auto& e) { return OnMouseButtonPressed(e); });
+		dispatcher.Dispatch<MouseButtonReleasedEvent>([](auto& e) { return OnMouseButtonReleased(e); });
+		dispatcher.Dispatch<KeyPressedEvent>([](auto& e) { return OnKeyPressed(e); });
+		dispatcher.Dispatch<KeyReleasedEvent>([](auto& e) { return OnKeyReleased(e); });
+		dispatcher.Dispatch<KeyTypedEvent>([](auto& e) { return OnKeyTyped(e); });
 	}
 
 	void SDLEditorLayer::Begin()
@@ -241,13 +222,11 @@ namespace Sphynx
 		// Start the Dear ImGui frame
 		ImGui_ImplSDLRenderer3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
-		ImGui::NewFrame();
 	}
 
 	void SDLEditorLayer::End()
 	{
 		// Rendering
-		ImGui::Render();
 		//SDL_RenderSetScale(m_Renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
 		//SDL_SetRenderDrawColor(m_Renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
 		SDL_RenderClear(m_Renderer);
@@ -258,7 +237,7 @@ namespace Sphynx
 
 	void SDLEditorLayer::RenderGUI()
 	{
-		EditorLayer::RenderGUI();
+
 	}
 
 	bool SDLEditorLayer::OnWindowMouseEnter(Sphynx::WindowMouseEnterEvent& event)

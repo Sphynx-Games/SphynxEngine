@@ -57,7 +57,21 @@ namespace Sphynx
 		{
 			return { X / other.X, Y / other.Y };
 		}
+
+		static const Vector2T Zero;
+		static const Vector2T Identity;
+		static const Vector2T Right;
+		static const Vector2T Left;
+		static const Vector2T Up;
+		static const Vector2T Down;
 	};
+
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Zero{ 0, 0 };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Identity{ 1, 1 };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Right{ 1, 0 };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Left{ -1, 0 };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Up{ 0, 1 };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Down{ 0, -1 };
 
 	template <typename T>
 	struct SPHYNX_API Vector3T
@@ -112,7 +126,25 @@ namespace Sphynx
 		{
 			return { X / other.X, Y / other.Y, Z / other.Z };
 		}
+
+		static const Vector3T Zero;
+		static const Vector3T Identity;
+		static const Vector3T Right;
+		static const Vector3T Left;
+		static const Vector3T Up;
+		static const Vector3T Down;
+		static const Vector3T Forward;
+		static const Vector3T Backward;
 	};
+
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Zero{ 0, 0, 0 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Identity{ 1, 1, 1 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Right{ 1, 0, 0 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Left{ -1, 0, 0 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Up{ 0, 1, 0 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Down{ 0, -1, 0 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Forward{ 0, 0, 1 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Backward{ 0, 0, -1 };
 
 	template <typename T>
 	struct SPHYNX_API Vector4T

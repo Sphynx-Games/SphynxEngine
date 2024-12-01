@@ -27,6 +27,8 @@ file(GLOB IMGUISOURCES CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdlrenderer3.h" 
 	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.cpp" 
 	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdlrenderer3.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.cpp" 
+	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.cpp"
 )
 
 add_library(imgui STATIC ${IMGUISOURCES})
@@ -38,7 +40,6 @@ target_include_directories(imgui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/SDL/include
 
 # Create interface (all libraries will be linked to "vendor" interface), so the main project can only link to vendor
 add_library(vendor INTERFACE)
-
 
 # Add directories of the different libraries
 # Add UUID Library
@@ -77,6 +78,12 @@ set(YAML_CPP_BUILD_CONTRIB OFF)
 set(YAML_CPP_BUILD_TOOLS OFF)
 add_subdirectory(yaml-cpp)
 
+# Add glad Library
+add_subdirectory(glad)
+
+# Add stb_image Library
+add_subdirectory(stb_image)
+
 # Configure filters (folders)
 set_property(TARGET stduuid PROPERTY FOLDER vendor/stduuid)
 set_all_targets_in_folder(SDL vendor/SDL)
@@ -88,6 +95,8 @@ set_all_targets_in_folder(entt vendor/entt)
 set_property(TARGET box2d PROPERTY FOLDER vendor/box2d)
 set_property(TARGET imgui PROPERTY FOLDER vendor/imgui)
 set_all_targets_in_folder(yaml-cpp vendor/yaml-cpp)
+set_property(TARGET glad PROPERTY FOLDER vendor/glad)
+set_property(TARGET stb_image PROPERTY FOLDER vendor/stb_image)
 
 # Link to the diferent libraries
 target_link_libraries(vendor INTERFACE
@@ -100,4 +109,7 @@ target_link_libraries(vendor INTERFACE
 	EnTT::EnTT
 	box2d
 	imgui
-	yaml-cpp)
+	yaml-cpp
+	glad
+	stb_image
+)

@@ -24,14 +24,14 @@ namespace Sphynx
 		~Sprite() {};
 
 		Texture* GetTexture() const { return m_Texture; }
-		Vector2i GetPosition() const { return m_Position; }
-		Vector2i GetSize() const { return m_Size; }
-		Vector2f GetPivot() const { return m_Pivot; }
+		const Vector2i& GetPosition() const { return m_Position; }
+		const Vector2i& GetSize() const { return m_Size; }
+		const Vector2f& GetPivot() const { return m_Pivot; }
 		uint32_t GetPixelsPerUnit() const { return m_PixelsPerUnit; }
 
-		void SetPosition(Vector2i position) { m_Position = position; }
-		void SetSize(Vector2i size) { m_Size = size; }
-		void SetPivot(Vector2f pivot) { m_Pivot = pivot; }
+		void SetPosition(const Vector2i& position) { m_Position = position; }
+		void SetSize(const Vector2i& size) { m_Size = size; }
+		void SetPivot(const Vector2f& pivot) { m_Pivot = pivot; }
 		void SetPixelsPerUnit(uint32_t pixelsPerUnit)
 		{
 			SPX_CORE_ASSERT(pixelsPerUnit > 0, "Pixels per unit should be greater than 0!");

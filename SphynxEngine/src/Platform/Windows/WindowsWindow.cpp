@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "Renderer/GraphicsContext.h"
 #include "Events/WindowEvent.h"
 #include "Events/InputEvent.h"
 
@@ -84,18 +85,25 @@ namespace Sphynx
 			{
 				SPX_CORE_LOG_ERROR("SDL could not initialize! SDL_Error: {}", SDL_GetError());
 			}
-
-			// Create window
-			uint32_t flags = (m_Params.IsFullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_RESIZABLE;
-			m_Window = SDL_CreateWindow(m_Params.Title, m_Params.Width, m_Params.Height, flags);
-			if (m_Window == nullptr)
-			{
-				SPX_CORE_LOG_ERROR("Window could not be created! SDL_Error: {}", SDL_GetError());
-			}
-			
-			// Get Windows window handle
-			m_WindowHandle = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(m_Window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
 		}
+
+		// Create graphics context
+		m_GraphicsContext = GraphicsContext::Create(this);
+		if (m_GraphicsContext != nullptr)
+		{
+			m_GraphicsContext->OnBeforeWindowCreation();
+		}
+
+		// Create window
+		uint32_t flags = (m_Params.IsFullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
+		m_Window = SDL_CreateWindow(m_Params.Title, m_Params.Width, m_Params.Height, flags);
+		if (m_Window == nullptr)
+		{
+			SPX_CORE_LOG_ERROR("Window could not be created! SDL_Error: {}", SDL_GetError());
+		}
+			
+		// Get Windows window handle
+		m_WindowHandle = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(m_Window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
 
 		if (m_Window != nullptr)
 		{
@@ -103,10 +111,23 @@ namespace Sphynx
 		}
 
 		SetVSync(true);
+
+		if (m_GraphicsContext != nullptr)
+		{
+			m_GraphicsContext->OnAfterWindowCreation();
+			m_GraphicsContext->Init();
+		}
 	}
 
 	void WindowsWindow::Shutdown()
 	{
+		if (m_GraphicsContext != nullptr)
+		{
+			m_GraphicsContext->Shutdown();
+			delete m_GraphicsContext;
+			m_GraphicsContext = nullptr;
+		}
+
 		// Destroy window
 		SDL_DestroyWindow(m_Window);
 		--s_SDLWindowCount;

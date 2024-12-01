@@ -23,7 +23,10 @@ namespace Sphynx
 
 	protected:
 		virtual void HandleEvent(Event& event) override;
+
+		virtual void PreRenderGUI() override;
 		virtual void RenderGUI() override;
+		virtual void PostRenderGUI() override;
 
 	protected:
 		std::vector<Widget*> m_Widgets;

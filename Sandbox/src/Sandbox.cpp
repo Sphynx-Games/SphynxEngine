@@ -2,6 +2,9 @@
 
 #include <Sphynx.h>
 #include <Core/EntryPoint.h>
+#include "Core/Application.h"
+#include "Renderer/GraphicsContext.h"
+#include "Asset/AssetManager.h"
 
 
 std::shared_ptr<Sphynx::Asset<Sphynx::Font>> font = nullptr;
@@ -59,24 +62,28 @@ public:
 #endif
 
 		// layers
-		PushLayer(new SandboxLayer());
-
-		SPX_LOG_DISPLAY("1. Esto es un UUID: {}", UUID::ToString(UUID::Generate()));
-		SPX_LOG_DISPLAY("2. Esto es un UUID: {}", UUID::ToString(UUID::Generate()));
-		UUID uuid = UUID::Generate();
-		SPX_LOG_DISPLAY("3. Esto es un UUID igual?: {}", uuid == uuid);
+		m_SandboxLayer = new SandboxLayer();
+		PushLayer(m_SandboxLayer);
 	}
 
 	virtual void Run() override { Sphynx::Application::Run(); }
 
 	virtual void Shutdown() override 
 	{ 
+		PopLayer(m_SandboxLayer);
+		delete m_SandboxLayer;
+		m_SandboxLayer = nullptr;
+
 		font.reset();
 		sheet.reset();
 		enemyTexture.reset();
 
 		Sphynx::Application::Shutdown(); 
 	}
+
+private:
+	SandboxLayer* m_SandboxLayer;
+
 };
 
 Sphynx::Application* CreateApplication()
@@ -145,6 +152,7 @@ void SandboxLayer::Attach()
 
 void SandboxLayer::Detach()
 {
+	Sphynx::AssetManager::UnloadAssets();
 }
 
 void SandboxLayer::Update(float deltaTime)
@@ -157,10 +165,14 @@ void SandboxLayer::Update(float deltaTime)
 	// begin scene render
 	Renderer2D::Begin(&m_CameraController->GetCamera());
 	{
-		//Renderer2D::DrawText("hello!!", *font->Asset, 16, { 2,2 });
 		m_SandboxScene.Update(deltaTime);
 	}
 	Renderer2D::End();
+
+	if (auto* gContext = Application::GetInstance()->GetWindow()->GetGraphicsContext())
+	{
+		gContext->SwapBuffers();
+	}
 }
 
 void SandboxLayer::HandleEvent(Sphynx::Event& event)

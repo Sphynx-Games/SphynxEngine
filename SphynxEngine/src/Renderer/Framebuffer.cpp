@@ -3,6 +3,7 @@
 
 #include "Renderer.h"
 #include "Platform/SDL/SDLFramebuffer.h"
+#include "Platform/OpenGL/OpenGLFramebuffer.h"
 
 namespace Sphynx
 {
@@ -10,8 +11,9 @@ namespace Sphynx
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:	return nullptr;
+		case RendererAPI::API::NONE:	return nullptr;
 		case RendererAPI::API::SDL:		return new SDLFramebuffer(spec);
+		case RendererAPI::API::OPENGL:	return new OpenGLFramebuffer(spec);
 		}
 
 		return nullptr;

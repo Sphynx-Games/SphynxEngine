@@ -42,6 +42,7 @@ target_link_libraries(SphynxEngineEditor spdlog::spdlog)
 target_link_libraries(SphynxEngineEditor glm::glm)
 target_link_libraries(SphynxEngineEditor EnTT::EnTT)
 target_link_libraries(SphynxEngineEditor imgui)
+target_link_libraries(SphynxEngineEditor glad)
 
 # Post build command (copy .dll to bin folder)
 add_custom_target(SphynxEngineEditorRules 

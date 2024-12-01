@@ -33,7 +33,7 @@ namespace Sphynx
 		return s_Application;
 	}
 
-	const Window* Sphynx::Application::GetWindow()
+	Window* Sphynx::Application::GetWindow() const
 	{
 		return m_Window.get();
 	}

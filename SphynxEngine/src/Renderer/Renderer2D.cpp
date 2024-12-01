@@ -37,7 +37,7 @@ namespace Sphynx
 		s_RendererAPI->Present();
 	}
 
-	const RendererAPI* Renderer2D::GetRendererAPI()
+	RendererAPI* Renderer2D::GetRendererAPI()
 	{
 		return s_RendererAPI;
 	}

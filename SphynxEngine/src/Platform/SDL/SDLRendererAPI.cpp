@@ -18,11 +18,14 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3/SDL_iostream.h>
+#include "SDLGraphicsContext.h"
 
 
 namespace Sphynx
 {
-	SDLRendererAPI::SDLRendererAPI() : m_Window(nullptr), m_Renderer(nullptr)
+	SDLRendererAPI::SDLRendererAPI() :
+		m_Window(nullptr),
+		m_Renderer(nullptr)
 	{
 	}
 
@@ -33,28 +36,18 @@ namespace Sphynx
 	void SDLRendererAPI::Init()
 	{
 		// Get window reference
-		Application* app = Application::GetInstance();
-		m_Window = app->GetWindow();
-		if (m_Window == nullptr)
-		{
-			SPX_CORE_LOG_ERROR("Window not initialized!");
-			return;
-		}
-		SDL_Window* window_SDL = reinterpret_cast<SDL_Window*>(m_Window->GetNativeWindow());
-
-		// Create renderer
-		SDL_SetHint(SDL_HINT_RENDER_LINE_METHOD, "3");
-		m_Renderer = SDL_CreateRenderer(window_SDL, nullptr);
-		if (m_Renderer == nullptr) 
-		{
-			SPX_CORE_LOG_ERROR("SDL renderer could not initialize! SDL_Error: {}", SDL_GetError());
-		}
+		m_Window = Application::GetInstance()->GetWindow();
+		SPX_CORE_ASSERT(m_Window, "Window not initialized!");
+		
+		// Get renderer reference
+		m_Renderer = static_cast<SDLGraphicsContext*>(m_Window->GetGraphicsContext())->GetRenderer();
+		SPX_CORE_ASSERT(m_Renderer != nullptr, "Renderer is not valid!");
 	}
 
 	void SDLRendererAPI::Shutdown()
 	{
-		SDL_DestroyRenderer(m_Renderer);
 		m_Renderer = nullptr;
+		m_Window = nullptr;
 	}
 
 	void SDLRendererAPI::SetViewport(Vector2i position, Vector2i size)
@@ -74,7 +67,8 @@ namespace Sphynx
 		SDL_Texture* renderTarget = SDL_GetRenderTarget(m_Renderer);
 		if (renderTarget == nullptr)
 		{
-			SDL_RenderPresent(m_Renderer);
+			// TODO: this feels counter intuitive as it also swap buffers
+			//SDL_RenderPresent(m_Renderer);
 			return;
 		}
 
@@ -157,9 +151,8 @@ namespace Sphynx
 		indices.reserve((numSegments + 1) * 3); // plus one to count the center
 
 		// compute points and indices
-		float PI = 3.14f;
-		float circumference = radius * 2 * PI;
-		float alpha = (2 * PI) / numSegments; // in radians
+		float circumference = radius * (float)Math::TAU;
+		float alpha = (float)Math::TAU / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
 		{
 			// push segments' first point
@@ -259,8 +252,8 @@ namespace Sphynx
 
 		// Coordinates in screen space
 		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    ,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
 		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    , -size.Y * pivot.Y		    , 0.0f, 1.0f };
 
 		// define points and indices to draw
@@ -361,8 +354,8 @@ namespace Sphynx
 
 		// Coordinates in screen space
 		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    ,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
 		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    , -size.Y * pivot.Y		    , 0.0f, 1.0f };
 
 		// define points and indices to draw
@@ -397,8 +390,8 @@ namespace Sphynx
 
 		// Coordinates in screen space
 		glm::vec4 UL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    ,  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 UR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
-		glm::vec4 DR = mvpMatrix * glm::vec4{  size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
+		glm::vec4 UR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X),  size.Y * (1.0f - pivot.Y), 0.0f, 1.0f };
+		glm::vec4 DR = mvpMatrix * glm::vec4{ size.X * (1.0f - pivot.X), -size.Y * pivot.Y		    , 0.0f, 1.0f };
 		glm::vec4 DL = mvpMatrix * glm::vec4{ -size.X * pivot.X		    , -size.Y * pivot.Y		    , 0.0f, 1.0f };
 
 		// define points and indices to draw

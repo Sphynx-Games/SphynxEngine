@@ -1,8 +1,8 @@
 #include "spxpch.h"
 #include "RendererAPI.h"
-#include "Logging/Log.h"
+
 #include "Platform/SDL/SDLRendererAPI.h"
-#include <stdio.h>
+#include "Platform/OpenGL/OpenGLRendererAPI.h"
 
 namespace Sphynx
 {
@@ -12,8 +12,9 @@ namespace Sphynx
 	{
 		switch (s_API)
 		{
-			case RendererAPI::API::None: SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::API::NONE: SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
 			case RendererAPI::API::SDL:  return new SDLRendererAPI();
+			case RendererAPI::API::OPENGL:  return new OpenGLRendererAPI();
 		}
 
 		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");

@@ -8,14 +8,15 @@
 
 namespace Sphynx
 {
-	ViewportPanel::ViewportPanel() : 
+	ViewportPanel::ViewportPanel() :
 		ViewportPanel(nullptr, 0u)
 	{
 	}
 
 	ViewportPanel::ViewportPanel(Framebuffer* framebuffer, uint32_t index) :
 		m_Framebuffer(framebuffer),
-		m_Index(index)
+		m_Index(index),
+		m_AvailableSize()
 	{
 	}
 
@@ -37,29 +38,34 @@ namespace Sphynx
 
 	void ViewportPanel::RenderGUI()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.f, 0.f });
 		if (ImGui::Begin("Viewport"))
 		{
 			if (m_Framebuffer != nullptr)
 			{
-				CheckFramebufferSizeValidity();
+				m_AvailableSize = { (int32_t)ImGui::GetContentRegionAvail().x, (int32_t)ImGui::GetContentRegionAvail().y };
 				ImGui::Image((ImTextureID)m_Framebuffer->GetColorAttachment(m_Index), ImGui::GetContentRegionAvail());
 			}
 		}
 
 		ImGui::End();
+		ImGui::PopStyleVar();
+	}
+
+	void ViewportPanel::PostRenderGUI()
+	{
+		CheckFramebufferSizeValidity();
 	}
 
 	void ViewportPanel::CheckFramebufferSizeValidity()
 	{
 		if (m_Framebuffer == nullptr) return;
 
-		ImVec2 size = ImGui::GetContentRegionAvail();
-		Vector2u regionSize = { (uint32_t)size.x, (uint32_t)size.y };
-		Vector2u framebufferSize = { m_Framebuffer->GetSpecification().Width, m_Framebuffer->GetSpecification().Height };
+		Vector2i framebufferSize{ (int32_t)m_Framebuffer->GetSpecification().Width, (int32_t)m_Framebuffer->GetSpecification().Height };
 
-		if (framebufferSize != regionSize)
+		if (m_AvailableSize != Vector2i::Zero && framebufferSize != m_AvailableSize)
 		{
-			m_Framebuffer->Resize(regionSize.X, regionSize.Y);
+			m_Framebuffer->Resize(m_AvailableSize.X, m_AvailableSize.Y);
 		}
 	}
 }

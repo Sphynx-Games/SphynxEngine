@@ -11,7 +11,7 @@ namespace Sphynx
 
 	void Renderer::Shutdown()
 	{
-		Renderer2D::Init();
+		Renderer2D::Shutdown();
 	}
 
 	void Renderer::BeginScene()

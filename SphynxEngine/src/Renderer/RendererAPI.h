@@ -18,7 +18,10 @@ namespace Sphynx
 	public:
 		enum class API
 		{
-			None = 0, SDL = 1
+			NONE = 0, 
+			SDL = 1,
+			OPENGL = 2,
+			D3D11 = 3
 		};
 
 	public:

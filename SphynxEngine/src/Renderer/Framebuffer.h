@@ -29,6 +29,7 @@ namespace Sphynx
 			: TextureFormat(format) {}
 
 		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
+		uint32_t MipLevels = 1;
 		// TODO: filtering/wrap
 	};
 
@@ -45,6 +46,7 @@ namespace Sphynx
 	{
 		uint32_t Width = 0;
 		uint32_t Height = 0;
+		uint32_t Samples = 0;
 		FramebufferAttachmentSpecification Attachments;
 	};
 

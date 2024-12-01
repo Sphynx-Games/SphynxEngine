@@ -51,7 +51,7 @@ namespace Sphynx
 		AddWidget(m_ViewportPanel);
 		AddWidget(m_DetailsPanel);
 
-		m_Framebuffer = Framebuffer::Create({ 1920, 1080, { FramebufferTextureFormat::RGBA8 } });
+		m_Framebuffer = Framebuffer::Create({ 1920, 1080, 0, { FramebufferTextureFormat::RGBA8 } });
 		m_ViewportPanel->SetFramebuffer(m_Framebuffer);
 		m_ViewportPanel->SetIndex(0);
 

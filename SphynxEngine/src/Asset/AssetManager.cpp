@@ -77,7 +77,7 @@ namespace Sphynx
 		YAMLWriter writer{ ASSET_REGISTRY_FILEPATH };
 		ReflectionSerializer::Serialize(s_Registry, writer);
 
-		s_LoadedAssets.clear();
+		UnloadAssets();
 	}
 
 	void AssetManager::RegisterAssetType(const AssetType& assetType)
@@ -156,6 +156,11 @@ namespace Sphynx
 		}
 
 		return s_LoadedAssets[handle];
+	}
+
+	void AssetManager::UnloadAssets()
+	{
+		s_LoadedAssets.clear();
 	}
 
 	const AssetMetadata& AssetManager::GetMetadata(AssetHandle handle)

@@ -14,7 +14,8 @@ Sphynx::Application* CreateApplication()
 
 namespace Sphynx
 {
-	EditorApplication::EditorApplication() : m_EditorLayer(nullptr)
+	EditorApplication::EditorApplication() :
+		m_EditorLayer(nullptr)
 	{
 	}
 
@@ -26,7 +27,7 @@ namespace Sphynx
 		Resources::Init();
 
 		// create a editor layer
-		m_EditorLayer = EditorLayer::Create();
+		m_EditorLayer = new EditorLayer();
 
 		// add gui widgets to the EditorLayer
 		m_EditorLayer->AddWidget(new SceneEditor());

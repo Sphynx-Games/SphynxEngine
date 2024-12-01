@@ -8,7 +8,7 @@
 
 namespace Sphynx 
 {
-	SDLTexture::SDLTexture(void* data, Vector2i size) :
+	SDLTexture::SDLTexture(void* data, const Vector2u& size) :
 		Texture(size),
 		m_Texture(nullptr)
 	{
@@ -44,8 +44,8 @@ namespace Sphynx
 		float height = 0;
 
 		SDL_GetTextureSize(texture, &width, &height);
-		m_Size.X = (int32_t)width;
-		m_Size.Y = (int32_t)height;
+		m_Size.X = (uint32_t)width;
+		m_Size.Y = (uint32_t)height;
 	}
 
 	SDLTexture* SDLTextureLoader::Load(const std::filesystem::path& path)

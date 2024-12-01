@@ -4,6 +4,7 @@
 #include "Events/Event.h"
 #include "Renderer/Renderer.h"
 #include "Platform/SDL/SDLEditorLayer.h"
+#include "Platform/OpenGL/OpenGLEditorLayer.h"
 #include "Dialogs/FileDialog.h"
 
 #include <imgui.h>
@@ -40,10 +41,26 @@ namespace Sphynx
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsLight();
+
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!"); break;
+		case RendererAPI::API::SDL:		SDLEditorLayer::Attach(); break;
+		case RendererAPI::API::OPENGL:	OpenGLEditorLayer::Attach(); break;
+		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
+		}
 	}
 
 	void EditorLayer::Detach()
 	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!"); break;
+		case RendererAPI::API::SDL:		SDLEditorLayer::Detach(); break;
+		case RendererAPI::API::OPENGL:	OpenGLEditorLayer::Detach(); break;
+		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
+		}
+
 		ImGui::DestroyContext();
 	}
 
@@ -59,6 +76,57 @@ namespace Sphynx
 		for (Widget* widget : m_Widgets)
 		{
 			widget->HandleEvent(event);
+		}
+
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!"); break;
+		case RendererAPI::API::SDL:		SDLEditorLayer::HandleEvent(event); break;
+		case RendererAPI::API::OPENGL:	OpenGLEditorLayer::HandleEvent(event); break;
+		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
+		}
+
+		if (m_BlockEventsEnabled)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.SetHandled(event.IsHandled() || event.IsInCategory(Sphynx::MouseEvent) && io.WantCaptureMouse);
+			event.SetHandled(event.IsHandled() || event.IsInCategory(Sphynx::KeyboardEvent) && io.WantCaptureKeyboard);
+		}
+	}
+
+	void EditorLayer::Begin()
+	{
+		for (Widget* widget : m_Widgets)
+		{
+			widget->PreRenderGUI();
+		}
+
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!");  break;
+		case RendererAPI::API::SDL:		SDLEditorLayer::Begin();  break;
+		case RendererAPI::API::OPENGL:	OpenGLEditorLayer::Begin();  break;
+		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
+		}
+
+		ImGui::NewFrame();
+	}
+
+	void EditorLayer::End()
+	{
+		ImGui::Render();
+
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!"); break;
+		case RendererAPI::API::SDL:		SDLEditorLayer::End();  break;
+		case RendererAPI::API::OPENGL:	OpenGLEditorLayer::End();  break;
+		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
+		}
+
+		for (Widget* widget : m_Widgets)
+		{
+			widget->PostRenderGUI();
 		}
 	}
 
@@ -181,17 +249,5 @@ namespace Sphynx
 		if (it == m_Widgets.end()) return;
 
 		m_Widgets.erase(it);
-	}
-
-	EditorLayer* EditorLayer::Create()
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::SDL:     return new SDLEditorLayer();
-		}
-
-		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
-		return nullptr;
 	}
 }

@@ -12,7 +12,7 @@ namespace Sphynx
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::NONE:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::SDL:     return new SDLFont();
 		}
 

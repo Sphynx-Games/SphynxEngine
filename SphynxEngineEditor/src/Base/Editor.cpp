@@ -49,6 +49,14 @@ namespace Sphynx
 		}
 	}
 
+	void Editor::PreRenderGUI()
+	{
+		for (Widget* widget : m_Widgets)
+		{
+			widget->PreRenderGUI();
+		}
+	}
+
 	void Editor::RenderGUI()
 	{
 		ImGuiID id = ImGui::GetID(m_Name.c_str());
@@ -62,5 +70,13 @@ namespace Sphynx
 			}
 		}
 		ImGui::End();
+	}
+
+	void Editor::PostRenderGUI()
+	{
+		for (Widget* widget : m_Widgets)
+		{
+			widget->PostRenderGUI();
+		}
 	}
 }

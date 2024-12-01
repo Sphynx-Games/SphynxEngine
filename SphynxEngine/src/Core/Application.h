@@ -12,14 +12,14 @@ namespace Sphynx
 	class SPHYNX_API Application
 	{
 	public:
-		Application(Application& other) = delete;
+		Application(const Application& other) = delete;
 		virtual ~Application();
 
 		static Application* GetInstance();
 
 		void operator=(const Application&) = delete;
 
-		const Window* GetWindow();
+		Window* GetWindow() const;
 
 		virtual void Init();
 		virtual void Run();

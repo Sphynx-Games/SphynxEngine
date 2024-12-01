@@ -14,7 +14,9 @@ namespace Sphynx
 	public:
 		virtual void HandleEvent(Event& event) {};
 
+		virtual void PreRenderGUI() {};
 		virtual void RenderGUI() = 0;
+		virtual void PostRenderGUI() {};
 
 	};
 }

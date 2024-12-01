@@ -23,7 +23,7 @@ namespace Sphynx
 		static void Begin(const OrthographicCamera* camera);
 		static void End();
 
-		static const RendererAPI* GetRendererAPI();
+		static RendererAPI* GetRendererAPI();
 		static const RendererConfig& GetConfiguration();
 
 		static void SetViewport(Vector2i position, Vector2i size);
