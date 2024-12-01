@@ -45,7 +45,7 @@ namespace Sphynx
 		m_SceneState(PlaybackState::STOPPED),
 		m_SceneNameBuffer()
 	{
-		AddWidget(m_SceneToolbar);
+		SetToolbar(m_SceneToolbar);
 		AddWidget(m_SceneOutlinerPanel);
 		AddWidget(m_ContentBrowserPanel);
 		AddWidget(m_ViewportPanel);
@@ -99,7 +99,7 @@ namespace Sphynx
 		}
 
 		m_ActiveScene = &m_SceneToEdit;
-		m_SceneToolbar->GetStopButton()->IsEnabled = false;
+		m_SceneToolbar->SetPlaybackState(m_SceneState);
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 
 		// save button

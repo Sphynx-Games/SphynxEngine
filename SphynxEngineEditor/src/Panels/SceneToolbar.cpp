@@ -16,6 +16,9 @@ namespace Sphynx
 		m_StopButton(new ButtonWidget("Stop", Resources::StopTexture))
 		//m_SceneNameBuffer()
 	{
+		AddWidget(m_SaveButton);
+		AddWidget(m_PlayAndPauseButton);
+		AddWidget(m_StopButton);
 	}
 
 	void SceneToolbar::SetPlaybackState(PlaybackState state)
@@ -43,27 +46,12 @@ namespace Sphynx
 
 	}
 
-	void SceneToolbar::RenderGUI()
+	/*	if (ImGui::BeginPopup("SceneSaved"))
 	{
-		ImGui::Begin("Options");
+		ImGui::Text("Scene saved...");
+		ImGui::EndPopup();
+	}*/
 
-		m_SaveButton->RenderGUI();
-		ImGui::SameLine();
-		m_PlayAndPauseButton->RenderGUI();
-		ImGui::SameLine();
-		m_StopButton->RenderGUI();
-		
-		/*ImGui::SameLine();
-
-		if (ImGui::BeginPopup("SceneSaved"))
-		{
-			ImGui::Text("Scene saved...");
-			ImGui::EndPopup();
-		}*/
-
-		//strncpy(m_SceneNameBuffer, m_ActiveScene->GetName().c_str(), m_ActiveScene->GetName().size());
-		//bool renamed = ImGui::InputText("##SceneName", m_SceneNameBuffer, sizeof(m_SceneNameBuffer) / sizeof(char));
-
-		ImGui::End();
-	}
+	//strncpy(m_SceneNameBuffer, m_ActiveScene->GetName().c_str(), m_ActiveScene->GetName().size());
+	//bool renamed = ImGui::InputText("##SceneName", m_SceneNameBuffer, sizeof(m_SceneNameBuffer) / sizeof(char));
 }

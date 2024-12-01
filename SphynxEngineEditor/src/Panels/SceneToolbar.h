@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base/Panel.h"
+#include "Base/Toolbar.h"
 #include "Utils/PlaybackState.h"
 
 
@@ -8,7 +8,7 @@ namespace Sphynx
 {
 	class ButtonWidget;
 
-	class SceneToolbar : public Panel
+	class SceneToolbar : public Toolbar
 	{
 	public:
 		SceneToolbar();
@@ -19,9 +19,6 @@ namespace Sphynx
 		ButtonWidget* GetStopButton() const { return m_StopButton; }
 
 		void SetPlaybackState(PlaybackState state);
-
-	protected:
-		virtual void RenderGUI() override;
 	
 	private:
 		ButtonWidget* m_SaveButton;

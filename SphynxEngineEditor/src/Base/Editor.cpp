@@ -1,11 +1,13 @@
 #include "spxpch.h"
 #include "Editor.h"
+#include "Toolbar.h"
 #include <imgui.h>
 
 namespace Sphynx
 {
 	Editor::Editor(const std::string& name) :
 		m_Widgets(),
+		m_Toolbar(),
 		m_Name(name)
 	{
 	}
@@ -18,6 +20,7 @@ namespace Sphynx
 		}
 
 		m_Widgets.clear();
+		delete m_Toolbar;
 	}
 
 	void Editor::AddWidget(Widget* widget)
@@ -33,6 +36,11 @@ namespace Sphynx
 		m_Widgets.erase(it);
 	}
 
+	void Editor::SetToolbar(Toolbar* toolbar)
+	{
+		m_Toolbar = toolbar;
+	}
+
 	void Editor::HandleEvent(Event& event)
 	{
 		for (Widget* widget : m_Widgets)
@@ -46,6 +54,7 @@ namespace Sphynx
 		ImGuiID id = ImGui::GetID(m_Name.c_str());
 		if (ImGui::Begin(m_Name.c_str()))
 		{
+			m_Toolbar->RenderGUI();
 			ImGui::DockSpace(id);
 			for (Widget* widget : m_Widgets)
 			{
