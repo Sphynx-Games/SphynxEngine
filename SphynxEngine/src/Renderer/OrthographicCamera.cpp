@@ -29,7 +29,7 @@ namespace Sphynx
 
 	void OrthographicCamera::SetRotation(float rotation)
 	{
-		m_Rotation = rotation; 
+		m_Rotation = rotation;
 		RecalculateViewMatrix();
 	}
 

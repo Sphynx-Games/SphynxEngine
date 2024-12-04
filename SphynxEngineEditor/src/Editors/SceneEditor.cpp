@@ -92,7 +92,7 @@ namespace Sphynx
 			capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 			capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 #else
-			YAMLReader reader{ "Assets\\Scenes\\scene1.txt" };
+			YAMLReader reader{ "Assets\\Scenes\\TestScene.spxasset" };
 			SceneDeserializer sceneDeserializer{ m_SceneToEdit, reader };
 			sceneDeserializer.Deserialize();
 #endif

@@ -1,7 +1,7 @@
 #include "spxpch.h"
 #include "Renderer2D.h"
 #include "RendererAPI.h"
-#include "OrthographicCamera.h"
+#include "Camera.h"
 #include "Texture.h"
 #include "Sprite.h"
 #include "Font.h"
@@ -26,9 +26,9 @@ namespace Sphynx
 		s_RendererAPI = nullptr;
 	}
 
-	void Renderer2D::Begin(const OrthographicCamera* camera)
+	void Renderer2D::Begin(const Camera* camera)
 	{
-		s_RendererConfig.ViewProjectionMatrix = camera != nullptr ? camera->GetViewProjectionMatrix() : glm::mat4(1.0f);
+		s_RendererConfig.ViewProjectionMatrix = camera != nullptr ? camera->ViewProjectionMatrix : glm::mat4(1.0f);
 		s_RendererAPI->Clear(s_RendererConfig.ClearColor);
 	}
 

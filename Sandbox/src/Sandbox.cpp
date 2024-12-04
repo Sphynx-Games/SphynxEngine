@@ -16,10 +16,10 @@ class SandboxLayer : public Sphynx::Layer
 {
 public:
 	SandboxLayer() :
-		m_CameraController(new Sphynx::OrthographicCameraController(16.0f / 9.0f, true)),
+		//m_CameraController(new Sphynx::OrthographicCameraController(16.0f / 9.0f, true)),
 		m_SandboxScene(Sphynx::Scene("TestScene"))
 	{
-		m_CameraController->SetZoom(2.0f);
+		//m_CameraController->SetZoom(2.0f);
 	}
 
 	virtual void Attach() override;
@@ -28,7 +28,7 @@ public:
 	virtual void HandleEvent(Sphynx::Event& event) override;
 
 private:
-	std::unique_ptr<class Sphynx::OrthographicCameraController> m_CameraController;
+	//std::unique_ptr<class Sphynx::OrthographicCameraController> m_CameraController;
 	Sphynx::Scene m_SandboxScene;
 };
 
@@ -147,6 +147,11 @@ void SandboxLayer::Attach()
 	sceneDeserializer.Deserialize();
 #endif
 
+	Actor& cameraComp = m_SandboxScene.CreateActor();
+	cameraComp.AddComponent<NameComponent>("Camera");
+	cameraComp.AddComponent<CameraComponent>();
+	cameraComp.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+
 	m_SandboxScene.BeginPlay();
 }
 
@@ -160,14 +165,12 @@ void SandboxLayer::Update(float deltaTime)
 	using namespace Sphynx;
 
 	// update camera
-	m_CameraController->Update(deltaTime);
+	//m_CameraController->Update(deltaTime);
 
 	// begin scene render
-	Renderer2D::Begin(&m_CameraController->GetCamera());
-	{
-		m_SandboxScene.Update(deltaTime);
-	}
-	Renderer2D::End();
+	//Renderer2D::Begin(&m_CameraController->GetCamera());
+	m_SandboxScene.Update(deltaTime);
+	//Renderer2D::End();
 
 	if (auto* gContext = Application::GetInstance()->GetWindow()->GetGraphicsContext())
 	{
@@ -177,5 +180,5 @@ void SandboxLayer::Update(float deltaTime)
 
 void SandboxLayer::HandleEvent(Sphynx::Event& event)
 {
-	m_CameraController->HandleEvent(event);
+	//m_CameraController->HandleEvent(event);
 }

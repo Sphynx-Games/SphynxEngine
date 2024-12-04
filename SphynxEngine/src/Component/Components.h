@@ -8,3 +8,5 @@
 #include "BoxRendererComponent.h"
 #include "LineRendererComponent.h"
 #include "Physics/Physics2DComponents.h"
+#include "Camera/CameraComponent.h"
+#include "Camera/CameraControllerComponent.h"

@@ -11,6 +11,10 @@
 #include "Serialization/SceneDeserializer.h"
 #include "Asset/AssetManager.h"
 #include "Renderer/Sprite.h"
+#include "Renderer/Camera.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 
 namespace Sphynx
@@ -116,6 +120,23 @@ namespace Sphynx
 
 	void Scene::Update(float deltaTime)
 	{
+		auto cameraGroup = m_Registry.group<CameraComponent>(entt::get<TransformComponent>);
+		for (entt::entity entity : cameraGroup)
+		{
+			auto [cameraComp, transformComp] = cameraGroup.get<CameraComponent, TransformComponent>(entity);
+
+			Vector3f position = transformComp.Transform.Position;
+			glm::mat4 transform =
+				glm::translate(glm::mat4(1.0f), { position.X, position.Y, position.Z }) *
+				glm::mat4_cast(glm::quat({ 0.0f, 0.0f, glm::radians(transformComp.Transform.Rotation.Z) }));
+
+			Camera camera;
+			camera.ViewMatrix = glm::inverse(transform);
+			camera.ViewProjectionMatrix = cameraComp.GetProjectionMatrix() * camera.ViewMatrix;
+
+			Renderer2D::Begin(&camera);
+		}
+
 		// Draw every SPRITE RENDERER component in scene
 		auto spriteGroup = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
 		for (entt::entity entity : spriteGroup)
@@ -154,6 +175,8 @@ namespace Sphynx
 		{
 			Physics2D::Step(m_PhysicsWorld, deltaTime);
 		}
+
+		Renderer2D::End();
 	}
 
 	Actor& Scene::CreateActor()

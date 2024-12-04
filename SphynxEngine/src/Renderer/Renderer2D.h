@@ -10,7 +10,7 @@ namespace Sphynx
 {
 	struct Transform;
 	class RendererAPI;
-	class OrthographicCamera;
+	struct Camera;
 	class Texture;
 	class Sprite;
 	class Font;
@@ -20,7 +20,7 @@ namespace Sphynx
 	public:
 		static void Init();
 		static void Shutdown();
-		static void Begin(const OrthographicCamera* camera);
+		static void Begin(const Camera* camera);
 		static void End();
 
 		static RendererAPI* GetRendererAPI();
