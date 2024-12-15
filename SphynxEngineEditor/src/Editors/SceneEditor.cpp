@@ -59,7 +59,6 @@ namespace Sphynx
 		m_ViewportPanel->SetFramebuffer(m_Framebuffer);
 		m_ViewportPanel->SetIndex(0);
 
-		m_ActiveScene = &m_SceneToEdit;
 		m_SceneToolbar->SetPlaybackState(m_SceneState);
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 
@@ -82,7 +81,7 @@ namespace Sphynx
 			default:
 				break;
 			}
-		});
+			});
 
 		// stop button
 		m_SceneToolbar->GetStopButton()->OnClick.Bind(this, &SceneEditor::StopScene);
@@ -90,7 +89,11 @@ namespace Sphynx
 
 	SceneEditor::~SceneEditor()
 	{
-		m_ActiveScene->EndPlay(); // TODO: change this in the future
+		if (m_ActiveScene != nullptr)
+		{
+			m_ActiveScene->EndPlay(); // TODO: change this in the future
+		}
+
 		if (m_Framebuffer != nullptr)
 		{
 			delete m_Framebuffer;
@@ -118,7 +121,7 @@ namespace Sphynx
 				{
 					m_ActiveScene->Update(deltaTime);
 				}
-				else 
+				else
 				{
 					m_ActiveScene->Update(0.0f);
 				}
@@ -139,15 +142,26 @@ namespace Sphynx
 			if (ImGui::MenuItem("Open...", nullptr, nullptr))
 			{
 				auto path = Sphynx::FileDialog::Open();
-				OpenScene(path);
+				if (!path.empty())
+				{
+					OpenScene(path);
+				}
 			}
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Save As...", nullptr, nullptr))
+			if (ImGui::MenuItem("Save", nullptr, nullptr, m_ActiveScene != nullptr))
+			{
+				SaveScene();
+			}
+
+			if (ImGui::MenuItem("Save As...", nullptr, nullptr, m_ActiveScene != nullptr))
 			{
 				auto path = Sphynx::FileDialog::Save();
-				SaveAsScene(path);
+				if (!path.empty())
+				{
+					SaveAsScene(path);
+				}
 			}
 
 			ImGui::EndMenu();
@@ -178,19 +192,26 @@ namespace Sphynx
 
 	void SceneEditor::SaveAsScene(const std::filesystem::path& path)
 	{
-		AssetMetadata metadata;
-		metadata.Handle = AssetHandle::Generate();
-		metadata.Path = path;
-		metadata.Path.replace_extension(ASSET_EXTENSION);
-		metadata.Type = TypeToAssetType<Scene>::Value;
-		AssetManager::AddToRegistry(metadata);
+		// Invalid means it it not a "replace" save as request
+		AssetMetadata metadata = AssetManager::GetMetadataFromPath(path);
+		if (metadata == AssetMetadata::Invalid)
+		{
+			metadata.Handle = AssetHandle::Generate();
+			metadata.Path = path;
+			metadata.Path.replace_extension(ASSET_EXTENSION);
+			metadata.Type = TypeToAssetType<Scene>::Value;
+			AssetManager::AddToRegistry(metadata);
+		}
 
 		std::string sceneName = path.filename().string();
 		m_SceneToEdit.SetName(sceneName);
 
-		YAMLWriter writer{ metadata.Path };
-		SceneSerializer serializer{ m_SceneToEdit, writer };
-		serializer.Serialize();
+		// Important to have this in a scope to close any opened files
+		{
+			YAMLWriter writer{ metadata.Path };
+			SceneSerializer serializer{ m_SceneToEdit, writer };
+			serializer.Serialize();
+		}
 
 		OpenScene(path);
 	}

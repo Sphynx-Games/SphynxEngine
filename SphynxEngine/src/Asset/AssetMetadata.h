@@ -28,6 +28,12 @@ namespace Sphynx
 		std::filesystem::path Path;
 		Array<AssetHandle> Dependencies;
 
+
+		friend bool operator==(const AssetMetadata& lhs, const AssetMetadata& rhs)
+		{
+			return lhs.Handle == lhs.Handle;
+		}
+
 		static const AssetMetadata Invalid;
 	};
 

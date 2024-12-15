@@ -95,7 +95,7 @@ namespace Sphynx
 					ImGui::ColorEdit4(LABEL("Color").c_str(), color);
 					component.Tint.R = (uint8_t)(color[0] * 255.0f);
 					component.Tint.G = (uint8_t)(color[1] * 255.0f);
-					component.Tint.G = (uint8_t)(color[2] * 255.0f);
+					component.Tint.B = (uint8_t)(color[2] * 255.0f);
 					component.Tint.A = (uint8_t)(color[3] * 255.0f);
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
@@ -131,7 +131,7 @@ namespace Sphynx
 					ImGui::ColorEdit4(LABEL("Color").c_str(), color);
 					component.Color.R = (uint8_t)(color[0] * 255.0f);
 					component.Color.G = (uint8_t)(color[1] * 255.0f);
-					component.Color.G = (uint8_t)(color[2] * 255.0f);
+					component.Color.B = (uint8_t)(color[2] * 255.0f);
 					component.Color.A = (uint8_t)(color[3] * 255.0f);
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
@@ -160,7 +160,7 @@ namespace Sphynx
 					ImGui::ColorEdit4(LABEL("Color").c_str(), color);
 					component.Color.R = (uint8_t)(color[0] * 255.0f);
 					component.Color.G = (uint8_t)(color[1] * 255.0f);
-					component.Color.G = (uint8_t)(color[2] * 255.0f);
+					component.Color.B = (uint8_t)(color[2] * 255.0f);
 					component.Color.A = (uint8_t)(color[3] * 255.0f);
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
