@@ -14,6 +14,8 @@
 #include "Renderer/Renderer2D.h"
 #include "Renderer/Framebuffer.h"
 
+#include "Asset/Scene/SceneAsset.h"
+
 // TODO: remove
 #include <Sphynx.h>
 #include <Renderer/OrthographicCameraController.h>
@@ -21,6 +23,7 @@
 #include <Renderer/Sprite.h>
 
 #include <imgui.h>
+#include "Dialogs/FileDialog.h"
 
 
 namespace Sphynx
@@ -39,8 +42,9 @@ namespace Sphynx
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),
 		m_Framebuffer(nullptr),
-		m_SceneToEdit(Scene()),
-		m_SceneToPlay(Scene()),
+		m_LastOpenedScenePath(),
+		m_SceneToEdit(),
+		m_SceneToPlay(),
 		m_ActiveScene(nullptr),
 		m_SceneState(PlaybackState::STOPPED),
 		m_SceneNameBuffer()
@@ -55,59 +59,12 @@ namespace Sphynx
 		m_ViewportPanel->SetFramebuffer(m_Framebuffer);
 		m_ViewportPanel->SetIndex(0);
 
-		// TODO: remove (testing)
-		{
-#if 0
-			Actor quad = s_Scene.CreateActor();
-			quad.AddComponent<NameComponent>("Hollow Box");
-			quad.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-			quad.AddComponent<BoxRendererComponent>();
-
-			Actor line = s_Scene.CreateActor();
-			line.AddComponent<NameComponent>("White Line");
-			line.AddComponent<TransformComponent>(Transform{ { 0.5f, -0.5f, 0.0f }, { 1.0f, 2.0f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
-			line.AddComponent<LineRendererComponent>();
-
-			Actor staticRigidBody = s_Scene.CreateActor();
-			staticRigidBody.AddComponent<NameComponent>("Ground");
-			staticRigidBody.AddComponent<TransformComponent>(Transform{ { 0.0f, -2.0f, 0.0f }, { 5.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-			staticRigidBody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::STATIC);
-			staticRigidBody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 1.0f });
-
-			Actor dynamicRigidbody = s_Scene.CreateActor();
-			dynamicRigidbody.AddComponent<NameComponent>("Box");
-			dynamicRigidbody.AddComponent<TransformComponent>(Transform{ { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 45.0f } });
-			dynamicRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
-			dynamicRigidbody.AddComponent<BoxCollider2DComponent>(Vector2f{ 1.0f, 1.0f }, Vector2f{ 0.0f, 0.0f });
-
-			Actor dynamicSphereRigidbody = s_Scene.CreateActor();
-			dynamicSphereRigidbody.AddComponent<NameComponent>("Sphere");
-			dynamicSphereRigidbody.AddComponent<TransformComponent>(Transform{ { 0.5f, 3.0f, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 35.0f } });
-			dynamicSphereRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
-			dynamicSphereRigidbody.AddComponent<CircleCollider2DComponent>(1.0f, Vector2f{ 0.0f, 0.0f });
-
-			Actor capsuleRigidbody = s_Scene.CreateActor();
-			capsuleRigidbody.AddComponent<NameComponent>("Capsule");
-			capsuleRigidbody.AddComponent<TransformComponent>(Transform{ { -1.5f, 1.0f, 0.0f }, { 2.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, -10.0f } });
-			capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
-			capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
-#else
-			YAMLReader reader{ "Assets\\Scenes\\TestScene.spxasset" };
-			SceneDeserializer sceneDeserializer{ m_SceneToEdit, reader };
-			sceneDeserializer.Deserialize();
-#endif
-		}
-
 		m_ActiveScene = &m_SceneToEdit;
 		m_SceneToolbar->SetPlaybackState(m_SceneState);
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 
 		// save button
-		m_SceneToolbar->GetSaveButton()->OnClick.Bind([&]() {
-			YAMLWriter writer{ "Assets\\Scenes\\" + m_ActiveScene->GetName() + ".txt" };
-			SceneSerializer sceneSerializer{ *m_ActiveScene, writer };
-			sceneSerializer.Serialize();
-		});
+		m_SceneToolbar->GetSaveButton()->OnClick.Bind(this, &SceneEditor::SaveScene);
 
 		// play and pause button
 		m_SceneToolbar->GetPlayAndPauseButton()->OnClick.Bind([&]() {
@@ -128,9 +85,7 @@ namespace Sphynx
 		});
 
 		// stop button
-		m_SceneToolbar->GetStopButton()->OnClick.Bind([&]() {
-			StopScene();
-		});
+		m_SceneToolbar->GetStopButton()->OnClick.Bind(this, &SceneEditor::StopScene);
 	}
 
 	SceneEditor::~SceneEditor()
@@ -156,7 +111,7 @@ namespace Sphynx
 		m_Framebuffer->Bind();
 		{
 			// begin scene render
-			Renderer2D::Begin(&s_CameraController.GetCamera());
+			Renderer2D::Begin(s_CameraController.GetCamera().GetCamera());
 			if (m_ActiveScene != nullptr)
 			{
 				if (m_SceneState == PlaybackState::PLAYING)
@@ -175,6 +130,69 @@ namespace Sphynx
 		m_DetailsPanel->SetContext(m_SceneOutlinerPanel->GetSelectedActor());
 
 		Editor::RenderGUI();
+	}
+
+	void SceneEditor::RenderMenuBar()
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open...", nullptr, nullptr))
+			{
+				auto path = Sphynx::FileDialog::Open();
+				OpenScene(path);
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Save As...", nullptr, nullptr))
+			{
+				auto path = Sphynx::FileDialog::Save();
+				SaveAsScene(path);
+			}
+
+			ImGui::EndMenu();
+		}
+	}
+
+	void SceneEditor::OpenScene(const std::filesystem::path& path)
+	{
+		// TODO: check whether or not the loaded scene is 
+		// registered in the asset manager
+
+		m_LastOpenedScenePath = path;
+		m_SceneToEdit = {};
+
+		YAMLReader reader{ m_LastOpenedScenePath };
+		SceneDeserializer deserializer{ m_SceneToEdit, reader };
+		deserializer.Deserialize();
+
+		m_ActiveScene = &m_SceneToEdit;
+	}
+
+	void SceneEditor::SaveScene()
+	{
+		YAMLWriter writer{ m_LastOpenedScenePath };
+		SceneSerializer serializer{ m_SceneToEdit, writer };
+		serializer.Serialize();
+	}
+
+	void SceneEditor::SaveAsScene(const std::filesystem::path& path)
+	{
+		AssetMetadata metadata;
+		metadata.Handle = AssetHandle::Generate();
+		metadata.Path = path;
+		metadata.Path.replace_extension(ASSET_EXTENSION);
+		metadata.Type = TypeToAssetType<Scene>::Value;
+		AssetManager::AddToRegistry(metadata);
+
+		std::string sceneName = path.filename().string();
+		m_SceneToEdit.SetName(sceneName);
+
+		YAMLWriter writer{ metadata.Path };
+		SceneSerializer serializer{ m_SceneToEdit, writer };
+		serializer.Serialize();
+
+		OpenScene(path);
 	}
 
 	void SceneEditor::PlayScene()

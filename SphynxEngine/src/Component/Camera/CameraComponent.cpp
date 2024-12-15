@@ -66,14 +66,18 @@ namespace Sphynx
 		switch (m_ProjectionMode)
 		{
 		case ORTHOGRAPHIC:
+		{
 			float width = m_CameraInfo.WidthUnits;
 			float height = m_CameraInfo.HeightUnits;
 			m_ProjectionMatrix = glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f, m_CameraInfo.Near, m_CameraInfo.Far);
-			break;
+		}
+		break;
 		case PERSPECTIVE:
+		{
 			float aspectRatio = 1.0f; // lo saco del tamaño de la ventana
 			m_ProjectionMatrix = glm::perspective(m_CameraInfo.FieldOfView, aspectRatio, m_CameraInfo.Near, m_CameraInfo.Far);
-			break;
+		}
+		break;
 		default:
 			break;
 		}

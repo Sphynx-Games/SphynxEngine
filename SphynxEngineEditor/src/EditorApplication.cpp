@@ -2,7 +2,6 @@
 #include "EditorApplication.h"
 #include "Base/Resources.h"
 #include "EditorLayer.h"
-#include "Editors/SceneEditor.h"
 
 #include <Core/EntryPoint.h>
 
@@ -28,9 +27,6 @@ namespace Sphynx
 
 		// create a editor layer
 		m_EditorLayer = new EditorLayer();
-
-		// add gui widgets to the EditorLayer
-		m_EditorLayer->AddWidget(new SceneEditor());
 
 		PushLayer(m_EditorLayer);
 	}

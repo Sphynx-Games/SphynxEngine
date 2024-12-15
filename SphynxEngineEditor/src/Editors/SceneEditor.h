@@ -16,7 +16,14 @@ namespace Sphynx
 	protected:
 		virtual void RenderGUI() override;
 
+		virtual bool HasMenuBar() const override { return true; }
+		virtual void RenderMenuBar() override;
+
 	private:
+		void OpenScene(const std::filesystem::path& path);
+		void SaveScene();
+		void SaveAsScene(const std::filesystem::path& path);
+
 		void PlayScene();
 		void PauseScene();
 		void ResumeScene();
@@ -30,6 +37,7 @@ namespace Sphynx
 		class DetailsPanel* m_DetailsPanel;
 
 		class Framebuffer* m_Framebuffer;
+		std::filesystem::path m_LastOpenedScenePath;
 		Scene m_SceneToEdit;
 		Scene m_SceneToPlay;
 		Scene* m_ActiveScene;

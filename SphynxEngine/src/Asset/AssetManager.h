@@ -34,6 +34,7 @@ namespace Sphynx
 
 		static std::shared_ptr<IAsset> Import(const std::filesystem::path& path);
 		static std::shared_ptr<IAsset> GetAsset(AssetHandle handle);
+		static void UnloadAsset(AssetHandle handle);
 		static void UnloadAssets();
 		static const AssetMetadata& GetMetadata(AssetHandle handle);
 		static const AssetMetadata& GetMetadataFromPath(const std::filesystem::path& path);

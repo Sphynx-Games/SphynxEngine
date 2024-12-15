@@ -8,17 +8,16 @@ namespace Sphynx
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top) : 
 		m_Position({ 0.0f, 0.0f, 0.0f }),
 		m_Rotation(0.0f),
-		m_ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
-		m_ViewMatrix(),
-		m_ViewProjectionMatrix()
+		m_Camera()
 	{
+		m_Camera.ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 		RecalculateViewMatrix();
 	}
 
 	void OrthographicCamera::SetProjection(float left, float right, float bottom, float top)
 	{
-		m_ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_Camera.ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+		m_Camera.ViewProjectionMatrix = m_Camera.ProjectionMatrix * m_Camera.ViewMatrix;
 	}
 
 	void OrthographicCamera::SetPosition(const Vector3f& position)
@@ -39,7 +38,7 @@ namespace Sphynx
 			glm::translate(glm::mat4(1.0f), { m_Position.X, m_Position.Y, m_Position.Z }) *
 			glm::mat4_cast(glm::quat({ 0.0f, 0.0f, glm::radians(m_Rotation) }));
 
-		m_ViewMatrix = glm::inverse(transform);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_Camera.ViewMatrix = glm::inverse(transform);
+		m_Camera.ViewProjectionMatrix = m_Camera.ProjectionMatrix * m_Camera.ViewMatrix;
 	}
 }

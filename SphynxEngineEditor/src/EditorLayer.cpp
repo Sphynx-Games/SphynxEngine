@@ -8,23 +8,27 @@
 #include "Dialogs/FileDialog.h"
 
 #include <imgui.h>
+#include "Editors/SceneEditor.h"
 
 
 namespace Sphynx
 {
 	EditorLayer::EditorLayer() :
 		m_BlockEventsEnabled(false),
-		m_Widgets()
+		m_Editors({ new SceneEditor() }),
+		m_ActiveEditor(m_Editors[0])
 	{
 	}
 
 	EditorLayer::~EditorLayer()
 	{
-		for (Widget* widget : m_Widgets)
+		for (Editor* editor : m_Editors)
 		{
-			delete widget;
+			delete editor;
 		}
-		m_Widgets.clear();
+		m_Editors.clear();
+
+		m_ActiveEditor = nullptr;
 	}
 
 	void EditorLayer::Attach()
@@ -73,7 +77,7 @@ namespace Sphynx
 
 	void EditorLayer::HandleEvent(Event& event)
 	{
-		for (Widget* widget : m_Widgets)
+		for (Widget* widget : m_Editors)
 		{
 			widget->HandleEvent(event);
 		}
@@ -96,7 +100,7 @@ namespace Sphynx
 
 	void EditorLayer::Begin()
 	{
-		for (Widget* widget : m_Widgets)
+		for (Widget* widget : m_Editors)
 		{
 			widget->PreRenderGUI();
 		}
@@ -124,7 +128,7 @@ namespace Sphynx
 		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
 		}
 
-		for (Widget* widget : m_Widgets)
+		for (Widget* widget : m_Editors)
 		{
 			widget->PostRenderGUI();
 		}
@@ -168,7 +172,7 @@ namespace Sphynx
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 		if (!opt_padding)
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("Editor DockSpace", nullptr, window_flags);
+		ImGui::Begin("Sphynx Editor", nullptr, window_flags);
 		if (!opt_padding)
 			ImGui::PopStyleVar();
 
@@ -183,41 +187,29 @@ namespace Sphynx
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
+		for (Widget* widget : m_Editors)
+		{
+			widget->RenderGUI();
+		}
+
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Open...", nullptr, nullptr))
+				if (ImGui::MenuItem("Quit"))
 				{
-					auto path = Sphynx::FileDialog::Open();
-				}
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Save As...", nullptr, nullptr))
-				{
-					auto path = Sphynx::FileDialog::Save();
-
-				}
-
-				if (ImGui::MenuItem("Quit", nullptr, false, false))
-				{
+					Application::GetInstance()->Quit();
 				}
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Help"))
+		if (ImGui::BeginMenu("Help"))
 			{
 				ImGui::MenuItem("Show Demo Window", nullptr, &showDemoWindow, true);
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
-		}
-
-		for (Widget* widget : m_Widgets)
-		{
-			widget->RenderGUI();
 		}
 
 		if (showDemoWindow)
@@ -238,16 +230,16 @@ namespace Sphynx
 		m_BlockEventsEnabled = enabled;
 	}
 
-	void EditorLayer::AddWidget(Widget* widget)
+	void EditorLayer::AddEditor(Editor* editor)
 	{
-		m_Widgets.push_back(widget);
+		m_Editors.push_back(editor);
 	}
 
-	void EditorLayer::RemoveWidget(Widget* widget)
+	void EditorLayer::RemoveEditor(Editor* editor)
 	{
-		auto it = std::find(m_Widgets.begin(), m_Widgets.end(), widget);
-		if (it == m_Widgets.end()) return;
+		auto it = std::find(m_Editors.begin(), m_Editors.end(), editor);
+		if (it == m_Editors.end()) return;
 
-		m_Widgets.erase(it);
+		m_Editors.erase(it);
 	}
 }

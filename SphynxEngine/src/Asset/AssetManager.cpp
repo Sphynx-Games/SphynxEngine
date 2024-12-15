@@ -2,9 +2,11 @@
 #include "AssetManager.h"
 
 #include "Asset/Texture/TextureAssetImporter.h"
+#include "Asset/Font/FontAssetImporter.h"
+#include "Asset/Scene/SceneAssetImporter.h"
+
 #include "Asset/Sprite/SpriteAssetImporter.h"
 #include "Asset/Spritesheet/SpritesheetAssetImporter.h"
-#include "Asset/Font/FontAssetImporter.h"
 
 #include "Serialization/YAML/YAMLWriter.h"
 #include "Serialization/YAML/YAMLReader.h"
@@ -57,9 +59,12 @@ namespace Sphynx
 
 		// Register Asset types (Texture, Sprite...)
 		REGISTER_ASSETTYPE(Texture, TextureAssetImporter, ".png", ".jpg", ".jpeg"); // NOTE: add more extensions if needed
-		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
-		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter);
 		REGISTER_ASSETTYPE(Font, FontAssetImporter, ".ttf");
+
+		REGISTER_ASSETTYPE(Scene, SceneAssetImporter);
+
+		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter);
+		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
 
 		// load all managed assets into the asset registry
 		YAMLReader reader{ ASSET_REGISTRY_FILEPATH };
@@ -156,6 +161,11 @@ namespace Sphynx
 		}
 
 		return s_LoadedAssets[handle];
+	}
+
+	void AssetManager::UnloadAsset(AssetHandle handle)
+	{
+		s_LoadedAssets.erase(handle);
 	}
 
 	void AssetManager::UnloadAssets()

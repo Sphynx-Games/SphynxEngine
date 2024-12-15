@@ -5,7 +5,7 @@
 
 namespace Sphynx
 {
-	class Widget;
+	class Editor;
 	class Event;
 
 	class EditorLayer final : public Layer
@@ -26,12 +26,13 @@ namespace Sphynx
 		bool IsBlockEventsEnabled() const;
 		void SetBlockEventsEnabled(bool enabled);
 
-		void AddWidget(Widget* widget);
-		void RemoveWidget(Widget* widget);
+		void AddEditor(Editor* editor);
+		void RemoveEditor(Editor* editor);
 
 	protected:
 		bool m_BlockEventsEnabled;
-		std::vector<Widget*> m_Widgets;
+		std::vector<Editor*> m_Editors;
 
+		Editor* m_ActiveEditor;
 	};
 }

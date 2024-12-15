@@ -184,3 +184,8 @@ fc745520-cf76-4786-a734-b06d0bb35bc4:
   Type: Font
   Path: Assets\Fonts\roboto\Roboto-Regular.spxasset
   Dependencies: []
+fc745520-cf76-4786-a734-b06daaaa5bc4:
+  Handle: fc745520-cf76-4786-a734-b06daaaa5bc4
+  Type: Scene
+  Path: Assets\Scenes\TestScene.spxasset
+  Dependencies: []

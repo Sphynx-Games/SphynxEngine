@@ -10,7 +10,7 @@ namespace Sphynx
 	class SPHYNX_API SceneDeserializer
 	{
 	public:
-		SceneDeserializer(class Scene& scene, const class Reader& reader);
+		SceneDeserializer(class Scene& scene, Reader&& reader);
 		void Deserialize();
 
 	private:

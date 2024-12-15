@@ -10,7 +10,7 @@
 
 namespace Sphynx
 {
-	SceneDeserializer::SceneDeserializer(Scene& scene, const Reader& reader) :
+	SceneDeserializer::SceneDeserializer(Scene& scene, Reader&& reader) :
 		m_Scene(scene),
 		m_Reader(reader)
 	{}

@@ -23,6 +23,7 @@ namespace Sphynx
 
 	private:
 		friend bool operator==(const UUID& lhs, const UUID& rhs);
+		friend bool operator!=(const UUID& lhs, const UUID& rhs);
 		friend bool operator<(const UUID& lhs, const UUID& rhs);
 
 	private:

@@ -61,7 +61,7 @@ namespace Sphynx
 				EventDispatcher dispatcher(event);
 				dispatcher.Dispatch<WindowClosedEvent>([&](WindowClosedEvent& windowClosedEvent)
 					{
-						m_IsRunning = false;
+						Quit();
 						return true;
 					});
 				dispatcher.Dispatch<WindowResizedEvent>([](WindowResizedEvent& windowResizeEvent)
@@ -146,4 +146,10 @@ namespace Sphynx
 	{
 		m_LayerStack.PopOverlay(layer);
 	}
+
+	void Application::Quit()
+	{
+		m_IsRunning = false;
+	}
+
 }

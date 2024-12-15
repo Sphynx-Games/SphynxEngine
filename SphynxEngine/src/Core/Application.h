@@ -14,10 +14,10 @@ namespace Sphynx
 	public:
 		Application(const Application& other) = delete;
 		virtual ~Application();
-
-		static Application* GetInstance();
-
 		void operator=(const Application&) = delete;
+
+	public:
+		static Application* GetInstance();
 
 		Window* GetWindow() const;
 
@@ -31,6 +31,8 @@ namespace Sphynx
 		void PushOverlay(Layer* layer);
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* layer);
+
+		void Quit();
 
 	protected:
 		Application();
