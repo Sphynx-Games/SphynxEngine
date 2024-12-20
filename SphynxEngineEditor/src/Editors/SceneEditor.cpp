@@ -181,6 +181,7 @@ namespace Sphynx
 		deserializer.Deserialize();
 
 		m_ActiveScene = &m_SceneToEdit;
+		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 	}
 
 	void SceneEditor::SaveScene()
@@ -192,7 +193,7 @@ namespace Sphynx
 
 	void SceneEditor::SaveAsScene(const std::filesystem::path& path)
 	{
-		// Invalid means it it not a "replace" save as request
+		// Invalid means it is not a "replace" save as request
 		AssetMetadata metadata = AssetManager::GetMetadataFromPath(path);
 		if (metadata == AssetMetadata::Invalid)
 		{
