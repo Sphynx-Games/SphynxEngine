@@ -182,6 +182,8 @@ namespace Sphynx
 		case SDL_EventType::SDL_EVENT_WINDOW_RESIZED:
 		{
 			WindowResizedEvent windowResizedEvent{ event.window.windowID, (uint32_t)event.window.data1, (uint32_t)event.window.data2 };
+			m_Params.Width = (uint32_t)event.window.data1;
+			m_Params.Height = (uint32_t)event.window.data2;
 			m_CallbackFunction(windowResizedEvent);
 			return true;
 		}

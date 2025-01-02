@@ -12,6 +12,8 @@
 #include "Asset/AssetManager.h"
 #include "Renderer/Sprite.h"
 #include "Renderer/Camera.h"
+#include "Core/Application.h"
+#include "Renderer/Window.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -120,21 +122,39 @@ namespace Sphynx
 
 	void Scene::Update(float deltaTime)
 	{
+		bool mainCameraFound = false;
 		auto cameraGroup = m_Registry.group<CameraComponent>(entt::get<TransformComponent>);
 		for (entt::entity entity : cameraGroup)
 		{
 			auto [cameraComp, transformComp] = cameraGroup.get<CameraComponent, TransformComponent>(entity);
 
-			Vector3f position = transformComp.Transform.Position;
-			glm::mat4 transform =
-				glm::translate(glm::mat4(1.0f), { position.X, position.Y, position.Z }) *
-				glm::mat4_cast(glm::quat({ 0.0f, 0.0f, glm::radians(transformComp.Transform.Rotation.Z) }));
+			// TODO: right now, only the first main camera found is rendered. change this in the future.
+			if (!mainCameraFound && cameraComp.IsMainCamera)
+			{
+				mainCameraFound = true;
 
-			Camera camera;
-			camera.ViewMatrix = glm::inverse(transform);
-			camera.ViewProjectionMatrix = cameraComp.GetProjectionMatrix() * camera.ViewMatrix;
+				Vector3f position = transformComp.Transform.Position;
+				glm::mat4 transform =
+					glm::translate(glm::mat4(1.0f), { position.X, position.Y, position.Z }) *
+					glm::mat4_cast(glm::quat({ 0.0f, 0.0f, glm::radians(transformComp.Transform.Rotation.Z) }));
 
-			Renderer2D::Begin(&camera);
+				//Window* window = Application::GetInstance()->GetWindow();
+				Vector2i viewportSize = Renderer2D::GetViewportSize();
+				glm::mat4 aspectRatioMatrix = glm::mat4(1.0f); // Identity matrix
+				aspectRatioMatrix[0][0] = (float)viewportSize.Y / viewportSize.X;
+
+				Camera camera;
+				camera.ViewMatrix = glm::inverse(transform);
+				camera.ProjectionMatrix = aspectRatioMatrix * cameraComp.GetProjectionMatrix();
+				camera.ViewProjectionMatrix = camera.ProjectionMatrix * camera.ViewMatrix;
+
+				Renderer2D::Begin(&camera);
+			}
+		}
+
+		if (!mainCameraFound)
+		{
+			Renderer2D::Begin(nullptr);
 		}
 
 		// Draw every SPRITE RENDERER component in scene

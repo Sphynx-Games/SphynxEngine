@@ -7,11 +7,17 @@
 namespace Sphynx
 {
 	CameraComponent::CameraComponent(CameraProjectionMode mode, CameraInfo info) :
+		IsMainCamera(false),
 		m_ProjectionMode(mode),
 		m_CameraInfo(info),
 		m_ProjectionMatrix()
 	{
 		RecalculateViewMatrix();
+	}
+
+	CameraProjectionMode CameraComponent::GetProjectionMode() const
+	{
+		return m_ProjectionMode;
 	}
 
 	void CameraComponent::SetProjectionMode(CameraProjectionMode mode)
@@ -22,10 +28,20 @@ namespace Sphynx
 		RecalculateViewMatrix();
 	}
 
+	float CameraComponent::GetNear() const
+	{
+		return m_CameraInfo.Near;
+	}
+
 	void CameraComponent::SetNear(float camNear)
 	{
 		m_CameraInfo.Near = camNear;
 		RecalculateViewMatrix();
+	}
+
+	float CameraComponent::GetFar() const
+	{
+		return m_CameraInfo.Far;
 	}
 
 	void CameraComponent::SetFar(float camFar)
@@ -34,22 +50,23 @@ namespace Sphynx
 		RecalculateViewMatrix();
 	}
 
-	void CameraComponent::SetWidthUnits(uint8_t widthUnits)
+	float CameraComponent::GetHeightUnits() const
 	{
-		m_CameraInfo.WidthUnits = widthUnits;
-		if (m_ProjectionMode == ORTHOGRAPHIC)
-		{
-			RecalculateViewMatrix();
-		}
+		return m_CameraInfo.HeightUnits;
 	}
 
-	void CameraComponent::SetHeightUnits(uint8_t heightUnits)
+	void CameraComponent::SetHeightUnits(float heightUnits)
 	{
 		m_CameraInfo.HeightUnits = heightUnits;
 		if (m_ProjectionMode == ORTHOGRAPHIC)
 		{
 			RecalculateViewMatrix();
 		}
+	}
+
+	float CameraComponent::GetFieldOfView() const
+	{
+		return m_CameraInfo.FieldOfView;
 	}
 
 	void CameraComponent::SetFieldOfView(float fieldOfView)
@@ -63,19 +80,19 @@ namespace Sphynx
 
 	void CameraComponent::RecalculateViewMatrix()
 	{
+		const float aspectRatio = 1.0f;
 		switch (m_ProjectionMode)
 		{
 		case ORTHOGRAPHIC:
 		{
-			float width = m_CameraInfo.WidthUnits;
-			float height = m_CameraInfo.HeightUnits;
+			const float height = m_CameraInfo.HeightUnits;
+			const float width = aspectRatio * height;
 			m_ProjectionMatrix = glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f, m_CameraInfo.Near, m_CameraInfo.Far);
 		}
 		break;
 		case PERSPECTIVE:
 		{
-			float aspectRatio = 1.0f; // lo saco del tamaño de la ventana
-			m_ProjectionMatrix = glm::perspective(m_CameraInfo.FieldOfView, aspectRatio, m_CameraInfo.Near, m_CameraInfo.Far);
+			m_ProjectionMatrix = glm::perspective(glm::radians(m_CameraInfo.FieldOfView), aspectRatio, m_CameraInfo.Near, m_CameraInfo.Far);
 		}
 		break;
 		default:

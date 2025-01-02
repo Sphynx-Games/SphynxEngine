@@ -77,6 +77,7 @@ namespace Sphynx
 				DeserializeComponent<UUIDComponent>(actor, componentName);
 				DeserializeComponent<NameComponent>(actor, componentName);
 				DeserializeComponent<TransformComponent>(actor, componentName);
+				DeserializeComponent<CameraComponent>(actor, componentName);
 				DeserializeComponent<LineRendererComponent>(actor, componentName);
 				DeserializeComponent<SpriteRendererComponent>(actor, componentName);
 				DeserializeComponent<BoxRendererComponent>(actor, componentName);

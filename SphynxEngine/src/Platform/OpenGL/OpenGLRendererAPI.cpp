@@ -91,6 +91,13 @@ namespace Sphynx
 		glViewport(position.X, position.Y, size.X, size.Y);  CHECK_GL_ERRORS;
 	}
 
+	Vector2i OpenGLRendererAPI::GetViewportSize()
+	{
+		GLint rect[4]{0};
+		glGetIntegerv(GL_VIEWPORT, rect);
+		return { (int32_t)rect[2], (int32_t)rect[3] };
+	}
+
 	void OpenGLRendererAPI::Clear(Color color)
 	{
 		glClearColor(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);  CHECK_GL_ERRORS;

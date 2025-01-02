@@ -8,9 +8,9 @@
 
 namespace Sphynx
 {
+	struct Camera;
 	struct Transform;
 	class RendererAPI;
-	struct Camera;
 	class Texture;
 	class Sprite;
 	class Font;
@@ -27,6 +27,7 @@ namespace Sphynx
 		static const RendererConfig& GetConfiguration();
 
 		static void SetViewport(Vector2i position, Vector2i size);
+		static Vector2i GetViewportSize();
 		static void SetClearColor(Color color);
 		static void SetDrawMode(DrawMode drawMode);
 

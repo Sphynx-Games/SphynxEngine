@@ -18,6 +18,7 @@ namespace Sphynx
 		virtual void Shutdown() override;
 
 		virtual void SetViewport(Vector2i position, Vector2i size) override;
+		virtual Vector2i GetViewportSize() override;
 		virtual void Clear(Color color) override;
 		virtual void Present() override;
 

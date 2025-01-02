@@ -27,6 +27,7 @@ namespace Sphynx
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const override;*/
 
 		void SetViewport(Vector2i position, Vector2i size) override;
+		Vector2i GetViewportSize() override;
 		void Clear(Color color) override;
 		void Present() override;
 

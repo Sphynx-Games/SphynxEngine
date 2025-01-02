@@ -41,6 +41,7 @@ namespace Sphynx
 			m_Writer.PushValue();
 			m_Writer.PushSequence();
 			SerializeComponent<TransformComponent>(actor);
+			SerializeComponent<CameraComponent>(actor);
 			SerializeComponent<LineRendererComponent>(actor);
 			SerializeComponent<SpriteRendererComponent>(actor);
 			SerializeComponent<BoxRendererComponent>(actor);

@@ -31,6 +31,7 @@ namespace Sphynx
 		virtual void Shutdown() = 0;
 
 		virtual void SetViewport(Vector2i position, Vector2i size) = 0;
+		virtual Vector2i GetViewportSize() = 0;
 		virtual void Clear(Color color) = 0;
 		virtual void Present() = 0;
 

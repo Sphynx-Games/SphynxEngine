@@ -2,6 +2,31 @@ Scene:
   m_UUID: 1e5df57e-b589-4304-82d0-09b77f6de562
   m_Name: TestScene
   m_Actors:
+    - UUID: 91f08106-c04a-431c-a8df-47922d12f36e
+      Name: Camera
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::CameraComponent:
+            IsMainCamera: true
+            m_ProjectionMode: ORTHOGRAPHIC
+            m_CameraInfo:
+              Near : 0.01
+              Far : 10000.0
+              HeightUnits : 8.0
+              FieldOfView : 60.0
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
       Name: Sprite
       Components:

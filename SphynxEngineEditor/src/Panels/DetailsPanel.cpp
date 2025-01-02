@@ -72,6 +72,67 @@ namespace Sphynx
 				}
 			}
 
+			// Draw Camera Component
+			if (m_Context.HasComponent<CameraComponent>())
+			{
+				if (ImGui::CollapsingHeader("Camera Component", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+
+					auto& component = m_Context.GetComponent<CameraComponent>();
+					const char* mode = component.GetProjectionMode() == CameraProjectionMode::ORTHOGRAPHIC ? "ORTHOGRAPHIC" : "PERSPECTIVE";
+					if (ImGui::BeginCombo(LABEL("Projection Mode").c_str(), mode))
+					{
+						if (ImGui::Selectable("ORTHOGRAPHIC", false)) component.SetProjectionMode(CameraProjectionMode::ORTHOGRAPHIC);
+						if (ImGui::Selectable("PERSPECTIVE", false)) component.SetProjectionMode(CameraProjectionMode::PERSPECTIVE);
+						ImGui::EndCombo();
+					}
+
+					// Near
+					{
+						float value = component.GetNear();
+						if (ImGui::DragFloat(LABEL("Near").c_str(), &value, 1.0f, 1e-6f, component.GetFar()))
+						{
+							component.SetNear(value);
+						}
+					}
+
+					// Far
+					{
+						float value = component.GetFar();
+						if (ImGui::DragFloat(LABEL("Far").c_str(), &value, 1.0f, component.GetNear(), FLT_MAX))
+						{
+							component.SetFar(value);
+						}
+					}
+
+					// HeightUnits
+					if (component.GetProjectionMode() == CameraProjectionMode::ORTHOGRAPHIC)
+					{
+						float value = component.GetHeightUnits();
+						if (ImGui::DragFloat(LABEL("Height Units").c_str(), &value, 1.0f, 0.0f, FLT_MAX))
+						{
+							component.SetHeightUnits(value);
+						}
+					}
+
+					// FieldOfView
+					if (component.GetProjectionMode() == CameraProjectionMode::PERSPECTIVE)
+					{
+						float value = component.GetFieldOfView();
+						if (ImGui::DragFloat(LABEL("Field Of View").c_str(), &value, 1.0f, 0.0f, 360.0f))
+						{
+							component.SetFieldOfView(value);
+						}
+					}
+
+					// Is Main Camera
+					ImGui::Checkbox(LABEL("Is Main Camera").c_str(), &component.IsMainCamera);
+
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				}
+			}
+
 			// Draw Sprite Renderer Component
 			if (m_Context.HasComponent<SpriteRendererComponent>())
 			{
@@ -187,7 +248,7 @@ namespace Sphynx
 					switch (type)
 					{
 					case RigidbodyType::STATIC:    mode = "STATIC"; break;
-					case RigidbodyType::DYNAMIC :  mode = "DYNAMIC"; break;
+					case RigidbodyType::DYNAMIC:  mode = "DYNAMIC"; break;
 					case RigidbodyType::KINEMATIC: mode = "KINEMATIC"; break;
 					}
 

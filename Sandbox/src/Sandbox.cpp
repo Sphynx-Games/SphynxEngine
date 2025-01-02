@@ -147,10 +147,11 @@ void SandboxLayer::Attach()
 	sceneDeserializer.Deserialize();
 #endif
 
-	Actor& cameraComp = m_SandboxScene.CreateActor();
-	cameraComp.AddComponent<NameComponent>("Camera");
-	cameraComp.AddComponent<CameraComponent>();
-	cameraComp.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+	Actor& cameraCompActor = m_SandboxScene.CreateActor();
+	cameraCompActor.AddComponent<NameComponent>("Camera");
+	CameraComponent& camComp = cameraCompActor.AddComponent<CameraComponent>();
+	camComp.IsMainCamera = true;
+	cameraCompActor.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 
 	m_SandboxScene.BeginPlay();
 }

@@ -52,6 +52,11 @@ namespace Sphynx
 		s_RendererAPI->SetViewport(position, size);
 	}
 
+	Vector2i Renderer2D::GetViewportSize()
+	{
+		return s_RendererAPI->GetViewportSize();
+	}
+
 	void Renderer2D::SetClearColor(Color color)
 	{
 		s_RendererConfig.ClearColor = color;

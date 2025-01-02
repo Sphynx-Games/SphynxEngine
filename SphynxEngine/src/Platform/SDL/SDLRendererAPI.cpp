@@ -56,6 +56,13 @@ namespace Sphynx
 		SDL_SetRenderViewport(m_Renderer, &rect);
 	}
 
+	Vector2i SDLRendererAPI::GetViewportSize()
+	{
+		SDL_Rect rect;
+		SDL_GetRenderViewport(m_Renderer, &rect);
+		return { (int32_t)rect.w, (int32_t)rect.h };
+	}
+
 	void SDLRendererAPI::Clear(Color color)
 	{
 		SDL_SetRenderDrawColor(m_Renderer, color.R, color.G, color.B, color.A);
