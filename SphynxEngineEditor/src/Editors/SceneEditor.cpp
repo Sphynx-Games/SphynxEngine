@@ -13,12 +13,12 @@
 #include "Core/Time.h"
 #include "Renderer/Renderer2D.h"
 #include "Renderer/Framebuffer.h"
+#include "Scene/SceneRenderer.h"
 
 #include "Asset/Scene/SceneAsset.h"
 
 // TODO: remove
 #include <Sphynx.h>
-#include <Renderer/OrthographicCameraController.h>
 #include "Asset/AssetManager.h"
 #include <Renderer/Sprite.h>
 
@@ -28,12 +28,6 @@
 
 namespace Sphynx
 {
-	// TODO: remove, this is just for testing purposes
-	namespace
-	{
-		static OrthographicCameraController s_CameraController(1.0f, true);
-	}
-
 	SceneEditor::SceneEditor() :
 		Editor("SceneEditor"),
 		m_SceneToolbar(new SceneToolbar()),
@@ -41,6 +35,7 @@ namespace Sphynx
 		m_ContentBrowserPanel(new ContentBrowserPanel()),
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),
+		m_CameraController(),
 		m_Framebuffer(nullptr),
 		m_LastOpenedScenePath(),
 		m_SceneToEdit(),
@@ -106,33 +101,37 @@ namespace Sphynx
 		float deltaTime = Time::GetScaledDeltaTime();
 
 		// TODO: change by a EditorCameraController
-		s_CameraController.Update(deltaTime);
-		uint32_t width = m_Framebuffer->GetSpecification().Width;
-		uint32_t height = m_Framebuffer->GetSpecification().Height;
-		s_CameraController.Resize((float)width, (float)height);
+		//uint32_t width = m_Framebuffer->GetSpecification().Width;
+		//uint32_t height = m_Framebuffer->GetSpecification().Height;
 
-		m_Framebuffer->Bind();
+		// begin scene render
+		if (m_ActiveScene != nullptr)
 		{
-			// begin scene render
-			Renderer2D::Begin(s_CameraController.GetCamera().GetCamera());
-			if (m_ActiveScene != nullptr)
+			m_Framebuffer->Bind();
+			SceneRenderer::Render(*m_ActiveScene, &m_CameraController.GetCamera());
+			m_Framebuffer->Unbind();
+
+			m_CameraController.Update(deltaTime);
+
+			if (m_SceneState == PlaybackState::PLAYING)
 			{
-				if (m_SceneState == PlaybackState::PLAYING)
-				{
-					m_ActiveScene->Update(deltaTime);
-				}
-				else
-				{
-					m_ActiveScene->Update(0.0f);
-				}
+				m_ActiveScene->Update(deltaTime);
 			}
-			Renderer2D::End();
+			else
+			{
+				m_ActiveScene->Update(0.0f);
+			}
 		}
-		m_Framebuffer->Unbind();
 
 		m_DetailsPanel->SetContext(m_SceneOutlinerPanel->GetSelectedActor());
 
 		Editor::RenderGUI();
+	}
+
+	void SceneEditor::HandleEvent(Event& event)
+	{
+		Editor::HandleEvent(event);
+		m_CameraController.HandleEvent(event);
 	}
 
 	void SceneEditor::RenderMenuBar()

@@ -3,6 +3,7 @@
 #include "Base/Editor.h"
 #include "Utils/PlaybackState.h"
 #include "Scene/Scene.h"
+#include "EditorCameraController.h"
 
 
 namespace Sphynx
@@ -15,6 +16,7 @@ namespace Sphynx
 
 	protected:
 		virtual void RenderGUI() override;
+		virtual void HandleEvent(Event& event) override;
 
 		virtual bool HasMenuBar() const override { return true; }
 		virtual void RenderMenuBar() override;
@@ -35,6 +37,8 @@ namespace Sphynx
 		class ContentBrowserPanel* m_ContentBrowserPanel;
 		class ViewportPanel* m_ViewportPanel;
 		class DetailsPanel* m_DetailsPanel;
+
+		EditorCameraController m_CameraController;
 
 		class Framebuffer* m_Framebuffer;
 		std::filesystem::path m_LastOpenedScenePath;

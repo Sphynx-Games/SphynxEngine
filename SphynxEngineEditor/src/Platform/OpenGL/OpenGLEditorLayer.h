@@ -20,20 +20,20 @@ namespace Sphynx
 		static void RenderGUI();
 
 	private:
-		static bool OnWindowMouseEnter(WindowMouseEnterEvent& event);
-		static bool OnWindowMouseExit(WindowMouseExitEvent& event);
-		static bool OnWindowFocusGained(WindowFocusGainedEvent& event);
-		static bool OnWindowFocusLost(WindowFocusLostEvent& event);
-		static bool OnWindowClosed(WindowClosedEvent& event);
-		static bool OnWindowResized(WindowResizedEvent& event);
-		static bool OnWindowMoved(WindowMovedEvent& event);
-		static bool OnMouseMoved(MouseMovedEvent& event);
-		static bool OnMouseScrolled(MouseScrolledEvent& event);
-		static bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
-		static bool OnMouseButtonReleased(MouseButtonReleasedEvent& event);
-		static bool OnKeyPressed(KeyPressedEvent& event);
-		static bool OnKeyReleased(KeyReleasedEvent& event);
-		static bool OnKeyTyped(KeyTypedEvent& event);
+		static bool OnWindowMouseEnter(class WindowMouseEnterEvent& event);
+		static bool OnWindowMouseExit(class WindowMouseExitEvent& event);
+		static bool OnWindowFocusGained(class WindowFocusGainedEvent& event);
+		static bool OnWindowFocusLost(class WindowFocusLostEvent& event);
+		static bool OnWindowClosed(class WindowClosedEvent& event);
+		static bool OnWindowResized(class WindowResizedEvent& event);
+		static bool OnWindowMoved(class WindowMovedEvent& event);
+		static bool OnMouseMoved(class MouseMovedEvent& event);
+		static bool OnMouseScrolled(class MouseScrolledEvent& event);
+		static bool OnMouseButtonPressed(class MouseButtonPressedEvent& event);
+		static bool OnMouseButtonReleased(class MouseButtonReleasedEvent& event);
+		static bool OnKeyPressed(class KeyPressedEvent& event);
+		static bool OnKeyReleased(class KeyReleasedEvent& event);
+		static bool OnKeyTyped(class KeyTypedEvent& event);
 
 	private:
 		inline static SDL_Window* m_Window{ nullptr };

@@ -12,7 +12,7 @@ namespace Sphynx
 		m_CameraInfo(info),
 		m_ProjectionMatrix()
 	{
-		RecalculateViewMatrix();
+		RecalculateProjectionMatrix();
 	}
 
 	CameraProjectionMode CameraComponent::GetProjectionMode() const
@@ -25,7 +25,7 @@ namespace Sphynx
 		if (m_ProjectionMode == mode) return;
 
 		m_ProjectionMode = mode;
-		RecalculateViewMatrix();
+		RecalculateProjectionMatrix();
 	}
 
 	float CameraComponent::GetNear() const
@@ -36,7 +36,7 @@ namespace Sphynx
 	void CameraComponent::SetNear(float camNear)
 	{
 		m_CameraInfo.Near = camNear;
-		RecalculateViewMatrix();
+		RecalculateProjectionMatrix();
 	}
 
 	float CameraComponent::GetFar() const
@@ -47,7 +47,7 @@ namespace Sphynx
 	void CameraComponent::SetFar(float camFar)
 	{
 		m_CameraInfo.Far = camFar;
-		RecalculateViewMatrix();
+		RecalculateProjectionMatrix();
 	}
 
 	float CameraComponent::GetHeightUnits() const
@@ -60,7 +60,7 @@ namespace Sphynx
 		m_CameraInfo.HeightUnits = heightUnits;
 		if (m_ProjectionMode == ORTHOGRAPHIC)
 		{
-			RecalculateViewMatrix();
+			RecalculateProjectionMatrix();
 		}
 	}
 
@@ -74,11 +74,11 @@ namespace Sphynx
 		m_CameraInfo.FieldOfView = fieldOfView;
 		if (m_ProjectionMode == PERSPECTIVE)
 		{
-			RecalculateViewMatrix();
+			RecalculateProjectionMatrix();
 		}
 	}
 
-	void CameraComponent::RecalculateViewMatrix()
+	void CameraComponent::RecalculateProjectionMatrix()
 	{
 		const float aspectRatio = 1.0f;
 		switch (m_ProjectionMode)

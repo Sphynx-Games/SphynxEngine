@@ -9,7 +9,6 @@
 #include "Events/WindowEvent.h"
 #include "LayerStack.h"
 #include "Layer.h"
-#include "Renderer/OrthographicCameraController.h"
 
 
 namespace Sphynx

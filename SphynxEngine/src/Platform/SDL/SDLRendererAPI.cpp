@@ -429,4 +429,13 @@ namespace Sphynx
 
 		DrawSDLTexture(m_Renderer, texture_SDL, points, indices, uv, color);
 	}
+
+	SDL_Renderer* SDLRendererAPI::GetCurrentSDLRenderer() const
+	{
+		if (SDL_Texture* target = SDL_GetRenderTarget(m_Renderer))
+		{
+			return SDL_GetRendererFromTexture(target);
+		}
+		return m_Renderer;
+	}
 }

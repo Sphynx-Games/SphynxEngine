@@ -68,5 +68,6 @@ namespace Sphynx
 		friend class Actor;
 		friend class SceneSerializer;
 		friend class SceneDeserializer;
+		friend class SceneRenderer;
 	};
 }

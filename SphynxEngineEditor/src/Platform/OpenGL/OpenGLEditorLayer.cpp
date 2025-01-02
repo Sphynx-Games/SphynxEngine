@@ -1,5 +1,7 @@
 #include "spxpch.h"
 #include "OpenGLEditorLayer.h"
+#include "Events/WindowEvent.h"
+#include "Events/InputEvent.h"
 
 #include "Core/Application.h"
 

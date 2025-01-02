@@ -27,7 +27,7 @@ namespace Sphynx
 
 		static void CreateTextures(SDL_Texture** textures, FramebufferTextureSpecification* specs, uint32_t count, uint32_t width, uint32_t height)
 		{
-			SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
+			SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetRootSDLRenderer();
 
 			for (uint32_t i = 0; i < count; ++i)
 			{
@@ -60,7 +60,7 @@ namespace Sphynx
 		m_ColorAttachments(),
 		m_DepthAttachment(nullptr)
 	{
-		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
+		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetRootSDLRenderer();
 		SPX_CORE_ASSERT(renderer != nullptr);
 
 		m_Renderer = renderer;
@@ -185,7 +185,7 @@ namespace Sphynx
 	void SDLFramebuffer::ClearAttachment(uint32_t attachmentIndex, uint32_t value)
 	{
 		SPX_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
-		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
+		SDL_Renderer* renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetRootSDLRenderer();
 
 		SDL_Texture* texture = m_ColorAttachments[attachmentIndex];
 		SPX_CORE_ASSERT(SDL_GetRenderTarget(renderer) == texture);

@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "Scene.h"
+#include "SceneRenderer.h"
 #include "Actor.h"
 #include "Component/Components.h"
 #include "Renderer/Renderer2D.h"
@@ -14,9 +15,6 @@
 #include "Renderer/Camera.h"
 #include "Core/Application.h"
 #include "Renderer/Window.h"
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
 
 
 namespace Sphynx
@@ -122,81 +120,11 @@ namespace Sphynx
 
 	void Scene::Update(float deltaTime)
 	{
-		bool mainCameraFound = false;
-		auto cameraGroup = m_Registry.group<CameraComponent>(entt::get<TransformComponent>);
-		for (entt::entity entity : cameraGroup)
-		{
-			auto [cameraComp, transformComp] = cameraGroup.get<CameraComponent, TransformComponent>(entity);
-
-			// TODO: right now, only the first main camera found is rendered. change this in the future.
-			if (!mainCameraFound && cameraComp.IsMainCamera)
-			{
-				mainCameraFound = true;
-
-				Vector3f position = transformComp.Transform.Position;
-				glm::mat4 transform =
-					glm::translate(glm::mat4(1.0f), { position.X, position.Y, position.Z }) *
-					glm::mat4_cast(glm::quat({ 0.0f, 0.0f, glm::radians(transformComp.Transform.Rotation.Z) }));
-
-				//Window* window = Application::GetInstance()->GetWindow();
-				Vector2i viewportSize = Renderer2D::GetViewportSize();
-				glm::mat4 aspectRatioMatrix = glm::mat4(1.0f); // Identity matrix
-				aspectRatioMatrix[0][0] = (float)viewportSize.Y / viewportSize.X;
-
-				Camera camera;
-				camera.ViewMatrix = glm::inverse(transform);
-				camera.ProjectionMatrix = aspectRatioMatrix * cameraComp.GetProjectionMatrix();
-				camera.ViewProjectionMatrix = camera.ProjectionMatrix * camera.ViewMatrix;
-
-				Renderer2D::Begin(&camera);
-			}
-		}
-
-		if (!mainCameraFound)
-		{
-			Renderer2D::Begin(nullptr);
-		}
-
-		// Draw every SPRITE RENDERER component in scene
-		auto spriteGroup = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
-		for (entt::entity entity : spriteGroup)
-		{
-			auto [spriteRenderer, transform] = spriteGroup.get<SpriteRendererComponent, TransformComponent>(entity);
-
-			std::shared_ptr<Asset<Sprite>> sprite = AssetManager::GetAsset<Sprite>(spriteRenderer.Sprite);
-			if (sprite != nullptr && sprite->Asset != nullptr)
-			{
-				Renderer2D::DrawSprite(*sprite->Asset, transform.Transform, spriteRenderer.Tint);
-			}
-			else
-			{
-				Renderer2D::DrawQuad(DrawMode::FILLED, transform.Transform, { 1.0f, 1.0f }, { 0.5f, 0.5f }, spriteRenderer.Tint);
-			}
-		}
-
-		// Draw every BOX RENDERER component in scene
-		auto boxGroup = m_Registry.group<BoxRendererComponent>(entt::get<TransformComponent>);
-		for (entt::entity entity : boxGroup)
-		{
-			auto [boxRenderer, transform] = boxGroup.get<BoxRendererComponent, TransformComponent>(entity);
-			Renderer2D::DrawQuad(boxRenderer.DrawMode, transform.Transform, boxRenderer.Size, boxRenderer.Pivot, boxRenderer.Color);
-		}
-
-		// Draw every LINE RENDERER component in scene
-		auto lineGroup = m_Registry.group<LineRendererComponent>(entt::get<TransformComponent>);
-		for (entt::entity entity : lineGroup)
-		{
-			auto [lineRenderer, transform] = lineGroup.get<LineRendererComponent, TransformComponent>(entity);
-			Renderer2D::DrawLine(transform.Transform, lineRenderer.Point1, lineRenderer.Point2, lineRenderer.LineWidth, lineRenderer.Color);
-		}
-
 		// Simulate PHYSICS in scene
 		if (m_PhysicsWorld != nullptr)
 		{
 			Physics2D::Step(m_PhysicsWorld, deltaTime);
 		}
-
-		Renderer2D::End();
 	}
 
 	Actor& Scene::CreateActor()

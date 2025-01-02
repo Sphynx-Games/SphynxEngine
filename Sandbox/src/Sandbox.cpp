@@ -5,6 +5,7 @@
 #include "Core/Application.h"
 #include "Renderer/GraphicsContext.h"
 #include "Asset/AssetManager.h"
+#include "Scene/SceneRenderer.h"
 
 
 std::shared_ptr<Sphynx::Asset<Sphynx::Font>> font = nullptr;
@@ -16,10 +17,8 @@ class SandboxLayer : public Sphynx::Layer
 {
 public:
 	SandboxLayer() :
-		//m_CameraController(new Sphynx::OrthographicCameraController(16.0f / 9.0f, true)),
 		m_SandboxScene(Sphynx::Scene("TestScene"))
 	{
-		//m_CameraController->SetZoom(2.0f);
 	}
 
 	virtual void Attach() override;
@@ -28,7 +27,6 @@ public:
 	virtual void HandleEvent(Sphynx::Event& event) override;
 
 private:
-	//std::unique_ptr<class Sphynx::OrthographicCameraController> m_CameraController;
 	Sphynx::Scene m_SandboxScene;
 };
 
@@ -169,9 +167,16 @@ void SandboxLayer::Update(float deltaTime)
 	//m_CameraController->Update(deltaTime);
 
 	// begin scene render
-	//Renderer2D::Begin(&m_CameraController->GetCamera());
+	Camera camera;
+	if (SceneRenderer::GetMainCamera(m_SandboxScene, camera))
+	{
+		SceneRenderer::Render(m_SandboxScene, &camera);
+	}
+	else
+	{
+		SceneRenderer::Render(m_SandboxScene, nullptr);
+	}
 	m_SandboxScene.Update(deltaTime);
-	//Renderer2D::End();
 
 	if (auto* gContext = Application::GetInstance()->GetWindow()->GetGraphicsContext())
 	{

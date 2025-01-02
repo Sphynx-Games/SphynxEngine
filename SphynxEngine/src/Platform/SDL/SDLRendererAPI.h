@@ -41,7 +41,8 @@ namespace Sphynx
 		virtual void DrawSprite(const Sprite& sprite, const Transform& transform, Color color) override;
 
 	public:
-		SDL_Renderer* GetSDLRenderer() const { return m_Renderer; }
+		SDL_Renderer* GetRootSDLRenderer() const { return m_Renderer; }
+		SDL_Renderer* GetCurrentSDLRenderer() const;
 
 	private:
 		const class Window* m_Window;

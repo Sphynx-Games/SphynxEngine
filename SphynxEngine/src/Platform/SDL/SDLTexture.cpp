@@ -19,7 +19,7 @@ namespace Sphynx
 			return;
 		}
 
-		m_Texture = SDL_CreateTexture(renderer->GetSDLRenderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, size.X, size.Y);
+		m_Texture = SDL_CreateTexture(renderer->GetRootSDLRenderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, size.X, size.Y);
 
 		if (!SDL_UpdateTexture(m_Texture, nullptr, data, m_Size.X * sizeof(uint8_t)))
 		{
@@ -58,7 +58,7 @@ namespace Sphynx
 		}
 
 		// load image
-		SDL_Texture* texture = IMG_LoadTexture(renderer->GetSDLRenderer(), path.string().c_str());
+		SDL_Texture* texture = IMG_LoadTexture(renderer->GetRootSDLRenderer(), path.string().c_str());
 		if (texture == nullptr)
 		{
 			SPX_CORE_LOG_ERROR("Unable to load texture from {}! SDL Error: {}", path.string().c_str(), SDL_GetError());

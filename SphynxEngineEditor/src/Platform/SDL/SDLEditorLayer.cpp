@@ -1,5 +1,7 @@
 #include "spxpch.h"
 #include "SDLEditorLayer.h"
+#include "Events/WindowEvent.h"
+#include "Events/InputEvent.h"
 
 #include <Platform/SDL/SDLRendererAPI.h>
 
@@ -185,7 +187,7 @@ namespace Sphynx
 		// Setup Platform/Renderer backends
 		Sphynx::Application* application = Sphynx::Application::GetInstance();
 		m_Window = static_cast<SDL_Window*>(application->GetWindow()->GetNativeWindow());
-		m_Renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetSDLRenderer();
+		m_Renderer = static_cast<const Sphynx::SDLRendererAPI*>(Sphynx::Renderer2D::GetRendererAPI())->GetRootSDLRenderer();
 		ImGui_ImplSDL3_InitForSDLRenderer(m_Window, m_Renderer);
 		ImGui_ImplSDLRenderer3_Init(m_Renderer);
 	}
