@@ -136,6 +136,12 @@ void SandboxLayer::Attach()
 	capsuleRigidbody.AddComponent<Rigidbody2DComponent>().SetRigidbodyType(RigidbodyType::DYNAMIC);
 	capsuleRigidbody.AddComponent<CapsuleCollider2DComponent>(Vector2f{ 1.0f, 2.0f }, Vector2f{ 1.5f, 0.0f });
 
+	Actor& cameraCompActor = m_SandboxScene.CreateActor();
+	cameraCompActor.AddComponent<NameComponent>("Camera");
+	CameraComponent& camComp = cameraCompActor.AddComponent<CameraComponent>();
+	camComp.IsMainCamera = true;
+	cameraCompActor.AddComponent<TransformComponent>(Transform{ { 0, 0, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+
 	YAMLWriter writer{ "Assets\\Scenes\\" + m_SandboxScene.GetName() + ".spxasset" };
 	SceneSerializer sceneSerializer{ m_SandboxScene, writer };
 	sceneSerializer.Serialize();
@@ -144,12 +150,6 @@ void SandboxLayer::Attach()
 	SceneDeserializer sceneDeserializer{ m_SandboxScene, reader };
 	sceneDeserializer.Deserialize();
 #endif
-
-	Actor& cameraCompActor = m_SandboxScene.CreateActor();
-	cameraCompActor.AddComponent<NameComponent>("Camera");
-	CameraComponent& camComp = cameraCompActor.AddComponent<CameraComponent>();
-	camComp.IsMainCamera = true;
-	cameraCompActor.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 
 	m_SandboxScene.BeginPlay();
 }
