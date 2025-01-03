@@ -20,6 +20,7 @@ namespace Sphynx
 
 		const Camera& GetCamera() const { return m_Camera; }
 		
+		void SetAspectRatio(float aspectRatio);
 		void SetZoom(float zoom);
 		void SetPosition(const Vector3f& position) { m_Position = position; }
 		void SetRotation(float rotation) { m_Rotation = rotation; }
@@ -35,6 +36,7 @@ namespace Sphynx
 		CameraProjectionMode m_ProjectionMode;
 		CameraInfo m_CameraInfo;
 
+		float m_AspectRatio;
 		float m_Zoom;
 		Vector3f m_Position;
 		float m_Rotation;

@@ -16,6 +16,7 @@ namespace Sphynx
 		m_AllowRotation(allowRotation),
 		m_ProjectionMode(ORTHOGRAPHIC),
 		m_CameraInfo(),
+		m_AspectRatio(1.0f),
 		m_Zoom(1.0f),
 		m_Position({ 0.0f, 0.0f, 0.0f }),
 		m_Rotation(0.0f),
@@ -100,11 +101,14 @@ namespace Sphynx
 
 				return false;
 			});
-		/*dispatcher.Dispatch<WindowResizedEvent>([&](WindowResizedEvent& e)
-			{
-				Resize((float)e.GetWidth(), (float)e.GetHeight());
-				return false;
-			});*/
+	}
+
+	void EditorCameraController::SetAspectRatio(float aspectRatio)
+	{
+		if (m_AspectRatio == aspectRatio) return;
+
+		m_AspectRatio = aspectRatio;
+		RecalculateProjectionMatrix();
 	}
 
 	void EditorCameraController::SetZoom(float zoom)
@@ -116,33 +120,22 @@ namespace Sphynx
 
 	void EditorCameraController::RecalculateProjectionMatrix()
 	{
-		Vector2i viewportSize = Renderer2D::GetViewportSize();
-		const float aspectRatio = (float)viewportSize.X / viewportSize.Y;
 		switch (m_ProjectionMode)
 		{
 		case ORTHOGRAPHIC:
 		{
 			const float height = m_CameraInfo.HeightUnits;
-			const float width = aspectRatio * height;
+			const float width = m_AspectRatio * height;
 			m_Camera.ProjectionMatrix = glm::ortho((-width / 2.0f) * m_Zoom, (width / 2.0f) * m_Zoom, (-height / 2.0f) * m_Zoom, (height / 2.0f) * m_Zoom, m_CameraInfo.Near, m_CameraInfo.Far);
 		}
 		break;
 		case PERSPECTIVE:
 		{
-			m_Camera.ProjectionMatrix = glm::perspective(glm::radians(m_CameraInfo.FieldOfView), aspectRatio, m_CameraInfo.Near, m_CameraInfo.Far);
+			m_Camera.ProjectionMatrix = glm::perspective(glm::radians(m_CameraInfo.FieldOfView), m_AspectRatio, m_CameraInfo.Near, m_CameraInfo.Far);
 		}
 		break;
 		default:
 			break;
 		}
 	}
-
-	/*void EditorCameraController::Resize(float width, float height)
-	{
-		float aspectRatio = width / height;
-		if (m_AspectRatio == aspectRatio) return;
-
-		m_AspectRatio = aspectRatio;
-		m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom);
-	}*/
 }

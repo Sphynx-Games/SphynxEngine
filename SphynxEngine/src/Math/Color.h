@@ -13,17 +13,17 @@ namespace Sphynx
 		uint8_t A;
 
 		Color();
-		explicit Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A);
-		explicit Color(uint32_t hexColor);
+		Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A);
+		Color(uint32_t hexColor);
 
 		static uint32_t ToHex(Color color);
 		static Color FromHex(uint32_t color);
 
-		static const Color White;
-		static const Color Black;
-		static const Color Red;
-		static const Color Green;
-		static const Color Blue;
+		static constexpr uint32_t White		=	0xFFFFFFFF;
+		static constexpr uint32_t Black		=	0x000000FF;
+		static constexpr uint32_t Red		=	0xFF0000FF;
+		static constexpr uint32_t Green		=	0x00FF00FF;
+		static constexpr uint32_t Blue		=	0x0000FFFF;
 	};
 }
 

@@ -100,17 +100,24 @@ namespace Sphynx
 	{
 		float deltaTime = Time::GetScaledDeltaTime();
 
-		// TODO: change by a EditorCameraController
-		//uint32_t width = m_Framebuffer->GetSpecification().Width;
-		//uint32_t height = m_Framebuffer->GetSpecification().Height;
-
-		// begin scene render
+		// render
+		m_Framebuffer->Bind();
 		if (m_ActiveScene != nullptr)
 		{
-			m_Framebuffer->Bind();
+			const float aspectRatio = (float)m_Framebuffer->GetSpecification().Width / (float)m_Framebuffer->GetSpecification().Height;
+			m_CameraController.SetAspectRatio(aspectRatio);
 			SceneRenderer::Render(*m_ActiveScene, &m_CameraController.GetCamera());
-			m_Framebuffer->Unbind();
+		}
+		else
+		{
+			Renderer2D::Begin(nullptr);
+			Renderer2D::End();
+		}
+		m_Framebuffer->Unbind();
 
+		// update
+		if (m_ActiveScene != nullptr)
+		{
 			m_CameraController.Update(deltaTime);
 
 			if (m_SceneState == PlaybackState::PLAYING)
