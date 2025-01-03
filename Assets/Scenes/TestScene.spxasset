@@ -23,10 +23,10 @@ Scene:
             IsMainCamera: true
             m_ProjectionMode: ORTHOGRAPHIC
             m_CameraInfo:
-              Near : 0.01
-              Far : 10000.0
-              HeightUnits : 8.0
-              FieldOfView : 60.0
+              Near: 0.01
+              Far: 10000.0
+              HeightUnits: 8.0
+              FieldOfView: 60.0
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
       Name: Sprite
       Components:

@@ -22,7 +22,7 @@ namespace Sphynx
 		m_Rotation(0.0f),
 		m_TranslationSpeed(1.5f),
 		m_RotationSpeed(30.0f),
-		m_Camera() //-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom, -m_Zoom, m_Zoom),
+		m_Camera()
 	{
 		RecalculateProjectionMatrix();
 	}

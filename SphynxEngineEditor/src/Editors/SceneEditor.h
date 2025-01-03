@@ -38,9 +38,9 @@ namespace Sphynx
 		class ViewportPanel* m_ViewportPanel;
 		class DetailsPanel* m_DetailsPanel;
 
+		class Framebuffer* m_Framebuffer;
 		EditorCameraController m_CameraController;
 
-		class Framebuffer* m_Framebuffer;
 		std::filesystem::path m_LastOpenedScenePath;
 		Scene m_SceneToEdit;
 		Scene m_SceneToPlay;

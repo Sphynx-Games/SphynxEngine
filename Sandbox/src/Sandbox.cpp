@@ -167,15 +167,7 @@ void SandboxLayer::Update(float deltaTime)
 	//m_CameraController->Update(deltaTime);
 
 	// begin scene render
-	Camera camera;
-	if (SceneRenderer::GetMainCamera(m_SandboxScene, camera))
-	{
-		SceneRenderer::Render(m_SandboxScene, &camera);
-	}
-	else
-	{
-		SceneRenderer::Render(m_SandboxScene, nullptr);
-	}
+	SceneRenderer::Render(m_SandboxScene);
 	m_SandboxScene.Update(deltaTime);
 
 	if (auto* gContext = Application::GetInstance()->GetWindow()->GetGraphicsContext())

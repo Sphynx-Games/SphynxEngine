@@ -35,8 +35,8 @@ namespace Sphynx
 		m_ContentBrowserPanel(new ContentBrowserPanel()),
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),
-		m_CameraController(),
 		m_Framebuffer(nullptr),
+		m_CameraController(),
 		m_LastOpenedScenePath(),
 		m_SceneToEdit(),
 		m_SceneToPlay(),
@@ -104,9 +104,16 @@ namespace Sphynx
 		m_Framebuffer->Bind();
 		if (m_ActiveScene != nullptr)
 		{
-			const float aspectRatio = (float)m_Framebuffer->GetSpecification().Width / (float)m_Framebuffer->GetSpecification().Height;
-			m_CameraController.SetAspectRatio(aspectRatio);
-			SceneRenderer::Render(*m_ActiveScene, &m_CameraController.GetCamera());
+			if (m_SceneState == STOPPED)
+			{
+				const float aspectRatio = (float)m_Framebuffer->GetSpecification().Width / (float)m_Framebuffer->GetSpecification().Height;
+				m_CameraController.SetAspectRatio(aspectRatio);
+				SceneRenderer::Render(*m_ActiveScene, &m_CameraController.GetCamera());
+			}
+			else
+			{
+				SceneRenderer::Render(*m_ActiveScene);
+			}
 		}
 		else
 		{
@@ -138,7 +145,10 @@ namespace Sphynx
 	void SceneEditor::HandleEvent(Event& event)
 	{
 		Editor::HandleEvent(event);
-		m_CameraController.HandleEvent(event);
+		if (m_SceneState == STOPPED)
+		{
+			m_CameraController.HandleEvent(event);
+		}
 	}
 
 	void SceneEditor::RenderMenuBar()

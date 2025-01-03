@@ -16,6 +16,19 @@
 
 namespace Sphynx
 {
+	void SceneRenderer::Render(Scene& scene)
+	{
+		Camera camera;
+		if (SceneRenderer::GetMainCamera(scene, camera))
+		{
+			SceneRenderer::Render(scene, &camera);
+		}
+		else
+		{
+			SceneRenderer::Render(scene, nullptr);
+		}
+	}
+
 	void SceneRenderer::Render(Scene& scene, const Camera* camera)
 	{
 		Renderer2D::Begin(camera);

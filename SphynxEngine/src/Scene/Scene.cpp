@@ -12,7 +12,6 @@
 #include "Serialization/SceneDeserializer.h"
 #include "Asset/AssetManager.h"
 #include "Renderer/Sprite.h"
-#include "Renderer/Camera.h"
 #include "Core/Application.h"
 #include "Renderer/Window.h"
 
@@ -39,6 +38,7 @@ namespace Sphynx
 		// copy components
 		CopyComponent<NameComponent>(sourceRegistry, targetRegistry, enttMap);
 		CopyComponent<TransformComponent>(sourceRegistry, targetRegistry, enttMap);
+		CopyComponent<CameraComponent>(sourceRegistry, targetRegistry, enttMap);
 		CopyComponent<LineRendererComponent>(sourceRegistry, targetRegistry, enttMap);
 		CopyComponent<SpriteRendererComponent>(sourceRegistry, targetRegistry, enttMap);
 		CopyComponent<BoxRendererComponent>(sourceRegistry, targetRegistry, enttMap);
