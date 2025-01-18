@@ -210,7 +210,7 @@ namespace Sphynx
 	void SceneEditor::SaveAsScene(const std::filesystem::path& path)
 	{
 		// Invalid means it is not a "replace" save as request
-		AssetMetadata metadata = AssetManager::GetMetadataFromPath(path);
+		AssetMetadata metadata = AssetManager::GetAssetMetadataFromPath(path);
 		if (metadata == AssetMetadata::Invalid)
 		{
 			metadata.Handle = AssetHandle::Generate();

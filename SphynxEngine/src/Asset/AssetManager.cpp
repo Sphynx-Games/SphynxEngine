@@ -157,7 +157,7 @@ namespace Sphynx
 		// Check if the asset is loaded, if not load it
 		if (!IsAssetLoaded(handle))
 		{
-			s_LoadedAssets[handle] = AssetImporter::Load(GetMetadata(handle));
+			s_LoadedAssets[handle] = AssetImporter::Load(GetAssetMetadata(handle));
 		}
 
 		return s_LoadedAssets[handle];
@@ -173,13 +173,13 @@ namespace Sphynx
 		s_LoadedAssets.clear();
 	}
 
-	const AssetMetadata& AssetManager::GetMetadata(AssetHandle handle)
+	const AssetMetadata& AssetManager::GetAssetMetadata(AssetHandle handle)
 	{
 		SPX_CORE_ASSERT(s_Registry.ContainsKey(handle), "Asset Registry does not contain the asset with handle \"{}\"!", AssetHandle::ToString(handle));
 		return s_Registry[handle];
 	}
 
-	const AssetMetadata& AssetManager::GetMetadataFromPath(const std::filesystem::path& path)
+	const AssetMetadata& AssetManager::GetAssetMetadataFromPath(const std::filesystem::path& path)
 	{
 		auto it = std::find_if(s_Registry.begin(), s_Registry.end(), [&](const auto& registryEntry) {
 			return registryEntry.second.Path == path;
@@ -197,7 +197,7 @@ namespace Sphynx
 
 	AssetType AssetManager::GetAssetType(AssetHandle handle)
 	{
-		return GetMetadata(handle).Type;
+		return GetAssetMetadata(handle).Type;
 	}
 
 	AssetType AssetManager::GetAssetTypeFromExtension(const std::string& extension)
@@ -223,6 +223,18 @@ namespace Sphynx
 		}
 
 		return AssetHandle::Invalid;
+	}
+
+	AssetHandle AssetManager::GetAssetHandleFromPath(const std::filesystem::path& path)
+	{
+		for (auto& [handle, metadata] : s_Registry)
+		{
+			if (path == metadata.Path)
+			{
+				return handle;
+			}
+		}
+		SPX_CORE_LOG_ERROR("Asset not found for required path!");
 	}
 
 	void AssetManager::ManageAsset(std::shared_ptr<IAsset> asset, const AssetMetadata& metadata)

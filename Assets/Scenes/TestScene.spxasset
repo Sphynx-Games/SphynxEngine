@@ -24,9 +24,9 @@ Scene:
             m_ProjectionMode: ORTHOGRAPHIC
             m_CameraInfo:
               Near: 0.01
-              Far: 10000.0
-              HeightUnits: 8.0
-              FieldOfView: 60.0
+              Far: 10000
+              HeightUnits: 8
+              FieldOfView: 60
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
       Name: Sprite
       Components:
@@ -45,7 +45,7 @@ Scene:
                 Y: 0
                 Z: 0
         - Sphynx::SpriteRendererComponent:
-            Sprite: 87efbf57-3087-4de5-9b31-35035a9832de
+            Sprite: 02012b08-9545-4b36-8add-9409cab4b103
             Tint:
               R: 0
               G: 0

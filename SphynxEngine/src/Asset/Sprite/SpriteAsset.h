@@ -25,7 +25,16 @@ namespace Sphynx
 	{
 		void operator()(const Sprite& sprite, AssetMetadata& metadata)
 		{
-			AssetHandle handle = AssetManager::GetAssetHandleFromAddress(sprite.GetTexture());
+			AssetHandle handle;
+			if (metadata.Path.parent_path().extension() == ASSET_EXTENSION)
+			{
+				std::filesystem::path spritesheetPath = metadata.Path.parent_path();
+				handle = AssetManager::GetAssetHandleFromPath(spritesheetPath);
+			}
+			else
+			{
+				handle = AssetManager::GetAssetHandleFromAddress(sprite.GetTexture());
+			}
 			metadata.Dependencies.Add(handle);
 		}
 	};

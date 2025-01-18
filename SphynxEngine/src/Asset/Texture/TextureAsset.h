@@ -12,6 +12,7 @@ namespace Sphynx
 	template<>
 	struct SPHYNX_API Asset<Texture> : public IAsset
 	{
+	public:
 		virtual ~Asset()
 		{
 			Texture*& texture = Asset;
@@ -22,13 +23,13 @@ namespace Sphynx
 			}
 		}
 
-		Texture* Asset;
-
 		inline operator Texture* () { return Asset; }
 		inline operator const Texture* () const { return Asset; }
 
 		virtual void* GetRawAsset() const override { return Asset; }
 
+	public:
+		Texture* Asset;
 		std::filesystem::path RelativePath;
 	};
 

@@ -292,7 +292,7 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderContentItem_AssetContextMenu(const ContentItem& contentItem)
 	{
-		const AssetMetadata& metadata = AssetManager::GetMetadataFromPath(s_AssetsPath / contentItem.RelativePath);
+		const AssetMetadata& metadata = AssetManager::GetAssetMetadataFromPath(s_AssetsPath / contentItem.RelativePath);
 
 		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
 		{

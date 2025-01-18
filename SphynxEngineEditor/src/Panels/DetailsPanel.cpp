@@ -7,6 +7,9 @@
 
 #include <Component/Components.h>
 #include <Scene/Scene.h>
+#include <Asset/AssetManager.h>
+#include <Asset/Sprite/SpriteAsset.h>
+#include <Container/Array.h>
 
 
 namespace Sphynx
@@ -140,10 +143,19 @@ namespace Sphynx
 				{
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
-					auto& component = m_Context.GetComponent<SpriteRendererComponent>();
-					if (ImGui::BeginCombo(LABEL("Sprite").c_str(), "TODO: Some sprite"))
+					SpriteRendererComponent& component = m_Context.GetComponent<SpriteRendererComponent>();
+					AssetMetadata selectedSpriteMetadata = AssetManager::GetAssetMetadata(component.Sprite);
+
+					if (ImGui::BeginCombo(LABEL("Sprite").c_str(), selectedSpriteMetadata.Path.stem().string().c_str()))
 					{
-						// TODO: list all possible sprites
+						Array<AssetMetadata> spritesMetadata = AssetManager::GetAssetMetadataList<Sprite>();
+						for (const AssetMetadata& metadata : spritesMetadata)
+						{
+							if (ImGui::Selectable(metadata.Path.stem().string().c_str(), metadata.Handle == component.Sprite))
+							{
+								component.Sprite = metadata.Handle;
+							}
+						}
 						ImGui::EndCombo();
 					}
 					float color[4] =

@@ -33,9 +33,13 @@ namespace Sphynx
 	{
 		void operator()(const Spritesheet& spritesheet, AssetMetadata& metadata)
 		{
+			int i = 0;
+			std::wstring name = metadata.Path.stem().wstring();
 			for (Sprite* sprite : spritesheet.GetSprites())
 			{
-				AssetManager::RegisterAsset(sprite, metadata.Path, false);
+				std::wstring spriteName = name + L"_" + std::to_wstring(i);
+				AssetManager::RegisterAsset(sprite, metadata.Path / spriteName, false);
+				++i;
 			}
 		}
 	};

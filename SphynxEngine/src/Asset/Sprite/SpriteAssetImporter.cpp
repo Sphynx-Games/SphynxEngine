@@ -29,11 +29,17 @@ namespace Sphynx
 		SPX_CORE_LOG_TRACE("Loading sprite from {} file: {}", ASSET_EXTENSION, metadata.Path.string().c_str());
 
 		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpriteAsset must have only one dependency.");
+		
+		std::filesystem::path path = metadata.Path;
+		if (AssetManager::GetAssetType(metadata.Dependencies[0]) == TypeToAssetType<Spritesheet>::Value)
+		{
+			path = metadata.Path.parent_path();
+		}
 
 		// read sprite data from .spxasset file
 		// (NOTE: we need to deserialize each metadata individually in oder to be able to perform some checks)
-		YAMLReader reader(metadata.Path);
-		SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", metadata.Path);
+		YAMLReader reader(path);
+		SPX_CORE_ASSERT(reader.IsValid(), "Could not open file: {} !!", path);
 
 		size_t size = reader.PushSequence();
 		SPX_CORE_ASSERT(size == 2, "Size should be exactly 2. Header + Metadata!");
@@ -110,7 +116,8 @@ namespace Sphynx
 	std::shared_ptr<IAsset> SpriteAssetImporter::LoadSpriteInSpritesheet(const Reader& reader, const AssetMetadata& metadata)
 	{
 		// check if the spritesheet depends on a texture
-		AssetHandle dependencyHandle = metadata.Dependencies[0];
+		const AssetMetadata& sheetMetadata = AssetManager::GetAssetMetadata(metadata.Dependencies[0]);
+		AssetHandle dependencyHandle = sheetMetadata.Dependencies[0];
 		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value, "Error! SpritesheetAsset must depend on a Texture.");
 
 		std::shared_ptr<Asset<Texture>> dependencyAsset = AssetManager::GetAsset<Texture>(dependencyHandle);

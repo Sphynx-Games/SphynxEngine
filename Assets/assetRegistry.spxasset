@@ -1,191 +1,93 @@
-04c7806a-16b7-4476-ba1d-63d551619871:
-  Handle: 04c7806a-16b7-4476-ba1d-63d551619871
+02012b08-9545-4b36-8add-9409cab4b103:
+  Handle: 02012b08-9545-4b36-8add-9409cab4b103
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_0.spxasset
   Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-135f807b-dc7e-440c-83e4-da4477cf8840:
-  Handle: 135f807b-dc7e-440c-83e4-da4477cf8840
-  Type: Font
-  Path: Assets\Fonts\roboto\Roboto-Regular.spxasset
-  Dependencies: []
-162b7239-41c7-4b30-b297-c7239ae4f50c:
-  Handle: 162b7239-41c7-4b30-b297-c7239ae4f50c
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+2d5de212-3172-4053-a9a0-3543c121f956:
+  Handle: 2d5de212-3172-4053-a9a0-3543c121f956
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_7.spxasset
   Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-167a2dc6-e206-4386-85c3-c68b863d2958:
-  Handle: 167a2dc6-e206-4386-85c3-c68b863d2958
-  Type: Texture
-  Path: Assets\Textures\enemy_scaled5x.spxasset
-  Dependencies: []
-27957c0e-50fd-4338-8294-a784da6df8eb:
-  Handle: 27957c0e-50fd-4338-8294-a784da6df8eb
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+46117665-b2c3-4ade-8303-c0ab07d4926a:
+  Handle: 46117665-b2c3-4ade-8303-c0ab07d4926a
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_5.spxasset
   Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-32d4b25b-5c95-450e-b2e5-1aa506e5c127:
-  Handle: 32d4b25b-5c95-450e-b2e5-1aa506e5c127
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+49c31c40-28fc-412f-b548-c50a0051b484:
+  Handle: 49c31c40-28fc-412f-b548-c50a0051b484
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_4.spxasset
   Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-33e6f5ee-30e0-490a-906e-563f4c9343cb:
-  Handle: 33e6f5ee-30e0-490a-906e-563f4c9343cb
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+4a03412f-ab3c-4a3e-9fda-e15442aa5d4e:
+  Handle: 4a03412f-ab3c-4a3e-9fda-e15442aa5d4e
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_3.spxasset
   Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-41d228ee-76d7-402d-9b40-bcec3271a41d:
-  Handle: 41d228ee-76d7-402d-9b40-bcec3271a41d
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+4bd872dc-1403-4852-94b7-0e03f68d8207:
+  Handle: 4bd872dc-1403-4852-94b7-0e03f68d8207
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_8.spxasset
   Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-45ac78fe-fc82-4db3-8382-eb86e850d09a:
-  Handle: 45ac78fe-fc82-4db3-8382-eb86e850d09a
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+7382b6a5-de3e-4b89-a58f-c8c90069e07c:
+  Handle: 7382b6a5-de3e-4b89-a58f-c8c90069e07c
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_9.spxasset
   Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-4b18bcf1-249a-4aeb-96f4-53443c7eb73b:
-  Handle: 4b18bcf1-249a-4aeb-96f4-53443c7eb73b
-  Type: Spritesheet
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-4cbf0390-62f6-42e3-99e8-358dc0e766b5:
-  Handle: 4cbf0390-62f6-42e3-99e8-358dc0e766b5
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-4f5f7890-7b71-48ce-8188-094158eb0c25:
-  Handle: 4f5f7890-7b71-48ce-8188-094158eb0c25
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-687ac472-96eb-464b-a6b3-e7d4993eae14:
-  Handle: 687ac472-96eb-464b-a6b3-e7d4993eae14
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-732e9ff7-b15f-4b7a-b412-486a1a2f658c:
-  Handle: 732e9ff7-b15f-4b7a-b412-486a1a2f658c
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-74a65ae8-d8b0-4241-b25f-6b4cc74877f7:
-  Handle: 74a65ae8-d8b0-4241-b25f-6b4cc74877f7
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-87efbf57-3087-4de5-9b31-35035a9832de:
-  Handle: 87efbf57-3087-4de5-9b31-35035a9832de
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-8a72ab56-e4af-46e2-9d80-be56890f8a8e:
-  Handle: 8a72ab56-e4af-46e2-9d80-be56890f8a8e
-  Type: Spritesheet
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-8caf54ae-caea-4073-a098-1d7659eee70d:
-  Handle: 8caf54ae-caea-4073-a098-1d7659eee70d
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+74408075-a641-42f0-bdc4-1162c80518a2:
+  Handle: 74408075-a641-42f0-bdc4-1162c80518a2
   Type: Texture
   Path: Assets\Textures\cat.spxasset
   Dependencies: []
-8cef7fb6-a1f3-4fe8-9a53-80e431b62cfc:
-  Handle: 8cef7fb6-a1f3-4fe8-9a53-80e431b62cfc
+884c563e-f2b4-41e2-859c-f787cddac235:
+  Handle: 884c563e-f2b4-41e2-859c-f787cddac235
   Type: Sprite
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_1.spxasset
+  Dependencies:
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+924af060-5889-4cf7-a8ae-c8a40efd8306:
+  Handle: 924af060-5889-4cf7-a8ae-c8a40efd8306
+  Type: Spritesheet
   Path: Assets\Textures\enemySpritesheet.spxasset
   Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-8e01e1dd-2a96-4297-97f2-e58c7d67f1d7:
-  Handle: 8e01e1dd-2a96-4297-97f2-e58c7d67f1d7
+    - cc5e9169-14ce-48fd-8e40-b93f57f6fa98
+a7a11682-90bb-41bf-83c6-4d4ee6540ac9:
+  Handle: a7a11682-90bb-41bf-83c6-4d4ee6540ac9
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_2.spxasset
   Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-972fac12-b12c-4d01-9740-a2b1b39107c5:
-  Handle: 972fac12-b12c-4d01-9740-a2b1b39107c5
-  Type: Texture
-  Path: Assets\Textures\enemy_scaled5x.spxasset
-  Dependencies: []
-a5084f3d-121a-462c-a563-c1d4480473ad:
-  Handle: a5084f3d-121a-462c-a563-c1d4480473ad
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+a9f53562-d404-4d39-9edd-ab87a65eb2b1:
+  Handle: a9f53562-d404-4d39-9edd-ab87a65eb2b1
   Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_10.spxasset
   Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-a5406cf7-1311-44ad-b62f-55f310fed670:
-  Handle: a5406cf7-1311-44ad-b62f-55f310fed670
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-b235c5da-205f-4972-8171-982251d4751a:
-  Handle: b235c5da-205f-4972-8171-982251d4751a
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-b9f72140-521d-436d-8f58-81cf1a9ce757:
-  Handle: b9f72140-521d-436d-8f58-81cf1a9ce757
-  Type: Texture
-  Path: Assets\Textures\cat.spxasset
-  Dependencies: []
-c79610f0-7ae7-435d-9b44-cc22efb5f659:
-  Handle: c79610f0-7ae7-435d-9b44-cc22efb5f659
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-c83ead15-80ba-4ee4-944b-605f804bfca0:
-  Handle: c83ead15-80ba-4ee4-944b-605f804bfca0
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-d23c52a7-d3de-4eb2-aef1-5538a07f1c75:
-  Handle: d23c52a7-d3de-4eb2-aef1-5538a07f1c75
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-d58af65d-ef56-45a9-9c80-4461c54ebc52:
-  Handle: d58af65d-ef56-45a9-9c80-4461c54ebc52
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-db479421-d9af-41e0-8695-832f44f2e9ac:
-  Handle: db479421-d9af-41e0-8695-832f44f2e9ac
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 167a2dc6-e206-4386-85c3-c68b863d2958
-eb9bcd03-2547-4100-b566-5f80aeeb5f8c:
-  Handle: eb9bcd03-2547-4100-b566-5f80aeeb5f8c
-  Type: Sprite
-  Path: Assets\Textures\enemySpritesheet.spxasset
-  Dependencies:
-    - 972fac12-b12c-4d01-9740-a2b1b39107c5
-fc745520-cf76-4786-a734-b06d0bb35bc4:
-  Handle: fc745520-cf76-4786-a734-b06d0bb35bc4
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+ae543eb7-1340-4276-b70d-fb4794bd1e3c:
+  Handle: ae543eb7-1340-4276-b70d-fb4794bd1e3c
   Type: Font
   Path: Assets\Fonts\roboto\Roboto-Regular.spxasset
   Dependencies: []
-fc745520-cf76-4786-a734-b06daaaa5bc4:
-  Handle: fc745520-cf76-4786-a734-b06daaaa5bc4
-  Type: Scene
-  Path: Assets\Scenes\TestScene.spxasset
+bd27fbc4-c96a-4c2d-851b-cf3d47f87a27:
+  Handle: bd27fbc4-c96a-4c2d-851b-cf3d47f87a27
+  Type: Sprite
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_6.spxasset
+  Dependencies:
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+c0f67d22-1f71-4e68-aadf-1d181c78f9c0:
+  Handle: c0f67d22-1f71-4e68-aadf-1d181c78f9c0
+  Type: Sprite
+  Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_11.spxasset
+  Dependencies:
+    - 924af060-5889-4cf7-a8ae-c8a40efd8306
+cc5e9169-14ce-48fd-8e40-b93f57f6fa98:
+  Handle: cc5e9169-14ce-48fd-8e40-b93f57f6fa98
+  Type: Texture
+  Path: Assets\Textures\enemy_scaled5x.spxasset
   Dependencies: []

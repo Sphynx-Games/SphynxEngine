@@ -20,7 +20,7 @@ namespace Sphynx
 		m_Zoom(1.0f),
 		m_Position({ 0.0f, 0.0f, 1.0f }),
 		m_Rotation(0.0f),
-		m_TranslationSpeed(1.5f),
+		m_TranslationSpeed(3.0f),
 		m_RotationSpeed(30.0f),
 		m_Camera()
 	{
