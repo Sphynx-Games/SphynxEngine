@@ -42,6 +42,8 @@ namespace ImGui
 		ImTextureID texture,
 		ImVec2 size = ImVec2{ 10.f, 10.f },
 		float imageRatio = 0.75f,
+		const ImVec2& uv0 = ImVec2(0, 0),
+		const ImVec2& uv1 = ImVec2(1, 1),
 		ImVec4 tint = ImVec4{ 1.f, 1.f, 1.f, 1.f }
 	);
 

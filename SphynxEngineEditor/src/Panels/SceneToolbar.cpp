@@ -13,12 +13,15 @@ namespace Sphynx
 	SceneToolbar::SceneToolbar() :
 		m_SaveButton(new ButtonWidget("Save", Resources::SaveTexture)),
 		m_PlayAndPauseButton(new ButtonWidget("Play", Resources::PlayTexture)),
-		m_StopButton(new ButtonWidget("Stop", Resources::StopTexture))
+		m_StopButton(new ButtonWidget("Stop", Resources::StopTexture)),
+		m_EjectButton(new ButtonWidget("Eject", Resources::EjectTexture))
 		//m_SceneNameBuffer()
 	{
 		AddWidget(m_SaveButton);
 		AddWidget(m_PlayAndPauseButton);
 		AddWidget(m_StopButton);
+		AddWidget(m_EjectButton);
+		m_EjectButton->IsEnabled = false;
 	}
 
 	void SceneToolbar::SetPlaybackState(PlaybackState state)
@@ -29,21 +32,23 @@ namespace Sphynx
 			m_PlayAndPauseButton->Text = "Pause";
 			m_PlayAndPauseButton->Image = Resources::PauseTexture;
 			m_StopButton->IsEnabled = true;
+			m_EjectButton->IsEnabled = true;
 			break;
 		case PlaybackState::PAUSED:
 			m_PlayAndPauseButton->Text = "Play";
 			m_PlayAndPauseButton->Image = Resources::PlayTexture;
 			m_StopButton->IsEnabled = true;
+			m_EjectButton->IsEnabled = true;
 			break;
 		case PlaybackState::STOPPED:
 			m_PlayAndPauseButton->Text = "Play";
 			m_PlayAndPauseButton->Image = Resources::PlayTexture;
 			m_StopButton->IsEnabled = false;
+			m_EjectButton->IsEnabled = false;
 			break;
 		default:
 			break;
 		}
-
 	}
 
 	/*	if (ImGui::BeginPopup("SceneSaved"))

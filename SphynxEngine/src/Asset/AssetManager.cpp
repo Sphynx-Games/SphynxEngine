@@ -235,6 +235,7 @@ namespace Sphynx
 			}
 		}
 		SPX_CORE_LOG_ERROR("Asset not found for required path!");
+		return AssetHandle::Invalid;
 	}
 
 	void AssetManager::ManageAsset(std::shared_ptr<IAsset> asset, const AssetMetadata& metadata)

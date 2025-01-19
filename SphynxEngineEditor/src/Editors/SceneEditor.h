@@ -30,6 +30,10 @@ namespace Sphynx
 		void PauseScene();
 		void ResumeScene();
 		void StopScene();
+		void ActivateEject();
+		void DeactivateEject();
+
+		bool ShouldUseEditorCamera();
 
 	private:
 		class SceneToolbar* m_SceneToolbar;
@@ -46,6 +50,7 @@ namespace Sphynx
 		Scene m_SceneToPlay;
 		Scene* m_ActiveScene;
 		PlaybackState m_SceneState;
+		bool m_Ejected;
 		char m_SceneNameBuffer[1024];
 	};
 }

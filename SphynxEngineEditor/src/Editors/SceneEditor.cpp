@@ -42,6 +42,7 @@ namespace Sphynx
 		m_SceneToPlay(),
 		m_ActiveScene(nullptr),
 		m_SceneState(PlaybackState::STOPPED),
+		m_Ejected(false),
 		m_SceneNameBuffer()
 	{
 		SetToolbar(m_SceneToolbar);
@@ -80,6 +81,18 @@ namespace Sphynx
 
 		// stop button
 		m_SceneToolbar->GetStopButton()->OnClick.Bind(this, &SceneEditor::StopScene);
+
+		// eject button
+		m_SceneToolbar->GetEjectButton()->OnClick.Bind([&]() {
+			if (m_Ejected)
+			{
+				DeactivateEject();
+			}
+			else
+			{
+				ActivateEject();
+			}
+			});
 	}
 
 	SceneEditor::~SceneEditor()
@@ -104,7 +117,7 @@ namespace Sphynx
 		m_Framebuffer->Bind();
 		if (m_ActiveScene != nullptr)
 		{
-			if (m_SceneState == STOPPED)
+			if (ShouldUseEditorCamera())
 			{
 				const float aspectRatio = (float)m_Framebuffer->GetSpecification().Width / (float)m_Framebuffer->GetSpecification().Height;
 				m_CameraController.SetAspectRatio(aspectRatio);
@@ -145,7 +158,7 @@ namespace Sphynx
 	void SceneEditor::HandleEvent(Event& event)
 	{
 		Editor::HandleEvent(event);
-		if (m_SceneState == STOPPED)
+		if (ShouldUseEditorCamera())
 		{
 			m_CameraController.HandleEvent(event);
 		}
@@ -241,6 +254,8 @@ namespace Sphynx
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
 
 		ResumeScene();
+
+		DeactivateEject();
 	}
 
 	void SceneEditor::PauseScene()
@@ -263,5 +278,26 @@ namespace Sphynx
 		m_ActiveScene->EndPlay();
 		m_ActiveScene = &m_SceneToEdit;
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);
+
+		DeactivateEject();
+	}
+
+	void SceneEditor::ActivateEject()
+	{
+		m_Ejected = true;
+		m_SceneToolbar->GetEjectButton()->UV0 = Vector2f(1.0f, 1.0f);
+		m_SceneToolbar->GetEjectButton()->UV1 = Vector2f(0.0f, 0.0f);
+	}
+
+	void SceneEditor::DeactivateEject()
+	{
+		m_Ejected = false;
+		m_SceneToolbar->GetEjectButton()->UV0 = Vector2f(0.0f, 0.0f);
+		m_SceneToolbar->GetEjectButton()->UV1 = Vector2f(1.0f, 1.0f);
+	}
+
+	bool SceneEditor::ShouldUseEditorCamera()
+	{
+		return m_SceneState == STOPPED || m_Ejected;
 	}
 }

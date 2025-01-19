@@ -87,7 +87,7 @@ namespace ImGui
 		return renamed;
 	}
 
-	bool ButtonWithImageAndText(const std::string& text, ImTextureID texture, ImVec2 size, float imageRatio, ImVec4 tint)
+	bool ButtonWithImageAndText(const std::string& text, ImTextureID texture, ImVec2 size, float imageRatio, const ImVec2& uv0, const ImVec2& uv1, ImVec4 tint)
 	{
 		ImVec2 cursorPos = ImGui::GetCursorPos();
 		ImVec2 padding = ImGui::GetStyle().FramePadding;
@@ -113,7 +113,7 @@ namespace ImGui
 		ImVec2 offset = { (availableSize.x - imageSize) / 2.0f, ((availableSize.y * imageRatio) - imageSize) / 2.0f};
 		ImGui::SetCursorPos({cursorPos.x + offset.x, cursorPos.y + offset.y });
 
-		ImGui::Image(texture, { imageSize, imageSize }, ImVec2(0, 0), ImVec2(1, 1), tint);
+		ImGui::Image(texture, { imageSize, imageSize }, uv0, uv1, tint);
 
 		ImGui::SetCursorPos({cursorPos.x, cursorPos.y + (availableSize.y * imageRatio) + padding.y });
 		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + availableSize.x);

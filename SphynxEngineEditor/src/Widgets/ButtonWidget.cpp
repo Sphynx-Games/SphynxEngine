@@ -14,6 +14,8 @@ namespace Sphynx
 		Text(text),
 		Image(image),
 		Size(size),
+		UV0(0.0f, 0.0f),
+		UV1(1.0f, 1.0f),
 		ImageColor(color),
 		IsActive(isActive),
 		IsEnabled(isEnabled)
@@ -40,8 +42,10 @@ namespace Sphynx
 	{
 		ImVec2 buttonSize{ Size.X, Size.Y };
 		ImVec4 tintColor{ ImageColor.R / 255.f, ImageColor.G / 255.f, ImageColor.B / 255.f, ImageColor.A / 255.f };
+		ImVec2 uv0 = { UV0.X, UV0.Y };
+		ImVec2 uv1 = { UV1.X, UV1.Y };
 
-		if (ImGui::ButtonWithImageAndText(Text, (ImTextureID)Image->GetNativeTexture(), buttonSize, 0.75f, tintColor))
+		if (ImGui::ButtonWithImageAndText(Text, (ImTextureID)Image->GetNativeTexture(), buttonSize, 0.75f, uv0, uv1, tintColor))
 		{
 			OnClick.Broadcast();
 		}

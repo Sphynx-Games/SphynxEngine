@@ -27,6 +27,8 @@ namespace Sphynx
 		std::string Text;
 		Texture* Image;
 		Vector2f Size;
+		Vector2f UV0;
+		Vector2f UV1;
 		Color ImageColor;
 
 		bool IsActive;
