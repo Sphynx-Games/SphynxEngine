@@ -21,9 +21,15 @@ namespace Sphynx
 		virtual bool IsMouseButtonReleasedImpl(int32_t button) override;
 		virtual bool IsMouseButtonDownImpl(int32_t button) override;
 		virtual bool IsMouseButtonUpImpl(int32_t button) override;
-		std::pair<int64_t, int64_t> GetMousePositionImpl() override;
-		int64_t GetMousePositionXImpl() override;
-		int64_t GetMousePositionYImpl() override;
+		virtual std::pair<int64_t, int64_t> GetMousePositionImpl() override;
+		virtual int64_t GetMousePositionXImpl() override;
+		virtual int64_t GetMousePositionYImpl() override;
+		virtual bool GetMouseGrabImpl() override;
+		virtual void SetMouseGrabImpl(bool grab) override;
+		virtual void GetMouseGrabRectImpl(uint32_t& x, uint32_t& y, uint32_t& width, uint32_t& height) override;
+		virtual void SetMouseGrabRectImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
+		virtual bool GetCursorVisibleImpl() override;
+		virtual void SetCursorVisibleImpl(bool visible) override;
 
 	private:
 		const bool* m_PrevKeys;

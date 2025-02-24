@@ -2,6 +2,7 @@
 #include "SceneEditor.h"
 
 #include "Base/Resources.h"
+#include "EditorLayer.h"
 #include "Panels/SceneToolbar.h"
 #include "Panels/SceneOutlinerPanel.h"
 #include "Panels/ContentBrowserPanel.h"
@@ -24,12 +25,14 @@
 
 #include <imgui.h>
 #include "Dialogs/FileDialog.h"
+#include "imgui_internal.h"
 
 
 namespace Sphynx
 {
-	SceneEditor::SceneEditor() :
+	SceneEditor::SceneEditor(EditorLayer* editorLayer) :
 		Editor("SceneEditor"),
+		m_EditorLayer(editorLayer),
 		m_SceneToolbar(new SceneToolbar()),
 		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
 		m_ContentBrowserPanel(new ContentBrowserPanel()),
@@ -138,7 +141,10 @@ namespace Sphynx
 		// update
 		if (m_ActiveScene != nullptr)
 		{
-			m_CameraController.Update(deltaTime);
+			if (ShouldUseEditorCamera())
+			{
+				m_CameraController.Update(deltaTime);
+			}
 
 			if (m_SceneState == PlaybackState::PLAYING)
 			{
@@ -155,10 +161,45 @@ namespace Sphynx
 		Editor::RenderGUI();
 	}
 
+	void SceneEditor::PostRenderGUI()
+	{
+		Editor::PostRenderGUI();
+		m_EditorLayer->SetBlockEventsEnabled(!m_ViewportPanel->IsHovered());
+	}
+
 	void SceneEditor::HandleEvent(Event& event)
 	{
 		Editor::HandleEvent(event);
-		if (ShouldUseEditorCamera())
+		if (event.IsHandled()) return;
+
+		if (m_ViewportPanel->IsHovered())
+		{
+			EventDispatcher dispatcher(event);
+			dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& e)
+				{
+					if (e.GetButton() == SPX_BUTTON_RIGHT)
+					{
+						const Vector2u& size = m_ViewportPanel->GetSize();
+						const Vector2u& position = m_ViewportPanel->GetPosition();
+						Input::SetMouseGrabRect(position.X + 1, position.Y + 1, size.X - 2, size.Y - 2);
+						Input::SetCursorVisible(false);
+						//Input::SetMouseGrab(true);
+					}
+					return false;
+				});
+			dispatcher.Dispatch<MouseButtonReleasedEvent>([](MouseButtonReleasedEvent& e)
+				{
+					if (e.GetButton() == SPX_BUTTON_RIGHT)
+					{
+						Input::SetCursorVisible(true);
+						Input::SetMouseGrabRect(0, 0, 0, 0);
+						//Input::SetMouseGrab(false);
+					}
+					return false;
+				});
+		}
+
+		if (m_ActiveScene != nullptr && ShouldUseEditorCamera())
 		{
 			m_CameraController.HandleEvent(event);
 		}

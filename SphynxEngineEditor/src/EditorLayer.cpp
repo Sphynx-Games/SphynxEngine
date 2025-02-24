@@ -14,8 +14,8 @@
 namespace Sphynx
 {
 	EditorLayer::EditorLayer() :
-		m_BlockEventsEnabled(false),
-		m_Editors({ new SceneEditor() }),
+		m_BlockEventsEnabled(true),
+		m_Editors({ new SceneEditor(this) }),
 		m_ActiveEditor(m_Editors[0])
 	{
 	}
@@ -41,6 +41,7 @@ namespace Sphynx
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Viewports
+		io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;   // Do not control cursor visibility
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
@@ -70,18 +71,23 @@ namespace Sphynx
 
 	void EditorLayer::Update(float deltaTime)
 	{
+		for (Widget* widget : m_Editors)
+		{
+			widget->PreRenderUpdate(deltaTime);
+		}
+
 		Begin();
 		RenderGUI();
 		End();
+
+		for (Widget* widget : m_Editors)
+		{
+			widget->PostRenderUpdate(deltaTime);
+		}
 	}
 
 	void EditorLayer::HandleEvent(Event& event)
 	{
-		for (Widget* widget : m_Editors)
-		{
-			widget->HandleEvent(event);
-		}
-
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!"); break;
@@ -90,21 +96,30 @@ namespace Sphynx
 		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
 		}
 
+		event.SetHandled(false);
 		if (m_BlockEventsEnabled)
 		{
 			ImGuiIO& io = ImGui::GetIO();
-			event.SetHandled(event.IsHandled() || event.IsInCategory(Sphynx::MouseEvent) && io.WantCaptureMouse);
-			event.SetHandled(event.IsHandled() || event.IsInCategory(Sphynx::KeyboardEvent) && io.WantCaptureKeyboard);
+			const bool mouseCaptured = event.IsInCategory(Sphynx::MouseEvent) && io.WantCaptureMouse;
+			event.SetHandled(event.IsHandled() || mouseCaptured);
+
+			const bool keyboardCaptured = event.IsInCategory(Sphynx::KeyboardEvent) && (io.WantCaptureKeyboard || io.WantTextInput);
+			event.SetHandled(event.IsHandled() || keyboardCaptured);
+		}
+
+		// If event is already handled by ImGui, we should not broadcast it to the rest of the app
+		if (event.IsHandled()) return;
+
+		for (Widget* widget : m_Editors)
+		{
+			widget->HandleEvent(event);
+			if (event.IsHandled())
+				break;
 		}
 	}
 
 	void EditorLayer::Begin()
 	{
-		for (Widget* widget : m_Editors)
-		{
-			widget->PreRenderGUI();
-		}
-
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::NONE:    SPX_CORE_ASSERT(false, "RendererAPI::NONE is currently not supported!");  break;
@@ -126,11 +141,6 @@ namespace Sphynx
 		case RendererAPI::API::SDL:		SDLEditorLayer::End();  break;
 		case RendererAPI::API::OPENGL:	OpenGLEditorLayer::End();  break;
 		default:						SPX_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
-		}
-
-		for (Widget* widget : m_Editors)
-		{
-			widget->PostRenderGUI();
 		}
 	}
 
@@ -189,7 +199,9 @@ namespace Sphynx
 
 		for (Widget* widget : m_Editors)
 		{
+			widget->PreRenderGUI();
 			widget->RenderGUI();
+			widget->PostRenderGUI();
 		}
 
 		if (ImGui::BeginMenuBar())

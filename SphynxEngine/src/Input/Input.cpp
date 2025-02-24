@@ -79,4 +79,34 @@ namespace Sphynx
 	{
 		return s_Instance->GetMousePositionYImpl();
 	}
+
+	bool Input::GetMouseGrab()
+	{
+		return s_Instance->GetMouseGrabImpl();
+	}
+
+	void Input::SetMouseGrab(bool grab)
+	{
+		s_Instance->SetMouseGrabImpl(grab);
+	}
+
+	void Input::GetMouseGrabRect(uint32_t& x, uint32_t& y, uint32_t& width, uint32_t& height)
+	{
+		s_Instance->GetMouseGrabRectImpl(x, y, width, height);
+	}
+
+	void Input::SetMouseGrabRect(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		s_Instance->SetMouseGrabRectImpl(x, y, width, height);
+	}
+
+	bool Input::GetCursorVisible()
+	{
+		return s_Instance->GetCursorVisibleImpl();
+	}
+
+	void Input::SetCursorVisible(bool visible)
+	{
+		s_Instance->SetCursorVisibleImpl(visible);
+	}
 }

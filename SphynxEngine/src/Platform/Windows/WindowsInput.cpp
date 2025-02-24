@@ -2,6 +2,9 @@
 #include "WindowsInput.h"
 #include <SDL3/SDL.h>
 
+#include "Core/Application.h"
+#include "Renderer/Window.h"
+
 
 namespace Sphynx
 {
@@ -101,4 +104,61 @@ namespace Sphynx
 
 		return (int64_t)y;
 	}
+
+	bool WindowsInput::GetMouseGrabImpl()
+	{
+		// TODO: this will change if we support multiple windows
+		void* window = Application::GetInstance()->GetWindow()->GetNativeWindow();
+		return SDL_GetWindowMouseGrab(static_cast<SDL_Window*>(window));
+	}
+
+	void WindowsInput::SetMouseGrabImpl(bool grab)
+	{
+		// TODO: this will change if we support multiple windows
+		void* window = Application::GetInstance()->GetWindow()->GetNativeWindow();
+		SDL_SetWindowMouseGrab(static_cast<SDL_Window*>(window), grab);
+	}
+
+	void WindowsInput::GetMouseGrabRectImpl(uint32_t& x, uint32_t& y, uint32_t& width, uint32_t& height)
+	{
+		// TODO: this will change if we support multiple windows
+		void* window = Application::GetInstance()->GetWindow()->GetNativeWindow();
+		const SDL_Rect* rect = SDL_GetWindowMouseRect(static_cast<SDL_Window*>(window));
+		
+		x = 0; y = 0; 
+		width = 0; height = 0;
+
+		if (rect != nullptr)
+		{
+			x = rect->x; y = rect->y;
+			width = rect->w; height = rect->h;
+		}
+	}
+
+	void WindowsInput::SetMouseGrabRectImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		// TODO: this will change if we support multiple windows
+		void* window = Application::GetInstance()->GetWindow()->GetNativeWindow();
+		if (width == 0 || height == 0)
+		{
+			SDL_SetWindowMouseRect(static_cast<SDL_Window*>(window), nullptr);
+			return;
+		}
+
+		SDL_Rect rect;
+		rect.x = x; rect.y = y;
+		rect.w = width; rect.h = height;
+		SDL_SetWindowMouseRect(static_cast<SDL_Window*>(window), &rect);
+	}
+
+	bool WindowsInput::GetCursorVisibleImpl()
+	{
+		return SDL_CursorVisible();
+	}
+
+	void WindowsInput::SetCursorVisibleImpl(bool visible)
+	{
+		visible ? SDL_ShowCursor() : SDL_HideCursor();
+	}
+
 }

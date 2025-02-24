@@ -10,8 +10,8 @@ namespace Sphynx
 	class DetailsPanel : public Panel
 	{
 	public:
-		DetailsPanel() = default;
-		DetailsPanel(const Actor& context);
+		DetailsPanel(Widget* parent = nullptr);
+		DetailsPanel(const Actor& context, Widget* parent = nullptr);
 
 	public:
 		void SetContext(const Actor& context);

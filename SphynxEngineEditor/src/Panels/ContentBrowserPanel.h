@@ -14,7 +14,7 @@ namespace Sphynx
 	class ContentBrowserPanel : public Panel
 	{
 	public:
-		ContentBrowserPanel();
+		ContentBrowserPanel(Widget* parent = nullptr);
 
 	protected:
 		virtual void HandleEvent(class Event& event) override;

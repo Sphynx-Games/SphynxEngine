@@ -10,7 +10,8 @@
 
 namespace Sphynx
 {
-	SceneToolbar::SceneToolbar() :
+	SceneToolbar::SceneToolbar(Widget* parent) :
+		Toolbar(parent),
 		m_SaveButton(new ButtonWidget("Save", Resources::SaveTexture)),
 		m_PlayAndPauseButton(new ButtonWidget("Play", Resources::PlayTexture)),
 		m_StopButton(new ButtonWidget("Stop", Resources::StopTexture)),

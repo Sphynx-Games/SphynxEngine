@@ -11,16 +11,19 @@ namespace Sphynx
 	class ViewportPanel : public Panel
 	{
 	public:
-		ViewportPanel();
-		ViewportPanel(Framebuffer* framebuffer, uint32_t index = 0u);
+		ViewportPanel(Widget* parent = nullptr);
+		ViewportPanel(Framebuffer* framebuffer, uint32_t index = 0u, Widget* parent = nullptr);
 		virtual ~ViewportPanel();
 
 		void SetFramebuffer(Framebuffer* framebuffer);
 		void SetIndex(uint32_t index);
 
 	protected:
+		virtual void PreRenderGUI() override;
 		virtual void RenderGUI() override;
 		virtual void PostRenderGUI() override;
+
+		virtual void PostRenderUpdate(float deltaTime) override;
 
 	private:
 		void CheckFramebufferSizeValidity();

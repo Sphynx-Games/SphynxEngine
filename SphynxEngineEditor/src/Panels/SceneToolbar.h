@@ -11,7 +11,7 @@ namespace Sphynx
 	class SceneToolbar : public Toolbar
 	{
 	public:
-		SceneToolbar();
+		SceneToolbar(Widget* parent = nullptr);
 
 	public:
 		ButtonWidget* GetSaveButton() const { return m_SaveButton; }

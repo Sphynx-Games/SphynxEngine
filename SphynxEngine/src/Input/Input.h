@@ -27,6 +27,12 @@ namespace Sphynx
 		static std::pair<int64_t, int64_t> GetMousePosition();
 		static int64_t GetMousePositionX();
 		static int64_t GetMousePositionY();
+		static bool GetMouseGrab();
+		static void SetMouseGrab(bool grab);
+		static void GetMouseGrabRect(uint32_t& x, uint32_t& y, uint32_t& width, uint32_t& height);
+		static void SetMouseGrabRect(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+		static bool GetCursorVisible();
+		static void SetCursorVisible(bool visible);
 
 		/* TODO: Gamepad */
 
@@ -50,6 +56,12 @@ namespace Sphynx
 		virtual std::pair<int64_t, int64_t> GetMousePositionImpl() = 0;
 		virtual int64_t GetMousePositionXImpl() = 0;
 		virtual int64_t GetMousePositionYImpl() = 0;
+		virtual bool GetMouseGrabImpl() = 0;
+		virtual void SetMouseGrabImpl(bool grab) = 0;
+		virtual void GetMouseGrabRectImpl(uint32_t& x, uint32_t& y, uint32_t& width, uint32_t& height) = 0;
+		virtual void SetMouseGrabRectImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
+		virtual bool GetCursorVisibleImpl() = 0;
+		virtual void SetCursorVisibleImpl(bool visible) = 0;
 
 		/* TODO: Gamepad */
 

@@ -8,14 +8,17 @@
 
 namespace Sphynx
 {
+	class EditorLayer;
+
 	class SceneEditor : public Editor
 	{
 	public:
-		SceneEditor();
+		SceneEditor(EditorLayer* editorLayer);
 		virtual ~SceneEditor();
 
 	protected:
 		virtual void RenderGUI() override;
+		virtual void PostRenderGUI() override;
 		virtual void HandleEvent(Event& event) override;
 
 		virtual bool HasMenuBar() const override { return true; }
@@ -36,6 +39,7 @@ namespace Sphynx
 		bool ShouldUseEditorCamera();
 
 	private:
+		EditorLayer* m_EditorLayer;
 		class SceneToolbar* m_SceneToolbar;
 		class SceneOutlinerPanel* m_SceneOutlinerPanel;
 		class ContentBrowserPanel* m_ContentBrowserPanel;

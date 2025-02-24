@@ -8,6 +8,7 @@
 //#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "Input/MouseButton.h"
 
 
 namespace Sphynx
@@ -70,7 +71,7 @@ namespace Sphynx
 			{
 				m_Rotation -= 360.0f;
 			}
-			else if (m_Rotation <= -180.0f) 
+			else if (m_Rotation <= -180.0f)
 			{
 				m_Rotation += 360.0f;
 			}

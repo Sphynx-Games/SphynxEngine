@@ -73,7 +73,8 @@ namespace Sphynx
 	}
 
 
-	ContentBrowserPanel::ContentBrowserPanel() : 
+	ContentBrowserPanel::ContentBrowserPanel(Widget* parent) :
+		Panel("Content Browser", parent),
 		m_CurrentDirectory(s_AssetsPath),
 		m_ShowAllFiles(false),
 		m_SelectedContentItem(new ContentItem()),
@@ -99,7 +100,7 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderGUI()
 	{
-		ImGui::Begin("Content Browser");
+		ImGui::Begin(GetName());
 
 		// BACK BUTTON
 		ImGui::BeginDisabled(m_CurrentDirectory == s_AssetsPath);

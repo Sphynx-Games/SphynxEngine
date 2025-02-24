@@ -10,7 +10,8 @@
 
 namespace Sphynx
 {
-	SceneOutlinerPanel::SceneOutlinerPanel(const Scene* scene) :
+	SceneOutlinerPanel::SceneOutlinerPanel(const Scene* scene, Widget* parent) :
+		Panel("Outliner", parent),
 		m_Scene(scene)
 	{
 	}
@@ -27,7 +28,7 @@ namespace Sphynx
 
 	void SceneOutlinerPanel::RenderGUI()
 	{
-		if (ImGui::Begin("Outliner") && m_Scene != nullptr)
+		if (ImGui::Begin(GetName()) && m_Scene != nullptr)
 		{
 			for (const Actor& actor : m_Scene->GetActors())
 			{

@@ -31,7 +31,14 @@ namespace Sphynx
 		return labelStr;
 	}
 
-	DetailsPanel::DetailsPanel(const Actor& actor) :
+	DetailsPanel::DetailsPanel(Widget* parent) :
+		Panel("Details", parent),
+		m_Context()
+	{
+	}
+
+	DetailsPanel::DetailsPanel(const Actor& actor, Widget* parent) :
+		Panel("Details", parent),
 		m_Context(actor)
 	{
 	}
@@ -43,7 +50,7 @@ namespace Sphynx
 
 	void DetailsPanel::RenderGUI()
 	{
-		if (ImGui::Begin("Details") && m_Context.IsValid())
+		if (ImGui::Begin(GetName()) && m_Context.IsValid())
 		{
 			// Draw Name Component
 			if (m_Context.HasComponent<NameComponent>())

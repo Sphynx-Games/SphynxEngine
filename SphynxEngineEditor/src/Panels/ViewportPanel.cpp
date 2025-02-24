@@ -4,16 +4,18 @@
 #include <imgui.h>
 #include <SDL3/SDL.h>
 #include <EditorLayer.h>
+#include "imgui_internal.h"
 
 
 namespace Sphynx
 {
-	ViewportPanel::ViewportPanel() :
-		ViewportPanel(nullptr, 0u)
+	ViewportPanel::ViewportPanel(Widget* parent) :
+		ViewportPanel(nullptr, 0u, parent)
 	{
 	}
 
-	ViewportPanel::ViewportPanel(Framebuffer* framebuffer, uint32_t index) :
+	ViewportPanel::ViewportPanel(Framebuffer* framebuffer, uint32_t index, Widget* parent) :
+		Panel("Viewport", parent),
 		m_Framebuffer(framebuffer),
 		m_Index(index),
 		m_AvailableSize()
@@ -36,23 +38,39 @@ namespace Sphynx
 		m_Index = index;
 	}
 
-	void ViewportPanel::RenderGUI()
+	void ViewportPanel::PreRenderGUI()
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.f, 0.f });
-		if (ImGui::Begin("Viewport"))
-		{
-			if (m_Framebuffer != nullptr)
-			{
-				m_AvailableSize = { (int32_t)ImGui::GetContentRegionAvail().x, (int32_t)ImGui::GetContentRegionAvail().y };
-				ImGui::Image((ImTextureID)m_Framebuffer->GetColorAttachment(m_Index), ImGui::GetContentRegionAvail());
-			}
-		}
+		Panel::PreRenderGUI();
+	}
 
-		ImGui::End();
-		ImGui::PopStyleVar();
+	void ViewportPanel::RenderGUI()
+	{
+		if (!m_CanRender) return;
+
+		if (m_Framebuffer != nullptr)
+		{
+			m_AvailableSize = { (int32_t)ImGui::GetContentRegionAvail().x, (int32_t)ImGui::GetContentRegionAvail().y };
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 0.0f, 0.0f });
+			ImGui::ImageButtonEx(
+				GetID(),
+				(ImTextureID)m_Framebuffer->GetColorAttachment(m_Index),
+				ImGui::GetContentRegionAvail(),
+				ImVec2{ 0, 0 },			// uv0
+				ImVec2{ 1, 1 },			// uv1
+				ImVec4{ 0, 0, 0, 0 },	// bg color
+				ImVec4{ 1, 1, 1, 1 });	// tint color
+			ImGui::PopStyleVar();
+		}
 	}
 
 	void ViewportPanel::PostRenderGUI()
+	{
+		Panel::PostRenderGUI();
+		ImGui::PopStyleVar();
+	}
+
+	void ViewportPanel::PostRenderUpdate(float deltaTime)
 	{
 		CheckFramebufferSizeValidity();
 	}

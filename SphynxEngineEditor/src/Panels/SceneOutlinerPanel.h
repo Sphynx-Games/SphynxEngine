@@ -12,7 +12,7 @@ namespace Sphynx
 	class SceneOutlinerPanel : public Panel
 	{
 	public:
-		SceneOutlinerPanel(const Scene* scene = nullptr);
+		SceneOutlinerPanel(const Scene* scene = nullptr, Widget* parent = nullptr);
 
 	public:
 		void SetContext(const Scene* scene);

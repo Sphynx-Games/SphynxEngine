@@ -6,35 +6,15 @@
 
 namespace Sphynx
 {
-	Editor::Editor(const std::string& name) :
-		m_Widgets(),
-		m_Toolbar(),
-		m_Name(name)
+	Editor::Editor(const char* name, Widget* parent) :
+		Widget(name, parent),
+		m_Toolbar()
 	{
 	}
 
 	Editor::~Editor()
 	{
-		for (Widget* widget : m_Widgets)
-		{
-			delete widget;
-		}
-
-		m_Widgets.clear();
 		delete m_Toolbar;
-	}
-
-	void Editor::AddWidget(Widget* widget)
-	{
-		m_Widgets.push_back(widget);
-	}
-
-	void Editor::RemoveWidget(Widget* widget)
-	{
-		auto it = std::find(m_Widgets.begin(), m_Widgets.end(), widget);
-		if (it == m_Widgets.end()) return;
-
-		m_Widgets.erase(it);
 	}
 
 	void Editor::SetToolbar(Toolbar* toolbar)
@@ -42,35 +22,14 @@ namespace Sphynx
 		m_Toolbar = toolbar;
 	}
 
-	const std::string& Editor::GetName() const
-	{
-		return m_Name;
-	}
-
-	void Editor::HandleEvent(Event& event)
-	{
-		for (Widget* widget : m_Widgets)
-		{
-			widget->HandleEvent(event);
-		}
-	}
-
-	void Editor::PreRenderGUI()
-	{
-		for (Widget* widget : m_Widgets)
-		{
-			widget->PreRenderGUI();
-		}
-	}
-
 	void Editor::RenderGUI()
 	{
-		const ImGuiWindow* window = ImGui::FindWindowByName(m_Name.c_str());
+		const ImGuiWindow* window = ImGui::FindWindowByName(GetName());
 		const bool bIsWindowDocked = window != nullptr && window->DockNodeIsVisible;
 		ImGuiWindowFlags flags = 0;
 		flags |= !bIsWindowDocked * ImGuiWindowFlags_MenuBar;
 
-		if (ImGui::Begin(m_Name.c_str(), nullptr, flags))
+		if (ImGui::Begin(GetName(), nullptr, flags))
 		{
 			// Render Menu Bar
 			if (ImGui::BeginMenuBar())
@@ -82,7 +41,9 @@ namespace Sphynx
 			// Render Toolbar (if valid)
 			if (m_Toolbar != nullptr)
 			{
+				m_Toolbar->PreRenderGUI();
 				m_Toolbar->RenderGUI();
+				m_Toolbar->PostRenderGUI();
 			}
 
 			// Enable dockspace for the current editor
@@ -90,9 +51,11 @@ namespace Sphynx
 			ImGui::DockSpace(id);
 
 			// Render child widgets
-			for (Widget* widget : m_Widgets)
+			for (Widget* widget : GetChildren())
 			{
+				widget->PreRenderGUI();
 				widget->RenderGUI();
+				widget->PostRenderGUI();
 			}
 		}
 		ImGui::End();
@@ -106,14 +69,6 @@ namespace Sphynx
 				RenderMenuBar();
 				ImGui::EndMenuBar();
 			}
-		}
-	}
-
-	void Editor::PostRenderGUI()
-	{
-		for (Widget* widget : m_Widgets)
-		{
-			widget->PostRenderGUI();
 		}
 	}
 }

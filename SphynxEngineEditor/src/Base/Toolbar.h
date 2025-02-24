@@ -8,17 +8,11 @@ namespace Sphynx
 	class Toolbar : public Widget
 	{
 	public:
-		Toolbar();
+		Toolbar(Widget* parent = nullptr);
 		~Toolbar();
 
-		void AddWidget(Widget* widget);
-		void RemoveWidget(Widget* widget);
-
 	public:
-		virtual void HandleEvent(Event& event) override;
 		virtual void RenderGUI() override;
 
-	protected:
-		std::vector<Widget*> m_Widgets;
 	};
 }
