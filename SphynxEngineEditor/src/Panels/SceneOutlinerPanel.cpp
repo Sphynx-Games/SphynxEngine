@@ -1,22 +1,25 @@
 #include <spxpch.h>
 #include "SceneOutlinerPanel.h"
-
 #include <imgui.h>
-
-#include <Scene/Scene.h>
-#include <Scene/Actor.h>
-#include <Component/UUIDComponent.h>
-#include <Component/NameComponent.h>
+#include "Events/Event.h"
+#include "Events/InputEvent.h"
+#include "Input/Keycode.h"
+#include "Scene/Scene.h"
+#include "Scene/Actor.h"
+#include "Component/UUIDComponent.h"
+#include "Component/NameComponent.h"
 
 namespace Sphynx
 {
-	SceneOutlinerPanel::SceneOutlinerPanel(const Scene* scene, Widget* parent) :
+	SceneOutlinerPanel::SceneOutlinerPanel(Scene* scene, Widget* parent) :
 		Panel("Outliner", parent),
-		m_Scene(scene)
+		m_Scene(scene),
+		m_SelectedActor(),
+		m_ActorsToDeleted()
 	{
 	}
 
-	void SceneOutlinerPanel::SetContext(const Scene* scene)
+	void SceneOutlinerPanel::SetContext(Scene* scene)
 	{
 		m_Scene = scene;
 	}
@@ -34,6 +37,11 @@ namespace Sphynx
 			{
 				RenderActorGUI(actor);
 			}
+			for (auto it = m_ActorsToDeleted.rbegin(); it != m_ActorsToDeleted.rend(); it++)
+			{
+				DeleteActor(*it);
+			}
+			m_ActorsToDeleted.RemoveAll();
 		}
 		ImGui::End();
 	}
@@ -50,9 +58,31 @@ namespace Sphynx
 		{
 			m_SelectedActor = actor;
 		}
+		RenderActorGUI_ContextMenu(actor);
 		ImGui::TreePop();
 
 		// TODO: Render children recursivelly
+	}
+
+	void SceneOutlinerPanel::RenderActorGUI_ContextMenu(const Actor& actor)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				m_ActorsToDeleted.Add(actor);
+			}
+			ImGui::EndPopup();
+		}
+	}
+
+	void SceneOutlinerPanel::DeleteActor(const Actor& actor)
+	{
+		if (m_SelectedActor == actor)
+		{
+			m_SelectedActor = Actor();
+		}
+		m_Scene->DestroyActor(actor);
 	}
 
 }

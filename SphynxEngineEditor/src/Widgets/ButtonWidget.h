@@ -13,7 +13,7 @@ namespace Sphynx
 	class ButtonWidget : public Widget
 	{
 	public:
-		ButtonWidget(const std::string& text, class Texture* image, Vector2f size = { 55.0f, 55.0f }, Color color = Color::White, bool isActive = true, bool isEnabled = true);
+		ButtonWidget(const std::string& text, class Texture* image = nullptr, Vector2f size = { 55.0f, 55.0f }, Color color = Color::White, bool isActive = true, bool isEnabled = true);
 
 	public:
 		virtual void RenderGUI() override;

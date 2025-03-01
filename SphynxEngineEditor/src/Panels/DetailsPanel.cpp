@@ -31,6 +31,14 @@ namespace Sphynx
 		return labelStr;
 	}
 
+	void OpenPopup(const char* id)
+	{
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup(id);
+		}
+	}
+
 	DetailsPanel::DetailsPanel(Widget* parent) :
 		Panel("Details", parent),
 		m_Context()
@@ -85,8 +93,11 @@ namespace Sphynx
 			// Draw Camera Component
 			if (m_Context.HasComponent<CameraComponent>())
 			{
-				if (ImGui::CollapsingHeader("Camera Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "Camera Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<CameraComponent>();
@@ -141,13 +152,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<CameraComponent>(id);
 			}
 
 			// Draw Sprite Renderer Component
 			if (m_Context.HasComponent<SpriteRendererComponent>())
 			{
-				if (ImGui::CollapsingHeader("Sprite Renderer Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "Sprite Renderer Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					SpriteRendererComponent& component = m_Context.GetComponent<SpriteRendererComponent>();
@@ -180,13 +197,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<SpriteRendererComponent>(id);
 			}
 
 			// Draw Box Renderer Component
 			if (m_Context.HasComponent<BoxRendererComponent>())
 			{
+				const char* id = "Box Renderer Component";
 				if (ImGui::CollapsingHeader("Box Renderer Component", ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<BoxRendererComponent>();
@@ -216,13 +239,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<BoxRendererComponent>(id);
 			}
 
 			// Draw Line Renderer Component
 			if (m_Context.HasComponent<LineRendererComponent>())
 			{
-				if (ImGui::CollapsingHeader("Line Renderer Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "Line Renderer Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<LineRendererComponent>();
@@ -245,13 +274,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<LineRendererComponent>(id);
 			}
 
 			// Draw Rigidbody2DComponent
 			if (m_Context.HasComponent<Rigidbody2DComponent>())
 			{
-				if (ImGui::CollapsingHeader("Rigidbody2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "Rigidbody2D Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<Rigidbody2DComponent>();
@@ -311,13 +346,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<Rigidbody2DComponent>(id);
 			}
 
 			// Draw BoxCollider2DComponent
 			if (m_Context.HasComponent<BoxCollider2DComponent>())
 			{
-				if (ImGui::CollapsingHeader("BoxCollider2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "BoxCollider2D Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<BoxCollider2DComponent>();
@@ -342,13 +383,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<BoxCollider2DComponent>(id);
 			}
 
 			// Draw CircleCollider2DComponent
 			if (m_Context.HasComponent<CircleCollider2DComponent>())
 			{
-				if (ImGui::CollapsingHeader("CircleCollider2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "CircleCollider2D Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<CircleCollider2DComponent>();
@@ -373,13 +420,19 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<CircleCollider2DComponent>(id);
 			}
 
 			// Draw CapsuleCollider2DComponent
 			if (m_Context.HasComponent<CapsuleCollider2DComponent>())
 			{
-				if (ImGui::CollapsingHeader("CapsuleCollider2D Component", ImGuiTreeNodeFlags_DefaultOpen))
+				const char* id = "CapsuleCollider2D Component";
+				if (ImGui::CollapsingHeader(id, ImGuiTreeNodeFlags_DefaultOpen))
 				{
+					OpenPopup(id);
+
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 					auto& component = m_Context.GetComponent<CapsuleCollider2DComponent>();
@@ -404,6 +457,9 @@ namespace Sphynx
 
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				}
+				
+				OpenPopup(id);
+				RenderComponent_ContextMenu<CapsuleCollider2DComponent>(id);
 			}
 
 		}

@@ -45,9 +45,19 @@ namespace Sphynx
 		ImVec2 uv0 = { UV0.X, UV0.Y };
 		ImVec2 uv1 = { UV1.X, UV1.Y };
 
-		if (ImGui::ButtonWithImageAndText(Text, (ImTextureID)Image->GetNativeTexture(), buttonSize, 0.75f, uv0, uv1, tintColor))
+		if (Image != nullptr)
 		{
-			OnClick.Broadcast();
+			if (ImGui::ButtonWithImageAndText(Text, (ImTextureID)Image->GetNativeTexture(), buttonSize, 0.75f, uv0, uv1, tintColor))
+			{
+				OnClick.Broadcast();
+			}
+		}
+		else 
+		{
+			if (ImGui::Button(Text.c_str(), buttonSize))
+			{
+				OnClick.Broadcast();
+			}
 		}
 	}
 }
