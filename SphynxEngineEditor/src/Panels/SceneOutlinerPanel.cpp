@@ -8,6 +8,7 @@
 #include "Scene/Actor.h"
 #include "Component/UUIDComponent.h"
 #include "Component/NameComponent.h"
+#include "Component/TransformComponent.h"
 
 namespace Sphynx
 {
@@ -33,6 +34,7 @@ namespace Sphynx
 	{
 		if (ImGui::Begin(GetName()) && m_Scene != nullptr)
 		{
+			// ACTORS
 			for (const Actor& actor : m_Scene->GetActors())
 			{
 				RenderActorGUI(actor);
@@ -42,6 +44,18 @@ namespace Sphynx
 				DeleteActor(*it);
 			}
 			m_ActorsToDeleted.RemoveAll();
+
+			// PANEL CONTEXT MENU
+			if (ImGui::BeginPopupContextWindow("SceneOutlinerPanel_ContextMenu", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
+			{
+				if (ImGui::MenuItem("New actor"))
+				{
+					Actor& actor = m_Scene->CreateActor();
+					actor.AddComponent<NameComponent>("New actor");
+					actor.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+				}
+				ImGui::EndPopup();
+			}
 		}
 		ImGui::End();
 	}
