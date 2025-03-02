@@ -21,6 +21,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::CameraControllerComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent)
 
 //SPX_REFLECT_PROPERTY(Camera)
 

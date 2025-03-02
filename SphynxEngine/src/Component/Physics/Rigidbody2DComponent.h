@@ -56,6 +56,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::Rigidbody2DComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Enabled)
 SPX_REFLECT_PROPERTY(m_Type)

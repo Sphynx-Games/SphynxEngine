@@ -29,6 +29,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::LineRendererComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(Point1)
 SPX_REFLECT_PROPERTY(Point2)

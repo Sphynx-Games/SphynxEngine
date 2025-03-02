@@ -25,6 +25,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::NameComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(Name)
 

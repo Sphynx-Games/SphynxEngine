@@ -7,6 +7,7 @@
 #include "Property.h"
 #include "Storage.h"
 #include "Attribute.h"
+#include "Registry.h"
 #include "Traits/Traits.h"
 #include "Core/Invoke.h"
 
@@ -38,6 +39,7 @@
 #define SPX_REFLECT_CLASS_BEGIN(_Class) \
 	namespace Sphynx { namespace Reflection { namespace details { \
 	template<> struct ClassImplWrapper<::_Class> { \
+		inline static TypeRegister<_Class> s_TypeRegister{}; \
 		static const Class& GetClassImpl(Tag<::_Class>) \
 		{ \
 			static ::Sphynx::Reflection::details::ClassStorage<::_Class> Storage([](auto* self) { \
@@ -83,6 +85,7 @@
 #define SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Class) \
 	namespace Sphynx { namespace Reflection { namespace details { \
 	template<typename ...T> struct ClassImplWrapper<::_Class<T...>> { \
+		inline static TypeRegister<::_Class<T...>> s_TypeRegister{}; \
 		static const Class& GetClassImpl(Tag<::_Class<T...>>) \
 		{ \
 			static ClassStorage<::_Class<T...>> Storage([](auto* self) \

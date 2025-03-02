@@ -51,6 +51,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::CameraComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent)
 
 SPX_REFLECT_PROPERTY(IsMainCamera)
 SPX_REFLECT_PROPERTY(m_ProjectionMode)

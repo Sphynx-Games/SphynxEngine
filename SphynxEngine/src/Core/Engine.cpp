@@ -16,6 +16,10 @@ namespace Sphynx
 		Log::Init();
 		SPX_CORE_LOG_DISPLAY("Initializing Sphynx Engine");
 
+		// Reflection
+		SPX_CORE_LOG_DISPLAY("Initializing Reflection Registry");
+		Reflection::Registry::Init();
+
 		// External libraries
 		SPX_CORE_LOG_DISPLAY("Initializing External Libraries");
 		{
@@ -52,6 +56,10 @@ namespace Sphynx
 			SDL_Quit();
 		}
 		SPX_CORE_LOG_DISPLAY("Shutting down External Libraries");
+
+		// Reflection
+		Reflection::Registry::Shutdown();
+		SPX_CORE_LOG_DISPLAY("Shutting down Reflection Registry");
 
 		SPX_CORE_LOG_DISPLAY("Shutting down Sphynx Engine");
 		Log::Shutdown();

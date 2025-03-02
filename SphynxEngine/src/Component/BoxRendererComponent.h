@@ -34,6 +34,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::BoxRendererComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(DrawMode)
 SPX_REFLECT_PROPERTY(Size)

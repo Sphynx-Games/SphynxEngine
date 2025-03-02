@@ -30,6 +30,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpriteRendererComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(Sprite)
 SPX_REFLECT_PROPERTY(Tint)

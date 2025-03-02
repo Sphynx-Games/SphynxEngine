@@ -44,6 +44,7 @@ namespace Sphynx
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::BoxCollider2DComponent)
+SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Size)
 SPX_REFLECT_PROPERTY(m_Offset)
