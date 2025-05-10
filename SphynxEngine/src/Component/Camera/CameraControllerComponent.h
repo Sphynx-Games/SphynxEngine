@@ -1,18 +1,18 @@
 #pragma once
 
 #include "Core/Core.h"
+
 #include "Component/Common.h"
 #include "CameraComponent.h"
 
 
 namespace Sphynx
 {
-
 	struct SPHYNX_API CameraControllerComponent
 	{
-		COMPONENT_COMMON_BODY_NO_DEFAULT_CONSTRUCTOR(CameraControllerComponent);
+		COMPONENT_COMMON_BODY(CameraControllerComponent);
 
-	//public:
+		CameraComponent* Camera;
 	};
 }
 
@@ -22,7 +22,4 @@ namespace Sphynx
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::CameraControllerComponent)
 SPX_REFLECT_ATTRIBUTE(InternalComponent)
-
-//SPX_REFLECT_PROPERTY(Camera)
-
 SPX_REFLECT_STRUCT_END(Sphynx::CameraControllerComponent)

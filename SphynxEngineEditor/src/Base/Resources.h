@@ -18,6 +18,7 @@ namespace Sphynx
 			StopTexture = TextureLoader::Load(ResourcesPath / "stop.png");
 			PauseTexture = TextureLoader::Load(ResourcesPath / "pause.png");
 			EjectTexture = TextureLoader::Load(ResourcesPath / "eject.png");
+			ThreeDotsTexture = TextureLoader::Load(ResourcesPath / "three_dots.png");
 		}
 
 		static void Shutdown()
@@ -29,6 +30,7 @@ namespace Sphynx
 			delete StopTexture;
 			delete PauseTexture;
 			delete EjectTexture;
+			delete ThreeDotsTexture;
 		}
 
 	public:
@@ -41,5 +43,6 @@ namespace Sphynx
 		inline static Texture* StopTexture;
 		inline static Texture* PauseTexture;
 		inline static Texture* EjectTexture;
+		inline static Texture* ThreeDotsTexture;
 	};
 }

@@ -3,7 +3,7 @@
 #include "Base/Panel.h"
 
 #include <Scene/Actor.h>
-#include <imgui.h>
+#include <Container/Array.h>
 
 
 namespace Sphynx
@@ -21,21 +21,19 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
-		template<typename T>
-		void RenderComponent_ContextMenu(const char* id)
-		{
-			if (ImGui::BeginPopup(id))
-			{
-				if (ImGui::MenuItem("Delete"))
-				{
-					m_Context.RemoveComponent<T>();
-				}
-				ImGui::EndPopup();
-			}
-		}
+		void RenderCameraComponent();
+		void RenderSpriteRendererComponent();
+		void RenderBoxRendererComponent();
+		void RenderLineRendererComponent();
+		void RenderRigidbody2DComponent();
+		void RenderBoxCollider2DComponent();
+		void RenderCircleCollider2DComponent();
+		void RenderCapsuleCollider2DComponent();
+		void RenderComponent_ContextMenu(const char* label, const Reflection::Class& reflectionClass);
 
 	private:
 		Actor m_Context;
+		const Reflection::Class* m_ComponetTypeToRemove;
 
 	};
 }

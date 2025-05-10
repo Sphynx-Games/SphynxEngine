@@ -4,10 +4,8 @@
 #include "Core/UUID.h"
 #include "Math/Transform.h"
 #include "Math/Transform.h"
-#include "Component/UUIDComponent.h"
 
 #include "entt/entt.hpp"
-#include <cstring>
 
 
 namespace Sphynx
@@ -40,19 +38,6 @@ namespace Sphynx
 		void DebugPhysics();
 
 		void CloneRegistry(const Scene& other);
-
-		template<typename T>
-		static void CopyComponent(const entt::registry& sourceRegistry, entt::registry& targetRegistry, const std::unordered_map<UUID, entt::entity>& enttMap)
-		{
-			auto idView = sourceRegistry.view<T>();
-			for (auto& e : idView)
-			{
-				UUID uuid = sourceRegistry.get<UUIDComponent>(e).UUID;
-				entt::entity targetEntityUUID = enttMap.at(uuid);
-				const T& component = sourceRegistry.get<T>(e);
-				targetRegistry.emplace_or_replace<T>(targetEntityUUID, component);
-			}
-		}
 
 	private:
 		UUID m_UUID;
