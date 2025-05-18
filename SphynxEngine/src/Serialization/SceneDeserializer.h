@@ -14,16 +14,7 @@ namespace Sphynx
 		void Deserialize();
 
 	private:
-		template<typename T>
-		void DeserializeComponent(Actor& actor, const std::string& componentName)
-		{
-			if (!strcmp(componentName.c_str(), Reflection::GetType<T>().Name))
-			{
-				T& component = actor.AddComponent<T>();
-				ReflectionDeserializer deserializer(component, m_Reader);
-				deserializer.Deserialize();
-			}
-		}
+		void DeserializeComponent(const Reflection::Class& componentClass, Actor& actor);
 
 	private:
 		Scene& m_Scene;

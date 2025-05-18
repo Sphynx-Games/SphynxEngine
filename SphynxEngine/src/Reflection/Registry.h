@@ -3,6 +3,13 @@
 #include "Reflection/Class.h"
 #include <vector>
 
+#ifdef FORCE_IMPORT
+#define REFLECTION_API __declspec(dllimport)
+#else
+#define REFLECTION_API __declspec(dllexport)
+#endif // FORCE_IMPORT
+
+
 namespace Sphynx
 {
 	namespace Reflection
@@ -10,34 +17,26 @@ namespace Sphynx
 		class Registry
 		{
 		public:
-			static void Init()
-			{
-				for (const auto& func : s_TypeFunctions)
-				{
-					[[maybe_unused]] const Type& cClass = func();
-					//SPX_CORE_LOG_TRACE("    Reflection initialize {}", cClass.Name);
-				}
-			}
-
-			static void Shutdown()
-			{
-				// do nothing for now
-			}
+			static void Init();
+			static void Shutdown();
 
 		private:
 			template<typename T>
-			static void InitializeDeferred()
-			{
-				s_TypeFunctions.push_back(&Reflection::GetType<T>);
-			}
+			static void InitializeDeferred();
 
 		private:
-			inline static std::vector<const Type&(*)()> s_TypeFunctions;
+			REFLECTION_API static std::vector<const Type&(*)()>& GetTypeFunctions();
 
 		private:
 			template<typename T>
 			friend struct TypeRegister;
 		};
+
+		template<typename T>
+		void Registry::InitializeDeferred()
+		{
+			GetTypeFunctions().push_back(&GetType<T>);
+		}
 
 		template<typename T>
 		struct TypeRegister

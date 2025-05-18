@@ -190,7 +190,7 @@ namespace Sphynx
 						compName = compName.substr(pos);
 						if (ImGui::MenuItem(compName.c_str()))
 						{
-							ComponentRegistry::InvokeAddComponentFunction(*t, m_Context);
+							ComponentRegistry::InvokeAddComponent(*t, m_Context);
 						}
 					}
 					ImGui::EndMenu();
@@ -201,7 +201,7 @@ namespace Sphynx
 			// delete selected component
 			if (m_ComponetTypeToRemove != nullptr)
 			{
-				ComponentRegistry::InvokeRemoveComponentFunction(*m_ComponetTypeToRemove, m_Context);
+				ComponentRegistry::InvokeRemoveComponent(*m_ComponetTypeToRemove, m_Context);
 				m_ComponetTypeToRemove = nullptr;
 			}
 		}

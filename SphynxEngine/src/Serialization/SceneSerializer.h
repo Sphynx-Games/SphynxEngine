@@ -15,22 +15,7 @@ namespace Sphynx
 		void Serialize();
 
 	private:
-		template<typename T>
-		void SerializeComponent(const Actor& actor)
-		{
-			if (actor.HasComponent<T>())
-			{
-				m_Writer.PushMap();
-				m_Writer.PushKey();
-				m_Writer.Write(Reflection::GetType<T>().Name);
-
-				m_Writer.PushKey();
-				const T& component = actor.GetComponent<T>();
-				ReflectionSerializer serializer(component, m_Writer);
-				serializer.Serialize();
-				m_Writer.PopMap();
-			}
-		}
+		void SerializeComponent(const Reflection::Class& componentClass, const Actor& actor);
 
 	private:
 		const Scene& m_Scene;

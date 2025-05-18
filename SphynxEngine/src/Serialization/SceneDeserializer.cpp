@@ -40,6 +40,8 @@ namespace Sphynx
 
 		m_Reader.PushValue(2);
 		size_t actorsCount = m_Reader.PushSequence();
+		Array<const Reflection::Class*> components = ComponentRegistry::GetComponents();
+
 		for (size_t i = 0; i < actorsCount; ++i)
 		{
 			Actor& actor = m_Scene.CreateActor();
@@ -74,17 +76,21 @@ namespace Sphynx
 
 				m_Reader.PushValue(0);
 
-				DeserializeComponent<UUIDComponent>(actor, componentName);
-				DeserializeComponent<NameComponent>(actor, componentName);
-				DeserializeComponent<TransformComponent>(actor, componentName);
-				DeserializeComponent<CameraComponent>(actor, componentName);
-				DeserializeComponent<LineRendererComponent>(actor, componentName);
-				DeserializeComponent<SpriteRendererComponent>(actor, componentName);
-				DeserializeComponent<BoxRendererComponent>(actor, componentName);
-				DeserializeComponent<Rigidbody2DComponent>(actor, componentName);
-				DeserializeComponent<BoxCollider2DComponent>(actor, componentName);
-				DeserializeComponent<CircleCollider2DComponent>(actor, componentName);
-				DeserializeComponent<CapsuleCollider2DComponent>(actor, componentName);
+				bool componentFound = false;
+				for (const Reflection::Class* componentClass : components)
+				{
+					if (!strcmp(componentName.c_str(), componentClass->Name))
+					{
+						DeserializeComponent(*componentClass, actor);
+						componentFound = true;
+						break;
+					}
+				}
+
+				if (!componentFound)
+				{
+					SPX_CORE_LOG_WARNING("Trying to deserialize component '{}' but no matching reflection class was found", componentName.c_str());
+				}
 				
 				m_Reader.PopValue();
 				m_Reader.PopMap();
@@ -101,5 +107,12 @@ namespace Sphynx
 		m_Reader.PopMap();
 		m_Reader.PopValue();
 		m_Reader.PopMap();
+	}
+
+	void SceneDeserializer::DeserializeComponent(const Reflection::Class& componentClass, Actor& actor)
+	{
+		void* component = ComponentRegistry::InvokeAddComponent(componentClass, actor);
+		ReflectionDeserializer deserializer(component, componentClass, m_Reader);
+		deserializer.Deserialize();
 	}
 }

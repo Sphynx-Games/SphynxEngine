@@ -9,7 +9,7 @@ else()
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 endif()
 
-project(SphynxEngineEditor CXX)
+project(SphynxEngine-Editor CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -28,24 +28,24 @@ file(GLOB_RECURSE SPXESOURCES CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" )
 
 # Set the excutable name and the main.cpp to be compiled
-add_executable(SphynxEngineEditor "${SPXESOURCES}")
+add_executable(SphynxEngine-Editor "${SPXESOURCES}")
 
 # Set target sources
-target_sources(SphynxEngineEditor PRIVATE ${CPPSOURCES})
-target_include_directories(SphynxEngineEditor PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+target_sources(SphynxEngine-Editor PRIVATE ${CPPSOURCES})
+target_include_directories(SphynxEngine-Editor PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 # Set target link libs
-target_link_libraries(SphynxEngineEditor SphynxEngine)
+target_link_libraries(SphynxEngine-Editor SphynxEngine)
 # TODO: remove this libraries below when possible
-target_link_libraries(SphynxEngineEditor SDL3::SDL3)
-target_link_libraries(SphynxEngineEditor spdlog::spdlog)
-target_link_libraries(SphynxEngineEditor glm::glm)
-target_link_libraries(SphynxEngineEditor EnTT::EnTT)
-target_link_libraries(SphynxEngineEditor imgui)
-target_link_libraries(SphynxEngineEditor glad)
+target_link_libraries(SphynxEngine-Editor SDL3::SDL3)
+target_link_libraries(SphynxEngine-Editor spdlog::spdlog)
+target_link_libraries(SphynxEngine-Editor glm::glm)
+target_link_libraries(SphynxEngine-Editor EnTT::EnTT)
+target_link_libraries(SphynxEngine-Editor imgui)
+target_link_libraries(SphynxEngine-Editor glad)
 
 # Post build command (copy .dll to bin folder)
-add_custom_target(SphynxEngineEditorRules 
+add_custom_target(SphynxEngine-EditorRules 
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SphynxEngine> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SDL3::SDL3> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -54,10 +54,10 @@ add_custom_target(SphynxEngineEditorRules
 
 	COMMENT "Copying dependency binaries to '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'" VERBATIM
 )
-add_dependencies(SphynxEngineEditor SphynxEngineEditorRules)
-set_target_properties(SphynxEngineEditorRules PROPERTIES FOLDER __internal__)
+add_dependencies(SphynxEngine-Editor SphynxEngine-EditorRules)
+set_target_properties(SphynxEngine-EditorRules PROPERTIES FOLDER __internal__)
 
-target_compile_definitions(SphynxEngineEditor PUBLIC
+target_compile_definitions(SphynxEngine-Editor PUBLIC
 	$<$<CONFIG:Debug>:SPX_DEBUG>
 	$<$<CONFIG:RelWithDebInfo>:SPX_DEBUG>
 	$<$<CONFIG:Release>:SPX_RELEASE>

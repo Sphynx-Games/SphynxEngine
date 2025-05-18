@@ -13,12 +13,15 @@ namespace Sphynx
 {
 	struct ComponentFunctions
 	{
-		using ComponentFunction = void (*)(Actor&);
-		using ComponentFunctionBool = bool (*)(Actor&);
+		// Actor functions
+		void* (*AddComponent)(Actor&);
+		void (*RemoveComponent)(Actor&);
+		void* (*GetComponent)(const Actor&);
+		bool (*HasComponent)(const Actor&);
+		void(*CloneComponent)(const Actor&, Actor&); // const Actor& source, Actor& target
 
-		ComponentFunction AddComponent;
-		ComponentFunction RemoveComponent;
-		ComponentFunctionBool HasComponent;
+		// Scene functions
+		Array<Actor>(*GetActorsByComponent)(const Scene&);
 	};
 
 	class ComponentRegistry
@@ -29,10 +32,22 @@ namespace Sphynx
 		{ 
 			Register(&Reflection::GetClass<TComponent>);
 			ComponentFunctions& compFunc = s_ComponentFunctions.Emplace();
-			compFunc.AddComponent = [](Actor& actor) -> void { actor.AddComponent<TComponent>(); };
+			compFunc.AddComponent = [](Actor& actor) -> void* { return &actor.AddComponent<TComponent>(); };
 			compFunc.RemoveComponent = [](Actor& actor) -> void { actor.RemoveComponent<TComponent>(); };
-			compFunc.HasComponent = [](Actor& actor) -> bool { return actor.HasComponent<TComponent>(); };
+			compFunc.GetComponent = [](const Actor& actor) -> void* { return actor.TryGetComponent<TComponent>(); };
+			compFunc.HasComponent = [](const Actor& actor) -> bool { return actor.HasComponent<TComponent>(); };
+			compFunc.CloneComponent = [](const Actor& source, Actor& target) -> void
+				{
+					const TComponent* comp = source.TryGetComponent<TComponent>();
+					if (comp != nullptr)
+					{
+						target.AddComponent<TComponent>(*comp);
+					}
+				};
+
+			compFunc.GetActorsByComponent = [](const Scene& scene) { return scene.GetActorsByComponent<TComponent>(); };
 		}
+
 		template<typename TComponent>
 		static void Unregister()	{ Unregister(&Reflection::GetClass<TComponent>); }
 
@@ -48,30 +63,48 @@ namespace Sphynx
 			return components; 
 		}
 
-		static ComponentFunctions& GetComponentFunctions(const Reflection::Class& reflectionComponentClass)
+		static ComponentFunctions& GetComponentFunctions(const Reflection::Class& componentClass)
 		{
-			auto lambda = [&](auto reflectClass) { return &reflectClass() == &reflectionComponentClass; };
+			auto lambda = [&](auto reflectClass) { return &reflectClass() == &componentClass; };
 			auto it = std::find_if(s_ComponentClasses.begin(), s_ComponentClasses.end(), lambda);
 			auto index = std::distance(s_ComponentClasses.begin(), it);
 			return s_ComponentFunctions.Get(index);
 		}
 
-		static void InvokeAddComponentFunction(const Reflection::Class& reflectionComponentClass, Actor& actor)
+		static void* InvokeAddComponent(const Reflection::Class& componentClass, Actor& actor)
 		{
-			ComponentFunctions& compFunc = GetComponentFunctions(reflectionComponentClass);
-			compFunc.AddComponent(actor);
+			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
+			return compFunc.AddComponent(actor);
 		}
 
-		static void InvokeRemoveComponentFunction(const Reflection::Class& reflectionComponentClass, Actor& actor)
+		static void InvokeRemoveComponent(const Reflection::Class& componentClass, Actor& actor)
 		{
-			ComponentFunctions& compFunc = GetComponentFunctions(reflectionComponentClass);
+			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
 			compFunc.RemoveComponent(actor);
 		}
 
-		static bool InvokeHasComponentFunction(const Reflection::Class& reflectionComponentClass, Actor& actor)
+		static void* InvokeGetComponent(const Reflection::Class& componentClass, const Actor& actor)
 		{
-			ComponentFunctions& compFunc = GetComponentFunctions(reflectionComponentClass);
+			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
+			return compFunc.GetComponent(actor);
+		}
+
+		static bool InvokeHasComponent(const Reflection::Class& componentClass, const Actor& actor)
+		{
+			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
 			return compFunc.HasComponent(actor);
+		}
+
+		static void InvokeCloneComponent(const Reflection::Class& componentClass, const Actor& source, Actor& target)
+		{
+			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
+			compFunc.CloneComponent(source, target);
+		}
+
+		static Array<Actor> InvokeGetActorsByComponent(const Reflection::Class& componentClass, const Scene& scene)
+		{
+			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
+			return compFunc.GetActorsByComponent(scene);
 		}
 
 	private:

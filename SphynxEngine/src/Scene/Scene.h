@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Core/UUID.h"
 #include "Math/Transform.h"
-#include "Math/Transform.h"
+#include "Container/Array.h"
 
 #include "entt/entt.hpp"
 
@@ -29,6 +29,10 @@ namespace Sphynx
 		void DestroyActor(const Actor& actor);
 
 		const std::vector<Actor>& GetActors() const;
+		template<typename T>
+		Array<Actor> GetActorsByComponent() const;
+		template<typename T>
+		Array<T*> GetComponents() const;
 
 		const std::string& GetName() const { return m_Name; }
 		void SetName(const std::string& name) { m_Name = name; }
@@ -55,4 +59,30 @@ namespace Sphynx
 		friend class SceneDeserializer;
 		friend class SceneRenderer;
 	};
+
+	template<typename T>
+	inline Array<Actor> Scene::GetActorsByComponent() const
+	{
+		Array<Actor> result;
+		auto view = m_Registry.view<T>();
+		for (auto& entity : view)
+		{
+			result.Emplace(entity, const_cast<Scene*>(this));
+		}
+		return result;
+	}
+
+	template<typename T>
+	inline Array<T*> Scene::GetComponents() const
+	{
+		Array<T*> result;
+		auto view = m_Registry.view<T>();
+		for (auto entity : view)
+		{
+			auto component = view.get<T>(entity);
+			result.Add(&component);
+		}
+		return result;
+	}
+
 }

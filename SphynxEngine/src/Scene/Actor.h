@@ -25,6 +25,9 @@ namespace Sphynx
 		void RemoveComponent();
 
 		template<typename Component>
+		Component* TryGetComponent() const;
+
+		template<typename Component>
 		Component& GetComponent() const;
 
 		template<typename Component>
@@ -60,6 +63,18 @@ namespace Sphynx
 		SPX_CORE_ASSERT(HasComponent<Component>(), "Component is not in actor");
 		--m_numComponents;
 		m_Scene->m_Registry.remove<Component>(m_EntityID);
+	}
+
+	template<typename Component>
+	inline Component* Actor::TryGetComponent() const
+	{
+		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
+		if (HasComponent<Component>())
+		{
+			return &m_Scene->m_Registry.get<Component>(m_EntityID);
+		}
+
+		return nullptr;
 	}
 
 	template<typename Component>

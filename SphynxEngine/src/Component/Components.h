@@ -7,6 +7,7 @@
 #include "SpriteRendererComponent.h"
 #include "BoxRendererComponent.h"
 #include "LineRendererComponent.h"
+#include "ScriptComponent.h"
 #include "Physics/Physics2DComponents.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CameraControllerComponent.h"

@@ -34,7 +34,7 @@ namespace Sphynx
 		}
 
 	public:
-		inline static const std::filesystem::path ResourcesPath = "SphynxEngineEditor\\Resources";
+		inline static const std::filesystem::path ResourcesPath = "SphynxEngine-Editor\\Resources";
 
 		inline static Texture* FolderTexture;
 		inline static Texture* FileTexture;

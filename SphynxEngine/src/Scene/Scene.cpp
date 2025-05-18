@@ -14,20 +14,21 @@
 #include "Renderer/Sprite.h"
 #include "Core/Application.h"
 #include "Renderer/Window.h"
+#include "Component/ComponentRegistry.h"
+#include "Scripting/ScriptingManager.h"
 
 
 namespace Sphynx
 {
-	template<typename T>
-	static void CopyComponent(const entt::registry& sourceRegistry, entt::registry& targetRegistry, const std::unordered_map<UUID, entt::entity>& enttMap)
+	
+	static void CopyComponent(const Reflection::Class& componentClass, const Scene& sourceScene, Scene& targetScene, const std::unordered_map<UUID, Actor>& enttMap)
 	{
-		auto idView = sourceRegistry.view<T>();
-		for (auto& e : idView)
+		Array<Actor> actors = ComponentRegistry::InvokeGetActorsByComponent(componentClass, sourceScene);
+		for (const Actor& actor : actors)
 		{
-			UUID uuid = sourceRegistry.get<UUIDComponent>(e).UUID;
-			entt::entity targetEntityUUID = enttMap.at(uuid);
-			const T& component = sourceRegistry.get<T>(e);
-			targetRegistry.emplace_or_replace<T>(targetEntityUUID, component);
+			const UUID& uuid = actor.GetComponent<UUIDComponent>().UUID;
+			Actor targetActor = enttMap.at(uuid);
+			ComponentRegistry::InvokeCloneComponent(componentClass, actor, targetActor);
 		}
 	}
 
@@ -35,7 +36,7 @@ namespace Sphynx
 	{
 		auto& sourceRegistry = other.m_Registry;
 		auto& targetRegistry = m_Registry;
-		std::unordered_map<UUID, entt::entity> enttMap;
+		std::unordered_map<UUID, Actor> enttMap;
 
 		// create entities
 		auto idView = sourceRegistry.view<UUIDComponent>();
@@ -45,20 +46,17 @@ namespace Sphynx
 
 			Actor& actor = CreateActor();
 			actor.GetComponent<UUIDComponent>().UUID = uuid;
-			enttMap[uuid] = (entt::entity)actor;
+			enttMap[uuid] = actor;
 		}
 
 		// copy components
-		CopyComponent<NameComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<TransformComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<CameraComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<LineRendererComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<SpriteRendererComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<BoxRendererComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<Rigidbody2DComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<BoxCollider2DComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<CircleCollider2DComponent>(sourceRegistry, targetRegistry, enttMap);
-		CopyComponent<CapsuleCollider2DComponent>(sourceRegistry, targetRegistry, enttMap);
+		for(const Reflection::Class* componentClass : ComponentRegistry::GetComponents())
+		{
+			// do not copy UUIDComponent
+			if (componentClass == &Reflection::GetClass<UUIDComponent>()) continue;
+				
+			CopyComponent(*componentClass, other, *this, enttMap);
+		}
 	}
 
 	Scene::Scene() :
@@ -138,6 +136,9 @@ namespace Sphynx
 		{
 			Physics2D::Step(m_PhysicsWorld, deltaTime);
 		}
+
+		// update ScriptComponents
+		ScriptingManager::Update(*this, deltaTime);
 	}
 
 	Actor& Scene::CreateActor()

@@ -27,6 +27,8 @@ Scene:
               Far: 10000
               HeightUnits: 8
               FieldOfView: 60
+        - ExampleScriptComponent:
+            m_Num: 0
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
       Name: Sprite
       Components:

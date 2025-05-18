@@ -40,15 +40,14 @@ namespace Sphynx
 			m_Writer.PushKey(); m_Writer.Write("Components");
 			m_Writer.PushValue();
 			m_Writer.PushSequence();
-			SerializeComponent<TransformComponent>(actor);
-			SerializeComponent<CameraComponent>(actor);
-			SerializeComponent<LineRendererComponent>(actor);
-			SerializeComponent<SpriteRendererComponent>(actor);
-			SerializeComponent<BoxRendererComponent>(actor);
-			SerializeComponent<Rigidbody2DComponent>(actor);
-			SerializeComponent<BoxCollider2DComponent>(actor);
-			SerializeComponent<CircleCollider2DComponent>(actor);
-			SerializeComponent<CapsuleCollider2DComponent>(actor);
+
+			for (const Reflection::Class* componentClass : ComponentRegistry::GetComponents())
+			{
+				// do not copy UUIDComponent
+				if (componentClass == &Reflection::GetClass<UUIDComponent>() || componentClass == &Reflection::GetClass<NameComponent>()) continue;
+
+				SerializeComponent(*componentClass, actor);
+			}
 			m_Writer.PopSequence();
 			m_Writer.PopMap();
 
@@ -57,5 +56,21 @@ namespace Sphynx
 
 		m_Writer.PopMap();
 		m_Writer.PopMap();
+	}
+
+	void SceneSerializer::SerializeComponent(const Reflection::Class& componentClass, const Actor& actor)
+	{
+		if (ComponentRegistry::InvokeHasComponent(componentClass, actor))
+		{
+			m_Writer.PushMap();
+			m_Writer.PushKey();
+			m_Writer.Write(componentClass.Name);
+
+			m_Writer.PushKey();
+			const void* component = ComponentRegistry::InvokeGetComponent(componentClass, actor);
+			ReflectionSerializer serializer(component, componentClass, m_Writer);
+			serializer.Serialize();
+			m_Writer.PopMap();
+		}
 	}
 }
