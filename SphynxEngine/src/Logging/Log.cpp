@@ -8,8 +8,8 @@
 
 namespace Sphynx
 {
-	std::shared_ptr<spdlog::logger> Log::m_CoreLogger;
-	std::shared_ptr<spdlog::logger> Log::m_ClientLogger;
+	SPHYNX_API std::shared_ptr<spdlog::logger> Log::m_CoreLogger;
+	SPHYNX_API std::shared_ptr<spdlog::logger> Log::m_ClientLogger;
 
 	void Log::Init()
 	{

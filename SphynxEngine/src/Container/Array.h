@@ -146,6 +146,6 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Array)
+SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Array, SPHYNX_API)
 	SPX_REFLECT_ATTRIBUTE(IndexedCollection)
-SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Array)
+SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Array, SPHYNX_API)

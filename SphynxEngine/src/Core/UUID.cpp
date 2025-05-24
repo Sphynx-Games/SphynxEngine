@@ -22,7 +22,7 @@ namespace Sphynx
 		}
 	}
 
-	const UUID UUID::Invalid{};
+	SPHYNX_API const UUID UUID::Invalid{};
 
 	UUID UUID::Generate()
 	{
@@ -65,23 +65,23 @@ namespace Sphynx
 #include "Serialization/YAML/YAMLReader.h"
 
 
-template<> void Sphynx::Serialization::Write<>(Sphynx::Writer& writer, const UUID& uuid)
+template<> SPHYNX_API void Sphynx::Serialization::Write<>(Sphynx::Writer& writer, const UUID& uuid)
 {
 	writer.Write(UUID::ToString(uuid));
 }
 
-template<> void Sphynx::Serialization::Read<>(const Sphynx::Reader& reader, UUID& uuid)
+template<> SPHYNX_API void Sphynx::Serialization::Read<>(const Sphynx::Reader& reader, UUID& uuid)
 {
 	std::string str; reader.Read(str);
 	uuid = UUID::FromString(str);
 }
 
-template<> void Sphynx::Serialization::Write<>(Sphynx::YAMLWriter& writer, const UUID& uuid)
+template<> SPHYNX_API void Sphynx::Serialization::Write<>(Sphynx::YAMLWriter& writer, const UUID& uuid)
 {
 	writer.Write(UUID::ToString(uuid));
 }
 
-template<> void Sphynx::Serialization::Read<>(const Sphynx::YAMLReader& reader, UUID& uuid)
+template<> SPHYNX_API void Sphynx::Serialization::Read<>(const Sphynx::YAMLReader& reader, UUID& uuid)
 {
 	std::string str; reader.Read(str);
 	uuid = UUID::FromString(str);

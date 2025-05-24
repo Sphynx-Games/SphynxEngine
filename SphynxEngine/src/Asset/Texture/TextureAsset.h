@@ -10,7 +10,7 @@
 namespace Sphynx
 {
 	template<>
-	struct SPHYNX_API Asset<Texture> : public IAsset
+	struct Asset<Texture> : public IAsset
 	{
 	public:
 		virtual ~Asset()
@@ -41,8 +41,8 @@ namespace Sphynx
 	GENERATE_ASSETTYPE_CONVERSOR(Texture);
 }
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::TextureAssetMetadata)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::TextureAssetMetadata, SPHYNX_API)
 
 	SPX_REFLECT_PROPERTY(RelativePath)
 
-SPX_REFLECT_STRUCT_END(Sphynx::TextureAssetMetadata)
+SPX_REFLECT_STRUCT_END(Sphynx::TextureAssetMetadata, SPHYNX_API)

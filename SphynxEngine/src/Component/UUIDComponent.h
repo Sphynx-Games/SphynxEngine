@@ -24,9 +24,9 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUIDComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUIDComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(UUID)
 
-SPX_REFLECT_STRUCT_END(Sphynx::UUIDComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::UUIDComponent, SPHYNX_API)

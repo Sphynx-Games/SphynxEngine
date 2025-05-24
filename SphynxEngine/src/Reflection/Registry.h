@@ -1,20 +1,15 @@
 #pragma once
 
-#include "Reflection/Class.h"
+#include "Core/Core.h"
+#include "Type.h"
 #include <vector>
-
-#ifdef FORCE_IMPORT
-#define REFLECTION_API __declspec(dllimport)
-#else
-#define REFLECTION_API __declspec(dllexport)
-#endif // FORCE_IMPORT
 
 
 namespace Sphynx
 {
 	namespace Reflection
 	{
-		class Registry
+		class SPHYNX_API Registry
 		{
 		public:
 			static void Init();
@@ -22,20 +17,32 @@ namespace Sphynx
 
 		private:
 			template<typename T>
-			static void InitializeDeferred();
+			static void Register();
+			static void Register(const Type& (*typeFunc)());
+			template<typename T>
+			static void Unregister();
+			static void Unregister(const Type& (*typeFunc)());
 
 		private:
-			REFLECTION_API static std::vector<const Type&(*)()>& GetTypeFunctions();
+			std::vector<const Type& (*)()> m_TypeFunctions;
 
 		private:
 			template<typename T>
 			friend struct TypeRegister;
 		};
 
+		extern SPHYNX_API Registry* gRegistry;
+
 		template<typename T>
-		void Registry::InitializeDeferred()
+		void Registry::Register()
 		{
-			GetTypeFunctions().push_back(&GetType<T>);
+			Register(&GetType<T>);
+		}
+
+		template<typename T>
+		void Registry::Unregister()
+		{
+			Unregister(&GetType<T>);
 		}
 
 		template<typename T>
@@ -43,7 +50,12 @@ namespace Sphynx
 		{
 			TypeRegister()
 			{
-				Registry::InitializeDeferred<T>();
+				Registry::Register<T>();
+			}
+
+			~TypeRegister()
+			{
+				Registry::Unregister<T>();
 			}
 		};
 	}

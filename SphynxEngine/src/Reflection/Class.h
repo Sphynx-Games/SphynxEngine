@@ -26,16 +26,16 @@ namespace Sphynx
 			const Attribute* const* Attributes;
 			size_t AttributesCount;
 
-			inline const Property* begin() { return Properties; }
-			inline const Property* begin() const { return Properties; }
-			inline const Property* end() { return Properties + PropertiesCount; }
-			inline const Property* end() const { return Properties + PropertiesCount; }
+			const Property* begin();
+			const Property* begin() const;
+			const Property* end();
+			const Property* end() const;
 
 			template<typename T>
-			inline bool HasAttribute() const { return GetAttribute<T>() != nullptr; }
+			bool HasAttribute() const { return GetAttribute<T>() != nullptr; }
 
 			template<typename T>
-			inline const T* GetAttribute() const
+			const T* GetAttribute() const
 			{
 				for (size_t i = 0; i < AttributesCount; ++i)
 				{

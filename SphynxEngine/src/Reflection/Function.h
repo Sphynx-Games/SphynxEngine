@@ -5,6 +5,9 @@
 #include "Attribute.h"
 #include "Traits/Utility.h"
 
+#include <array>
+#include <vector>
+
 
 namespace Sphynx
 {
@@ -21,6 +24,11 @@ namespace Sphynx
 
 				std::vector<Attribute*> Attributes;
 			};
+
+			Function(const char* name, const Type& returnType, const Parameter* params, size_t paramCount, void(*func)(void*, void*));
+			Function(const Function& other);
+			Function(Function&& other) noexcept;
+			~Function();
 
 			const char* Name;
 			const Type& ReturnType;

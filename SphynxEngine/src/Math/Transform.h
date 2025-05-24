@@ -30,10 +30,10 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::Transform)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Transform, SPHYNX_API)
 
 SPX_REFLECT_PROPERTY(Position)
 SPX_REFLECT_PROPERTY(Scale)
 SPX_REFLECT_PROPERTY(Rotation)
 
-SPX_REFLECT_STRUCT_END(Sphynx::Transform)
+SPX_REFLECT_STRUCT_END(Sphynx::Transform, SPHYNX_API)

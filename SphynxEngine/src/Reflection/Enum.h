@@ -3,7 +3,10 @@
 #include "Core/Core.h"
 #include "Type.h"
 #include "Attribute.h"
+
+#include <vector>
 #include <string>
+#include <algorithm>
 
 
 namespace Sphynx
@@ -15,6 +18,11 @@ namespace Sphynx
 		public:
 			struct SPHYNX_API Entry
 			{
+				Entry(const std::string& name, int64_t value);
+				Entry(const Entry& other);
+				Entry(Entry&& other);
+				~Entry();
+
 				std::string Name;
 				int64_t Value;
 
@@ -32,19 +40,15 @@ namespace Sphynx
 				m_SetValueFunc([](void* addr, int64_t value) -> void { *((T*)addr) = (T)value; })
 			{}
 
-			inline const Entry* begin() { return Values; }
-			inline const Entry* begin() const { return Values; }
-			inline const Entry* end() { return Values + Count; }
-			inline const Entry* end() const { return Values + Count; }
+			const Entry* begin();
+			const Entry* begin() const;
+			const Entry* end();
+			const Entry* end() const;
 
-			inline int64_t GetValue(const void* addr) const
-			{
-				SPX_CORE_ASSERT(m_GetValueFunc != nullptr, "Function is nullptr!!");
-				return m_GetValueFunc(addr);
-			}
+			int64_t GetValue(const void* addr) const;
 
 			template<typename T>
-			inline int64_t GetValue(T e) const
+			int64_t GetValue(T e) const
 			{
 				SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
@@ -55,23 +59,11 @@ namespace Sphynx
 				return it->Value;
 			}
 
-			inline void SetValue(void* addr, int64_t value) const
-			{
-				SPX_CORE_ASSERT(m_SetValueFunc != nullptr, "Function is nullptr!!");
-				m_SetValueFunc(addr, value);
-			}
-
-			inline const std::string& GetName(const void* addr) const
-			{
-				int64_t value = GetValue(addr);
-				auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Value == value; });
-				SPX_CORE_ASSERT(it != Values + Count);
-
-				return it->Name;
-			}
+			void SetValue(void* addr, int64_t value) const;
+			const std::string& GetName(const void* addr) const;
 
 			template<typename T>
-			inline const std::string& GetName(T e) const
+			const std::string& GetName(T e) const
 			{
 				SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
@@ -82,13 +74,7 @@ namespace Sphynx
 				return it->Name;
 			}
 
-			inline void SetName(void* addr, const std::string& name) const
-			{
-				auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Name == name; });
-				SPX_CORE_ASSERT(it != Values + Count);
-
-				SetValue(addr, it->Value);
-			}
+			void SetName(void* addr, const std::string& name) const;
 
 		public:
 			const Entry* Values;

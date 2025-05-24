@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Core.h"
+
 #pragma warning(push, 0)
 #include <spdlog/spdlog.h>
 #pragma warning(pop)
@@ -7,7 +9,7 @@
 
 namespace Sphynx
 {
-	class Log
+	class SPHYNX_API Log
 	{
 	public:
 		static void Init();

@@ -43,7 +43,7 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::BoxCollider2DComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::BoxCollider2DComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Size)
@@ -51,4 +51,4 @@ SPX_REFLECT_PROPERTY(m_Offset)
 SPX_REFLECT_PROPERTY(m_Trigger)
 SPX_REFLECT_PROPERTY(m_Debug)
 
-SPX_REFLECT_STRUCT_END(Sphynx::BoxCollider2DComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::BoxCollider2DComponent, SPHYNX_API)

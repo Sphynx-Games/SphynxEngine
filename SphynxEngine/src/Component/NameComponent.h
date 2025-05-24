@@ -24,9 +24,9 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::NameComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::NameComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(Name)
 
-SPX_REFLECT_STRUCT_END(Sphynx::NameComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::NameComponent, SPHYNX_API)

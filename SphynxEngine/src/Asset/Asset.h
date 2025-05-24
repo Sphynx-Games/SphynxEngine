@@ -29,7 +29,7 @@ namespace Sphynx
 	};
 
 	template<typename T>
-	struct SPHYNX_API Asset : public IAsset
+	struct Asset : public IAsset
 	{
 		virtual ~Asset()
 		{

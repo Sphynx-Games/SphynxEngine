@@ -40,9 +40,9 @@ private:
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_CLASS_BEGIN(ExampleScriptComponent)
+SPX_REFLECT_CLASS_BEGIN(ExampleScriptComponent, SANDBOX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Num)
 
-SPX_REFLECT_CLASS_END(ExampleScriptComponent)
+SPX_REFLECT_CLASS_END(ExampleScriptComponent, SANDBOX_API)

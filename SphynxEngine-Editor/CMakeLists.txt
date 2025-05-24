@@ -36,13 +36,8 @@ target_include_directories(SphynxEngine-Editor PUBLIC "${CMAKE_CURRENT_SOURCE_DI
 
 # Set target link libs
 target_link_libraries(SphynxEngine-Editor SphynxEngine)
-# TODO: remove this libraries below when possible
-target_link_libraries(SphynxEngine-Editor SDL3::SDL3)
-target_link_libraries(SphynxEngine-Editor spdlog::spdlog)
-target_link_libraries(SphynxEngine-Editor glm::glm)
-target_link_libraries(SphynxEngine-Editor EnTT::EnTT)
-target_link_libraries(SphynxEngine-Editor imgui)
-target_link_libraries(SphynxEngine-Editor glad)
+
+target_compile_definitions(SphynxEngine-Editor  PRIVATE SPHYNX_EDITOR_BUILD)
 
 # Post build command (copy .dll to bin folder)
 add_custom_target(SphynxEngine-EditorRules 
@@ -56,21 +51,3 @@ add_custom_target(SphynxEngine-EditorRules
 )
 add_dependencies(SphynxEngine-Editor SphynxEngine-EditorRules)
 set_target_properties(SphynxEngine-EditorRules PROPERTIES FOLDER __internal__)
-
-target_compile_definitions(SphynxEngine-Editor PUBLIC
-	$<$<CONFIG:Debug>:SPX_DEBUG>
-	$<$<CONFIG:RelWithDebInfo>:SPX_DEBUG>
-	$<$<CONFIG:Release>:SPX_RELEASE>
-	$<$<CONFIG:MinSizeRel>:SPX_RELEASE>) 
-
-# Add a library folder
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/LIBRARY_FOLDER/)
-
-# Add include directories
-# target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/)
-
-# Adds preprocessor definitions
-# target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC GLFW_INCLUDE_NONE=1) 
-
-# Links libraries
-# target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glm)

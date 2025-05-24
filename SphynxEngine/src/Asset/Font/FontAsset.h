@@ -10,7 +10,7 @@
 namespace Sphynx
 {
 	template<>
-	struct SPHYNX_API Asset<Font> : public IAsset
+	struct Asset<Font> : public IAsset
 	{
 		virtual ~Asset()
 		{
@@ -42,8 +42,8 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::FontAssetMetadata)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::FontAssetMetadata, SPHYNX_API)
 
 	SPX_REFLECT_PROPERTY(RelativePath)
 
-SPX_REFLECT_STRUCT_END(Sphynx::FontAssetMetadata)
+SPX_REFLECT_STRUCT_END(Sphynx::FontAssetMetadata, SPHYNX_API)

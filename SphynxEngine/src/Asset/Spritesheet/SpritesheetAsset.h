@@ -47,8 +47,8 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpritesheetAssetMetadata)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpritesheetAssetMetadata, SPHYNX_API)
 
 	SPX_REFLECT_PROPERTY(SpritesData)
 
-SPX_REFLECT_STRUCT_END(Sphynx::SpritesheetAssetMetadata)
+SPX_REFLECT_STRUCT_END(Sphynx::SpritesheetAssetMetadata, SPHYNX_API)

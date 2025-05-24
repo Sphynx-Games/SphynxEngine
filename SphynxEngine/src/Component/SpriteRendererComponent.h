@@ -29,10 +29,10 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpriteRendererComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::SpriteRendererComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(Sprite)
 SPX_REFLECT_PROPERTY(Tint)
 
-SPX_REFLECT_STRUCT_END(Sphynx::SpriteRendererComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::SpriteRendererComponent, SPHYNX_API)

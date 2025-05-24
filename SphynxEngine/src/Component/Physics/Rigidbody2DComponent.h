@@ -55,7 +55,7 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::Rigidbody2DComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Rigidbody2DComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Enabled)
@@ -66,4 +66,4 @@ SPX_REFLECT_PROPERTY(m_LinearDamping)
 SPX_REFLECT_PROPERTY(m_AngularDamping)
 SPX_REFLECT_PROPERTY(m_GravityScale)
 
-SPX_REFLECT_STRUCT_END(Sphynx::Rigidbody2DComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::Rigidbody2DComponent, SPHYNX_API)

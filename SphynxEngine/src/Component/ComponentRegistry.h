@@ -11,7 +11,7 @@
 
 namespace Sphynx
 {
-	struct ComponentFunctions
+	struct SPHYNX_API ComponentFunctions
 	{
 		// Actor functions
 		void* (*AddComponent)(Actor&);
@@ -24,7 +24,7 @@ namespace Sphynx
 		Array<Actor>(*GetActorsByComponent)(const Scene&);
 	};
 
-	class ComponentRegistry
+	class SPHYNX_API ComponentRegistry
 	{
 	public:
 		template<typename TComponent>
@@ -51,80 +51,24 @@ namespace Sphynx
 		template<typename TComponent>
 		static void Unregister()	{ Unregister(&Reflection::GetClass<TComponent>); }
 
-		static Array<const Reflection::Class*> GetComponents() 
-		{
-			Array<const Reflection::Class*> components;
-			for (const auto& func : s_ComponentClasses)
-			{
-				const Reflection::Class& cClass = func();
-				components.Add(&cClass);
-			}
+		static Array<const Reflection::Class*> GetComponents();
 
-			return components; 
-		}
+		static ComponentFunctions& GetComponentFunctions(const Reflection::Class& componentClass);
 
-		static ComponentFunctions& GetComponentFunctions(const Reflection::Class& componentClass)
-		{
-			auto lambda = [&](auto reflectClass) { return &reflectClass() == &componentClass; };
-			auto it = std::find_if(s_ComponentClasses.begin(), s_ComponentClasses.end(), lambda);
-			auto index = std::distance(s_ComponentClasses.begin(), it);
-			return s_ComponentFunctions.Get(index);
-		}
-
-		static void* InvokeAddComponent(const Reflection::Class& componentClass, Actor& actor)
-		{
-			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
-			return compFunc.AddComponent(actor);
-		}
-
-		static void InvokeRemoveComponent(const Reflection::Class& componentClass, Actor& actor)
-		{
-			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
-			compFunc.RemoveComponent(actor);
-		}
-
-		static void* InvokeGetComponent(const Reflection::Class& componentClass, const Actor& actor)
-		{
-			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
-			return compFunc.GetComponent(actor);
-		}
-
-		static bool InvokeHasComponent(const Reflection::Class& componentClass, const Actor& actor)
-		{
-			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
-			return compFunc.HasComponent(actor);
-		}
-
-		static void InvokeCloneComponent(const Reflection::Class& componentClass, const Actor& source, Actor& target)
-		{
-			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
-			compFunc.CloneComponent(source, target);
-		}
-
-		static Array<Actor> InvokeGetActorsByComponent(const Reflection::Class& componentClass, const Scene& scene)
-		{
-			ComponentFunctions& compFunc = GetComponentFunctions(componentClass);
-			return compFunc.GetActorsByComponent(scene);
-		}
+		static void* InvokeAddComponent(const Reflection::Class& componentClass, Actor& actor);
+		static void InvokeRemoveComponent(const Reflection::Class& componentClass, Actor& actor);
+		static void* InvokeGetComponent(const Reflection::Class& componentClass, const Actor& actor);
+		static bool InvokeHasComponent(const Reflection::Class& componentClass, const Actor& actor);
+		static void InvokeCloneComponent(const Reflection::Class& componentClass, const Actor& source, Actor& target);
+		static Array<Actor> InvokeGetActorsByComponent(const Reflection::Class& componentClass, const Scene& scene);
 
 	private:
-		static void Register(const Reflection::Class& (*cClass)())
-		{
-			SPX_CORE_ASSERT(!s_ComponentClasses.Contains(cClass), "Component already registered!");
-			//SPX_CORE_LOG_TRACE("Registering component");
-			s_ComponentClasses.Add(cClass);
-		}
-
-		static void Unregister(const Reflection::Class& (*cClass)())
-		{
-			SPX_CORE_ASSERT(s_ComponentClasses.Contains(cClass), "Component not registered!");
-			//SPX_CORE_LOG_TRACE("Unregistering component");
-			s_ComponentClasses.Remove(cClass);
-		}
+		static void Register(const Reflection::Class& (*cClass)());
+		static void Unregister(const Reflection::Class& (*cClass)());
 
 	private:
-		inline static Array<const Reflection::Class& (*)()> s_ComponentClasses;
-		inline static Array<ComponentFunctions> s_ComponentFunctions;
+		static Array<const Reflection::Class& (*)()> s_ComponentClasses;
+		static Array<ComponentFunctions> s_ComponentFunctions;
 
 	};
 }

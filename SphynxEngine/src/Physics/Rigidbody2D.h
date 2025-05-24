@@ -103,16 +103,16 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_ENUM_BEGIN(Sphynx::RigidbodyType)
+SPX_REFLECT_ENUM_BEGIN(Sphynx::RigidbodyType, SPHYNX_API)
 
 SPX_REFLECT_ENUM_VALUE(STATIC)
 SPX_REFLECT_ENUM_VALUE(DYNAMIC)
 SPX_REFLECT_ENUM_VALUE(KINEMATIC)
 
-SPX_REFLECT_ENUM_END(Sphynx::RigidbodyType)
+SPX_REFLECT_ENUM_END(Sphynx::RigidbodyType, SPHYNX_API)
 
 
-//SPX_REFLECT_STRUCT_BEGIN(Sphynx::RigidbodyDef)
+//SPX_REFLECT_STRUCT_BEGIN(Sphynx::RigidbodyDef, SPHYNX_API)
 //
 //SPX_REFLECT_PROPERTY(Enabled)
 //SPX_REFLECT_PROPERTY(Type)
@@ -123,13 +123,13 @@ SPX_REFLECT_ENUM_END(Sphynx::RigidbodyType)
 //SPX_REFLECT_PROPERTY(GravityScale)
 //SPX_REFLECT_PROPERTY(Transform)
 //
-//SPX_REFLECT_STRUCT_END(Sphynx::RigidbodyDef)
+//SPX_REFLECT_STRUCT_END(Sphynx::RigidbodyDef, SPHYNX_API)
 
 
-//SPX_REFLECT_CLASS_BEGIN(Sphynx::Rigidbody2D)
+//SPX_REFLECT_CLASS_BEGIN(Sphynx::Rigidbody2D, SPHYNX_API)
 //
 //SPX_REFLECT_PROPERTY(m_Definition)
 //SPX_REFLECT_PROPERTY(m_PhysicsWorld)
 //SPX_REFLECT_PROPERTY(m_Data)
 //
-//SPX_REFLECT_CLASS_END(Sphynx::Rigidbody2D)
+//SPX_REFLECT_CLASS_END(Sphynx::Rigidbody2D, SPHYNX_API)

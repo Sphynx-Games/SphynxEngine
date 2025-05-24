@@ -265,10 +265,10 @@ template<typename TKey, typename TValue> struct std::tuple_element<1, Sphynx::Ma
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::HashMap)
+SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::HashMap, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(AssociativeCollection)
-SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::HashMap)
+SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::HashMap, SPHYNX_API)
 
-SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Map)
+SPX_REFLECT_TEMPLATE_CLASS_BEGIN(Sphynx::Map, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(AssociativeCollection)
-SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Map)
+SPX_REFLECT_TEMPLATE_CLASS_END(Sphynx::Map, SPHYNX_API)

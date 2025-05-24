@@ -12,7 +12,7 @@ namespace Sphynx
 
 		struct SPHYNX_API TemplateArgument
 		{
-			enum class Kind
+			enum class SPHYNX_API Kind
 			{
 				Type,
 				Value,

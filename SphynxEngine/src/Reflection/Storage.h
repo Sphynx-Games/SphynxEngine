@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Core/Core.h"
 #include "Property.h"
 #include "Function.h"
 #include "TemplateArgument.h"

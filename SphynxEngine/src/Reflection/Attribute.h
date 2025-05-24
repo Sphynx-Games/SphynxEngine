@@ -1,14 +1,20 @@
 #pragma once
 
+#include "Core/Core.h"
+#include <cstdint>
+
 
 namespace Sphynx
 {
 	namespace Reflection
 	{
+		struct Type;
+
 		class SPHYNX_API Attribute
 		{
 		public:
-			virtual ~Attribute() = default;
+			Attribute();
+			virtual ~Attribute();
 
 		};
 	}
@@ -130,9 +136,10 @@ namespace Sphynx
 				POD(::Sphynx::Reflection::details::Tag<T>) :
 					m_CopyToFunction([](const void* source, void* dest) -> void { *((T*)dest) = *((T*)source); })
 				{}
+				virtual ~POD();
 
 			public:
-				void CopyTo(const void* source, void* dest) const { m_CopyToFunction(source, dest); }
+				void CopyTo(const void* source, void* dest) const;
 
 			private:
 				TCopyToFunction m_CopyToFunction;

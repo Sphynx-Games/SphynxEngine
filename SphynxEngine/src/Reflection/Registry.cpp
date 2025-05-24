@@ -1,13 +1,25 @@
-#include "Registry.h"
+#include "Reflection/Registry.h"
 
 
 namespace Sphynx
 {
 	namespace Reflection
 	{
+		Registry* gRegistry = nullptr;
+
+		static void EnsureRegistryInitialized()
+		{
+			if (gRegistry == nullptr)
+			{
+				static Registry sRegistry;
+				gRegistry = &sRegistry;
+			}
+		}
+
 		void Registry::Init()
 		{
-			for (const auto& func : GetTypeFunctions())
+			EnsureRegistryInitialized();
+			for (const auto& func : gRegistry->m_TypeFunctions)
 			{
 				[[maybe_unused]] const Type& cClass = func();
 				//SPX_CORE_LOG_TRACE("    Reflection initialize {}", cClass.Name);
@@ -19,10 +31,18 @@ namespace Sphynx
 			// do nothing for now
 		}
 
-		REFLECTION_API std::vector<const Type&(*)()>& Registry::GetTypeFunctions()
+		void Registry::Register(const Type& (*typeFunc)())
 		{
-			static std::vector<const Type&(*)()> s_TypeFunctions{};
-			return s_TypeFunctions;
+			EnsureRegistryInitialized();
+			gRegistry->m_TypeFunctions.push_back(typeFunc);
+		}
+
+		void Registry::Unregister(const Type& (*typeFunc)())
+		{
+			EnsureRegistryInitialized();
+			auto it = std::find(std::begin(gRegistry->m_TypeFunctions), std::end(gRegistry->m_TypeFunctions), typeFunc);
+			SPX_CORE_ASSERT(it != std::end(gRegistry->m_TypeFunctions), "Unregistering non registered type!");
+			gRegistry->m_TypeFunctions.erase(it);
 		}
 
 	}

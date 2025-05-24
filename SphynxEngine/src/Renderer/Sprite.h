@@ -75,7 +75,7 @@ namespace Sphynx
 //#include "Reflection/Reflection.h"
 //
 //
-//SPX_REFLECT_CLASS_BEGIN(Sphynx::Sprite)
+//SPX_REFLECT_CLASS_BEGIN(Sphynx::Sprite, SPHYNX_API)
 //
 //SPX_REFLECT_PROPERTY(m_Texture)
 //SPX_REFLECT_PROPERTY(m_Position)
@@ -83,4 +83,4 @@ namespace Sphynx
 //SPX_REFLECT_PROPERTY(m_Pivot)
 //SPX_REFLECT_PROPERTY(m_PixelsPerUnit)
 //
-//SPX_REFLECT_CLASS_END(Sphynx::Sprite)
+//SPX_REFLECT_CLASS_END(Sphynx::Sprite, SPHYNX_API)

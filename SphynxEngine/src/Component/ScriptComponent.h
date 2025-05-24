@@ -29,7 +29,7 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_CLASS_BEGIN(Sphynx::ScriptComponent)
+SPX_REFLECT_CLASS_BEGIN(Sphynx::ScriptComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
-SPX_REFLECT_CLASS_END(Sphynx::ScriptComponent)
+SPX_REFLECT_CLASS_END(Sphynx::ScriptComponent, SPHYNX_API)

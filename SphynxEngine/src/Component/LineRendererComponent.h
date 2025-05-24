@@ -28,7 +28,7 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::LineRendererComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::LineRendererComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(Point1)
@@ -36,4 +36,4 @@ SPX_REFLECT_PROPERTY(Point2)
 SPX_REFLECT_PROPERTY(LineWidth)
 SPX_REFLECT_PROPERTY(Color)
 
-SPX_REFLECT_STRUCT_END(Sphynx::LineRendererComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::LineRendererComponent, SPHYNX_API)

@@ -15,7 +15,7 @@ namespace Sphynx
 			using TDestructFunction = void (*)(void*);
 		}
 
-		enum class TypeKind
+		enum class SPHYNX_API TypeKind
 		{
 			PRIMITIVE,
 			ENUM,

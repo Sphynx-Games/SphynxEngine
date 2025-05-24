@@ -21,7 +21,7 @@ namespace Sphynx
 	using AssetLoadFunction = std::shared_ptr<IAsset>(*)(const AssetMetadata&);
 	using AssetSaveFunction = void(*)(const AssetMetadata&);
 
-	class AssetImporter
+	class SPHYNX_API AssetImporter
 	{
 	public:
 		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata, const std::filesystem::path& path);

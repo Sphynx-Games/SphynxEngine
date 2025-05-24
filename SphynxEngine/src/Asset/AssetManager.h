@@ -20,7 +20,7 @@ namespace Sphynx
 	using AssetTypeRegistry = std::set<AssetType>;
 	using AssetRegistry = Map<AssetHandle, AssetMetadata>;
 
-	class AssetManager
+	class SPHYNX_API AssetManager
 	{
 	public:
 		static void Init();

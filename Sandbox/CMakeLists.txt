@@ -1,5 +1,5 @@
 # ---------------------------------------------------
-# SphynxEngine-Runtime Project CMake Setup
+# Sandbox Project CMake Setup
 # ---------------------------------------------------
 cmake_minimum_required(VERSION 3.6)
 
@@ -9,7 +9,7 @@ else()
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 endif()
 
-project(SphynxEngine-Runtime CXX)
+project(Sandbox CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -31,15 +31,9 @@ file(GLOB_RECURSE SNBSOURCES CONFIGURE_DEPENDS
 add_library(Sandbox SHARED "${SNBSOURCES}")
 
 # Set target sources
-#target_sources(Sandbox PRIVATE ${SNBSOURCES})
-target_include_directories(Sandbox PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+target_sources(Sandbox PRIVATE ${SNBSOURCES})
 
-# Set target link libs
-target_link_libraries(Sandbox SphynxEngine)
-# TODO: remove this libraries below when possible
-target_link_libraries(Sandbox spdlog::spdlog)
-target_link_libraries(Sandbox glm::glm)
-target_link_libraries(Sandbox EnTT::EnTT)
+target_link_libraries(Sandbox PRIVATE SphynxEngine)
 
 # Post build command (copy .dll to bin folder)
 add_custom_target(SandboxCopyBinaries 
@@ -51,8 +45,4 @@ add_custom_target(SandboxCopyBinaries
 add_dependencies(Sandbox SandboxCopyBinaries)
 set_target_properties(SandboxCopyBinaries PROPERTIES FOLDER __internal__)
 
-target_compile_definitions(Sandbox PUBLIC
-	$<$<CONFIG:Debug>:SPX_DEBUG>
-	$<$<CONFIG:RelWithDebInfo>:SPX_DEBUG>
-	$<$<CONFIG:Release>:SPX_RELEASE>
-	$<$<CONFIG:MinSizeRel>:SPX_RELEASE>)
+target_compile_definitions(Sandbox PRIVATE SANDBOX_BUILD_MODULE)

@@ -33,7 +33,7 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::BoxRendererComponent)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::BoxRendererComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(DrawMode)
@@ -41,4 +41,4 @@ SPX_REFLECT_PROPERTY(Size)
 SPX_REFLECT_PROPERTY(Pivot)
 SPX_REFLECT_PROPERTY(Color)
 
-SPX_REFLECT_STRUCT_END(Sphynx::BoxRendererComponent)
+SPX_REFLECT_STRUCT_END(Sphynx::BoxRendererComponent, SPHYNX_API)
