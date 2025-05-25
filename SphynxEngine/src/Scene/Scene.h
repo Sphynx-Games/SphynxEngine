@@ -79,8 +79,8 @@ namespace Sphynx
 		auto view = m_Registry.view<T>();
 		for (auto entity : view)
 		{
-			auto component = view.get<T>(entity);
-			result.Add(&component);
+			auto& component = view.get<T>(entity);
+			result.Add(const_cast<T*>(&component));
 		}
 		return result;
 	}

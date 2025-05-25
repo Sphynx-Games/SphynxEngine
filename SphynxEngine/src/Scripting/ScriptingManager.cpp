@@ -8,9 +8,9 @@ namespace Sphynx
 {
 	void ScriptingManager::Update(const Scene& scene, float deltaTime)
 	{
-		Array<ScriptComponent*> components = scene.GetComponents<ScriptComponent>();
-		for (ScriptComponent* script : components)
+		for (void* scriptPtr : ComponentRegistry::InvokeGetSceneComponents(Reflection::GetClass<ScriptComponent>(), scene))
 		{
+			ScriptComponent* script = static_cast<ScriptComponent*>(scriptPtr);
 			script->Update(deltaTime);
 		}
 	}

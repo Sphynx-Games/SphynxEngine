@@ -7,7 +7,7 @@
 namespace Sphynx
 {
 	template <typename T>
-	class SPHYNX_API Array
+	class /*SPHYNX_API*/ Array
 	{
 	public:
 		using value_type = typename std::vector<T>::value_type;
@@ -29,7 +29,7 @@ namespace Sphynx
 			Append(other);
 		}
 
-		Array(Array&& other)
+		Array(Array&& other) noexcept
 		{
 			m_Array = std::move(other.m_Array);
 			other.RemoveAll();
