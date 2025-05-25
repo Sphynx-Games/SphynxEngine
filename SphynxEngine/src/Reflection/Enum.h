@@ -32,6 +32,7 @@ namespace Sphynx
 			template<typename T>
 			Enum(const Type& type, const Entry* values, size_t count, const Attribute* const* attributes, size_t attributesCount, details::Tag<T>) :
 				Type(type),
+				UnderlyingType(GetType<T>()),
 				Values(values),
 				Count(count),
 				Attributes(attributes),
@@ -77,6 +78,8 @@ namespace Sphynx
 			void SetName(void* addr, const std::string& name) const;
 
 		public:
+			const Type& UnderlyingType;
+
 			const Entry* Values;
 			size_t Count;
 

@@ -10,6 +10,7 @@ namespace Sphynx
 {
 	namespace Reflection
 	{
+		struct Class;
 		struct Property;
 		struct Function;
 		struct TemplateArgument;
@@ -17,6 +18,9 @@ namespace Sphynx
 
 		struct SPHYNX_API Class : public Type
 		{
+			const Class* const* ParentClasses;
+			size_t ParentClassesCount;
+
 			const Property* Properties;
 			size_t PropertiesCount;
 

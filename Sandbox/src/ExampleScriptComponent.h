@@ -41,6 +41,7 @@ private:
 
 
 SPX_REFLECT_CLASS_BEGIN(ExampleScriptComponent, SANDBOX_API)
+SPX_REFLECT_INHERITANCE(Sphynx::ScriptComponent)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Num)

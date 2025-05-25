@@ -13,6 +13,8 @@ namespace Sphynx
 {
 	namespace Reflection
 	{
+		struct Class;
+
 		namespace details
 		{
 			template<typename T>
@@ -20,6 +22,7 @@ namespace Sphynx
 			{
 				template<typename Lambda>
 				ClassStorage(Lambda&& ctor) :
+					ParentClasses{},
 					Properties{},
 					Functions{},
 					Size{0},
@@ -32,6 +35,7 @@ namespace Sphynx
 
 				inline static ClassStorage* Instance = nullptr;
 
+				std::vector<const Class*> ParentClasses;
 				std::vector<Property> Properties;
 				std::vector<Function> Functions;
 				size_t Size;

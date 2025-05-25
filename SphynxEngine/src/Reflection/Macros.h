@@ -14,6 +14,7 @@
 		{ \
 			static ::Sphynx::Reflection::details::ClassStorage<::_Class> Storage([](auto* self) { \
 				self->Size = sizeof(::_Class); \
+				[[maybe_unused]] auto& ParentClasses = self->ParentClasses; \
 				[[maybe_unused]] auto& Properties = self->Properties; \
 				[[maybe_unused]] auto& Functions = self->Functions; \
 				[[maybe_unused]] auto& Attributes = self->Attributes; \
@@ -23,6 +24,8 @@
 			}); \
 			static const Class c { \
 				::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class>{}, #_Class, sizeof(::_Class), alignof(::_Class), (Storage.IsStruct ? ::Sphynx::Reflection::TypeKind::STRUCT : ::Sphynx::Reflection::TypeKind::CLASS) }, \
+				Storage.ParentClasses.data(), \
+				Storage.ParentClasses.size(), \
 				Storage.Properties.data(), \
 				Storage.Properties.size(), \
 				Storage.Functions.data(), \
@@ -61,6 +64,7 @@
 			static ClassStorage<::_Class<T...>> Storage([](auto* self) \
 				{ \
 					self->Size = sizeof(::_Class<T...>); \
+					[[maybe_unused]] auto& ParentClasses = self->ParentClasses; \
 					[[maybe_unused]] auto& Properties = self->Properties; \
 					[[maybe_unused]] auto& Functions = self->Functions; \
 					[[maybe_unused]] auto& Attributes = self->Attributes; \
@@ -75,6 +79,8 @@
 			 \
 			static const TemplateClass c{ \
 				::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Class<T...>>{}, #_Class, sizeof(::_Class<T...>), alignof(::_Class<T...>), Storage.IsStruct ? ::Sphynx::Reflection::TypeKind::STRUCT : ::Sphynx::Reflection::TypeKind::CLASS }, \
+				Storage.ParentClasses.data(), \
+				Storage.ParentClasses.size(), \
 				Storage.Properties.data(), \
 				Storage.Properties.size(), \
 				Storage.Functions.data(), \
@@ -131,7 +137,17 @@
 	SPX_REFLECT_TEMPLATE_STRUCT_BEGIN(_Struct, _API) \
 	SPX_REFLECT_TEMPLATE_STRUCT_END(_Struct, _API)
 
- // ---------- Property -----------
+// ---------- Parent (inheritance) -----------
+#define SPX_REFLECT_PARENT(_Class) \
+	{ \
+		const ::Sphynx::Reflection::Class& parent = ::Sphynx::Reflection::GetClass<::_Class>(); \
+		ParentClasses.emplace_back(&parent); \
+	} \
+
+#define SPX_REFLECT_INHERITANCE(_Class) \
+	SPX_REFLECT_PARENT(_Class)
+
+// ---------- Property -----------
 #define SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	{ \
 		Properties.emplace_back( \
@@ -148,7 +164,7 @@
 	SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	SPX_REFLECT_PROPERTY_END()
 
- // ---------- Member Function -----------
+// ---------- Member Function -----------
 #define SPX_REFLECT_FUNCTION_BEGIN(_Function) \
 	{ \
 		auto FuncPtr = [](void* obj, void* params) \
@@ -188,7 +204,7 @@
 	SPX_REFLECT_FUNCTION_PARAM_BEGIN(_Param) \
 	SPX_REFLECT_FUNCTION_PARAM_END()
 
- // ---------- Enum -----------
+// ---------- Enum -----------
 #define SPX_REFLECT_ENUM_BEGIN(_Enum, _API) \
 	namespace Sphynx { namespace Reflection { namespace details { \
 	_API inline const Enum& GetEnumImpl(Tag<_Enum>) \
@@ -202,13 +218,14 @@
 
 #define SPX_REFLECT_ENUM_END(_Enum, _API) \
 		}); \
+		using enum_underlying_type = typename std::underlying_type<::_Enum>::type; \
 		static const Enum e{ \
 			::Sphynx::Reflection::Type{ ::Sphynx::Reflection::details::Tag<::_Enum>{}, #_Enum, sizeof(::_Enum), alignof(::_Enum), ::Sphynx::Reflection::TypeKind::ENUM }, \
 			Storage.Entries.data(), \
 			Storage.Entries.size(), \
 			Storage.Attributes.data(), \
 			Storage.Attributes.size(), \
-			::Sphynx::Reflection::details::Tag<typename std::underlying_type<::_Enum>::type>{} \
+			::Sphynx::Reflection::details::Tag<enum_underlying_type>{} \
 		}; \
 		return e; \
 	} \
@@ -261,7 +278,7 @@
 	SPX_REFLECT_ENUM_BEGIN(_Enum, _API) \
 	SPX_REFLECT_ENUM_END(_Enum, _API)
 
- // ---------- Attribute -----------
+// ---------- Attribute -----------
 #define SPX_REFLECT_ATTRIBUTE_INTERNAL(Attr, ...) \
 	{ \
 		using namespace ::Sphynx::Reflection::CommonAttribute; \
