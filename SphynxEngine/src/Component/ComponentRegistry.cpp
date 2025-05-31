@@ -129,6 +129,7 @@ namespace Sphynx
 	{
 		// This won't really deferred anything, it is immediate xD
 		const Reflection::Class& result = cClass();
+		// FIXME: component classes might be uninitialized before component unregistration
 		SPX_CORE_ASSERT(s_ComponentClasses.Contains(&result), "Component not registered!");
 		//SPX_CORE_LOG_TRACE("Unregistering component");
 		

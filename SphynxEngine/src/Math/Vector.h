@@ -8,7 +8,7 @@
 namespace Sphynx
 {
 	template <typename T>
-	struct SPHYNX_API Vector2T
+	struct /*SPHYNX_API*/ Vector2T
 	{
 		static_assert(std::is_arithmetic_v<T>, "T must be a numeric type");
 

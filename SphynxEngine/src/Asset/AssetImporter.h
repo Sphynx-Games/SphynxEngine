@@ -32,6 +32,10 @@ namespace Sphynx
 		static void RegisterLoader(const AssetType& type, AssetLoadFunction loader);
 		static void RegisterSaver(const AssetType& type, AssetSaveFunction saver);
 
+		static void UnregisterImporter(const AssetType& type);
+		static void UnregisterLoader(const AssetType& type);
+		static void UnregisterSaver(const AssetType& type);
+
 		static bool IsImporterRegistered(const AssetType& type);
 		static bool IsLoaderRegistered(const AssetType& type);
 		static bool IsSaverRegistered(const AssetType& type);

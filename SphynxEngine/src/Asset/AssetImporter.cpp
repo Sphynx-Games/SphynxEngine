@@ -44,6 +44,24 @@ namespace Sphynx
 		s_AssetSaveFunctions[type] = saver;
 	}
 
+	void AssetImporter::UnregisterImporter(const AssetType& type)
+	{
+		SPX_CORE_ASSERT(IsImporterRegistered(type), "There is no importer registered for: {}", type);
+		s_AssetImportFunctions.Remove(type);
+	}
+
+	void AssetImporter::UnregisterLoader(const AssetType& type)
+	{
+		SPX_CORE_ASSERT(IsLoaderRegistered(type), "There is no importer registered for: {}", type);
+		s_AssetLoadFunctions.Remove(type);
+	}
+
+	void AssetImporter::UnregisterSaver(const AssetType& type)
+	{
+		SPX_CORE_ASSERT(IsSaverRegistered(type), "There is no importer registered for: {}", type);
+		s_AssetSaveFunctions.Remove(type);
+	}
+
 	bool AssetImporter::IsImporterRegistered(const AssetType& type)
 	{
 		return s_AssetImportFunctions.ContainsKey(type);

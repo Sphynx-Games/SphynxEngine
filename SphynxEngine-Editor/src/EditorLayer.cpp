@@ -9,6 +9,7 @@
 
 #include <imgui.h>
 #include "Editors/SceneEditor.h"
+#include "ProjectInfo.h"
 
 
 namespace Sphynx
@@ -208,6 +209,14 @@ namespace Sphynx
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("Load Project...", nullptr, nullptr))
+				{
+					auto path = Sphynx::FileDialog::Open();
+					if (!path.empty())
+					{
+						OpenProject(path);
+					}
+				}
 				if (ImGui::MenuItem("Quit"))
 				{
 					Application::GetInstance()->Quit();
@@ -253,5 +262,26 @@ namespace Sphynx
 		if (it == m_Editors.end()) return;
 
 		m_Editors.erase(it);
+	}
+
+	void EditorLayer::OpenProject(const std::filesystem::path& path)
+	{
+		// Change working directory
+		std::filesystem::path newCurrentDirectory = path;
+		newCurrentDirectory.remove_filename();
+		SetCurrentDirectory(newCurrentDirectory.string().c_str());
+
+		// Deserialize project file
+		ProjectInfo projectInfo = {};
+
+		YAMLReader reader{ path };
+		ReflectionDeserializer deserializer{ projectInfo, reader };
+		deserializer.Deserialize();
+
+		// Load {projectInfo.ProjectName}.dll and open initial scene
+		std::filesystem::path dllPath = "Binaries\\Debug";
+		dllPath /= projectInfo.ProjectName;
+		Application::GetInstance()->LoadProject(dllPath);
+		static_cast<SceneEditor*>(m_Editors[0])->OpenScene(projectInfo.InitialScene);
 	}
 }

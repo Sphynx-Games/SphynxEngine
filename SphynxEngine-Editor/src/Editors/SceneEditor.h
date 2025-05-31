@@ -56,5 +56,7 @@ namespace Sphynx
 		PlaybackState m_SceneState;
 		bool m_Ejected;
 		char m_SceneNameBuffer[1024];
+
+		friend class EditorLayer;
 	};
 }

@@ -209,7 +209,7 @@ namespace Sphynx
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Open...", nullptr, nullptr))
+			if (ImGui::MenuItem("Load Scene...", nullptr, nullptr))
 			{
 				auto path = Sphynx::FileDialog::Open();
 				if (!path.empty())

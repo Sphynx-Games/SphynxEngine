@@ -50,7 +50,7 @@ namespace Sphynx
 		FramebufferAttachmentSpecification Attachments;
 	};
 
-	class Framebuffer
+	class SPHYNX_API Framebuffer
 	{
 	public:
 		virtual ~Framebuffer() = default;

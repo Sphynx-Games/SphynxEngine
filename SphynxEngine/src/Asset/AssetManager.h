@@ -28,6 +28,8 @@ namespace Sphynx
 
 		static void RegisterAssetType(const AssetType& assetType);
 		static void RegisterAssetTypeExtensions(const AssetType& assetType, const std::initializer_list<std::string>& extensions);
+		static void UnregisterAssetType(const AssetType& assetType);
+		static void UnregisterAssetTypeExtensions(const AssetType& assetType);
 		static bool IsAssetTypeRegistered(const AssetType& assetType);
 
 		static void AddToRegistry(const AssetMetadata& metadata);

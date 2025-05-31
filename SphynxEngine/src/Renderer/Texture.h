@@ -34,7 +34,7 @@ namespace Sphynx
 
 	};
 
-	class TextureLoader
+	class SPHYNX_API TextureLoader
 	{
 	public:
 		static Texture* Load(const std::filesystem::path& path);

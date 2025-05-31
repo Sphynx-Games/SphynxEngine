@@ -102,6 +102,12 @@ namespace Sphynx
 	{
 		ImGui::Begin(GetName());
 
+		if (!std::filesystem::exists(m_CurrentDirectory))
+		{
+			ImGui::End();
+			return;
+		}
+
 		// BACK BUTTON
 		ImGui::BeginDisabled(m_CurrentDirectory == s_AssetsPath);
 		if (ImGui::Button("<-"))

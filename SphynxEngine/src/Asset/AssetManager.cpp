@@ -16,20 +16,29 @@
 #undef RegisterAssetTypeExtensions
 #undef IsAssetRegistered
 #define REGISTER_ASSETTYPE(Type, Importer, ...) \
-{\
-	RegisterAssetType(TYPE_TO_ASSETTYPE(Type));\
-	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { ##__VA_ARGS__ });\
-	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), &Importer::Import);\
-	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), &Importer::Load);\
-	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), &Importer::Save);\
+{ \
+	RegisterAssetType(TYPE_TO_ASSETTYPE(Type)); \
+	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { ##__VA_ARGS__ }); \
+	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), &Importer::Import); \
+	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), &Importer::Load); \
+	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), &Importer::Save); \
 }
 #define REGISTER_INVALID_ASSETTYPE(Type, Importer, ...) \
-{\
-	RegisterAssetType(TYPE_TO_ASSETTYPE(Type));\
-	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { ##__VA_ARGS__ });\
-	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), nullptr);\
-	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), nullptr);\
-	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), nullptr);\
+{ \
+	RegisterAssetType(TYPE_TO_ASSETTYPE(Type)); \
+	RegisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type), { ##__VA_ARGS__ }); \
+	AssetImporter::RegisterImporter(TYPE_TO_ASSETTYPE(Type), nullptr); \
+	AssetImporter::RegisterLoader(TYPE_TO_ASSETTYPE(Type), nullptr); \
+	AssetImporter::RegisterSaver(TYPE_TO_ASSETTYPE(Type), nullptr); \
+}
+
+#define UNREGISTER_ASSETTYPE(Type) \
+{ \
+	AssetImporter::UnregisterSaver(TYPE_TO_ASSETTYPE(Type)); \
+	AssetImporter::UnregisterLoader(TYPE_TO_ASSETTYPE(Type)); \
+	AssetImporter::UnregisterImporter(TYPE_TO_ASSETTYPE(Type)); \
+	UnregisterAssetTypeExtensions(TYPE_TO_ASSETTYPE(Type)); \
+	UnregisterAssetType(TYPE_TO_ASSETTYPE(Type)); \
 }
 
 
@@ -37,6 +46,8 @@ namespace Sphynx
 {
 	namespace
 	{
+		static std::filesystem::path s_ContextPath; // absolute path
+		static bool s_IsInitialized = false;
 		static std::unordered_map<AssetHandle, std::shared_ptr<IAsset>> s_LoadedAssets;
 		static std::unordered_map<std::string, AssetType> s_AssetTypeExtensions;
 	}
@@ -44,12 +55,17 @@ namespace Sphynx
 	AssetTypeRegistry AssetManager::s_TypeRegistry = {};
 	AssetRegistry AssetManager::s_Registry = {};
 
-	static const std::filesystem::path ASSET_REGISTRY_FILEPATH = std::filesystem::path("Assets\\AssetRegistry").replace_extension(ASSET_EXTENSION);
+	static const std::filesystem::path ASSET_REGISTRY_FILEPATH = std::filesystem::path("Assets\\AssetRegistry" ASSET_EXTENSION);
 
 
 	void AssetManager::Init()
 	{
+		SPX_CORE_ASSERT(!s_IsInitialized, "AssetManager is already initialized");
+
 		SPX_CORE_LOG_TRACE("Initializing AssetManager");
+
+		s_IsInitialized = true;
+		s_ContextPath = std::filesystem::current_path();
 
 		// Register all engine related assets here,
 		// custom assets will be registered elsewhere
@@ -67,7 +83,7 @@ namespace Sphynx
 		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
 
 		// load all managed assets into the asset registry
-		YAMLReader reader{ ASSET_REGISTRY_FILEPATH };
+		YAMLReader reader{ s_ContextPath / ASSET_REGISTRY_FILEPATH };
 		if (reader.IsValid())
 		{
 			ReflectionDeserializer::Deserialize(s_Registry, reader);
@@ -76,13 +92,30 @@ namespace Sphynx
 
 	void AssetManager::Shutdown()
 	{
+		SPX_CORE_ASSERT(s_IsInitialized, "AssetManager is not initialized");
+
 		SPX_CORE_LOG_TRACE("Shutting down AssetManager");
 
 		// write all managed assets into the asset registry file
-		YAMLWriter writer{ ASSET_REGISTRY_FILEPATH };
+		YAMLWriter writer{ s_ContextPath / ASSET_REGISTRY_FILEPATH };
 		ReflectionSerializer::Serialize(s_Registry, writer);
 
 		UnloadAssets();
+
+		// Unregister Asset types
+		UNREGISTER_ASSETTYPE(Spritesheet);
+		UNREGISTER_ASSETTYPE(Sprite);
+
+		UNREGISTER_ASSETTYPE(Scene);
+
+		UNREGISTER_ASSETTYPE(Font);
+		UNREGISTER_ASSETTYPE(Texture); 
+
+		// Unregister a "Invalid"
+		UNREGISTER_ASSETTYPE(Invalid);
+
+		s_ContextPath.clear();
+		s_IsInitialized = false;
 	}
 
 	void AssetManager::RegisterAssetType(const AssetType& assetType)
@@ -99,6 +132,30 @@ namespace Sphynx
 		{
 			SPX_CORE_ASSERT(s_AssetTypeExtensions.find(extension) == s_AssetTypeExtensions.end(), "Extension alerady in use while registering a {}!", assetType);
 			s_AssetTypeExtensions[extension] = assetType;
+		}
+	}
+
+	void AssetManager::UnregisterAssetType(const AssetType& assetType)
+	{
+		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType);
+		SPX_CORE_LOG_TRACE("Asset type unregistered: {}", assetType);
+		s_TypeRegistry.erase(assetType);
+	}
+
+	void AssetManager::UnregisterAssetTypeExtensions(const AssetType& assetType)
+	{
+		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType);
+		
+		auto isAssetType = [&](auto& data) {return data.second == assetType; };
+		auto it = std::find_if(s_AssetTypeExtensions.begin(), s_AssetTypeExtensions.end(), isAssetType);
+		while (it != s_AssetTypeExtensions.end())
+		{
+			const AssetType& type = it->second;
+			if (type == assetType)
+			{
+				it = s_AssetTypeExtensions.erase(it);
+				it = std::find_if(it, s_AssetTypeExtensions.end(), isAssetType);
+			}
 		}
 	}
 

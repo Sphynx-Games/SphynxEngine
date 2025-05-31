@@ -6,8 +6,7 @@
 #include "Renderer/GraphicsContext.h"
 #include "Asset/AssetManager.h"
 #include "Scene/SceneRenderer.h"
-#include <Windows.h>
-#include <tchar.h>
+
 
 
 class RuntimeLayer : public Sphynx::Layer
@@ -48,16 +47,7 @@ public:
 
 		Application::Init();
 
-		// load Sandbox dll.  TODO: refactor this is platform specific code
-		m_GameDLL = LoadLibrary(_T("Sandbox"));
-		if (!m_GameDLL || m_GameDLL == INVALID_HANDLE_VALUE)
-		{
-			std::cerr << "Library Sandbox.dll not found" << std::endl;
-			exit(1);
-		}
-
-		// TODO: delete this line in the future
-		Reflection::Registry::Init();
+		Application::LoadProject("Sandbox");
 
 		using GetPathInitialSceneFunc = const std::filesystem::path& (*)();
 		GetPathInitialSceneFunc getPathScene = (GetPathInitialSceneFunc)GetProcAddress(m_GameDLL, "GetPathInitialScene");
@@ -74,7 +64,7 @@ public:
 		PushLayer(m_RuntimeLayer);
 	}
 
-	virtual void Run() override { Sphynx::Application::Run(); }
+	virtual void Run() override { Application::Run(); }
 
 	virtual void Shutdown() override 
 	{ 
@@ -82,9 +72,7 @@ public:
 		delete m_RuntimeLayer;
 		m_RuntimeLayer = nullptr;
 
-		FreeLibrary(m_GameDLL);
-
-		Sphynx::Application::Shutdown(); 
+		Application::Shutdown(); 
 	}
 
 private:

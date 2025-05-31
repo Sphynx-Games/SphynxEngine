@@ -9,7 +9,7 @@ struct SDL_Surface;
 
 namespace Sphynx
 {
-	class WindowsWindow : public Window
+	class SPHYNX_API WindowsWindow : public Window
 	{
 	public:
 		WindowsWindow(const WindowParams& params);

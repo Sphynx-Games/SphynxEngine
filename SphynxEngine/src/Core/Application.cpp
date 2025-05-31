@@ -9,6 +9,7 @@
 #include "Events/WindowEvent.h"
 #include "LayerStack.h"
 #include "Layer.h"
+#include "Asset/AssetManager.h"
 
 
 namespace Sphynx
@@ -16,6 +17,7 @@ namespace Sphynx
 	Application* Application::s_Application = nullptr;
 
 	Application::Application() :
+		m_ProjectDLL(NULL),
 		m_IsRunning(false),
 		m_Window(nullptr),
 		m_LayerStack()
@@ -30,6 +32,25 @@ namespace Sphynx
 	Application* Sphynx::Application::GetInstance()
 	{
 		return s_Application;
+	}
+
+	void Application::LoadProject(const std::filesystem::path& path)
+	{
+		UnloadProject();
+
+		// TODO: refactor this is platform specific code
+		m_ProjectDLL = LoadLibrary(_T(path.string().c_str()));
+		if (!m_ProjectDLL || m_ProjectDLL == INVALID_HANDLE_VALUE)
+		{
+			std::cerr << "Library not found" << std::endl;
+			exit(1);
+		}
+
+		// TODO: delete this line in the future
+		AssetManager::Shutdown();
+		Reflection::Registry::Shutdown();
+		Reflection::Registry::Init();
+		AssetManager::Init();
 	}
 
 	Window* Sphynx::Application::GetWindow() const
@@ -99,6 +120,9 @@ namespace Sphynx
 
 	void Application::Shutdown()
 	{
+		// Unload possible loaded project
+		UnloadProject();
+
 		// Shut app global time
 		Time::Shutdown();
 
@@ -151,4 +175,11 @@ namespace Sphynx
 		m_IsRunning = false;
 	}
 
+	void Application::UnloadProject()
+	{
+		if (m_ProjectDLL == NULL) return;
+
+		FreeLibrary(m_ProjectDLL);
+		m_ProjectDLL = NULL;
+	}
 }
