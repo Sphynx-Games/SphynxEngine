@@ -3,8 +3,7 @@
 #include "Core/Core.h"
 #include "LayerStack.h"
 #include <memory>
-#include <Windows.h>
-#include <tchar.h>
+#include "Module/ModuleManager.h"
 
 
 namespace Sphynx
@@ -44,7 +43,7 @@ namespace Sphynx
 
 	protected:
 		static Application* s_Application;
-		HMODULE m_ProjectDLL; // game project dll
+		ModuleHandle m_ProjectHandle; // game project dll handle
 
 	private:
 		bool m_IsRunning;

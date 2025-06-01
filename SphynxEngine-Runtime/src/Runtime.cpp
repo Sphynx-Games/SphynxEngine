@@ -6,7 +6,11 @@
 #include "Renderer/GraphicsContext.h"
 #include "Asset/AssetManager.h"
 #include "Scene/SceneRenderer.h"
+#include "Module/ModuleManager.h"
 
+#ifdef SPX_PLATFORM_WINDOWS
+#include <Windows.h>
+#endif
 
 
 class RuntimeLayer : public Sphynx::Layer
@@ -32,12 +36,9 @@ private:
 class RuntimeApplication : public Sphynx::Application
 {
 public:
-	RuntimeApplication() : m_GameDLL(NULL)
+	RuntimeApplication()
 	{
 	}
-
-private:
-	HMODULE m_GameDLL;
 
 
 public:
@@ -49,15 +50,32 @@ public:
 
 		Application::LoadProject("Sandbox");
 
+		void* module = ModuleManager::GetModule(m_ProjectHandle);
+
+#ifdef SPX_PLATFORM_WINDOWS
+		HMODULE windowsModule = static_cast<HMODULE>(module);
+		if (windowsModule == NULL)
+		{
+			SPX_CORE_LOG_ERROR("Game Module is NULL!!");
+			Application::UnloadProject();
+			exit(1);
+		}
+
+		// Change working directory. TODO: change this in the future
+		std::filesystem::path newCurrentDirectory = "Sandbox";
+		SetCurrentDirectory(newCurrentDirectory.string().c_str());
+
 		using GetPathInitialSceneFunc = const std::filesystem::path& (*)();
-		GetPathInitialSceneFunc getPathScene = (GetPathInitialSceneFunc)GetProcAddress(m_GameDLL, "GetPathInitialScene");
-		if (!getPathScene) {
-			std::cerr << "Failed to find PathInitalScene." << std::endl;
-			FreeLibrary(m_GameDLL);
+		GetPathInitialSceneFunc getPathScene = (GetPathInitialSceneFunc)GetProcAddress(windowsModule, "GetPathInitialScene");
+		if (!getPathScene)
+		{
+			SPX_CORE_LOG_ERROR("Failed to find PathInitalScene!!");
+			Application::UnloadProject();
 			exit(1);
 		}
 		
 		const std::filesystem::path& path = getPathScene();
+#endif
 
 		// layers
 		m_RuntimeLayer = new RuntimeLayer(path);

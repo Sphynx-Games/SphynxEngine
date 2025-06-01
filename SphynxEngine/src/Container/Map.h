@@ -79,7 +79,7 @@ namespace Sphynx
 
 		const TValue& GetValue(const TKey& key) const
 		{
-			return m_HashMap[key];
+			return m_HashMap.at(key);
 		}
 
 		Array<TKey> GetKeys() const

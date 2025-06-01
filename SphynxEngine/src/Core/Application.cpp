@@ -17,7 +17,7 @@ namespace Sphynx
 	Application* Application::s_Application = nullptr;
 
 	Application::Application() :
-		m_ProjectDLL(NULL),
+		m_ProjectHandle(ModuleHandle::Invalid),
 		m_IsRunning(false),
 		m_Window(nullptr),
 		m_LayerStack()
@@ -38,13 +38,7 @@ namespace Sphynx
 	{
 		UnloadProject();
 
-		// TODO: refactor this is platform specific code
-		m_ProjectDLL = LoadLibrary(_T(path.string().c_str()));
-		if (!m_ProjectDLL || m_ProjectDLL == INVALID_HANDLE_VALUE)
-		{
-			std::cerr << "Library not found" << std::endl;
-			exit(1);
-		}
+		m_ProjectHandle = ModuleManager::LoadModule(path);
 
 		// TODO: delete this line in the future
 		AssetManager::Shutdown();
@@ -177,9 +171,7 @@ namespace Sphynx
 
 	void Application::UnloadProject()
 	{
-		if (m_ProjectDLL == NULL) return;
-
-		FreeLibrary(m_ProjectDLL);
-		m_ProjectDLL = NULL;
+		ModuleManager::UnloadModule(m_ProjectHandle);
+		m_ProjectHandle = ModuleHandle::Invalid;
 	}
 }
