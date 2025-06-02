@@ -33,6 +33,32 @@ private:
 };
 
 
+Sphynx::ModuleHandle ProjectHandle;
+
+void UnloadProject()
+{
+	using namespace Sphynx;
+
+	ModuleManager::UnloadModule(ProjectHandle);
+	ProjectHandle = ModuleHandle::Invalid;
+}
+
+void LoadProject(const std::filesystem::path& path)
+{
+	using namespace Sphynx;
+
+	UnloadProject();
+
+	ProjectHandle = ModuleManager::LoadModule(path);
+
+	// TODO: delete this line in the future
+	AssetManager::Shutdown();
+	Reflection::Registry::Shutdown();
+	Reflection::Registry::Init();
+	AssetManager::Init();
+}
+
+
 class RuntimeApplication : public Sphynx::Application
 {
 public:
@@ -48,16 +74,16 @@ public:
 
 		Application::Init();
 
-		Application::LoadProject("Sandbox");
+		LoadProject("Sandbox");
 
-		void* module = ModuleManager::GetModule(m_ProjectHandle);
+		void* module = ModuleManager::GetModule(ProjectHandle);
 
 #ifdef SPX_PLATFORM_WINDOWS
 		HMODULE windowsModule = static_cast<HMODULE>(module);
 		if (windowsModule == NULL)
 		{
 			SPX_CORE_LOG_ERROR("Game Module is NULL!!");
-			Application::UnloadProject();
+			UnloadProject();
 			exit(1);
 		}
 
@@ -70,7 +96,7 @@ public:
 		if (!getPathScene)
 		{
 			SPX_CORE_LOG_ERROR("Failed to find PathInitalScene!!");
-			Application::UnloadProject();
+			UnloadProject();
 			exit(1);
 		}
 		

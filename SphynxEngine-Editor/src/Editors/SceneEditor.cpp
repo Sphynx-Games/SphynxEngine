@@ -17,6 +17,7 @@
 #include "Scene/SceneRenderer.h"
 
 #include "Asset/Scene/SceneAsset.h"
+#include "ProjectEditor.h"
 
 // TODO: remove
 #include <Sphynx.h>
@@ -32,6 +33,7 @@ namespace Sphynx
 {
 	SceneEditor::SceneEditor(EditorLayer* editorLayer) :
 		Editor("SceneEditor"),
+		m_OpenedProjectHandle(),
 		m_EditorLayer(editorLayer),
 		m_SceneToolbar(new SceneToolbar()),
 		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
@@ -48,6 +50,8 @@ namespace Sphynx
 		m_Ejected(false),
 		m_SceneNameBuffer()
 	{
+		m_OpenedProjectHandle = ProjectEditor::OnProjectOpened.Bind(this, &SceneEditor::ManageProjectOpened);
+
 		SetToolbar(m_SceneToolbar);
 		AddWidget(m_SceneOutlinerPanel);
 		AddWidget(m_ContentBrowserPanel);
@@ -100,6 +104,8 @@ namespace Sphynx
 
 	SceneEditor::~SceneEditor()
 	{
+		ProjectEditor::OnProjectOpened.Unbind(m_OpenedProjectHandle);
+
 		if (m_ActiveScene != nullptr)
 		{
 			m_ActiveScene->EndPlay(); // TODO: change this in the future
@@ -238,10 +244,14 @@ namespace Sphynx
 		}
 	}
 
+	void SceneEditor::ManageProjectOpened(const ProjectInfo& projectInfo)
+	{
+		OpenScene(projectInfo.InitialScene);
+	}
+
 	void SceneEditor::OpenScene(const std::filesystem::path& path)
 	{
-		// TODO: check whether or not the loaded scene is 
-		// registered in the asset manager
+		// TODO: check whether or not the loaded scene is registered in the asset manager
 
 		m_LastOpenedScenePath = path;
 		m_SceneToEdit = {};

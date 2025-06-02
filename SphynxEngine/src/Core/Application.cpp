@@ -10,6 +10,7 @@
 #include "LayerStack.h"
 #include "Layer.h"
 #include "Asset/AssetManager.h"
+#include "Module/ModuleManager.h"
 
 
 namespace Sphynx
@@ -17,7 +18,6 @@ namespace Sphynx
 	Application* Application::s_Application = nullptr;
 
 	Application::Application() :
-		m_ProjectHandle(ModuleHandle::Invalid),
 		m_IsRunning(false),
 		m_Window(nullptr),
 		m_LayerStack()
@@ -32,19 +32,6 @@ namespace Sphynx
 	Application* Sphynx::Application::GetInstance()
 	{
 		return s_Application;
-	}
-
-	void Application::LoadProject(const std::filesystem::path& path)
-	{
-		UnloadProject();
-
-		m_ProjectHandle = ModuleManager::LoadModule(path);
-
-		// TODO: delete this line in the future
-		AssetManager::Shutdown();
-		Reflection::Registry::Shutdown();
-		Reflection::Registry::Init();
-		AssetManager::Init();
 	}
 
 	Window* Sphynx::Application::GetWindow() const
@@ -114,8 +101,8 @@ namespace Sphynx
 
 	void Application::Shutdown()
 	{
-		// Unload possible loaded project
-		UnloadProject();
+		// Unload possible loaded modules
+		ModuleManager::UnloadAllModules();
 
 		// Shut app global time
 		Time::Shutdown();
@@ -167,11 +154,5 @@ namespace Sphynx
 	void Application::Quit()
 	{
 		m_IsRunning = false;
-	}
-
-	void Application::UnloadProject()
-	{
-		ModuleManager::UnloadModule(m_ProjectHandle);
-		m_ProjectHandle = ModuleHandle::Invalid;
 	}
 }

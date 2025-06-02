@@ -4,6 +4,8 @@
 #include "Utils/PlaybackState.h"
 #include "Scene/Scene.h"
 #include "EditorCameraController.h"
+#include "ProjectInfo.h"
+#include "Core/Delegate.h"
 
 
 namespace Sphynx
@@ -25,6 +27,7 @@ namespace Sphynx
 		virtual void RenderMenuBar() override;
 
 	private:
+		void ManageProjectOpened(const ProjectInfo& projectInfo);
 		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 		void SaveAsScene(const std::filesystem::path& path);
@@ -39,6 +42,8 @@ namespace Sphynx
 		bool ShouldUseEditorCamera();
 
 	private:
+		DelegateHandle m_OpenedProjectHandle;
+
 		EditorLayer* m_EditorLayer;
 		class SceneToolbar* m_SceneToolbar;
 		class SceneOutlinerPanel* m_SceneOutlinerPanel;
@@ -56,7 +61,5 @@ namespace Sphynx
 		PlaybackState m_SceneState;
 		bool m_Ejected;
 		char m_SceneNameBuffer[1024];
-
-		friend class EditorLayer;
 	};
 }

@@ -17,6 +17,7 @@ namespace Sphynx
 		static ModuleHandle LoadModule(const std::filesystem::path& path);
 		static void UnloadModule(const ModuleHandle& handle);
 		static void* GetModule(const ModuleHandle& handle);
+		static void UnloadAllModules();
 
 	private:
 		inline static HashMap<ModuleHandle, void*> s_LoadedModules = {};

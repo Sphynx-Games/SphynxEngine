@@ -29,9 +29,6 @@ namespace Sphynx
 		void AddEditor(Editor* editor);
 		void RemoveEditor(Editor* editor);
 
-	private:
-		void OpenProject(const std::filesystem::path& path);
-
 	protected:
 		bool m_BlockEventsEnabled;
 		std::vector<Editor*> m_Editors;

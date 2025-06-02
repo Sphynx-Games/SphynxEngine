@@ -54,6 +54,18 @@ namespace Sphynx
 		SPX_CORE_ASSERT(s_LoadedModules.ContainsKey(handle), "The provided handle is not associated to any loaded module!!");
 		return s_LoadedModules.GetValue(handle);
 	}
+
+	void ModuleManager::UnloadAllModules()
+	{
+		for (auto [handle, module] : s_LoadedModules)
+		{
+			if (module != nullptr)
+			{
+				FreeLibrary(static_cast<HMODULE>(module));
+			}
+		}
+		s_LoadedModules.RemoveAll();
+	}
 }
 
 #endif

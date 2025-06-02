@@ -3,7 +3,6 @@
 #include "Core/Core.h"
 #include "LayerStack.h"
 #include <memory>
-#include "Module/ModuleManager.h"
 
 
 namespace Sphynx
@@ -20,7 +19,6 @@ namespace Sphynx
 
 	public:
 		static Application* GetInstance();
-		void LoadProject(const std::filesystem::path& path);
 
 		Window* GetWindow() const;
 
@@ -39,11 +37,9 @@ namespace Sphynx
 
 	protected:
 		Application();
-		void UnloadProject();
 
 	protected:
 		static Application* s_Application;
-		ModuleHandle m_ProjectHandle; // game project dll handle
 
 	private:
 		bool m_IsRunning;
