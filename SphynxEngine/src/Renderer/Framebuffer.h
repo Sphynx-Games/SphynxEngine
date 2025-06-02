@@ -7,7 +7,7 @@
 
 namespace Sphynx
 {
-	enum class FramebufferTextureFormat
+	enum class SPHYNX_API FramebufferTextureFormat
 	{
 		None = 0,
 
@@ -22,7 +22,7 @@ namespace Sphynx
 		Depth = DEPTH24STENCIL8
 	};
 
-	struct FramebufferTextureSpecification
+	struct SPHYNX_API FramebufferTextureSpecification
 	{
 		FramebufferTextureSpecification() = default;
 		FramebufferTextureSpecification(FramebufferTextureFormat format)
@@ -33,7 +33,7 @@ namespace Sphynx
 		// TODO: filtering/wrap
 	};
 
-	struct FramebufferAttachmentSpecification
+	struct SPHYNX_API FramebufferAttachmentSpecification
 	{
 		FramebufferAttachmentSpecification() = default;
 		FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
@@ -42,7 +42,7 @@ namespace Sphynx
 		std::vector<FramebufferTextureSpecification> Attachments;
 	};
 
-	struct FramebufferSpecification
+	struct SPHYNX_API FramebufferSpecification
 	{
 		uint32_t Width = 0;
 		uint32_t Height = 0;

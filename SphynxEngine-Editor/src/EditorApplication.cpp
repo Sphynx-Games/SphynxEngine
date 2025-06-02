@@ -4,6 +4,7 @@
 #include "EditorLayer.h"
 
 #include <Core/EntryPoint.h>
+#include "PropertyDrawer/PropertyDrawerManager.h"
 
 
 Sphynx::Application* CreateApplication()
@@ -25,6 +26,8 @@ namespace Sphynx
 
 		Resources::Init();
 
+		PropertyDrawerManager::Init();
+
 		// create a editor layer
 		m_EditorLayer = new EditorLayer();
 
@@ -40,6 +43,8 @@ namespace Sphynx
 	{
 		PopLayer(m_EditorLayer);
 		delete m_EditorLayer;
+
+		PropertyDrawerManager::Shutdown();
 
 		Resources::Shutdown();
 

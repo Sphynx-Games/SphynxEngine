@@ -16,6 +16,8 @@
 #include <Component/ComponentRegistry.h>
 #include <ImGuiExtra.h>
 #include <Base/Resources.h>
+#include "Reflection/PropertyTree.h"
+#include "PropertyViewer/PropertyViewer.h"
 
 
 namespace Sphynx
@@ -66,6 +68,18 @@ namespace Sphynx
 	{
 		if (ImGui::Begin(GetName()) && m_Context.IsValid())
 		{
+#if 1
+			Reflection::PropertyTree::Traverse(
+				Reflection::GetClass<Actor>(), 
+				&m_Context, 
+				PropertyViewer{}
+			);
+
+			//---------------------
+			//---------------------
+			//---------------------
+			//---------------------
+#else
 			Array<const Reflection::Class*> componentTypesToAdd;
 
 			// Draw Name Component
@@ -204,6 +218,7 @@ namespace Sphynx
 				ComponentRegistry::InvokeRemoveComponent(*m_ComponetTypeToRemove, m_Context);
 				m_ComponetTypeToRemove = nullptr;
 			}
+#endif
 		}
 		ImGui::End();
 	}

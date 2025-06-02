@@ -1,14 +1,36 @@
 #pragma once
 
 #include "Common.h"
+#include <type_traits>
 
 
 namespace Sphynx
 {
 	namespace Traits
 	{
+		namespace details
+		{
+			template<typename T, typename Tag>
+			struct unique_type_impl : public T
+			{
+				using tag = Tag;
+
+				template <typename U = T, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
+				unique_type_impl() : T() {}
+
+				template <typename U = T, typename = std::enable_if_t<std::is_copy_constructible_v<U>>>
+				unique_type_impl(const T& t) : T(t) {}
+
+				template <typename U = T, typename = std::enable_if_t<std::is_move_constructible_v<U>>>
+				unique_type_impl(T&& t) noexcept(std::is_nothrow_move_constructible_v<U>) : T(std::move(t)) {}
+
+				operator T&() { return *this; }
+				operator const T&() const { return *this; }
+			};
+		}
+
 		template<typename T, typename Tag>
-		using unique_type = T;
+		using unique_type = T; // details::unique_type_impl<T, Tag>;
 
 		template<typename... Args>
 		struct args_pack {};

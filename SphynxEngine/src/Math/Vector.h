@@ -74,7 +74,7 @@ namespace Sphynx
 	template<typename T> inline const Vector2T<T> Vector2T<T>::Down{ 0, -1 };
 
 	template <typename T>
-	struct SPHYNX_API Vector3T
+	struct /*SPHYNX_API*/ Vector3T
 	{
 		static_assert(std::is_arithmetic_v<T>, "T must be a numeric type");
 
@@ -147,7 +147,7 @@ namespace Sphynx
 	template<typename T> inline const Vector3T<T> Vector3T<T>::Backward{ 0, 0, -1 };
 
 	template <typename T>
-	struct SPHYNX_API Vector4T
+	struct /*SPHYNX_API*/ Vector4T
 	{
 		static_assert(std::is_arithmetic_v<T>, "T must be a numeric type");
 
@@ -289,3 +289,43 @@ SPX_REFLECT_PROPERTY(Y)
 SPX_REFLECT_PROPERTY(Z)
 
 SPX_REFLECT_STRUCT_END(Sphynx::Vector3d, SPHYNX_API)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector4i, SPHYNX_API)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+SPX_REFLECT_PROPERTY(Z)
+SPX_REFLECT_PROPERTY(W)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector4i, SPHYNX_API)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector4u, SPHYNX_API)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+SPX_REFLECT_PROPERTY(Z)
+SPX_REFLECT_PROPERTY(W)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector4u, SPHYNX_API)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector4f, SPHYNX_API)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+SPX_REFLECT_PROPERTY(Z)
+SPX_REFLECT_PROPERTY(W)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector4f, SPHYNX_API)
+
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::Vector4d, SPHYNX_API)
+
+SPX_REFLECT_PROPERTY(X)
+SPX_REFLECT_PROPERTY(Y)
+SPX_REFLECT_PROPERTY(Z)
+SPX_REFLECT_PROPERTY(W)
+
+SPX_REFLECT_STRUCT_END(Sphynx::Vector4d, SPHYNX_API)
