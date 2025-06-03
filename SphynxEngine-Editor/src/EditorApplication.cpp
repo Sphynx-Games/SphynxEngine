@@ -19,10 +19,10 @@ namespace Sphynx
 	{
 	}
 
-	void EditorApplication::Init()
+	void EditorApplication::Init(const HashMap<CommandArgument, Array<std::string>>& options)
 	{
 		// Init engine resources
-		Application::Init();
+		Application::Init(options);
 
 		Resources::Init();
 

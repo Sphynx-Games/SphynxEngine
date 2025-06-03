@@ -11,7 +11,7 @@
 namespace Sphynx
 {
 	template <typename TKey, typename TValue>
-	class SPHYNX_API HashMap
+	class HashMap
 	{
 	public:
 		using key_type = typename std::unordered_map<TKey, TValue>::key_type;
@@ -36,6 +36,13 @@ namespace Sphynx
 		{
 			m_HashMap = std::move(other.m_HashMap);
 			other.RemoveAll();
+		}
+
+		HashMap(std::initializer_list<Pair<TKey, TValue>> init) {
+			for (const auto& pair : init)
+			{
+				m_HashMap.insert({ pair.First, pair.Second });
+			}
 		}
 
 		~HashMap() = default;

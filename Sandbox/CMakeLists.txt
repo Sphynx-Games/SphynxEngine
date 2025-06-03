@@ -35,14 +35,4 @@ target_sources(Sandbox PRIVATE ${SNBSOURCES})
 
 target_link_libraries(Sandbox PRIVATE SphynxEngine)
 
-# Post build command (copy .dll to bin folder)
-add_custom_target(SandboxCopyBinaries 
-	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SphynxEngine> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-
-	COMMENT "Copying dependency binaries to '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'" VERBATIM
-)
-add_dependencies(Sandbox SandboxCopyBinaries)
-set_target_properties(SandboxCopyBinaries PROPERTIES FOLDER __internal__)
-
 target_compile_definitions(Sandbox PRIVATE SANDBOX_BUILD_MODULE)

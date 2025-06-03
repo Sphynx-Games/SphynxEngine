@@ -2,6 +2,8 @@
 
 #include "Core/Core.h"
 #include "LayerStack.h"
+#include "Container/Map.h"
+#include "Core/Commands.h"
 #include <memory>
 
 
@@ -22,7 +24,7 @@ namespace Sphynx
 
 		Window* GetWindow() const;
 
-		virtual void Init();
+		virtual void Init(const HashMap<CommandArgument, Array<std::string>>& options);
 		virtual void Run();
 		virtual void Shutdown();
 
@@ -37,6 +39,9 @@ namespace Sphynx
 
 	protected:
 		Application();
+
+	private:
+		void ManageOptions(const HashMap<CommandArgument, Array<std::string>>& options);
 
 	protected:
 		static Application* s_Application;

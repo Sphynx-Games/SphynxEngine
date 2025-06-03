@@ -17,8 +17,11 @@
 // Time
 #include "Core/Time.h"
 
-// Assets
-#include "Asset/AssetManager.h"
+// Containers
+#include "Container/Set.h"
+#include "Container/Array.h"
+#include "Container/Map.h"
+#include "Container/Pair.h"
 
 // Rendering
 #include "Renderer/Window.h"
@@ -42,6 +45,7 @@
 #include "Serialization/SceneSerializer.h"
 
 // Assets
+#include "Asset/AssetManager.h"
 #include "Asset/Texture/TextureAsset.h"
 #include "Asset/Sprite/SpriteAsset.h"
 #include "Asset/Spritesheet/SpritesheetAsset.h"

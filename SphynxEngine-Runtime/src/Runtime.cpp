@@ -33,32 +33,6 @@ private:
 };
 
 
-Sphynx::ModuleHandle ProjectHandle;
-
-void UnloadProject()
-{
-	using namespace Sphynx;
-
-	ModuleManager::UnloadModule(ProjectHandle);
-	ProjectHandle = ModuleHandle::Invalid;
-}
-
-void LoadProject(const std::filesystem::path& path)
-{
-	using namespace Sphynx;
-
-	UnloadProject();
-
-	ProjectHandle = ModuleManager::LoadModule(path);
-
-	// TODO: delete this line in the future
-	AssetManager::Shutdown();
-	Reflection::Registry::Shutdown();
-	Reflection::Registry::Init();
-	AssetManager::Init();
-}
-
-
 class RuntimeApplication : public Sphynx::Application
 {
 public:
@@ -68,40 +42,32 @@ public:
 
 
 public:
-	virtual void Init() override 
+	virtual void Init(const Sphynx::HashMap<Sphynx::CommandArgument, Sphynx::Array<std::string>>& options) override
 	{
 		using namespace Sphynx;
 
-		Application::Init();
+		Application::Init(options);
 
-		LoadProject("Sandbox");
+		const HashMap<ModuleHandle, void*>& modules = ModuleManager::GetAllModules();
 
-		void* module = ModuleManager::GetModule(ProjectHandle);
-
+		// right now we only have the project module. TODO: Change this in the future
+		std::filesystem::path path;
+		for (auto& [handle, module] : modules)
+		{
 #ifdef SPX_PLATFORM_WINDOWS
-		HMODULE windowsModule = static_cast<HMODULE>(module);
-		if (windowsModule == NULL)
-		{
-			SPX_CORE_LOG_ERROR("Game Module is NULL!!");
-			UnloadProject();
-			exit(1);
-		}
+			HMODULE windowsModule = static_cast<HMODULE>(module);
+			using GetPathInitialSceneFunc = const std::filesystem::path& (*)();
+			GetPathInitialSceneFunc getPathScene = (GetPathInitialSceneFunc)GetProcAddress(windowsModule, "GetPathInitialScene");
+			if (!getPathScene)
+			{
+				SPX_CORE_LOG_ERROR("Failed to find PathInitalScene!!");
+				ModuleManager::UnloadModule(handle);
+				exit(1);
+			}
 
-		// Change working directory. TODO: change this in the future
-		std::filesystem::path newCurrentDirectory = "Sandbox";
-		SetCurrentDirectory(newCurrentDirectory.string().c_str());
-
-		using GetPathInitialSceneFunc = const std::filesystem::path& (*)();
-		GetPathInitialSceneFunc getPathScene = (GetPathInitialSceneFunc)GetProcAddress(windowsModule, "GetPathInitialScene");
-		if (!getPathScene)
-		{
-			SPX_CORE_LOG_ERROR("Failed to find PathInitalScene!!");
-			UnloadProject();
-			exit(1);
-		}
-		
-		const std::filesystem::path& path = getPathScene();
+			path = getPathScene();
 #endif
+		}
 
 		// layers
 		m_RuntimeLayer = new RuntimeLayer(path);

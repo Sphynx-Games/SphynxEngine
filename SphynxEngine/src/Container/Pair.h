@@ -6,12 +6,12 @@
 namespace Sphynx
 {
 	template <typename T1, typename T2>
-	struct SPHYNX_API Pair
+	struct Pair
 	{
 	public:
 		Pair() : First(), Second() {}
 		Pair(const T1& v1, const T2& v2) : First(v1), Second(v2) {}
-		Pair(T1&& v1, T2& v2) : First(std::move(v1)), Second(std::move(v2)) {}
+		Pair(T1&& v1, T2&& v2) : First(std::move(v1)), Second(std::move(v2)) {}
 		Pair(const Pair& other) : First(other.First), Second(other.Second) {}
 		~Pair() = default;
 

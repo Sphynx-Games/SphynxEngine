@@ -7,7 +7,7 @@
 namespace Sphynx
 {
 	template <typename T>
-	class /*SPHYNX_API*/ Array
+	class Array
 	{
 	public:
 		using value_type = typename std::vector<T>::value_type;

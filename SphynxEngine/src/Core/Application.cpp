@@ -39,8 +39,11 @@ namespace Sphynx
 		return m_Window.get();
 	}
 
-	void Application::Init()
+	void Application::Init(const HashMap<CommandArgument, Array<std::string>>& options)
 	{
+		// Manage the command line options
+		ManageOptions(options);
+
 		// Create window
 		m_Window.reset(Window::Create({ "Sphynx Application", 1280, 720 }));
 
@@ -154,5 +157,34 @@ namespace Sphynx
 	void Application::Quit()
 	{
 		m_IsRunning = false;
+	}
+
+	void Application::ManageOptions(const HashMap<CommandArgument, Array<std::string>>& options)
+	{
+		if (options.ContainsKey(CommandArgument::DIRECTORY))
+		{
+#ifdef SPX_PLATFORM_WINDOWS
+			SetCurrentDirectory(options[CommandArgument::DIRECTORY][0].c_str());
+#endif
+		}
+
+		if (options.ContainsKey(CommandArgument::MODULES))
+		{
+			for (const std::string& moduleName : options[CommandArgument::MODULES])
+			{
+				std::filesystem::path path = "Binaries";
+#ifdef SPX_DEBUG
+				path /= "Debug";
+#endif
+				path /= moduleName;
+				ModuleManager::LoadModule(path);
+			}
+
+			// TODO: delete this lines in the future
+			AssetManager::Shutdown();
+			Reflection::Registry::Shutdown();
+			Reflection::Registry::Init();
+			AssetManager::Init();
+		}
 	}
 }
