@@ -24,7 +24,7 @@ namespace Sphynx
 
 		void PropertyTree::Traverse(IPropertyTreeVisitor& visitor)
 		{
-			const Property fakeProperty{ m_Type, m_Type.Name, 0 };
+			const Property fakeProperty{ m_Type, m_Type.Name, 0, 0, AccessSpecifier::PUBLIC };
 			Traverse(visitor, &fakeProperty);
 		}
 
@@ -71,7 +71,7 @@ namespace Sphynx
 						const Type& rType = indexedCollection->GetValueType();
 						std::string indexStr = std::to_string(i);
 
-						const Property fakeProperty{ rType, indexStr.c_str(), 0 };
+						const Property fakeProperty{ rType, indexStr.c_str(), 0, 0, AccessSpecifier::PUBLIC };
 						PropertyTree tree{ rType, indexedCollection->Get(m_Addr, i) };
 						tree.Traverse(visitor, &fakeProperty);
 					}
@@ -88,13 +88,13 @@ namespace Sphynx
 						{
 							const Type& rType = associativeCollection->GetKeyType();
 
-							const Property fakeProperty{ rType, rType.Name, 0 };
+							const Property fakeProperty{ rType, rType.Name, 0, 0, AccessSpecifier::PUBLIC };
 							PropertyTree tree{ rType, (void*)associativeCollection->GetKey(m_Addr, i) };
 							tree.Traverse(visitor, &fakeProperty);
 						}
 						{
 							const Type& rType = associativeCollection->GetValueType();
-							const Property fakeProperty{ rType, rType.Name, 0 };
+							const Property fakeProperty{ rType, rType.Name, 0, 0, AccessSpecifier::PUBLIC };
 
 							PropertyTree tree{ associativeCollection->GetValueType(), (void*)associativeCollection->GetValue(m_Addr, i) };
 							tree.Traverse(visitor, &fakeProperty);

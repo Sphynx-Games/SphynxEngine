@@ -14,6 +14,7 @@
 		{ \
 			static ::Sphynx::Reflection::details::ClassStorage<::_Class> Storage([](auto* self) { \
 				self->Size = sizeof(::_Class); \
+				[[maybe_unused]] auto accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PRIVATE; \
 				[[maybe_unused]] auto& ParentClasses = self->ParentClasses; \
 				[[maybe_unused]] auto& Properties = self->Properties; \
 				[[maybe_unused]] auto& Functions = self->Functions; \
@@ -64,6 +65,7 @@
 			static ClassStorage<::_Class<T...>> Storage([](auto* self) \
 				{ \
 					self->Size = sizeof(::_Class<T...>); \
+					[[maybe_unused]] auto accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PRIVATE; \
 					[[maybe_unused]] auto& ParentClasses = self->ParentClasses; \
 					[[maybe_unused]] auto& Properties = self->Properties; \
 					[[maybe_unused]] auto& Functions = self->Functions; \
@@ -117,7 +119,8 @@
  // ---------- Struct -----------
 #define SPX_REFLECT_STRUCT_BEGIN(_Struct, _API) \
 	SPX_REFLECT_CLASS_BEGIN(_Struct, _API) \
-	self->IsStruct = true;
+	self->IsStruct = true; \
+	accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PUBLIC;
 
 #define SPX_REFLECT_STRUCT_END(_Struct, _API) \
 	SPX_REFLECT_CLASS_END(_Struct, _API)
@@ -128,7 +131,8 @@
 
 #define SPX_REFLECT_TEMPLATE_STRUCT_BEGIN(_Struct, _API) \
 	SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Struct, _API) \
-	self->IsStruct = true;
+	self->IsStruct = true; \
+	accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PUBLIC;
 
 #define SPX_REFLECT_TEMPLATE_STRUCT_END(_Struct, _API) \
 	SPX_REFLECT_TEMPLATE_CLASS_END(_Struct, _API)
@@ -147,13 +151,35 @@
 #define SPX_REFLECT_INHERITANCE(_Class) \
 	SPX_REFLECT_PARENT(_Class)
 
+// ---------- Access Specifier -----------
+#define SPX_REFLECT_PUBLIC() accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PUBLIC;
+#define SPX_REFLECT_PRIVATE() accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PRIVATE;
+#define SPX_REFLECT_PROTECTED() accessSpecifier = ::Sphynx::Reflection::AccessSpecifier::PROTECTED;
+
+#define SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_BEGIN(_SPECIFIER) { decltype(accessSpecifier) tmpAccessSpecifier = accessSpecifier; _SPECIFIER
+#define SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_END() accessSpecifier = tmpAccessSpecifier; }
+#define SPX_REFLECT_PUBLIC_BEGIN() SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_BEGIN( SPX_REFLECT_PUBLIC() )
+#define SPX_REFLECT_PRIVATE_BEGIN() SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_BEGIN( SPX_REFLECT_PRIVATE() )
+#define SPX_REFLECT_PROTECTED_BEGIN() SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_BEGIN( SPX_REFLECT_PROTECTED() )
+#define SPX_REFLECT_PUBLIC_END() SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_END()
+#define SPX_REFLECT_PRIVATE_END() SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_END()
+#define SPX_REFLECT_PROTECTED_END() SPX_INTERNAL_REFLECT_ACCESS_SPECIFIER_END()
+
+
 // ---------- Property -----------
 #define SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	{ \
+		using property_type = decltype(((context_type*)0)->_Property); \
+		using qualifier_mask_type = typename std::underlying_type<::Sphynx::Reflection::Property::Qualifier>::type; \
+		qualifier_mask_type qualifierMask = \
+			((std::is_const<property_type>::value ? 1 : 0) * static_cast<typename std::underlying_type<::Sphynx::Reflection::Property::Qualifier>::type>(::Sphynx::Reflection::Property::Qualifier::CONSTANT)) | \
+			((std::is_volatile<property_type>::value ? 1 : 0) * static_cast<typename std::underlying_type<::Sphynx::Reflection::Property::Qualifier>::type>(::Sphynx::Reflection::Property::Qualifier::VOLATILE)); \
 		Properties.emplace_back( \
-			::Sphynx::Reflection::GetType<decltype(((context_type*)0)->_Property)>(), \
+			::Sphynx::Reflection::GetType<property_type>(), \
 			#_Property, \
-			offsetof(context_type, _Property) \
+			offsetof(context_type, _Property), \
+			qualifierMask, \
+			accessSpecifier \
 		); \
 		[[maybe_unused]] auto& Attributes = (--Properties.end())->Attributes;
 
