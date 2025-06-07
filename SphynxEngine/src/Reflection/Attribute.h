@@ -87,7 +87,7 @@ namespace Sphynx
 					m_ValueType(GetType<typename TCollection::mapped_type>()),
 					m_AccessFunction([](void* obj, const void* key) -> void* { return &(*static_cast<TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)]; }),
 					m_ConstAccessFunction([](const void* obj, const void* key) -> const void* { return &(*static_cast<const TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)]; }),
-					m_KeyAccessFunction([](const void* obj, uint64_t index) -> void* { return (void*)(&(*std::next(static_cast<const TCollection*>(obj)->begin(), index))); }),
+					m_KeyAccessFunction([](const void* obj, uint64_t index) -> void* { return (void*)(&(*std::next(static_cast<const TCollection*>(obj)->cbegin(), index))); }),
 					m_SizeFunction([](const void* obj) -> size_t { return static_cast<const TCollection*>(obj)->Size(); }),
 					m_AddFunction([](void* obj, const void* key, const void* value) -> void* 
 						{ 

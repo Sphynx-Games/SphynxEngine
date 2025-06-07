@@ -23,7 +23,14 @@ namespace Sphynx
 				//MUTABLE 	= 1 << 2,
 			};
 
-			Property(const Type& type, const char* name, size_t offset, uint8_t qualifiers, AccessSpecifier accessSpecifier);
+			enum class SPHYNX_API ValueType : uint8_t
+			{
+				VALUE,
+				LVALUE_REFERENCE,
+				RVALUE_REFERENCE,
+			};
+
+			Property(const Type& type, const char* name, size_t offset);
 			Property(const Property& other);
 			Property(Property&& other) noexcept;
 			~Property();
@@ -36,11 +43,19 @@ namespace Sphynx
 			bool IsProtected() const;
 			bool IsPrivate() const;
 
+			ValueType GetValueType() const;
+			bool IsValue() const;
+			bool IsRValueReference() const;
+			bool IsLValueReference() const;
+			bool IsPointer() const;
+
 			const Type& Type;
 			const char* Name;
 			size_t Offset;
 			uint8_t Qualifiers;
-			AccessSpecifier AccSpecifier;
+			AccessSpecifier AccessSpecifier;
+			ValueType ValueType;
+			size_t PointerIndirectionCount;
 
 			std::vector<Attribute*> Attributes;
 		};

@@ -1,93 +1,93 @@
 02012b08-9545-4b36-8add-9409cab4b103:
   Handle: 02012b08-9545-4b36-8add-9409cab4b103
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_0.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 2d5de212-3172-4053-a9a0-3543c121f956:
   Handle: 2d5de212-3172-4053-a9a0-3543c121f956
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_7.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 46117665-b2c3-4ade-8303-c0ab07d4926a:
   Handle: 46117665-b2c3-4ade-8303-c0ab07d4926a
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_5.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 49c31c40-28fc-412f-b548-c50a0051b484:
   Handle: 49c31c40-28fc-412f-b548-c50a0051b484
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_4.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 4a03412f-ab3c-4a3e-9fda-e15442aa5d4e:
   Handle: 4a03412f-ab3c-4a3e-9fda-e15442aa5d4e
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_3.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 4bd872dc-1403-4852-94b7-0e03f68d8207:
   Handle: 4bd872dc-1403-4852-94b7-0e03f68d8207
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_8.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 7382b6a5-de3e-4b89-a58f-c8c90069e07c:
   Handle: 7382b6a5-de3e-4b89-a58f-c8c90069e07c
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_9.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 74408075-a641-42f0-bdc4-1162c80518a2:
   Handle: 74408075-a641-42f0-bdc4-1162c80518a2
-  Type: Texture
+  Type: Sphynx::Texture
   Path: Assets\Textures\cat.spxasset
   Dependencies: []
 884c563e-f2b4-41e2-859c-f787cddac235:
   Handle: 884c563e-f2b4-41e2-859c-f787cddac235
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_1.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 924af060-5889-4cf7-a8ae-c8a40efd8306:
   Handle: 924af060-5889-4cf7-a8ae-c8a40efd8306
-  Type: Spritesheet
+  Type: Sphynx::Spritesheet
   Path: Assets\Textures\enemySpritesheet.spxasset
   Dependencies:
     - cc5e9169-14ce-48fd-8e40-b93f57f6fa98
 a7a11682-90bb-41bf-83c6-4d4ee6540ac9:
   Handle: a7a11682-90bb-41bf-83c6-4d4ee6540ac9
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_2.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 a9f53562-d404-4d39-9edd-ab87a65eb2b1:
   Handle: a9f53562-d404-4d39-9edd-ab87a65eb2b1
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_10.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 ae543eb7-1340-4276-b70d-fb4794bd1e3c:
   Handle: ae543eb7-1340-4276-b70d-fb4794bd1e3c
-  Type: Font
+  Type: Sphynx::Font
   Path: Assets\Fonts\roboto\Roboto-Regular.spxasset
   Dependencies: []
 bd27fbc4-c96a-4c2d-851b-cf3d47f87a27:
   Handle: bd27fbc4-c96a-4c2d-851b-cf3d47f87a27
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_6.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 c0f67d22-1f71-4e68-aadf-1d181c78f9c0:
   Handle: c0f67d22-1f71-4e68-aadf-1d181c78f9c0
-  Type: Sprite
+  Type: Sphynx::Sprite
   Path: Assets\Textures\enemySpritesheet.spxasset\enemySpritesheet_11.spxasset
   Dependencies:
     - 924af060-5889-4cf7-a8ae-c8a40efd8306
 cc5e9169-14ce-48fd-8e40-b93f57f6fa98:
   Handle: cc5e9169-14ce-48fd-8e40-b93f57f6fa98
-  Type: Texture
+  Type: Sphynx::Texture
   Path: Assets\Textures\enemy_scaled5x.spxasset
   Dependencies: []

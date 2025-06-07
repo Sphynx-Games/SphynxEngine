@@ -170,18 +170,25 @@
 #define SPX_REFLECT_PROPERTY_BEGIN(_Property) \
 	{ \
 		using property_type = decltype(((context_type*)0)->_Property); \
+		using cleared_property_type = typename ::Sphynx::Traits::remove_pointers<typename std::remove_reference<typename std::remove_cv<property_type>::type>::type>::type; \
 		using qualifier_mask_type = typename std::underlying_type<::Sphynx::Reflection::Property::Qualifier>::type; \
 		qualifier_mask_type qualifierMask = \
 			((std::is_const<property_type>::value ? 1 : 0) * static_cast<typename std::underlying_type<::Sphynx::Reflection::Property::Qualifier>::type>(::Sphynx::Reflection::Property::Qualifier::CONSTANT)) | \
 			((std::is_volatile<property_type>::value ? 1 : 0) * static_cast<typename std::underlying_type<::Sphynx::Reflection::Property::Qualifier>::type>(::Sphynx::Reflection::Property::Qualifier::VOLATILE)); \
 		Properties.emplace_back( \
-			::Sphynx::Reflection::GetType<property_type>(), \
+			::Sphynx::Reflection::GetType<cleared_property_type>(), \
 			#_Property, \
-			offsetof(context_type, _Property), \
-			qualifierMask, \
-			accessSpecifier \
+			offsetof(context_type, _Property) \
 		); \
-		[[maybe_unused]] auto& Attributes = (--Properties.end())->Attributes;
+		auto& property = *(--Properties.end()); \
+		property.Qualifiers = qualifierMask; \
+		property.AccessSpecifier = accessSpecifier; \
+		if constexpr (std::is_lvalue_reference<property_type>::value) \
+			property.ValueType = ::Sphynx::Reflection::Property::ValueType::LVALUE_REFERENCE; \
+		else if constexpr (std::is_rvalue_reference<property_type>::value) \
+			property.ValueType = ::Sphynx::Reflection::Property::ValueType::RVALUE_REFERENCE; \
+		property.PointerIndirectionCount = ::Sphynx::Traits::pointer_indirection_count<property_type>::value; \
+		[[maybe_unused]] auto& Attributes = property.Attributes;
 
 #define SPX_REFLECT_PROPERTY_END() \
 	}

@@ -6,12 +6,14 @@ namespace Sphynx
 {
 	namespace Reflection
 	{
-		Property::Property(const ::Sphynx::Reflection::Type& type, const char* name, size_t offset, uint8_t qualifiers, AccessSpecifier accessSpecifier) :
+		Property::Property(const ::Sphynx::Reflection::Type& type, const char* name, size_t offset) :
 			Type(type),
 			Name(name),
 			Offset(offset),
-			Qualifiers(qualifiers),
-			AccSpecifier(accessSpecifier),
+			Qualifiers(0),
+			AccessSpecifier(AccessSpecifier::PUBLIC),
+			ValueType(ValueType::VALUE),
+			PointerIndirectionCount(0),
 			Attributes()
 		{
 
@@ -22,7 +24,9 @@ namespace Sphynx
 			Name(other.Name),
 			Offset(other.Offset),
 			Qualifiers(other.Qualifiers),
-			AccSpecifier(other.AccSpecifier),
+			AccessSpecifier(other.AccessSpecifier),
+			ValueType(other.ValueType),
+			PointerIndirectionCount(other.PointerIndirectionCount),
 			Attributes(other.Attributes)
 		{
 
@@ -33,7 +37,9 @@ namespace Sphynx
 			Name(other.Name),
 			Offset(std::move(other.Offset)),
 			Qualifiers(std::move(other.Qualifiers)),
-			AccSpecifier(std::move(other.AccSpecifier)),
+			AccessSpecifier(std::move(other.AccessSpecifier)),
+			ValueType(std::move(other.ValueType)),
+			PointerIndirectionCount(std::move(other.PointerIndirectionCount)),
 			Attributes(std::move(other.Attributes))
 		{
 
@@ -64,18 +70,37 @@ namespace Sphynx
 
 		bool Property::IsPublic() const
 		{
-			return AccSpecifier == AccessSpecifier::PUBLIC;
+			return AccessSpecifier == AccessSpecifier::PUBLIC;
 		}
 
 		bool Property::IsProtected() const
 		{
-			return AccSpecifier == AccessSpecifier::PROTECTED;
+			return AccessSpecifier == AccessSpecifier::PROTECTED;
 		}
 
 		bool Property::IsPrivate() const
 		{
-			return AccSpecifier == AccessSpecifier::PRIVATE;
+			return AccessSpecifier == AccessSpecifier::PRIVATE;
 		}
 
+		bool Property::IsValue() const
+		{
+			return ValueType == ValueType::VALUE;
+		}
+
+		bool Property::IsRValueReference() const
+		{
+			return ValueType == ValueType::RVALUE_REFERENCE;
+		}
+
+		bool Property::IsLValueReference() const
+		{
+			return ValueType == ValueType::LVALUE_REFERENCE;
+		}
+
+		bool Property::IsPointer() const
+		{
+			return PointerIndirectionCount > 0;
+		}
 	}
 }

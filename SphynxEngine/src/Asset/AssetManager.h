@@ -18,6 +18,7 @@
 namespace Sphynx
 {
 	using AssetTypeRegistry = std::set<AssetType>;
+	template class SPHYNX_API Map<AssetHandle, AssetMetadata>;
 	using AssetRegistry = Map<AssetHandle, AssetMetadata>;
 
 	class SPHYNX_API AssetManager
@@ -34,6 +35,7 @@ namespace Sphynx
 
 		static void AddToRegistry(const AssetMetadata& metadata);
 		static void RemoveFromRegistry(AssetHandle handle);
+		static const AssetRegistry& GetRegistry();
 
 		static std::shared_ptr<IAsset> Import(const std::filesystem::path& path);
 		static std::shared_ptr<IAsset> GetAsset(AssetHandle handle);
@@ -75,19 +77,13 @@ namespace Sphynx
 			return assets;
 		}
 
+
 		template<typename T>
-		static Array<AssetMetadata> GetAssetMetadataList()
+		static Array<AssetMetadata> GetAssetMetadatas()
 		{
-			Array<AssetMetadata> assets;
-			for (auto& [handle, metadata] : s_Registry)
-			{
-				if (metadata.Type == TypeToAssetType<T>::Value)
-				{
-					assets.Add(metadata);
-				}
-			}
-			return assets;
+			return GetAssetMetadatasByAssetType(TypeToAssetType<T>::Value());
 		}
+		static Array<AssetMetadata> GetAssetMetadatasByAssetType(const AssetType& assetType);
 
 		template<typename T>
 		static std::shared_ptr<Asset<T>> RegisterAsset(T* object, const std::filesystem::path& path, bool save = true)
@@ -99,7 +95,7 @@ namespace Sphynx
 			metadata.Handle = AssetHandle::Generate();
 			metadata.Path = path;
 			metadata.Path.replace_extension(ASSET_EXTENSION);
-			metadata.Type = TypeToAssetType<T>::Value;
+			metadata.Type = TypeToAssetType<T>::Value();
 
 			std::shared_ptr<Asset<T>> asset = std::make_shared<Asset<T>>();
 			asset->Handle = metadata.Handle;

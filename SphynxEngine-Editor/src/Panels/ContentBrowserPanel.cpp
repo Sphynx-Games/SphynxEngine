@@ -305,14 +305,14 @@ namespace Sphynx
 		{
 			m_SelectedContentItem->CopyValues(contentItem);
 
-			if (metadata.Type == TypeToAssetType<Texture>::Value)
+			if (metadata.Type == TypeToAssetType<Texture>::Value())
 			{
 				// "Create sprite" for .spxasset of Texture type
 				if (ImGui::MenuItem("Create sprite"))
 				{
 					AssetMetadata spriteMetadata;
 					spriteMetadata.Handle = AssetHandle::Generate();
-					spriteMetadata.Type = TypeToAssetType<Sprite>::Value;
+					spriteMetadata.Type = TypeToAssetType<Sprite>::Value();
 
 					std::filesystem::path name = metadata.Path.filename();
 					name.replace_extension();

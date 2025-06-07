@@ -302,7 +302,7 @@ namespace Sphynx
 
 			if (ImGui::BeginCombo(LABEL("Sprite").c_str(), selectedSpriteMetadata.Path.stem().string().c_str()))
 			{
-				Array<AssetMetadata> spritesMetadata = AssetManager::GetAssetMetadataList<Sprite>();
+				Array<AssetMetadata> spritesMetadata = AssetManager::GetAssetMetadatas<Sprite>();
 				for (const AssetMetadata& metadata : spritesMetadata)
 				{
 					if (ImGui::Selectable(metadata.Path.stem().string().c_str(), metadata.Handle == component.Sprite))

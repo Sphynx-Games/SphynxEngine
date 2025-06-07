@@ -104,6 +104,43 @@ namespace Sphynx
 
 		template<template<typename...> class T, typename ...Args>
 		struct is_templated_class<T<Args...>> : std::true_type {};
+
+		// Pointer
+		template<typename T>
+		struct pointer_indirection_count
+		{
+			constexpr static size_t value = 0;
+		};
+
+		template<typename T>
+		struct pointer_indirection_count<T&>
+		{
+			constexpr static size_t value = pointer_indirection_count<T>::value;
+		};
+
+		template<typename T>
+		struct pointer_indirection_count<T&&>
+		{
+			constexpr static size_t value = pointer_indirection_count<T>::value;
+		};
+
+		template<typename T>
+		struct pointer_indirection_count<T*>
+		{
+			constexpr static size_t value = 1 + pointer_indirection_count<T>::value;
+		};
+
+		template<typename T>
+		struct remove_pointers
+		{
+			using type = T;
+		};
+
+		template<typename T>
+		struct remove_pointers<T*>
+		{
+			using type = typename remove_pointers<T>::type;
+		};
 	}
 }
 

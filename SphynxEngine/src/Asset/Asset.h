@@ -5,19 +5,27 @@
 #include "Traits/Utility.h"
 
 
-#define TYPE_TO_ASSETTYPE(Type) #Type
+#define TYPE_TO_ASSETTYPE(Type) {&::Sphynx::Reflection::GetType<Type>()}
 #define GENERATE_ASSETTYPE_CONVERSOR(Type) \
 	template<> \
 	struct SPHYNX_API TypeToAssetType<Type> \
 	{ \
-		inline static const ::Sphynx::AssetType Value = TYPE_TO_ASSETTYPE(Type); \
+		static ::Sphynx::AssetType Value() { return TYPE_TO_ASSETTYPE(Type); } \
 	}
-
 
 namespace Sphynx
 {
 	using AssetHandle = Traits::unique_type<UUID, struct __AssetHandle__>;
-	using AssetType = Traits::unique_type<std::string, struct __AssetType__>;
+	struct SPHYNX_API AssetType
+	{
+		const Reflection::Type* Type = nullptr;
+
+		bool operator==(const AssetType& other) const;
+		bool operator<(const AssetType& other) const;
+
+	private:
+		friend struct std::hash<UUID>;
+	};
 
 	struct SPHYNX_API IAsset
 	{
@@ -52,3 +60,24 @@ namespace Sphynx
 	template<typename T>
 	struct SPHYNX_API TypeToAssetType;
 }
+
+template<>
+struct std::hash<Sphynx::AssetType>
+{
+	std::size_t operator()(const Sphynx::AssetType& assetType) const
+	{
+		return std::hash<uintptr_t>()((uintptr_t)assetType.Type);
+	}
+};
+
+
+#include "Reflection/Reflection.h"
+
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::AssetType, SPHYNX_API)
+
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
+
+SPX_REFLECT_STRUCT_END(Sphynx::AssetType, SPHYNX_API)

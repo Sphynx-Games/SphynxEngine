@@ -31,6 +31,19 @@ namespace Sphynx
 			// do nothing for now
 		}
 
+		const Type* Registry::TryGetType(const char* name)
+		{
+			EnsureRegistryInitialized();
+			for (const auto& func : gRegistry->m_TypeFunctions)
+			{
+				const Type& rType = func();
+				if (!strcmp(name, rType.Name))
+					return &rType;
+			}
+
+			return nullptr;
+		}
+
 		void Registry::Register(const Type& (*typeFunc)())
 		{
 			EnsureRegistryInitialized();

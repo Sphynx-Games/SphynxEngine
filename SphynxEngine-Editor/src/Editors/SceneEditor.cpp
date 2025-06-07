@@ -280,7 +280,7 @@ namespace Sphynx
 			metadata.Handle = AssetHandle::Generate();
 			metadata.Path = path;
 			metadata.Path.replace_extension(ASSET_EXTENSION);
-			metadata.Type = TypeToAssetType<Scene>::Value;
+			metadata.Type = TypeToAssetType<Scene>::Value();
 			AssetManager::AddToRegistry(metadata);
 		}
 

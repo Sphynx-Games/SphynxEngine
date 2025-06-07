@@ -5,6 +5,8 @@
 #include "Container/Array.h"
 //#include "Asset/Asset.h"
 
+#include "Reflection/Reflection.h"
+
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -16,7 +18,7 @@ namespace Sphynx
 
 	class SPHYNX_API Sprite
 	{
-		//friend const Reflection::Class& Reflection::details::GetClassImpl(Reflection::details::Tag<Sprite>);
+		SPX_REFLECT_GENERATED_BODY()
 
 	public:
 		Sprite() = default;
@@ -50,6 +52,8 @@ namespace Sphynx
 
 	class Spritesheet
 	{
+		SPX_REFLECT_GENERATED_BODY()
+
 	public:
 		Spritesheet() = default;
 		Spritesheet(Texture* texture);
@@ -72,15 +76,24 @@ namespace Sphynx
 }
 
 
-//#include "Reflection/Reflection.h"
-//
-//
-//SPX_REFLECT_CLASS_BEGIN(Sphynx::Sprite, SPHYNX_API)
-//
-//SPX_REFLECT_PROPERTY(m_Texture)
-//SPX_REFLECT_PROPERTY(m_Position)
-//SPX_REFLECT_PROPERTY(m_Size)
-//SPX_REFLECT_PROPERTY(m_Pivot)
-//SPX_REFLECT_PROPERTY(m_PixelsPerUnit)
-//
-//SPX_REFLECT_CLASS_END(Sphynx::Sprite, SPHYNX_API)
+
+#include "Reflection/Reflection.h"
+
+SPX_REFLECT_CLASS_BEGIN(Sphynx::Sprite, SPHYNX_API)
+
+SPX_REFLECT_PROPERTY(m_Texture)
+SPX_REFLECT_PROPERTY(m_Position)
+SPX_REFLECT_PROPERTY(m_Size)
+SPX_REFLECT_PROPERTY(m_Pivot)
+SPX_REFLECT_PROPERTY(m_PixelsPerUnit)
+
+SPX_REFLECT_CLASS_END(Sphynx::Sprite, SPHYNX_API)
+
+
+SPX_REFLECT_CLASS_BEGIN(Sphynx::Spritesheet, SPHYNX_API)
+
+SPX_REFLECT_PROPERTY(m_Texture)
+// TODO: add support to collections with pointer types
+//SPX_REFLECT_PROPERTY(m_Sprites)
+
+SPX_REFLECT_CLASS_END(Sphynx::Spritesheet, SPHYNX_API)

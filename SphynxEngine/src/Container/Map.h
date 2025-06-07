@@ -128,8 +128,8 @@ namespace Sphynx
 		inline Iterator begin() { return m_HashMap.begin(); }
 		inline Iterator end() { return m_HashMap.end(); }
 
-		inline ConstIterator begin() const { return m_HashMap.begin(); }
-		inline ConstIterator end() const { return m_HashMap.end(); }
+		inline ConstIterator begin() const { return m_HashMap.cbegin(); }
+		inline ConstIterator end() const { return m_HashMap.cend(); }
 		inline ConstIterator cbegin() const { return m_HashMap.cbegin(); }
 		inline ConstIterator cend() const { return m_HashMap.cend(); }
 
@@ -150,12 +150,7 @@ namespace Sphynx
 	public:
 		Map() : m_Map() {}
 
-		Map(size_t initialCapacity)
-		{
-			m_Map.reserve(initialCapacity);
-		}
-
-		Map(const Map& other) : Map(other.Size())
+		Map(const Map& other) : Map()
 		{
 			m_Map = other.m_Map;
 		}
@@ -205,9 +200,14 @@ namespace Sphynx
 			return false;
 		}
 
+		TValue& GetValue(const TKey& key)
+		{
+			return m_Map.at(key);
+		}
+
 		const TValue& GetValue(const TKey& key) const
 		{
-			return m_Map[key];
+			return m_Map.at(key);
 		}
 
 		Array<TKey> GetKeys() const
@@ -249,8 +249,8 @@ namespace Sphynx
 		inline Iterator begin() { return m_Map.begin(); }
 		inline Iterator end() { return m_Map.end(); }
 
-		inline ConstIterator begin() const { return m_Map.begin(); }
-		inline ConstIterator end() const { return m_Map.end(); }
+		inline ConstIterator begin() const { return m_Map.cbegin(); }
+		inline ConstIterator end() const { return m_Map.cend(); }
 		inline ConstIterator cbegin() const { return m_Map.cbegin(); }
 		inline ConstIterator cend() const { return m_Map.cend(); }
 

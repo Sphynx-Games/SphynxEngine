@@ -31,7 +31,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpriteAsset must have only one dependency.");
 		
 		std::filesystem::path path = metadata.Path;
-		if (AssetManager::GetAssetType(metadata.Dependencies[0]) == TypeToAssetType<Spritesheet>::Value)
+		if (AssetManager::GetAssetType(metadata.Dependencies[0]) == TypeToAssetType<Spritesheet>::Value())
 		{
 			path = metadata.Path.parent_path();
 		}
@@ -50,11 +50,11 @@ namespace Sphynx
 
 		reader.PushIndex(1);
 		std::shared_ptr<IAsset> sprite = nullptr;
-		if (header.Type == TypeToAssetType<Spritesheet>::Value)
+		if (header.Type == TypeToAssetType<Spritesheet>::Value())
 		{
 			sprite = LoadSpriteInSpritesheet(reader, metadata);
 		}
-		else if(header.Type == TypeToAssetType<Sprite>::Value)
+		else if(header.Type == TypeToAssetType<Sprite>::Value())
 		{
 			sprite = LoadSprite(reader, metadata);
 		}
@@ -94,11 +94,11 @@ namespace Sphynx
 
 		AssetHandle dependencyHandle = metadata.Dependencies[0];
 		std::shared_ptr<IAsset> dependencyAsset = AssetManager::GetAsset(dependencyHandle);
-		if (AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value)
+		if (AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value())
 		{
 			sprite->m_Texture = std::static_pointer_cast<Asset<Texture>>(dependencyAsset)->Asset;
 		}
-		else if (AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Spritesheet>::Value)
+		else if (AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Spritesheet>::Value())
 		{
 			std::shared_ptr<Asset<Spritesheet>> spritesheet = std::static_pointer_cast<Asset<Spritesheet>>(dependencyAsset);
 			sprite->m_Texture = spritesheet->Asset->m_Texture;
@@ -118,7 +118,7 @@ namespace Sphynx
 		// check if the spritesheet depends on a texture
 		const AssetMetadata& sheetMetadata = AssetManager::GetAssetMetadata(metadata.Dependencies[0]);
 		AssetHandle dependencyHandle = sheetMetadata.Dependencies[0];
-		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value, "Error! SpritesheetAsset must depend on a Texture.");
+		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value(), "Error! SpritesheetAsset must depend on a Texture.");
 
 		std::shared_ptr<Asset<Texture>> dependencyAsset = AssetManager::GetAsset<Texture>(dependencyHandle);
 

@@ -15,6 +15,8 @@ namespace Sphynx
 			static void Init();
 			static void Shutdown();
 
+			static const Type* TryGetType(const char* name);
+
 		private:
 			template<typename T>
 			static void Register();
@@ -36,13 +38,13 @@ namespace Sphynx
 		template<typename T>
 		void Registry::Register()
 		{
-			Register(&GetType<T>);
+			Register(&::Sphynx::Reflection::GetType<T>);
 		}
 
 		template<typename T>
 		void Registry::Unregister()
 		{
-			Unregister(&GetType<T>);
+			Unregister(&::Sphynx::Reflection::GetType<T>);
 		}
 
 		template<typename T>

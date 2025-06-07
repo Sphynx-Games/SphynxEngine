@@ -1,5 +1,5 @@
 - SphynxAsset: SphynxAsset
-  Type: Spritesheet
+  Type: Sphynx::Spritesheet
 - SpritesData:
     2d5de212-3172-4053-a9a0-3543c121f956:
       Position:

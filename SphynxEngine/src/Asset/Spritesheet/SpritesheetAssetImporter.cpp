@@ -31,7 +31,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(metadata.Dependencies.Size() == 1, "Error! SpritesheetAsset must have only one dependency.");
 
 		AssetHandle dependencyHandle = metadata.Dependencies[0];
-		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value, "Error! SpritesheetAsset must depend on a Texture.");
+		SPX_CORE_ASSERT(AssetManager::GetAssetType(dependencyHandle) == TypeToAssetType<Texture>::Value(), "Error! SpritesheetAsset must depend on a Texture.");
 
 		// read spritesheet data from .spxasset file
 		SpritesheetAssetMetadata spritesheetMetadata = AssetImporter::DeserializeAsset<SpritesheetAssetMetadata>(metadata);

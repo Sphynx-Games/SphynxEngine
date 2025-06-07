@@ -10,6 +10,7 @@
 namespace Sphynx
 {
 	struct AssetMetadata;
+	class Scene;
 
 	class SPHYNX_API SceneAssetImporter
 	{

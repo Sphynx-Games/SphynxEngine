@@ -86,3 +86,8 @@ namespace Sphynx
 	}
 
 }
+
+
+#include "Reflection/Reflection.h"
+
+SPX_REFLECT_CLASS(Sphynx::Scene)

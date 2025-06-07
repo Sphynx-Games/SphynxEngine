@@ -1,10 +1,18 @@
 #include "spxpch.h"
 #include "AssetManager.h"
 
+#include "Asset/Invalid/InvalidAsset.h"
+
+#include "Renderer/Texture.h"
 #include "Asset/Texture/TextureAssetImporter.h"
+
+#include "Renderer/Font.h"
 #include "Asset/Font/FontAssetImporter.h"
+
+#include "Scene/Scene.h"
 #include "Asset/Scene/SceneAssetImporter.h"
 
+#include "Renderer/Sprite.h"
 #include "Asset/Sprite/SpriteAssetImporter.h"
 #include "Asset/Spritesheet/SpritesheetAssetImporter.h"
 
@@ -121,13 +129,13 @@ namespace Sphynx
 	void AssetManager::RegisterAssetType(const AssetType& assetType)
 	{
 		SPX_CORE_ASSERT(!IsAssetTypeRegistered(assetType), "Asset type \"{}\" is already registered!", assetType);
-		SPX_CORE_LOG_TRACE("Asset type registered: {}", assetType);
+		SPX_CORE_LOG_TRACE("Asset type registered: {}", assetType.Type->Name);
 		s_TypeRegistry.insert(assetType);
 	}
 
 	void AssetManager::RegisterAssetTypeExtensions(const AssetType& assetType, const std::initializer_list<std::string>& extensions)
 	{
-		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType);
+		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType.Type->Name);
 		for (const std::string& extension : extensions)
 		{
 			SPX_CORE_ASSERT(s_AssetTypeExtensions.find(extension) == s_AssetTypeExtensions.end(), "Extension alerady in use while registering a {}!", assetType);
@@ -137,14 +145,14 @@ namespace Sphynx
 
 	void AssetManager::UnregisterAssetType(const AssetType& assetType)
 	{
-		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType);
-		SPX_CORE_LOG_TRACE("Asset type unregistered: {}", assetType);
+		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType.Type->Name);
+		SPX_CORE_LOG_TRACE("Asset type unregistered: {}", assetType.Type->Name);
 		s_TypeRegistry.erase(assetType);
 	}
 
 	void AssetManager::UnregisterAssetTypeExtensions(const AssetType& assetType)
 	{
-		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType);
+		SPX_CORE_ASSERT(IsAssetTypeRegistered(assetType), "Asset type \"{}\" is not registered!", assetType.Type->Name);
 		
 		auto isAssetType = [&](auto& data) {return data.second == assetType; };
 		auto it = std::find_if(s_AssetTypeExtensions.begin(), s_AssetTypeExtensions.end(), isAssetType);
@@ -174,6 +182,11 @@ namespace Sphynx
 	{
 		SPX_CORE_ASSERT(s_Registry.ContainsKey(handle), "Handle {} Iis not added to registry!", handle);
 		s_Registry.Remove(handle);
+	}
+
+	const Sphynx::AssetRegistry& AssetManager::GetRegistry()
+	{
+		return s_Registry;
 	}
 
 	std::shared_ptr<IAsset> AssetManager::Import(const std::filesystem::path& path)
@@ -218,6 +231,19 @@ namespace Sphynx
 		}
 
 		return s_LoadedAssets[handle];
+	}
+
+	Sphynx::Array<Sphynx::AssetMetadata> AssetManager::GetAssetMetadatasByAssetType(const AssetType& assetType)
+	{
+		Array<AssetMetadata> assets;
+		for (auto& [handle, metadata] : s_Registry)
+		{
+			if (metadata.Type == assetType)
+			{
+				assets.Add(metadata);
+			}
+		}
+		return assets;
 	}
 
 	void AssetManager::UnloadAsset(AssetHandle handle)
