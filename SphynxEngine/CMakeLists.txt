@@ -48,7 +48,10 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC SPX_PHYSICS_2D_BOX2D)
 target_compile_definitions(${PROJECT_NAME}  PUBLIC
 	$<$<CONFIG:Debug>:SPX_DEBUG>
 	$<$<CONFIG:Release>:SPX_RELEASE>
-	$<$<CONFIG:Shipping>:SPX_Shipping>)
+	$<$<CONFIG:Shipping>:SPX_SHIPPING>
+	$<$<CONFIG:Debug>:SPX_CONFIG_NAME="Debug">
+	$<$<CONFIG:Release>:SPX_CONFIG_NAME="Release">
+	$<$<CONFIG:Shipping>:SPX_CONFIG_NAME="Shipping">)
 if (SPHYNX_BUILD_SHARED)
 	target_compile_definitions(${PROJECT_NAME}  PUBLIC SPX_BUILD_SHARED)
 else()

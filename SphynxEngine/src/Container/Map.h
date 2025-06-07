@@ -122,6 +122,17 @@ namespace Sphynx
 		inline size_t Size() const { return m_HashMap.size(); }
 		inline bool IsEmpty() const { return m_HashMap.empty(); }
 
+		inline HashMap& operator = (const HashMap& other) 
+		{
+			m_HashMap = other.m_HashMap;
+			return *this;
+		}
+		inline HashMap& operator = (HashMap&& other)
+		{
+			m_HashMap = std::move(other.m_HashMap);
+			return *this;
+		}
+
 		inline const TValue& operator [] (const TKey& key) const { return m_HashMap.at(key); }
 		inline TValue& operator [] (const TKey& key) { return m_HashMap[key]; }
 

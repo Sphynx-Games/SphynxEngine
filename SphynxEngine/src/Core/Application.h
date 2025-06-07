@@ -3,7 +3,6 @@
 #include "Core/Core.h"
 #include "LayerStack.h"
 #include "Container/Map.h"
-#include "Core/Commands.h"
 #include <memory>
 
 
@@ -24,11 +23,13 @@ namespace Sphynx
 
 		Window* GetWindow() const;
 
-		virtual void Init(const HashMap<CommandArgument, Array<std::string>>& options);
+		virtual void Init(const HashMap<std::string, Array<std::string>>& commandArguments);
 		virtual void Run();
 		virtual void Shutdown();
 
 		virtual void HandleEvent(class Event& event);
+
+		inline const HashMap<std::string, Array<std::string>>& GetCommandArguments() { return m_CommandArguments; }
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
@@ -41,7 +42,7 @@ namespace Sphynx
 		Application();
 
 	private:
-		void ManageOptions(const HashMap<CommandArgument, Array<std::string>>& options);
+		void ManageCommandArguments(const HashMap<std::string, Array<std::string>>& commandArguments);
 
 	protected:
 		static Application* s_Application;
@@ -50,6 +51,7 @@ namespace Sphynx
 		bool m_IsRunning;
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
+		HashMap<std::string, Array<std::string>> m_CommandArguments;
 
 	};
 

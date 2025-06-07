@@ -4,6 +4,7 @@
 #include "Dialogs/FileDialog.h"
 #include "Serialization/Reflection/ReflectionDeserializer.h"
 #include "Asset/AssetManager.h"
+#include "Core/Application.h"
 
 #include <imgui.h>
 
@@ -14,6 +15,13 @@ namespace Sphynx
 		Editor("ProjectEditor"),
 		m_ProjectHandle(ModuleHandle::Invalid)
 	{
+		for (auto& [key, values] : Application::GetInstance()->GetCommandArguments())
+		{
+			if (key == "-p" || key == "--project")
+			{
+				OpenProject(values[0]);
+			}
+		}
 	}
 
 	void ProjectEditor::RenderGUI()
@@ -62,10 +70,8 @@ namespace Sphynx
 		ReflectionDeserializer deserializer{ projectInfo, reader };
 		deserializer.Deserialize();
 
-		// Load {projectInfo.ProjectName}.dll and broadcast delegate
-		std::filesystem::path dllPath = "Binaries\\Debug";
-		dllPath /= projectInfo.ProjectName;
-		LoadProject(dllPath);
+		// Load {projectInfo.Name}.dll and broadcast delegate
+		LoadProject(MODULE_PATH(projectInfo.Name));
 		OnProjectOpened.Broadcast(projectInfo);
 	}
 

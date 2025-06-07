@@ -7,6 +7,9 @@
 #include "Container/Map.h"
 
 
+#define MODULE_PATH(name) std::filesystem::path("Binaries") / SPX_CONFIG_NAME / name
+
+
 namespace Sphynx
 {
 	using ModuleHandle = Traits::unique_type<UUID, struct __ModuleHandle__>;

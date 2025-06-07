@@ -11,7 +11,7 @@ namespace Sphynx
 		EditorApplication();
 
 	public:
-		virtual void Init(const HashMap<CommandArgument, Array<std::string>>& options) override;
+		virtual void Init(const HashMap<std::string, Array<std::string>>& commandArguments) override;
 		virtual void Run() override;
 		virtual void Shutdown() override;
 

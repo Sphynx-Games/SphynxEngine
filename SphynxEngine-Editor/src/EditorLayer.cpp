@@ -16,8 +16,8 @@ namespace Sphynx
 {
 	EditorLayer::EditorLayer() :
 		m_BlockEventsEnabled(true),
-		m_Editors({ new ProjectEditor(), new SceneEditor(this) }),
-		m_ActiveEditor(m_Editors[1]) // TODO: this is not being used right now
+		m_Editors({ new SceneEditor(this), new ProjectEditor() }),
+		m_ActiveEditor(m_Editors[0]) // TODO: this is not being used right now
 	{
 	}
 

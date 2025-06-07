@@ -11,6 +11,7 @@
 #include "Layer.h"
 #include "Asset/AssetManager.h"
 #include "Module/ModuleManager.h"
+#include "Core/Commands.h"
 
 
 namespace Sphynx
@@ -39,10 +40,10 @@ namespace Sphynx
 		return m_Window.get();
 	}
 
-	void Application::Init(const HashMap<CommandArgument, Array<std::string>>& options)
+	void Application::Init(const HashMap<std::string, Array<std::string>>& commandArguments)
 	{
-		// Manage the command line options
-		ManageOptions(options);
+		// Manage the command line arguments
+		ManageCommandArguments(commandArguments);
 
 		// Create window
 		m_Window.reset(Window::Create({ "Sphynx Application", 1280, 720 }));
@@ -159,38 +160,32 @@ namespace Sphynx
 		m_IsRunning = false;
 	}
 
-	void Application::ManageOptions(const HashMap<CommandArgument, Array<std::string>>& options)
+	void Application::ManageCommandArguments(const HashMap<std::string, Array<std::string>>& commandArguments)
 	{
-		if (options.ContainsKey(CommandArgument::DIRECTORY))
+		m_CommandArguments = commandArguments;
+		for (auto& [key, values] : commandArguments)
 		{
-#ifdef SPX_PLATFORM_WINDOWS
-			SetCurrentDirectory(options[CommandArgument::DIRECTORY][0].c_str());
-#endif
-		}
-
-		if (options.ContainsKey(CommandArgument::MODULES))
-		{
-			for (const std::string& moduleName : options[CommandArgument::MODULES])
+			switch (CommandArgumentParser::Parse(key))
 			{
-				std::filesystem::path path = "Binaries";
-#ifdef SPX_DEBUG
-				path /= "Debug";
+			case CommandArgument::DIRECTORY:
+#ifdef SPX_PLATFORM_WINDOWS
+				SetCurrentDirectory(values[0].c_str());
 #endif
-#ifdef SPX_RELEASE
-				path /= "Release";
-#endif
-#ifdef SPX_SHIPPING
-				path /= "Shipping";
-#endif
-				path /= moduleName;
-				ModuleManager::LoadModule(path);
-			}
+				break;
 
-			// TODO: delete this lines in the future
-			AssetManager::Shutdown();
-			Reflection::Registry::Shutdown();
-			Reflection::Registry::Init();
-			AssetManager::Init();
+			case CommandArgument::MODULES:
+				for (const std::string& moduleName : values)
+				{
+					ModuleManager::LoadModule(MODULE_PATH(moduleName));
+				}
+
+				// TODO: delete this lines in the future
+				AssetManager::Shutdown();
+				Reflection::Registry::Shutdown();
+				Reflection::Registry::Init();
+				AssetManager::Init();
+				break;
+			}
 		}
 	}
 }

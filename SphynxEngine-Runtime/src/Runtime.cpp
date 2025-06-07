@@ -42,11 +42,11 @@ public:
 
 
 public:
-	virtual void Init(const Sphynx::HashMap<Sphynx::CommandArgument, Sphynx::Array<std::string>>& options) override
+	virtual void Init(const Sphynx::HashMap<std::string, Sphynx::Array<std::string>>& commandArguments) override
 	{
 		using namespace Sphynx;
 
-		Application::Init(options);
+		Application::Init(commandArguments);
 
 		const HashMap<ModuleHandle, void*>& modules = ModuleManager::GetAllModules();
 

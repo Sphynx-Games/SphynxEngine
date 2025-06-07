@@ -10,7 +10,7 @@ namespace Sphynx
 {
 	struct ProjectInfo
 	{
-		std::string ProjectName;
+		std::string Name;
 		std::filesystem::path InitialScene;
 	};
 }
@@ -20,7 +20,7 @@ namespace Sphynx
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::ProjectInfo)
 
-SPX_REFLECT_PROPERTY(ProjectName)
+SPX_REFLECT_PROPERTY(Name)
 SPX_REFLECT_PROPERTY(InitialScene)
 
 SPX_REFLECT_STRUCT_END(Sphynx::ProjectInfo)
