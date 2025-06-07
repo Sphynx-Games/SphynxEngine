@@ -4,6 +4,7 @@ bin
 bin-int
 lib
 x64
+Sandbox/Binaries
 *.vcxproj
 *.vcxproj.filters
 *.sln

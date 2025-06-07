@@ -36,3 +36,16 @@ target_sources(Sandbox PRIVATE ${SNBSOURCES})
 target_link_libraries(Sandbox PRIVATE SphynxEngine)
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_BUILD_MODULE)
+
+# Set Sandbox target properties
+set(COMMAND_ARGUMENTS "-d ${CMAKE_CURRENT_SOURCE_DIR} -m Sandbox")
+
+set_target_properties(Sandbox PROPERTIES
+    VS_DEBUGGER_COMMAND "$<$<CONFIG:Debug>:$<TARGET_FILE:SphynxEngine-Editor>>\
+$<$<CONFIG:Release>:$<TARGET_FILE:SphynxEngine-Editor>>\
+$<$<CONFIG:Shipping>:$<TARGET_FILE:SphynxEngine-Runtime>>"
+    VS_DEBUGGER_COMMAND_ARGUMENTS "$<$<CONFIG:Debug>:>\
+$<$<CONFIG:Release>:>\
+$<$<CONFIG:Shipping>:${COMMAND_ARGUMENTS}>"
+    #VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)

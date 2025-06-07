@@ -176,6 +176,12 @@ namespace Sphynx
 #ifdef SPX_DEBUG
 				path /= "Debug";
 #endif
+#ifdef SPX_RELEASE
+				path /= "Release";
+#endif
+#ifdef SPX_SHIPPING
+				path /= "Shipping";
+#endif
 				path /= moduleName;
 				ModuleManager::LoadModule(path);
 			}

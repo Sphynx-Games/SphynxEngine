@@ -1,5 +1,5 @@
 # ---------------------------------------------------
-# SphynxEngine Editor Project CMake Setup
+# SphynxEngine-Editor Project CMake Setup
 # ---------------------------------------------------
 cmake_minimum_required(VERSION 3.6)
 
@@ -37,7 +37,7 @@ target_include_directories(SphynxEngine-Editor PUBLIC "${CMAKE_CURRENT_SOURCE_DI
 # Set target link libs
 target_link_libraries(SphynxEngine-Editor SphynxEngine)
 
-target_compile_definitions(SphynxEngine-Editor  PRIVATE SPHYNX_EDITOR_BUILD)
+target_compile_definitions(SphynxEngine-Editor PRIVATE SPHYNX_EDITOR_BUILD)
 
 # Post build command (copy .dll to bin folder)
 add_custom_target(SphynxEngine-EditorRules 
