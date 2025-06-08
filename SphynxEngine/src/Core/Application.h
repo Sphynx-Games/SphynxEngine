@@ -28,7 +28,7 @@ namespace Sphynx
 		virtual void Shutdown();
 
 		virtual void HandleEvent(class Event& event);
-
+		
 		inline const HashMap<std::string, Array<std::string>>& GetCommandArguments() { return m_CommandArguments; }
 
 		void PushLayer(Layer* layer);
@@ -40,6 +40,7 @@ namespace Sphynx
 
 	protected:
 		Application();
+		virtual void InitApplicationCommands() {};
 
 	private:
 		void ManageCommandArguments(const HashMap<std::string, Array<std::string>>& commandArguments);

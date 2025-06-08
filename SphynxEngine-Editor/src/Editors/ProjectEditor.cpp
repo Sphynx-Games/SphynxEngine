@@ -61,8 +61,10 @@ namespace Sphynx
 		// TODO: change this platform specific
 		std::filesystem::path newCurrentDirectory = path;
 		newCurrentDirectory.remove_filename();
+#ifdef SPX_PLATFORM_WINDOWS
 		SetCurrentDirectory(newCurrentDirectory.string().c_str());
-
+#endif
+		
 		// Deserialize project file
 		ProjectInfo projectInfo = {};
 

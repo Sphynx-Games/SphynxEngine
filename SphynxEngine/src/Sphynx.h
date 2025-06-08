@@ -14,6 +14,9 @@
 #include "Input/Keycode.h"
 #include "Input/MouseButton.h"
 
+// Command
+#include "Command/CommandManager.h"
+
 // Time
 #include "Core/Time.h"
 

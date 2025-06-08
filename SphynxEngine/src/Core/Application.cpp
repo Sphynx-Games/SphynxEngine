@@ -9,9 +9,8 @@
 #include "Events/WindowEvent.h"
 #include "LayerStack.h"
 #include "Layer.h"
-#include "Asset/AssetManager.h"
 #include "Module/ModuleManager.h"
-#include "Core/Commands.h"
+#include "Command/CommandManager.h"
 
 
 namespace Sphynx
@@ -43,6 +42,7 @@ namespace Sphynx
 	void Application::Init(const HashMap<std::string, Array<std::string>>& commandArguments)
 	{
 		// Manage the command line arguments
+		CommandManager::Init();
 		ManageCommandArguments(commandArguments);
 
 		// Create window
@@ -122,6 +122,9 @@ namespace Sphynx
 
 		// Destroy window
 		m_Window.reset();
+
+		// Shut commands
+		CommandManager::Shutdown();
 	}
 
 	void Application::HandleEvent(Event& event)
@@ -163,29 +166,11 @@ namespace Sphynx
 	void Application::ManageCommandArguments(const HashMap<std::string, Array<std::string>>& commandArguments)
 	{
 		m_CommandArguments = commandArguments;
+
+		InitApplicationCommands();
 		for (auto& [key, values] : commandArguments)
 		{
-			switch (CommandArgumentParser::Parse(key))
-			{
-			case CommandArgument::DIRECTORY:
-#ifdef SPX_PLATFORM_WINDOWS
-				SetCurrentDirectory(values[0].c_str());
-#endif
-				break;
-
-			case CommandArgument::MODULES:
-				for (const std::string& moduleName : values)
-				{
-					ModuleManager::LoadModule(MODULE_PATH(moduleName));
-				}
-
-				// TODO: delete this lines in the future
-				AssetManager::Shutdown();
-				Reflection::Registry::Shutdown();
-				Reflection::Registry::Init();
-				AssetManager::Init();
-				break;
-			}
+			CommandManager::ExecuteCommand(key, values);
 		}
 	}
 }

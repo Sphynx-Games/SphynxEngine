@@ -4,6 +4,7 @@
 #include "EditorLayer.h"
 
 #include <Core/EntryPoint.h>
+#include <Command/CommandManager.h>
 #include "PropertyDrawer/PropertyDrawerManager.h"
 
 
