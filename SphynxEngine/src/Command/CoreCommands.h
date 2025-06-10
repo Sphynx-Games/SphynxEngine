@@ -7,10 +7,12 @@
 namespace Sphynx
 {
 	enum class CoreCommand {
-		DIRECTORY,
-		MODULES,
-		UNKNOWN
+		DIRECTORY = 1 << 0,
+		MODULES = 1 << 1,
+		UNKNOWN = 0
 	};
+
+	int NumCoreCommands = 2;
 
 	class CommandParser
 	{

@@ -60,9 +60,23 @@ namespace Sphynx
 	};
 	
 
+	void AddCoreCommandAlias()
+	{
+		for (int bit = 0; bit < NumCoreCommands; ++bit)
+		{
+			CoreCommand flag = static_cast<CoreCommand>(1 << bit);
+			Array<std::string> commandNames = CommandParser::Parse(flag);
+			for (int i = 1; i < commandNames.Size(); ++i)
+			{
+				CommandManager::AddAlias(commandNames[0], commandNames[i]);
+			}
+		}
+	}
+
 	void CommandManager::Init()
 	{
-		const std::string directoryName = CommandParser::Parse(CoreCommand::DIRECTORY)[0];
+		// TODO: generalize this Init function
+		Array<std::string> directoryNames = CommandParser::Parse(CoreCommand::DIRECTORY);
 		CommandWithArgsDelegate directoryFunction;
 		directoryFunction.Bind([](const Array<std::string>& args) {
 #ifdef SPX_PLATFORM_WINDOWS
@@ -70,7 +84,7 @@ namespace Sphynx
 #endif
 		});
 
-		const std::string modulesName = CommandParser::Parse(CoreCommand::MODULES)[0];
+		Array<std::string> modulesNames = CommandParser::Parse(CoreCommand::MODULES);
 		CommandWithArgsDelegate modulesFunction;
 		modulesFunction.Bind([](const Array<std::string>& args) {
 			for (const std::string& moduleName : args)
@@ -85,8 +99,11 @@ namespace Sphynx
 			AssetManager::Init();
 		});
 
-		CreateCommand(directoryName, directoryFunction);
-		CreateCommand(modulesName, modulesFunction);
+		CreateCommand(directoryNames[0], directoryFunction);
+		CreateCommand(modulesNames[0], modulesFunction);
+		AddCoreCommandAlias();
+		/*AddAlias(directoryNames[0], directoryNames[1]);
+		AddAlias(modulesNames[0], modulesNames[1]);*/
 	}
 
 	void CommandManager::Shutdown()
@@ -96,33 +113,85 @@ namespace Sphynx
 			delete command;
 		}
 		s_Commands.RemoveAll();
+		s_Alias.RemoveAll();
 	}
 
 	void CommandManager::CreateCommand(const std::string& name, const CommandNoArgsDelegate& function, CommandConfigFlags flags, const std::string& description)
 	{
-		if (s_Commands.ContainsKey(name))
+		const std::string* realName = GetCommandRealName(name);
+		if (realName != nullptr)
 		{
-			SPX_CORE_LOG_WARNING("Overriding the behavoiur of the command '{}'", name);
+			SPX_CORE_LOG_WARNING("Overriding the behavoiur of the command '{}'", name.c_str());
 		}
-		s_Commands[name] = new CommandNoArgs(name, description, flags, function);
+		else
+		{
+			realName = &name;
+		}
+		delete s_Commands[*realName];
+		s_Commands[*realName] = new CommandNoArgs(*realName, description, flags, function);
 	}
 
 	void CommandManager::CreateCommand(const std::string& name, const CommandWithArgsDelegate& function, CommandConfigFlags flags, const std::string& description)
 	{
-		if (s_Commands.ContainsKey(name))
+		const std::string* realName = GetCommandRealName(name);
+		if (realName != nullptr)
 		{
 			SPX_CORE_LOG_WARNING("Overriding the behavoiur of the command '{}'", name.c_str());
 		}
-		s_Commands[name] = new CommandWithArgs(name, description, flags, function);
+		else
+		{
+			realName = &name;
+		}
+		delete s_Commands[*realName];
+		s_Commands[*realName] = new CommandWithArgs(*realName, description, flags, function);
 	}
 
 	void Sphynx::CommandManager::ExecuteCommand(const std::string& name, const Array<std::string>& args)
 	{
-		if (!s_Commands.ContainsKey(name))
+		const std::string* realName = GetCommandRealName(name);
+		if (realName == nullptr)
 		{
 			SPX_CORE_LOG_WARNING("Command '{}' not found", name.c_str());
 			return;
 		}
-		s_Commands[name]->Execute(args);
+
+		Command* command = s_Commands[*realName];
+
+#if defined(SPX_DEBUG)
+		if (command->ConfigFlags & CommandConfigFlags_Debug) {
+			command->Execute(args);
+		}
+#elif defined(SPX_RELEASE)
+		if (command->ConfigFlags & CommandConfigFlags_Release) {
+			command->Execute(args);
+		}
+#elif defined(SPX_SHIPPING)
+		if (command->ConfigFlags & CommandConfigFlags_Shipping) {
+			command->Execute(args);
+		}
+#endif
+	}
+
+	void CommandManager::AddAlias(const std::string& name, const std::string& alias)
+	{
+		if (s_Alias.ContainsKey(alias))
+		{
+			SPX_CORE_LOG_WARNING("Alias '{}' already present", alias.c_str());
+			return;
+		}
+		s_Alias[alias] = name;
+	}
+
+	const std::string* CommandManager::GetCommandRealName(const std::string& name)
+	{
+		if (s_Commands.ContainsKey(name))
+		{
+			return &name;
+		}
+		else if (s_Alias.ContainsKey(name))
+		{
+			return &s_Alias[name];
+		}
+		return nullptr;
 	}
 }

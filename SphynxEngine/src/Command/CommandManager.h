@@ -32,7 +32,13 @@ namespace Sphynx
 		
 		static void ExecuteCommand(const std::string& name, const Array<std::string>& args);
 
+		static void AddAlias(const std::string& name, const std::string& alias);
+
+	private:
+		static const std::string* GetCommandRealName(const std::string& name);
+
 	private:
 		inline static HashMap<std::string, struct Command*> s_Commands = {};
+		inline static HashMap<std::string, std::string> s_Alias = {};
 	};
 }
