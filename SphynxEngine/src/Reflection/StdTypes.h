@@ -53,5 +53,12 @@ namespace Sphynx
 		X(void)
 
 		#undef X
+		
+		// ToString/FromString declarations
+		#define X(_Type)	bool ToString(const _Type& value, char* buffer, size_t size); \
+							bool FromString(_Type& value, const char* buffer);
+		TYPES()
+		SPECIAL_TYPES()
+		#undef X
 	}
 }

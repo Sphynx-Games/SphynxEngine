@@ -16,6 +16,8 @@ namespace Sphynx
 			static void Shutdown();
 
 			static const Type* TryGetType(const char* name);
+			static const Type* TryGetTypeByIndex(size_t index);
+			static size_t GetCount();
 
 		private:
 			template<typename T>

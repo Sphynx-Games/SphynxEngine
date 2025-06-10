@@ -44,6 +44,20 @@ namespace Sphynx
 			return nullptr;
 		}
 
+		const Type* Registry::TryGetTypeByIndex(size_t index)
+		{
+			EnsureRegistryInitialized();
+			if (index >= GetCount())
+				return nullptr;
+			return &gRegistry->m_TypeFunctions[index]();
+		}
+
+		size_t Registry::GetCount()
+		{
+			EnsureRegistryInitialized();
+			return gRegistry->m_TypeFunctions.size();
+		}
+
 		void Registry::Register(const Type& (*typeFunc)())
 		{
 			EnsureRegistryInitialized();
