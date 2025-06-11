@@ -84,6 +84,9 @@ add_subdirectory(glad)
 # Add stb_image Library
 add_subdirectory(stb_image)
 
+# Add FMOD Library
+add_subdirectory(FMOD)
+
 # Configure filters (folders)
 set_property(TARGET stduuid PROPERTY FOLDER vendor/stduuid)
 set_all_targets_in_folder(SDL vendor/SDL)
@@ -97,6 +100,7 @@ set_property(TARGET imgui PROPERTY FOLDER vendor/imgui)
 set_all_targets_in_folder(yaml-cpp vendor/yaml-cpp)
 set_property(TARGET glad PROPERTY FOLDER vendor/glad)
 set_property(TARGET stb_image PROPERTY FOLDER vendor/stb_image)
+set_all_targets_in_folder(FMOD vendor/FMOD)
 
 # Link to the diferent libraries
 target_link_libraries(vendor INTERFACE
@@ -112,4 +116,5 @@ target_link_libraries(vendor INTERFACE
 	yaml-cpp
 	glad
 	stb_image
+	FMOD
 )
