@@ -30,8 +30,8 @@ namespace Sphynx
 
 		virtual void VisitEnum(const Reflection::Property* property, void* data) override;
 		virtual bool VisitClass(const Reflection::Property* property, void* data) override;
-		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::IndexedCollection& collection) override;
-		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::AssociativeCollection& collection) override;
+		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection) override;
+		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection) override;
 
 		virtual void OnBeforeVisitEnum(const Reflection::Property* property, void* data) override;
 		virtual void OnAfterVisitEnum(const Reflection::Property* property, void* data) override;

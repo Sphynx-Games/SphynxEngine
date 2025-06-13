@@ -34,11 +34,7 @@ namespace Sphynx
 
 		namespace CommonAttribute
 		{
-			template<typename T>
-			class SPHYNX_API Collection;
-
-			template<>
-			class SPHYNX_API Collection<struct Indexed> : public ::Sphynx::Reflection::Attribute
+			class SPHYNX_API IndexedCollection : public ::Sphynx::Reflection::Attribute
 			{
 				using TAccessFunction = void* (*)(void*, uint64_t);
 				using TConstAccessFunction = const void* (*)(const void*, uint64_t);
@@ -47,7 +43,7 @@ namespace Sphynx
 
 			public:
 				template<typename TCollection>
-				Collection(::Sphynx::Reflection::details::Tag<TCollection>) :
+				IndexedCollection(::Sphynx::Reflection::details::Tag<TCollection>) :
 					m_ValueType(GetType<typename TCollection::value_type>()),
 					m_AccessFunction([](void* obj, uint64_t index) -> void* { return &(*static_cast<TCollection*>(obj))[index]; }),
 					m_ConstAccessFunction([](const void* obj, uint64_t index) -> const void* { return &(*static_cast<const TCollection*>(obj))[index]; }),
@@ -72,8 +68,7 @@ namespace Sphynx
 				TAddFunction m_AddFunction;
 			};
 
-			template<>
-			class SPHYNX_API Collection<struct Associative> : public ::Sphynx::Reflection::Attribute
+			class SPHYNX_API AssociativeCollection : public ::Sphynx::Reflection::Attribute
 			{
 				using TAccessFunction = void* (*)(void*, const void*);
 				using TConstAccessFunction = const void* (*)(const void*, const void*);
@@ -82,7 +77,7 @@ namespace Sphynx
 				using TAddFunction = void* (*)(void*, const void*, const void*);
 			public:
 				template<typename TCollection>
-				Collection(::Sphynx::Reflection::details::Tag<TCollection>) :
+				AssociativeCollection(::Sphynx::Reflection::details::Tag<TCollection>) :
 					m_KeyType(GetType<typename TCollection::key_type>()),
 					m_ValueType(GetType<typename TCollection::mapped_type>()),
 					m_AccessFunction([](void* obj, const void* key) -> void* { return &(*static_cast<TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)]; }),
@@ -120,12 +115,6 @@ namespace Sphynx
 				TAddFunction m_AddFunction;
 			};
 
-			using IndexedCollection = Collection<Indexed>;
-			using AssociativeCollection = Collection<Associative>;
-
-#define		IndexedCollection		::Sphynx::Reflection::CommonAttribute::IndexedCollection , ::Sphynx::Reflection::details::Tag<context_type>{}
-#define		AssociativeCollection	::Sphynx::Reflection::CommonAttribute::AssociativeCollection , ::Sphynx::Reflection::details::Tag<context_type>{}
-
 			// Plain Old Data Attribute
 			class SPHYNX_API POD : public ::Sphynx::Reflection::Attribute
 			{
@@ -144,8 +133,6 @@ namespace Sphynx
 			private:
 				TCopyToFunction m_CopyToFunction;
 			};
-
-#define		PlainOldData		::Sphynx::Reflection::CommonAttribute::POD , ::Sphynx::Reflection::details::Tag<context_type>{}
 
 			class SPHYNX_API Description : public ::Sphynx::Reflection::Attribute
 			{
@@ -170,6 +157,23 @@ namespace Sphynx
 				float m_From;
 				float m_To;
 			};
+		}
+
+		namespace details
+		{
+			template<typename TAttribute, typename TContext, typename... Args>
+			TAttribute CreateAttribute(Args&&... args)
+			{
+				if constexpr (std::is_constructible<TAttribute, Tag<TContext>, Args...>::value)
+				{
+					return TAttribute{ Tag<TContext>{}, std::forward<Args>(args)... };
+				}
+				else
+				{
+					return TAttribute{ std::forward<Args>(args)... };
+				}
+			}
+
 		}
 	}
 }

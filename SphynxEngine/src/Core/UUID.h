@@ -84,9 +84,9 @@ struct std::hash<Sphynx::UUID>
 
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUID, SPHYNX_API)
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>, Sphynx::Reflection::details::Tag<Sphynx::UUID>{})
-	SPX_REFLECT_ATTRIBUTE(PlainOldData)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>)
+	SPX_REFLECT_ATTRIBUTE(POD)
 SPX_REFLECT_STRUCT_END(Sphynx::UUID, SPHYNX_API)

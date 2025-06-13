@@ -5,17 +5,11 @@
 #include "Attribute.h"
 
 
-#undef IndexedCollection
-#undef AssociativeCollection
-
-
 namespace Sphynx
 {
 	namespace Reflection
 	{
 		struct Property;
-		using IndexedCollection = Reflection::CommonAttribute::IndexedCollection;
-		using AssociativeCollection = Reflection::CommonAttribute::AssociativeCollection;
 
 		class SPHYNX_API IPropertyTreeVisitor
 		{
@@ -30,8 +24,8 @@ namespace Sphynx
 
 			virtual void VisitEnum(const Property* property, void* data) = 0;
 			virtual bool VisitClass(const Property* property, void* data) = 0;
-			virtual bool VisitClass(const Property* property, void* data, const IndexedCollection& collection) = 0;
-			virtual bool VisitClass(const Property* property, void* data, const AssociativeCollection& collection) = 0;
+			virtual bool VisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) = 0;
+			virtual bool VisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) = 0;
 			
 			// Visit events
 			#define X(_Type)	virtual void OnBeforeVisit(const Property* property, _Type& data) {}; \
@@ -44,28 +38,31 @@ namespace Sphynx
 			virtual void OnAfterVisitEnum(const Property* property, void* data) {};
 			virtual void OnBeforeVisitClass(const Property* property, void* data) {};
 			virtual void OnAfterVisitClass(const Property* property, void* data) {};
-			virtual void OnBeforeVisitClass(const Property* property, void* data, const IndexedCollection& collection) {};
-			virtual void OnAfterVisitClass(const Property* property, void* data, const IndexedCollection& collection) {};
-			virtual void OnBeforeVisitClass(const Property* property, void* data, const AssociativeCollection& collection) {};
-			virtual void OnAfterVisitClass(const Property* property, void* data, const AssociativeCollection& collection) {};
+			virtual void OnBeforeVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) {};
+			virtual void OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) {};
+			virtual void OnBeforeVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) {};
+			virtual void OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) {};
 		};
 
 		class SPHYNX_API PropertyTree
 		{
 		public:
-			PropertyTree(const Type& type, void* addr);
+			struct SPHYNX_API TraversalParams
+			{
+				std::unordered_map<const Type*, void(*)(PropertyTree&, const Property*, void*, IPropertyTreeVisitor&)> CustomTraversal{};
+			};
+		public:
+			PropertyTree(const Type& type, void* addr, TraversalParams&& params = {});
 
 		public:
-			static void Traverse(const Type& type, void* addr, IPropertyTreeVisitor& visitor);
+			static void Traverse(const Type& type, void* addr, IPropertyTreeVisitor& visitor, TraversalParams&& params = {});
 			void Traverse(IPropertyTreeVisitor& visitor);
-
-		private:
 			void Traverse(IPropertyTreeVisitor& visitor, const Property* property);
-			
+
 		private:
 			const Type& m_Type;
 			void* m_Addr;
-			
+			TraversalParams m_Params;
 		};
 	}
 }

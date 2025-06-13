@@ -75,9 +75,9 @@ struct std::hash<Sphynx::AssetType>
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::AssetType, SPHYNX_API)
 
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>, Sphynx::Reflection::details::Tag<Sphynx::AssetType>{})
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>)
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>)
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>)
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>)
 
 SPX_REFLECT_STRUCT_END(Sphynx::AssetType, SPHYNX_API)

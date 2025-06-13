@@ -300,7 +300,7 @@ namespace Sphynx
 		return result;
 	}
 
-	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::AssociativeCollection& collection)
+	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
 		//if (property->IsPointer()) return false;
 
@@ -308,7 +308,7 @@ namespace Sphynx
 		return false;
 	}
 
-	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::IndexedCollection& collection)
+	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
 		//if (property->IsPointer()) return false;
 

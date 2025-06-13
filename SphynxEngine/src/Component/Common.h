@@ -47,4 +47,3 @@ namespace Sphynx
 		}
 	}
 }
-#define InternalComponent ::Sphynx::Reflection::CommonAttribute::InternalComponent, ::Sphynx::Reflection::details::Tag<context_type>{}

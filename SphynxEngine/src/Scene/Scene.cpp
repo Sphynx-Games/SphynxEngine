@@ -103,7 +103,7 @@ namespace Sphynx
 		m_HasBegunPlay = false;
 		m_PhysicsWorld = nullptr;
 		m_Registry.clear();
-		m_Actors.clear();
+		m_Actors.RemoveAll();
 		CloneRegistry(other);
 		return *this;
 	}
@@ -144,7 +144,7 @@ namespace Sphynx
 
 	Actor& Scene::CreateActor()
 	{
-		Actor& actor = m_Actors.emplace_back(m_Registry.create(), this);
+		Actor& actor = m_Actors.Emplace(m_Registry.create(), this);
 		actor.AddComponent<UUIDComponent>(UUID::Generate());
 		return actor;
 	}
@@ -152,15 +152,10 @@ namespace Sphynx
 	void Scene::DestroyActor(const Actor& actor)
 	{
 		m_Registry.destroy(actor);
-
-		auto it = std::find(m_Actors.begin(), m_Actors.end(), actor);
-		if (it != m_Actors.end())
-		{
-			m_Actors.erase(it);
-		}
+		m_Actors.Remove(actor);
 	}
 
-	const std::vector<Actor>& Scene::GetActors() const
+	const Array<Actor>& Scene::GetActors() const
 	{
 		return m_Actors;
 	}

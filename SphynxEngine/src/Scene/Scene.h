@@ -3,7 +3,10 @@
 #include "Core/Core.h"
 #include "Core/UUID.h"
 #include "Math/Transform.h"
+#include "Actor.h"
 #include "Container/Array.h"
+
+#include "Reflection/Reflection.h"
 
 #include "entt/entt.hpp"
 
@@ -12,6 +15,7 @@ namespace Sphynx
 {	
 	class SPHYNX_API Scene
 	{
+		SPX_REFLECT_GENERATED_BODY()
 	public:
 		Scene();
 		Scene(std::string name);
@@ -28,7 +32,7 @@ namespace Sphynx
 		class Actor& CreateActor();
 		void DestroyActor(const Actor& actor);
 
-		const std::vector<Actor>& GetActors() const;
+		const Array<Actor>& GetActors() const;
 		template<typename T>
 		Array<Actor> GetActorsByComponent() const;
 		template<typename T>
@@ -50,7 +54,7 @@ namespace Sphynx
 		bool m_HasBegunPlay;
 
 		entt::registry m_Registry;
-		std::vector<Actor> m_Actors;
+		Array<Actor> m_Actors;
 
 		class PhysicsWorld2D* m_PhysicsWorld;
 
@@ -90,4 +94,8 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_CLASS(Sphynx::Scene)
+SPX_REFLECT_CLASS_BEGIN(Sphynx::Scene, SPHYNX_API)
+SPX_REFLECT_PROPERTY(m_UUID)
+SPX_REFLECT_PROPERTY(m_Name)
+SPX_REFLECT_PROPERTY(m_Actors)
+SPX_REFLECT_CLASS_END(Sphynx::Scene, SPHYNX_API)

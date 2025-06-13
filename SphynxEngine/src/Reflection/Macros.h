@@ -315,7 +315,7 @@
 #define SPX_REFLECT_ATTRIBUTE_INTERNAL(Attr, ...) \
 	{ \
 		using namespace ::Sphynx::Reflection::CommonAttribute; \
-		static Attr s_Attribute{ ##__VA_ARGS__ }; \
+		static Attr s_Attribute = ::Sphynx::Reflection::details::CreateAttribute<Attr, context_type>( ##__VA_ARGS__ ); \
 		Attributes.push_back(&s_Attribute); \
 	}
 
