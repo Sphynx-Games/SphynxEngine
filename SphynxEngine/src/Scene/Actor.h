@@ -38,7 +38,7 @@ namespace Sphynx
 	public:
 		inline operator entt::entity() const { return m_EntityID; }
 
-	private:
+	protected:
 		entt::entity m_EntityID;
 		Scene* m_Scene;
 		size_t m_numComponents;

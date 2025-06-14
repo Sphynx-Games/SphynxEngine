@@ -1,16 +1,25 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "Scene/Actor.h"
-#include "Reflection/ReflectionDeserializer.h"
+#include "Reflection/PropertyTree.h"
 
 
 namespace Sphynx
 {
+	class Scene;
+	class Actor;
+	class Reader;
+
+	namespace Reflection
+	{
+		struct Class;
+	}
+
 	class SPHYNX_API SceneDeserializer
 	{
 	public:
-		SceneDeserializer(class Scene& scene, Reader&& reader);
+		SceneDeserializer(Scene& scene, Reader&& reader);
+
 		void Deserialize();
 
 	private:

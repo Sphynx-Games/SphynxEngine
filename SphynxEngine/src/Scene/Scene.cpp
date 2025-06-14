@@ -8,8 +8,8 @@
 #include "Physics/PhysicsWorld2D.h"
 #include "Physics/Collider2D.h"
 #include "Physics/Physics2DRenderer.h"
-#include "Serialization/SceneSerializer.h"
-#include "Serialization/SceneDeserializer.h"
+#include "Serialization/Scene/SceneSerializer.h"
+#include "Serialization/Scene/SceneDeserializer.h"
 #include "Asset/AssetManager.h"
 #include "Renderer/Texture.h"
 #include "Renderer/Sprite.h"
@@ -17,6 +17,11 @@
 #include "Renderer/Window.h"
 #include "Component/ComponentRegistry.h"
 #include "Scripting/ScriptingManager.h"
+
+#include <fmod.hpp>
+#include "Asset/Prefab/PrefabAsset.h"
+#include "Serialization/Prefab/PrefabSerializer.h"
+#include "Serialization/Prefab/PrefabDeserializer.h"
 
 
 namespace Sphynx
@@ -59,6 +64,10 @@ namespace Sphynx
 			CopyComponent(*componentClass, other, *this, enttMap);
 		}
 	}
+
+	FMOD::System* system = nullptr;
+	FMOD::Sound* sound = nullptr;
+	FMOD::Channel* channel = nullptr;
 
 	Scene::Scene() :
 		m_UUID(UUID::Generate()),
@@ -113,6 +122,27 @@ namespace Sphynx
 		if (m_HasBegunPlay) return;
 
 		InitPhysics();
+
+		FMOD::System_Create(&system);
+		system->init(512, FMOD_INIT_NORMAL, nullptr);
+		system->createSound("Assets\\Sounds\\enemyDeath.wav", FMOD_DEFAULT, nullptr, &sound);
+		system->playSound(sound, nullptr, false, &channel);
+
+		/*Prefab prefab = Prefab();
+		prefab.AddComponent<NameComponent>();
+		prefab.AddComponent<SpriteRendererComponent>();
+		YAMLWriter writer{ "Assets\\Prefabs\\test_prefab.spxasset" };
+		PrefabSerializer serializer{ prefab, writer };
+		serializer.Serialize();*/
+
+		/*Prefab prefab = Prefab();
+		YAMLReader reader{ "Assets\\Prefabs\\test_prefab.spxasset" };
+		PrefabDeserializer deserializer{ prefab, reader };
+		deserializer.Deserialize();
+
+		UUIDComponent* uuid = prefab.TryGetComponent<UUIDComponent>();
+		NameComponent* name = prefab.TryGetComponent<NameComponent>();
+		SpriteRendererComponent* sprite = prefab.TryGetComponent<SpriteRendererComponent>();*/
 		
 		m_HasBegunPlay = true;
 	}
@@ -123,6 +153,10 @@ namespace Sphynx
 
 		m_HasBegunPlay = false;
 
+		sound->release();
+		system->close();
+		system->release();
+
 		if (m_PhysicsWorld != nullptr)
 		{
 			Physics2D::DestroyPhysicsWorld(m_PhysicsWorld);
@@ -132,6 +166,8 @@ namespace Sphynx
 
 	void Scene::Update(float deltaTime)
 	{
+		system->update();
+
 		// Simulate PHYSICS in scene
 		if (m_PhysicsWorld != nullptr)
 		{

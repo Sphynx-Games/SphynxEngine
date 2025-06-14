@@ -9,6 +9,7 @@ namespace Sphynx
 	class Scene;
 	class Actor;
 	class Writer;
+
 	namespace Reflection
 	{
 		struct Class;

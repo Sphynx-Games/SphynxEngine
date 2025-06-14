@@ -1,11 +1,11 @@
 #include "spxpch.h"
 #include "SceneDeserializer.h"
-#include "Reader.h"
+#include "Serialization/Reader.h"
 #include "Scene/Scene.h"
+#include "Scene/Actor.h"
 #include "Component/Components.h"
-#include "Renderer/Sprite.h"
-#include "Renderer/Texture.h"
 #include "Logging/Log.h"
+#include "Serialization/Reflection/ReflectionDeserializer.h"
 
 
 namespace Sphynx
@@ -17,9 +17,13 @@ namespace Sphynx
 
 	void SceneDeserializer::Deserialize()
 	{
+		std::string key{};
+
 		size_t size = m_Reader.PushMap();
 		SPX_CORE_ASSERT(size == 1);
 		m_Reader.PushKey(0);
+		m_Reader.Read(key);
+		SPX_CORE_ASSERT(key == "Scene");
 		m_Reader.PopKey();
 
 		m_Reader.PushValue(0);
@@ -27,7 +31,6 @@ namespace Sphynx
 		size = m_Reader.PushMap();
 		SPX_CORE_ASSERT(size == 3);
 		// scene uuid and name
-		std::string key{};
 		m_Reader.Read(0, key, m_Scene.m_UUID);
 		SPX_CORE_ASSERT(key == "m_UUID");
 		m_Reader.Read(1, key, m_Scene.m_Name);

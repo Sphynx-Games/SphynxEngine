@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "Asset/AssetManager.h"
+#include "Asset/Asset.h"
 #include "Scene/Scene.h"
-#include "SceneAssetImporter.h"
+//#include "SceneAssetImporter.h"
 
 
 namespace Sphynx

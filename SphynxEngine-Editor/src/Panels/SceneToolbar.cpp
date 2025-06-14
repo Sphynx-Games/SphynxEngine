@@ -3,7 +3,7 @@
 #include "Widgets/ButtonWidget.h"
 #include "Base/Resources.h"
 #include "Serialization/YAML/YAMLWriter.h"
-#include "Serialization/SceneSerializer.h"
+#include "Serialization/Scene/SceneSerializer.h"
 
 #include <imgui.h>
 

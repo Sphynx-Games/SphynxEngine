@@ -44,8 +44,8 @@
 // Serialization
 #include "Serialization/FileReader.h"
 #include "Serialization/FileWriter.h"
-#include "Serialization/SceneDeserializer.h"
-#include "Serialization/SceneSerializer.h"
+#include "Serialization/Scene/SceneDeserializer.h"
+#include "Serialization/Scene/SceneSerializer.h"
 
 // Assets
 #include "Asset/AssetManager.h"

@@ -16,6 +16,9 @@
 #include "Asset/Sprite/SpriteAssetImporter.h"
 #include "Asset/Spritesheet/SpritesheetAssetImporter.h"
 
+#include "Asset/Prefab/PrefabAsset.h"
+#include "Asset/Prefab/PrefabAssetImporter.h"
+
 #include "Serialization/YAML/YAMLWriter.h"
 #include "Serialization/YAML/YAMLReader.h"
 
@@ -90,6 +93,8 @@ namespace Sphynx
 		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter);
 		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
 
+		REGISTER_ASSETTYPE(Prefab, PrefabAssetImporter);
+
 		// load all managed assets into the asset registry
 		YAMLReader reader{ s_ContextPath / ASSET_REGISTRY_FILEPATH };
 		if (reader.IsValid())
@@ -111,6 +116,8 @@ namespace Sphynx
 		UnloadAssets();
 
 		// Unregister Asset types
+		UNREGISTER_ASSETTYPE(Prefab);
+
 		UNREGISTER_ASSETTYPE(Spritesheet);
 		UNREGISTER_ASSETTYPE(Sprite);
 

@@ -1,14 +1,11 @@
 #include "spxpch.h"
 #include "SceneSerializer.h"
-#include "Writer.h"
+#include "Serialization/Writer.h"
 #include "Scene/Scene.h"
 #include "Scene/Actor.h"
 #include "Component/Components.h"
-#include "Renderer/Sprite.h"
-#include "Renderer/Texture.h"
 #include "Logging/Log.h"
-#include "Reflection/ReflectionSerializer.h"
-#include "Reflection/PropertyTree.h"
+#include "Serialization/Reflection/ReflectionSerializer.h"
 
 
 namespace Sphynx
