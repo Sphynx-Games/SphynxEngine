@@ -18,4 +18,4 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_CLASS(Sphynx::Font)
+SPX_REFLECT_CLASS(Sphynx::Font, SPHYNX_API)

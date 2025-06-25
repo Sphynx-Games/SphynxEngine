@@ -12,7 +12,7 @@ namespace Sphynx
 	{
 	public:
 		Actor();
-		Actor(entt::entity entity, Scene* scene);
+		Actor(uint32_t entityId, Scene* scene);
 		virtual ~Actor();
 
 	public:
@@ -35,11 +35,13 @@ namespace Sphynx
 
 		bool IsValid() const;
 
+		static void CloneComponents(const Actor& source, Actor& target);
+
 	public:
-		inline operator entt::entity() const { return m_EntityID; }
+		inline operator uint32_t() const { return m_EntityID; }
 
 	protected:
-		entt::entity m_EntityID;
+		uint32_t m_EntityID;
 		Scene* m_Scene;
 		size_t m_numComponents;
 
@@ -53,7 +55,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		SPX_CORE_ASSERT(!HasComponent<Component>(), "Component is already in actor");
 		++m_numComponents;
-		return m_Scene->m_Registry.emplace<Component>(m_EntityID, std::forward<Args>(args)...);
+		return m_Scene->m_Registry.emplace<Component>(static_cast<entt::entity>(m_EntityID), std::forward<Args>(args)...);
 	}
 
 	template<typename Component>
@@ -62,7 +64,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		SPX_CORE_ASSERT(HasComponent<Component>(), "Component is not in actor");
 		--m_numComponents;
-		m_Scene->m_Registry.remove<Component>(m_EntityID);
+		m_Scene->m_Registry.remove<Component>(static_cast<entt::entity>(m_EntityID));
 	}
 
 	template<typename Component>
@@ -71,7 +73,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		if (HasComponent<Component>())
 		{
-			return &m_Scene->m_Registry.get<Component>(m_EntityID);
+			return &m_Scene->m_Registry.get<Component>(static_cast<entt::entity>(m_EntityID));
 		}
 
 		return nullptr;
@@ -82,14 +84,14 @@ namespace Sphynx
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		SPX_CORE_ASSERT(HasComponent<Component>(), "Component is not in actor");
-		return m_Scene->m_Registry.get<Component>(m_EntityID);
+		return m_Scene->m_Registry.get<Component>(static_cast<entt::entity>(m_EntityID));
 	}
 
 	template<typename Component>
 	inline bool Actor::HasComponent() const
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
-		return m_Scene->m_Registry.all_of<Component>(m_EntityID);
+		return m_Scene->m_Registry.all_of<Component>(static_cast<entt::entity>(m_EntityID));
 	}
 
 }

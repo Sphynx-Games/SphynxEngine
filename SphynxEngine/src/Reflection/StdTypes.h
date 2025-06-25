@@ -55,8 +55,8 @@ namespace Sphynx
 		#undef X
 		
 		// ToString/FromString declarations
-		#define X(_Type)	bool ToString(const _Type& value, char* buffer, size_t size); \
-							bool FromString(_Type& value, const char* buffer);
+		#define X(_Type)	SPHYNX_API bool ToString(const _Type& value, char* buffer, size_t size); \
+							SPHYNX_API bool FromString(_Type& value, const char* buffer);
 		TYPES()
 		SPECIAL_TYPES()
 		#undef X

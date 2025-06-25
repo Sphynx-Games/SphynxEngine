@@ -23,6 +23,7 @@ namespace Sphynx
 		Prefab* prefab = new Prefab();
 		YAMLReader reader{ metadata.Path };
 		PrefabDeserializer deserializer{ *prefab, reader };
+		deserializer.Deserialize();
 
 		std::shared_ptr<Asset<Prefab>> asset = std::make_shared<Asset<Prefab>>();
 		asset->Handle = metadata.Handle;
@@ -40,5 +41,6 @@ namespace Sphynx
 
 		YAMLWriter writer{ metadata.Path };
 		PrefabSerializer serializer{ *prefabAsset->Asset, writer };
+		serializer.Serialize();
 	}
 }

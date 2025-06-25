@@ -1,0 +1,25 @@
+Prefab:
+  UUID: b1a5c3cf-76d3-4dfd-b8b4-2661538d95c1
+  Name: MyPrefab
+  Components:
+    - Sphynx::TransformComponent:
+        Transform:
+          Position:
+            X: 0
+            Y: 0
+            Z: 0
+          Scale:
+            X: 1
+            Y: 1
+            Z: 1
+          Rotation:
+            X: 0
+            Y: 0
+            Z: 0
+    - Sphynx::SpriteRendererComponent:
+        Sprite: 00000000-0000-0000-0000-000000000000
+        Tint:
+          R: 255
+          G: 255
+          B: 255
+          A: 255

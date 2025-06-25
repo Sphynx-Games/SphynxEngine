@@ -6,6 +6,7 @@
 #include "EditorCameraController.h"
 #include "ProjectInfo.h"
 #include "Core/Delegate.h"
+#include "Scene/EditorScene.h"
 
 
 namespace Sphynx
@@ -55,7 +56,7 @@ namespace Sphynx
 		EditorCameraController m_CameraController;
 
 		std::filesystem::path m_LastOpenedScenePath;
-		Scene m_SceneToEdit;
+		EditorScene m_SceneToEdit;
 		Scene m_SceneToPlay;
 		Scene* m_ActiveScene;
 		PlaybackState m_SceneState;

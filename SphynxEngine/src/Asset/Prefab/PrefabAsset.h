@@ -18,7 +18,7 @@ namespace Sphynx
 		}
 
 		inline static Scene& GetPrefabScene()
-		{ 
+		{
 			static Scene s_PrefabScene{};
 			return s_PrefabScene;
 		}
@@ -34,4 +34,4 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_CLASS(Sphynx::Prefab)
+SPX_REFLECT_CLASS(Sphynx::Prefab, SPHYNX_API)

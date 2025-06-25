@@ -23,6 +23,7 @@ namespace Sphynx
 		Scene* scene = new Scene();
 		YAMLReader reader{ metadata.Path };
 		SceneDeserializer deserializer{ *scene, reader };
+		deserializer.Deserialize();
 
 		std::shared_ptr<Asset<Scene>> asset = std::make_shared<Asset<Scene>>();
 		asset->Handle = metadata.Handle;
@@ -40,5 +41,6 @@ namespace Sphynx
 
 		YAMLWriter writer{ metadata.Path };
 		SceneSerializer serializer{ *sceneAsset->Asset, writer };
+		serializer.Serialize();
 	}
 }

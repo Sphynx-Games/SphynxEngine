@@ -19,25 +19,10 @@
 #include "Scripting/ScriptingManager.h"
 
 #include <fmod.hpp>
-#include "Asset/Prefab/PrefabAsset.h"
-#include "Serialization/Prefab/PrefabSerializer.h"
-#include "Serialization/Prefab/PrefabDeserializer.h"
 
 
 namespace Sphynx
 {
-	
-	static void CopyComponent(const Reflection::Class& componentClass, const Scene& sourceScene, Scene& targetScene, const std::unordered_map<UUID, Actor>& enttMap)
-	{
-		Array<Actor> actors = ComponentRegistry::InvokeGetActorsByComponent(componentClass, sourceScene);
-		for (const Actor& actor : actors)
-		{
-			const UUID& uuid = actor.GetComponent<UUIDComponent>().UUID;
-			Actor targetActor = enttMap.at(uuid);
-			ComponentRegistry::InvokeCloneComponent(componentClass, actor, targetActor);
-		}
-	}
-
 	void Scene::CloneRegistry(const Scene& other)
 	{
 		auto& sourceRegistry = other.m_Registry;
@@ -61,7 +46,14 @@ namespace Sphynx
 			// do not copy UUIDComponent
 			if (componentClass == &Reflection::GetClass<UUIDComponent>()) continue;
 				
-			CopyComponent(*componentClass, other, *this, enttMap);
+			// copy the other components
+			Array<Actor> actors = ComponentRegistry::InvokeGetActorsByComponent(*componentClass, other);
+			for (const Actor& actor : actors)
+			{
+				const UUID& uuid = actor.GetComponent<UUIDComponent>().UUID;
+				Actor targetActor = enttMap.at(uuid);
+				ComponentRegistry::InvokeCloneComponent(*componentClass, actor, targetActor);
+			}
 		}
 	}
 
@@ -127,22 +119,6 @@ namespace Sphynx
 		system->init(512, FMOD_INIT_NORMAL, nullptr);
 		system->createSound("Assets\\Sounds\\enemyDeath.wav", FMOD_DEFAULT, nullptr, &sound);
 		system->playSound(sound, nullptr, false, &channel);
-
-		/*Prefab prefab = Prefab();
-		prefab.AddComponent<NameComponent>();
-		prefab.AddComponent<SpriteRendererComponent>();
-		YAMLWriter writer{ "Assets\\Prefabs\\test_prefab.spxasset" };
-		PrefabSerializer serializer{ prefab, writer };
-		serializer.Serialize();*/
-
-		/*Prefab prefab = Prefab();
-		YAMLReader reader{ "Assets\\Prefabs\\test_prefab.spxasset" };
-		PrefabDeserializer deserializer{ prefab, reader };
-		deserializer.Deserialize();
-
-		UUIDComponent* uuid = prefab.TryGetComponent<UUIDComponent>();
-		NameComponent* name = prefab.TryGetComponent<NameComponent>();
-		SpriteRendererComponent* sprite = prefab.TryGetComponent<SpriteRendererComponent>();*/
 		
 		m_HasBegunPlay = true;
 	}
@@ -180,14 +156,14 @@ namespace Sphynx
 
 	Actor& Scene::CreateActor()
 	{
-		Actor& actor = m_Actors.Emplace(m_Registry.create(), this);
+		Actor& actor = m_Actors.Emplace(static_cast<uint32_t>(m_Registry.create()), this);
 		actor.AddComponent<UUIDComponent>(UUID::Generate());
 		return actor;
 	}
 
 	void Scene::DestroyActor(const Actor& actor)
 	{
-		m_Registry.destroy(actor);
+		m_Registry.destroy(static_cast<entt::entity>(static_cast<uint32_t>(actor)));
 		m_Actors.Remove(actor);
 	}
 

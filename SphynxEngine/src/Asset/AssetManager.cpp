@@ -324,7 +324,6 @@ namespace Sphynx
 				return handle;
 			}
 		}
-		SPX_CORE_LOG_ERROR("Asset not found for required path!");
 		return AssetHandle::Invalid;
 	}
 

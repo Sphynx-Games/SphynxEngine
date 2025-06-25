@@ -20,12 +20,13 @@ namespace Sphynx
 		Scene();
 		Scene(std::string name);
 		Scene(const Scene& other);
-		~Scene();
+		virtual ~Scene();
 
 		Scene& operator=(const Scene& other);
 
 	public:
 		void BeginPlay();
+		bool HasBegunPlay() { return m_HasBegunPlay; }
 		void EndPlay();
 		void Update(float deltaTime);
 
@@ -47,7 +48,7 @@ namespace Sphynx
 
 		void CloneRegistry(const Scene& other);
 
-	private:
+	protected:
 		UUID m_UUID;
 		std::string m_Name;
 
@@ -71,7 +72,7 @@ namespace Sphynx
 		auto view = m_Registry.view<T>();
 		for (auto& entity : view)
 		{
-			result.Emplace(entity, const_cast<Scene*>(this));
+			result.Emplace(static_cast<uint32_t>(entity), const_cast<Scene*>(this));
 		}
 		return result;
 	}

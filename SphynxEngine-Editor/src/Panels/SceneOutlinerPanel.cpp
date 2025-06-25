@@ -1,14 +1,20 @@
 #include <spxpch.h>
 #include "SceneOutlinerPanel.h"
+#include <Events/Event.h>
+#include <Events/InputEvent.h>
+#include <Input/Keycode.h>
+#include <Scene/Scene.h>
+#include <Component/UUIDComponent.h>
+#include <Component/NameComponent.h>
+#include <Component/TransformComponent.h>
+#include <Serialization/Prefab/PrefabDeserializer.h>
+#include <Asset/AssetManager.h>
+#include <Asset/Prefab/PrefabAsset.h>
+
+#include "Scene/EditorScene.h"
+
 #include <imgui.h>
-#include "Events/Event.h"
-#include "Events/InputEvent.h"
-#include "Input/Keycode.h"
-#include "Scene/Scene.h"
-#include "Scene/Actor.h"
-#include "Component/UUIDComponent.h"
-#include "Component/NameComponent.h"
-#include "Component/TransformComponent.h"
+
 
 namespace Sphynx
 {
@@ -54,6 +60,24 @@ namespace Sphynx
 					actor.AddComponent<NameComponent>("New actor");
 					actor.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
 				}
+
+				if (!m_Scene->HasBegunPlay() && ImGui::BeginMenu("New prefab actor"))
+				{
+					Array<AssetMetadata> metadatas = AssetManager::GetAssetMetadatasByAssetType(TYPE_TO_ASSETTYPE(Prefab));
+					for (const auto& m : metadatas)
+					{
+						auto filename = m.Path.filename();
+						filename.replace_extension("");
+						auto name = filename.string();
+						if (ImGui::MenuItem(name.c_str()))
+						{
+							std::shared_ptr<Asset<Prefab>> prefabAsset = AssetManager::GetAsset<Prefab>(m.Handle);
+							static_cast<EditorScene*>(m_Scene)->CreatePrefabActor(prefabAsset->Asset);
+						}
+					}
+					ImGui::EndMenu();
+				}
+
 				ImGui::EndPopup();
 			}
 		}

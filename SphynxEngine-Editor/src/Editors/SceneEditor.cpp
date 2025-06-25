@@ -28,6 +28,10 @@
 #include "Dialogs/FileDialog.h"
 #include "imgui_internal.h"
 
+#include <Asset/Prefab/PrefabAsset.h>
+#include <Serialization/Prefab/PrefabSerializer.h>
+#include <Serialization/Prefab/PrefabDeserializer.h>
+
 
 namespace Sphynx
 {
@@ -259,6 +263,13 @@ namespace Sphynx
 		YAMLReader reader{ m_LastOpenedScenePath };
 		SceneDeserializer deserializer{ m_SceneToEdit, reader };
 		deserializer.Deserialize();
+
+		/*Prefab prefab = Prefab();
+		prefab.AddComponent<NameComponent>("PREFAB");
+		prefab.AddComponent<SpriteRendererComponent>();
+		YAMLWriter writer{ "Assets\\Prefabs\\test_prefab.spxasset" };
+		PrefabSerializer serializer{ prefab, writer };
+		serializer.Serialize();*/
 
 		m_ActiveScene = &m_SceneToEdit;
 		m_SceneOutlinerPanel->SetContext(m_ActiveScene);

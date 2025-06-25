@@ -18,7 +18,7 @@ namespace Sphynx
 
 #include "Reflection/Reflection.h"
 
-SPX_REFLECT_STRUCT_BEGIN(Sphynx::ProjectInfo)
+SPX_REFLECT_STRUCT_BEGIN(Sphynx::ProjectInfo) // TODO: add API macro
 
 SPX_REFLECT_PROPERTY(Name)
 SPX_REFLECT_PROPERTY(InitialScene)
