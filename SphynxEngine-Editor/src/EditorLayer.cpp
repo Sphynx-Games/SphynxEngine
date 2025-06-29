@@ -200,7 +200,8 @@ namespace Sphynx
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		for (Widget* widget : m_Editors)
+		const size_t num = m_Editors.size();
+		for (int i = 0; i < num; ++i)
 		{
 			Widget* widget = m_Editors[i];
 			widget->PreRenderGUI();
