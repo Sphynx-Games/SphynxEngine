@@ -66,161 +66,160 @@ namespace Sphynx
 
 	void DetailsPanel::RenderGUI()
 	{
-		if (ImGui::Begin(GetName()) && m_Context.IsValid())
-		{
+		if (!m_CanRender) return;
+		if (!m_Context.IsValid()) return;
+
 #if 1
-			Reflection::PropertyTree::Traverse(
-				Reflection::GetClass<Actor>(), 
-				&m_Context, 
-				PropertyViewer{}
-			);
+		Reflection::PropertyTree::Traverse(
+			Reflection::GetClass<Actor>(), 
+			&m_Context, 
+			PropertyViewer{}
+		);
 
-			//---------------------
-			//---------------------
-			//---------------------
-			//---------------------
+		//---------------------
+		//---------------------
+		//---------------------
+		//---------------------
 #else
-			Array<const Reflection::Class*> componentTypesToAdd;
+		Array<const Reflection::Class*> componentTypesToAdd;
 
-			// Draw Name Component
-			if (m_Context.HasComponent<NameComponent>())
+		// Draw Name Component
+		if (m_Context.HasComponent<NameComponent>())
+		{
+			if (ImGui::CollapsingHeader("Name Component", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				if (ImGui::CollapsingHeader("Name Component", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
-					auto& component = m_Context.GetComponent<NameComponent>();
-					ImGui::InputText(LABEL("Name").c_str(), &component.Name);
+				auto& component = m_Context.GetComponent<NameComponent>();
+				ImGui::InputText(LABEL("Name").c_str(), &component.Name);
 
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-				}
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 			}
-
-			// Draw Transform Component
-			if (m_Context.HasComponent<TransformComponent>())
-			{
-				if (ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-
-					auto& component = m_Context.GetComponent<TransformComponent>();
-					ImGui::DragFloat3(LABEL("Position").c_str(), (float*)&component.Transform.Position, 0.1f);
-					ImGui::DragFloat3(LABEL("Rotation").c_str(), (float*)&component.Transform.Rotation, 0.1f);
-					ImGui::DragFloat3(LABEL("Scale").c_str(), (float*)&component.Transform.Scale, 0.1f);
-
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-				}
-			}
-
-			// Draw Camera Component
-			if (m_Context.HasComponent<CameraComponent>())
-			{
-				RenderCameraComponent();
-			}
-			else
-			{
-				AddComponentType<CameraComponent>(componentTypesToAdd);
-			}
-
-			// Draw Sprite Renderer Component
-			if (m_Context.HasComponent<SpriteRendererComponent>())
-			{
-				RenderSpriteRendererComponent();
-			}
-			else
-			{
-				AddComponentType<SpriteRendererComponent>(componentTypesToAdd);
-			}
-
-			// Draw Box Renderer Component
-			if (m_Context.HasComponent<BoxRendererComponent>())
-			{
-				RenderBoxRendererComponent();
-			}
-			else
-			{
-				AddComponentType<BoxRendererComponent>(componentTypesToAdd);
-			}
-
-			// Draw Line Renderer Component
-			if (m_Context.HasComponent<LineRendererComponent>())
-			{
-				RenderLineRendererComponent();
-			}
-			else
-			{
-				AddComponentType<LineRendererComponent>(componentTypesToAdd);
-			}
-
-			// Draw Rigidbody2DComponent
-			if (m_Context.HasComponent<Rigidbody2DComponent>())
-			{
-				RenderRigidbody2DComponent();
-			}
-			else
-			{
-				AddComponentType<Rigidbody2DComponent>(componentTypesToAdd);
-			}
-
-			// Draw BoxCollider2DComponent
-			if (m_Context.HasComponent<BoxCollider2DComponent>())
-			{
-				RenderBoxCollider2DComponent();
-			}
-			else
-			{
-				AddComponentType<BoxCollider2DComponent>(componentTypesToAdd);
-			}
-
-			// Draw CircleCollider2DComponent
-			if (m_Context.HasComponent<CircleCollider2DComponent>())
-			{
-				RenderCircleCollider2DComponent();
-			}
-			else
-			{
-				AddComponentType<CircleCollider2DComponent>(componentTypesToAdd);
-			}
-
-			// Draw CapsuleCollider2DComponent
-			if (m_Context.HasComponent<CapsuleCollider2DComponent>())
-			{
-				RenderCapsuleCollider2DComponent();
-			}
-			else
-			{
-				AddComponentType<CapsuleCollider2DComponent>(componentTypesToAdd);
-			}
-
-			// PANEL CONTEXT MENU
-			if (ImGui::BeginPopupContextWindow("DetailsPanel_ContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
-			{
-				if (ImGui::BeginMenu("New component"))
-				{
-					for (const auto& t : componentTypesToAdd)
-					{
-						std::string compName = t->Name;
-						size_t pos = compName.find("::") + 2;
-						compName = compName.substr(pos);
-						if (ImGui::MenuItem(compName.c_str()))
-						{
-							ComponentRegistry::InvokeAddComponent(*t, m_Context);
-						}
-					}
-					ImGui::EndMenu();
-				}
-				ImGui::EndPopup();
-			}
-
-			// delete selected component
-			if (m_ComponetTypeToRemove != nullptr)
-			{
-				ComponentRegistry::InvokeRemoveComponent(*m_ComponetTypeToRemove, m_Context);
-				m_ComponetTypeToRemove = nullptr;
-			}
-#endif
 		}
-		ImGui::End();
+
+		// Draw Transform Component
+		if (m_Context.HasComponent<TransformComponent>())
+		{
+			if (ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+
+				auto& component = m_Context.GetComponent<TransformComponent>();
+				ImGui::DragFloat3(LABEL("Position").c_str(), (float*)&component.Transform.Position, 0.1f);
+				ImGui::DragFloat3(LABEL("Rotation").c_str(), (float*)&component.Transform.Rotation, 0.1f);
+				ImGui::DragFloat3(LABEL("Scale").c_str(), (float*)&component.Transform.Scale, 0.1f);
+
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+			}
+		}
+
+		// Draw Camera Component
+		if (m_Context.HasComponent<CameraComponent>())
+		{
+			RenderCameraComponent();
+		}
+		else
+		{
+			AddComponentType<CameraComponent>(componentTypesToAdd);
+		}
+
+		// Draw Sprite Renderer Component
+		if (m_Context.HasComponent<SpriteRendererComponent>())
+		{
+			RenderSpriteRendererComponent();
+		}
+		else
+		{
+			AddComponentType<SpriteRendererComponent>(componentTypesToAdd);
+		}
+
+		// Draw Box Renderer Component
+		if (m_Context.HasComponent<BoxRendererComponent>())
+		{
+			RenderBoxRendererComponent();
+		}
+		else
+		{
+			AddComponentType<BoxRendererComponent>(componentTypesToAdd);
+		}
+
+		// Draw Line Renderer Component
+		if (m_Context.HasComponent<LineRendererComponent>())
+		{
+			RenderLineRendererComponent();
+		}
+		else
+		{
+			AddComponentType<LineRendererComponent>(componentTypesToAdd);
+		}
+
+		// Draw Rigidbody2DComponent
+		if (m_Context.HasComponent<Rigidbody2DComponent>())
+		{
+			RenderRigidbody2DComponent();
+		}
+		else
+		{
+			AddComponentType<Rigidbody2DComponent>(componentTypesToAdd);
+		}
+
+		// Draw BoxCollider2DComponent
+		if (m_Context.HasComponent<BoxCollider2DComponent>())
+		{
+			RenderBoxCollider2DComponent();
+		}
+		else
+		{
+			AddComponentType<BoxCollider2DComponent>(componentTypesToAdd);
+		}
+
+		// Draw CircleCollider2DComponent
+		if (m_Context.HasComponent<CircleCollider2DComponent>())
+		{
+			RenderCircleCollider2DComponent();
+		}
+		else
+		{
+			AddComponentType<CircleCollider2DComponent>(componentTypesToAdd);
+		}
+
+		// Draw CapsuleCollider2DComponent
+		if (m_Context.HasComponent<CapsuleCollider2DComponent>())
+		{
+			RenderCapsuleCollider2DComponent();
+		}
+		else
+		{
+			AddComponentType<CapsuleCollider2DComponent>(componentTypesToAdd);
+		}
+
+		// PANEL CONTEXT MENU
+		if (ImGui::BeginPopupContextWindow("DetailsPanel_ContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
+		{
+			if (ImGui::BeginMenu("New component"))
+			{
+				for (const auto& t : componentTypesToAdd)
+				{
+					std::string compName = t->Name;
+					size_t pos = compName.find("::") + 2;
+					compName = compName.substr(pos);
+					if (ImGui::MenuItem(compName.c_str()))
+					{
+						ComponentRegistry::InvokeAddComponent(*t, m_Context);
+					}
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndPopup();
+		}
+
+		// delete selected component
+		if (m_ComponetTypeToRemove != nullptr)
+		{
+			ComponentRegistry::InvokeRemoveComponent(*m_ComponetTypeToRemove, m_Context);
+			m_ComponetTypeToRemove = nullptr;
+		}
+#endif
 	}
 
 	void DetailsPanel::RenderCameraComponent()

@@ -29,6 +29,8 @@ namespace Sphynx
 
 	private:
 		void ManageProjectOpened(const ProjectInfo& projectInfo);
+		void OpenPrefabEditor(Prefab* prefab);
+
 		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 		void SaveAsScene(const std::filesystem::path& path);
@@ -44,6 +46,7 @@ namespace Sphynx
 
 	private:
 		DelegateHandle m_OpenedProjectHandle;
+		DelegateHandle m_EditPrefabHandle;
 
 		EditorLayer* m_EditorLayer;
 		class SceneToolbar* m_SceneToolbar;

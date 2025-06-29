@@ -17,9 +17,9 @@ Prefab:
             Y: 0
             Z: 0
     - Sphynx::SpriteRendererComponent:
-        Sprite: 00000000-0000-0000-0000-000000000000
+        Sprite: 2d5de212-3172-4053-a9a0-3543c121f956
         Tint:
-          R: 255
-          G: 255
-          B: 255
+          R: 228
+          G: 210
+          B: 94
           A: 255

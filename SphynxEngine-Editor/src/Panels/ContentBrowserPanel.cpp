@@ -1,14 +1,15 @@
 #include "spxpch.h"
 #include "ContentBrowserPanel.h"
 #include "Base/Resources.h"
-#include "Asset/AssetManager.h"
-#include "Asset/Texture/TextureAsset.h"
-#include "Asset/Sprite/SpriteAsset.h"
+#include <Asset/AssetManager.h>
+#include <Asset/Texture/TextureAsset.h>
+#include <Asset/Sprite/SpriteAsset.h>
+#include <Asset/Prefab/PrefabAsset.h>
+#include <Renderer/Texture.h>
+#include <Events/Event.h>
+#include <Events/InputEvent.h>
+#include <Input/Keycode.h>
 #include "Dialogs/FileDialog.h"
-#include "Renderer/Texture.h"
-#include "Events/Event.h"
-#include "Events/InputEvent.h"
-#include "Input/Keycode.h"
 #include "ImGuiExtra.h"
 
 #include <imgui.h>
@@ -100,7 +101,7 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderGUI()
 	{
-		ImGui::Begin(GetName());
+		if (!m_CanRender) return;
 
 		if (!std::filesystem::exists(m_CurrentDirectory))
 		{
@@ -217,8 +218,6 @@ namespace Sphynx
 			}
 			ImGui::EndPopup();
 		}
-
-		ImGui::End();
 	}
 
 	bool ContentBrowserPanel::RenderContentItem(const ContentItem& contentItem, const Texture* texture, Vector2f size, Color color)
@@ -305,34 +304,53 @@ namespace Sphynx
 		{
 			m_SelectedContentItem->CopyValues(contentItem);
 
-			if (metadata.Type == TypeToAssetType<Texture>::Value())
-			{
-				// "Create sprite" for .spxasset of Texture type
-				if (ImGui::MenuItem("Create sprite"))
-				{
-					AssetMetadata spriteMetadata;
-					spriteMetadata.Handle = AssetHandle::Generate();
-					spriteMetadata.Type = TypeToAssetType<Sprite>::Value();
-
-					std::filesystem::path name = metadata.Path.filename();
-					name.replace_extension();
-					name += "_sprite";
-					name.replace_extension(ASSET_EXTENSION);
-
-					spriteMetadata.Path = metadata.Path;
-					spriteMetadata.Path.replace_filename(name);
-
-					spriteMetadata.Dependencies.Add(metadata.Handle);
-
-					AssetImporter::Save(spriteMetadata);
-					AssetManager::AddToRegistry(spriteMetadata);
-
-					ImGui::CloseCurrentPopup();
-				}
-			}
+			RenderContentItem_CreateSpriteOption(metadata);
+			RenderContentItem_EditPrefabOption(metadata);
 
 			RenderContentItem_CommonOptions(contentItem.RelativePath);
 			ImGui::EndPopup();
+		}
+	}
+
+	void ContentBrowserPanel::RenderContentItem_CreateSpriteOption(const AssetMetadata& metadata)
+	{
+		if (metadata.Type == TypeToAssetType<Texture>::Value()) // TYPE_TO_ASSETTYPE(Texture)
+		{
+			if (ImGui::MenuItem("Create sprite"))
+			{
+				AssetMetadata spriteMetadata;
+				spriteMetadata.Handle = AssetHandle::Generate();
+				spriteMetadata.Type = TypeToAssetType<Sprite>::Value();
+
+				std::filesystem::path name = metadata.Path.filename();
+				name.replace_extension();
+				name += "_sprite";
+				name.replace_extension(ASSET_EXTENSION);
+
+				spriteMetadata.Path = metadata.Path;
+				spriteMetadata.Path.replace_filename(name);
+
+				spriteMetadata.Dependencies.Add(metadata.Handle);
+
+				AssetImporter::Save(spriteMetadata);
+				AssetManager::AddToRegistry(spriteMetadata);
+
+				ImGui::CloseCurrentPopup();
+			}
+		}
+	}
+
+	void ContentBrowserPanel::RenderContentItem_EditPrefabOption(const AssetMetadata& metadata)
+	{
+		if (metadata.Type == TypeToAssetType<Prefab>::Value()) // TYPE_TO_ASSETTYPE(Prefab)
+		{
+			if (ImGui::MenuItem("Edit prefab"))
+			{
+				std::shared_ptr<Asset<Prefab>> prefab = AssetManager::GetAsset<Prefab>(metadata.Handle);
+				OnPrefabEdit.Broadcast(prefab->Asset);
+
+				ImGui::CloseCurrentPopup();
+			}
 		}
 	}
 

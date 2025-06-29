@@ -29,7 +29,8 @@ namespace Sphynx
 		ImGuiWindowFlags flags = 0;
 		flags |= !bIsWindowDocked * ImGuiWindowFlags_MenuBar;
 
-		if (ImGui::Begin(GetName(), nullptr, flags))
+		const bool visible = ImGui::Begin(GetName(), nullptr, flags);
+		if (visible)
 		{
 			// Render Menu Bar
 			if (ImGui::BeginMenuBar())
@@ -47,7 +48,7 @@ namespace Sphynx
 			}
 
 			// Enable dockspace for the current editor
-			ImGuiID id = ImGui::GetID("Editor Dockspace");
+			ImGuiID id = ImGui::GetID(GetName());
 			ImGui::DockSpace(id);
 
 			// Render child widgets
@@ -62,7 +63,7 @@ namespace Sphynx
 
 		// This will append menu bar items into the parents menu bar
 		// But only if the window has not shown them already
-		if (bIsWindowDocked && HasMenuBar())
+		if (visible && bIsWindowDocked && HasMenuBar())
 		{
 			if (ImGui::BeginMenuBar())
 			{

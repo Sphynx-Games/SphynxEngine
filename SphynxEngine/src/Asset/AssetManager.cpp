@@ -198,6 +198,8 @@ namespace Sphynx
 
 	std::shared_ptr<IAsset> AssetManager::Import(const std::filesystem::path& path)
 	{
+		SPX_CORE_ASSERT(!std::filesystem::is_directory(path), "The given path cannot be a directory!!");
+
 		// create metadata
 		AssetMetadata metadata;
 		metadata.Handle = AssetHandle::Generate();

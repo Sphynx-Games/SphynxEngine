@@ -29,6 +29,8 @@ namespace Sphynx
 		void AddEditor(Editor* editor);
 		void RemoveEditor(Editor* editor);
 
+		void SetActiveEditor(Editor* editor);
+
 	protected:
 		bool m_BlockEventsEnabled;
 		std::vector<Editor*> m_Editors;

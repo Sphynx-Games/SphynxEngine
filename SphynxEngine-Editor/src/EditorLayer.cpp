@@ -1,15 +1,17 @@
 #include "spxpch.h"
 #include "EditorLayer.h"
-#include "Base/Widget.h"
+
 #include "Events/Event.h"
 #include "Renderer/Renderer.h"
 #include "Platform/SDL/SDLEditorLayer.h"
 #include "Platform/OpenGL/OpenGLEditorLayer.h"
 #include "Dialogs/FileDialog.h"
-
-#include <imgui.h>
+#include "Base/Widget.h"
 #include "Editors/SceneEditor.h"
 #include "Editors/ProjectEditor.h"
+//#include "Editors/PrefabEditor.h"
+
+#include <imgui.h>
 
 
 namespace Sphynx
@@ -200,6 +202,7 @@ namespace Sphynx
 
 		for (Widget* widget : m_Editors)
 		{
+			Widget* widget = m_Editors[i];
 			widget->PreRenderGUI();
 			widget->RenderGUI();
 			widget->PostRenderGUI();
@@ -254,5 +257,10 @@ namespace Sphynx
 		if (it == m_Editors.end()) return;
 
 		m_Editors.erase(it);
+	}
+
+	void EditorLayer::SetActiveEditor(Editor* editor)
+	{
+		m_ActiveEditor = editor;
 	}
 }

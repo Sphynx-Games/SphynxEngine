@@ -38,50 +38,49 @@ namespace Sphynx
 
 	void SceneOutlinerPanel::RenderGUI()
 	{
-		if (ImGui::Begin(GetName()) && m_Scene != nullptr)
+		if (!m_CanRender) return;
+		if (m_Scene == nullptr) return;
+
+		// ACTORS
+		for (const Actor& actor : m_Scene->GetActors())
 		{
-			// ACTORS
-			for (const Actor& actor : m_Scene->GetActors())
-			{
-				RenderActorGUI(actor);
-			}
-			for (auto it = m_ActorsToDeleted.rbegin(); it != m_ActorsToDeleted.rend(); it++)
-			{
-				DeleteActor(*it);
-			}
-			m_ActorsToDeleted.RemoveAll();
-
-			// PANEL CONTEXT MENU
-			if (ImGui::BeginPopupContextWindow("SceneOutlinerPanel_ContextMenu", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
-			{
-				if (ImGui::MenuItem("New actor"))
-				{
-					Actor& actor = m_Scene->CreateActor();
-					actor.AddComponent<NameComponent>("New actor");
-					actor.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
-				}
-
-				if (!m_Scene->HasBegunPlay() && ImGui::BeginMenu("New prefab actor"))
-				{
-					Array<AssetMetadata> metadatas = AssetManager::GetAssetMetadatasByAssetType(TYPE_TO_ASSETTYPE(Prefab));
-					for (const auto& m : metadatas)
-					{
-						auto filename = m.Path.filename();
-						filename.replace_extension("");
-						auto name = filename.string();
-						if (ImGui::MenuItem(name.c_str()))
-						{
-							std::shared_ptr<Asset<Prefab>> prefabAsset = AssetManager::GetAsset<Prefab>(m.Handle);
-							static_cast<EditorScene*>(m_Scene)->CreatePrefabActor(prefabAsset->Asset);
-						}
-					}
-					ImGui::EndMenu();
-				}
-
-				ImGui::EndPopup();
-			}
+			RenderActorGUI(actor);
 		}
-		ImGui::End();
+		for (auto it = m_ActorsToDeleted.rbegin(); it != m_ActorsToDeleted.rend(); it++)
+		{
+			DeleteActor(*it);
+		}
+		m_ActorsToDeleted.RemoveAll();
+
+		// PANEL CONTEXT MENU
+		if (ImGui::BeginPopupContextWindow("SceneOutlinerPanel_ContextMenu", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
+		{
+			if (ImGui::MenuItem("New actor"))
+			{
+				Actor& actor = m_Scene->CreateActor();
+				actor.AddComponent<NameComponent>("New actor");
+				actor.AddComponent<TransformComponent>(Transform{ { 0, 0, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f } });
+			}
+
+			if (!m_Scene->HasBegunPlay() && ImGui::BeginMenu("New prefab actor"))
+			{
+				Array<AssetMetadata> metadatas = AssetManager::GetAssetMetadatasByAssetType(TYPE_TO_ASSETTYPE(Prefab));
+				for (const auto& m : metadatas)
+				{
+					auto filename = m.Path.filename();
+					filename.replace_extension("");
+					auto name = filename.string();
+					if (ImGui::MenuItem(name.c_str()))
+					{
+						std::shared_ptr<Asset<Prefab>> prefabAsset = AssetManager::GetAsset<Prefab>(m.Handle);
+						static_cast<EditorScene*>(m_Scene)->CreatePrefabActor(prefabAsset->Asset);
+					}
+				}
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndPopup();
+		}
 	}
 
 	void SceneOutlinerPanel::RenderActorGUI(const Actor& actor)
