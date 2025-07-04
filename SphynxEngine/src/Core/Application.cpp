@@ -11,6 +11,7 @@
 #include "Layer.h"
 #include "Module/ModuleManager.h"
 #include "Command/CommandManager.h"
+#include "Sound/SoundManager.h"
 
 
 namespace Sphynx
@@ -54,6 +55,9 @@ namespace Sphynx
 		// Initialize physics
 		Physics2D::Init();
 
+		// Initialize sounds
+		SoundManager::Init();
+
 		// Initialize input
 		Input::Init();
 
@@ -92,6 +96,9 @@ namespace Sphynx
 			// Update state before window processes the events
 			Input::Update();
 
+			// Update sounds
+			SoundManager::Update();
+
 			// Update window (process events)
 			m_Window->Update();
 
@@ -113,6 +120,9 @@ namespace Sphynx
 
 		// Shut input
 		Input::Shutdown();
+
+		// Shut sounds
+		SoundManager::Shutdown();
 
 		// Shut physics
 		Physics2D::Shutdown();

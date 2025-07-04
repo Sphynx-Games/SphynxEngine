@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Asset/AssetManager.h"
+//#include "Asset/AssetManager.h"
+#include "Core/Core.h"
+#include "Asset/Asset.h"
 #include "Renderer/Font.h"
-#include "FontAssetImporter.h"
+//#include "FontAssetImporter.h"
 
 #include <filesystem>
 
@@ -12,6 +14,7 @@ namespace Sphynx
 	template<>
 	struct Asset<Font> : public IAsset
 	{
+	public:
 		virtual ~Asset()
 		{
 			Font*& font = Asset;
@@ -22,13 +25,13 @@ namespace Sphynx
 			}
 		}
 
-		Font* Asset;
-
 		inline operator Font* () { return Asset; }
 		inline operator const Font* () const { return Asset; }
 
 		virtual void* GetRawAsset() const override { return Asset; }
 
+	public:
+		Font* Asset;
 		std::filesystem::path RelativePath;
 	};
 

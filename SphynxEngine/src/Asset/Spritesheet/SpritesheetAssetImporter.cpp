@@ -1,5 +1,6 @@
 #include "spxpch.h"
 #include "SpritesheetAssetImporter.h"
+
 #include "Asset/AssetMetadata.h"
 #include "SpritesheetAsset.h"
 #include "Asset/Sprite/SpriteAsset.h"
@@ -8,7 +9,7 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Sprite.h"
 #include "Renderer/Texture.h"
-#include "Logging/Log.h"
+
 #include "Serialization/Reflection/ReflectionDeserializer.h"
 #include "Serialization/Reflection/ReflectionSerializer.h"
 #include "Serialization/FileReader.h"

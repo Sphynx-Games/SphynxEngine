@@ -18,7 +18,9 @@
 #include "Component/ComponentRegistry.h"
 #include "Scripting/ScriptingManager.h"
 
-#include <fmod.hpp>
+#include "Sound/SoundManager.h"
+#include "Sound/Sound.h"
+#include "Sound/SoundInstance.h"
 
 
 namespace Sphynx
@@ -56,10 +58,6 @@ namespace Sphynx
 			}
 		}
 	}
-
-	FMOD::System* system = nullptr;
-	FMOD::Sound* sound = nullptr;
-	FMOD::Channel* channel = nullptr;
 
 	Scene::Scene() :
 		m_UUID(UUID::Generate()),
@@ -109,16 +107,19 @@ namespace Sphynx
 		return *this;
 	}
 
+	SoundInstance* soundInstance = nullptr;
+
 	void Scene::BeginPlay()
 	{
 		if (m_HasBegunPlay) return;
 
 		InitPhysics();
 
-		FMOD::System_Create(&system);
-		system->init(512, FMOD_INIT_NORMAL, nullptr);
-		system->createSound("Assets\\Sounds\\enemyDeath.wav", FMOD_DEFAULT, nullptr, &sound);
-		system->playSound(sound, nullptr, false, &channel);
+		AssetHandle handle = AssetManager::GetAssetHandleFromPath("Assets\\Sounds\\enemyDeath.spxasset");
+		std::shared_ptr<Asset<Sound>> sound = AssetManager::GetAsset<Sound>(handle);
+
+		soundInstance = SoundManager::CreateSound(sound->Asset);
+		SoundManager::PlaySound(soundInstance);
 		
 		m_HasBegunPlay = true;
 	}
@@ -129,9 +130,7 @@ namespace Sphynx
 
 		m_HasBegunPlay = false;
 
-		sound->release();
-		system->close();
-		system->release();
+		delete soundInstance;
 
 		if (m_PhysicsWorld != nullptr)
 		{
@@ -142,8 +141,6 @@ namespace Sphynx
 
 	void Scene::Update(float deltaTime)
 	{
-		system->update();
-
 		// Simulate PHYSICS in scene
 		if (m_PhysicsWorld != nullptr)
 		{

@@ -1,7 +1,7 @@
 #include "spxpch.h"
 #include "PrefabAssetImporter.h"
+
 #include "Asset/AssetManager.h"
-#include "Asset/AssetMetadata.h"
 #include "PrefabAsset.h"
 
 #include "Serialization/Prefab/PrefabSerializer.h"

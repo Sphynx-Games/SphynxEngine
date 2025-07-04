@@ -24,4 +24,5 @@
 #ifdef SPX_PLATFORM_WINDOWS
 	#include <Windows.h>
 	#undef DrawText
+	#undef PlaySound
 #endif

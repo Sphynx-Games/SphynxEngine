@@ -1,14 +1,9 @@
 #include "spxpch.h"
 #include "FontAssetImporter.h"
-#include "Asset/AssetMetadata.h"
+
+#include "Asset/AssetManager.h"
 #include "FontAsset.h"
 #include "Renderer/Renderer.h"
-#include "Logging/Log.h"
-#include "Platform/SDL/SDLFont.h"
-#include "Serialization/Reflection/ReflectionDeserializer.h"
-#include "Serialization/Reflection/ReflectionSerializer.h"
-#include "Serialization/FileReader.h"
-#include "Serialization/FileWriter.h"
 
 
 namespace Sphynx
@@ -32,7 +27,7 @@ namespace Sphynx
 		FontAssetMetadata fontMetadata = AssetImporter::DeserializeAsset<FontAssetMetadata>(metadata);
 
 		// create a font asset from a raw image file
-		Font* font = ImportFromFilePath(fontMetadata.RelativePath);
+		Font* font = FontLoader::Load(fontMetadata.RelativePath);
 
 		std::shared_ptr<Asset<Font>> asset = std::make_shared<Asset<Font>>();
 		asset->Handle = metadata.Handle;
@@ -51,17 +46,5 @@ namespace Sphynx
 		FontAssetMetadata fontMetadata;
 		fontMetadata.RelativePath = fontAsset->RelativePath;
 		AssetImporter::SerializeAsset(metadata, fontMetadata);
-	}
-
-	Font* FontAssetImporter::ImportFromFilePath(const std::filesystem::path& path)
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::NONE:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::SDL:     return SDLFontLoader::Load(path);
-		}
-
-		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
-		return nullptr;
 	}
 }

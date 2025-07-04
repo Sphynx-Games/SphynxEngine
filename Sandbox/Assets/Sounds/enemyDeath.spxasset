@@ -1,0 +1,3 @@
+- SphynxAsset: SphynxAsset
+  Type: Sphynx::Sound
+- RelativePath: Assets\Sounds\enemyDeath.wav

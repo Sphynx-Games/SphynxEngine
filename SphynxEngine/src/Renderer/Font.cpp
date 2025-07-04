@@ -6,6 +6,7 @@
 #include "Renderer/RendererAPI.h"
 #include "Platform/SDL/SDLFont.h"
 
+
 namespace Sphynx
 {
 	Font* Font::Create()
@@ -14,6 +15,18 @@ namespace Sphynx
 		{
 		case RendererAPI::API::NONE:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::SDL:     return new SDLFont();
+		}
+
+		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");
+		return nullptr;
+	}
+
+	Font* FontLoader::Load(const std::filesystem::path& path)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::NONE:    SPX_CORE_LOG_ERROR("RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::SDL:     return SDLFontLoader::Load(path);
 		}
 
 		SPX_CORE_LOG_ERROR("Unknown RendererAPI!");

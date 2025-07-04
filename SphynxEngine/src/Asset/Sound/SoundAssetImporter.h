@@ -10,9 +10,9 @@
 namespace Sphynx
 {
 	struct AssetMetadata;
-	class Font;
+	class Sound;
 
-	class SPHYNX_API FontAssetImporter
+	class SPHYNX_API SoundAssetImporter
 	{
 	public:
 		static std::shared_ptr<IAsset> Import(const AssetMetadata& metadata, const std::filesystem::path& path);

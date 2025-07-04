@@ -14,6 +14,13 @@ namespace Sphynx
 		static Font* Create();
 
 	};
+
+	class SPHYNX_API FontLoader
+	{
+	public:
+		static Font* Load(const std::filesystem::path& path);
+
+	};
 }
 
 #include "Reflection/Reflection.h"

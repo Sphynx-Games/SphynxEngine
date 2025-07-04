@@ -1,14 +1,9 @@
 #include "spxpch.h"
 #include "TextureAssetImporter.h"
-#include "Asset/AssetMetadata.h"
+
+#include "Asset/AssetManager.h"
 #include "TextureAsset.h"
 #include "Renderer/Renderer.h"
-#include "Logging/Log.h"
-#include "Platform/SDL/SDLTexture.h"
-#include "Serialization/Reflection/ReflectionDeserializer.h"
-#include "Serialization/Reflection/ReflectionSerializer.h"
-#include "Serialization/FileReader.h"
-#include "Serialization/FileWriter.h"
 
 
 namespace Sphynx

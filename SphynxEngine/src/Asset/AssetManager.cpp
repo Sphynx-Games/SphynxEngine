@@ -19,6 +19,9 @@
 #include "Asset/Prefab/PrefabAsset.h"
 #include "Asset/Prefab/PrefabAssetImporter.h"
 
+#include "Asset/Sound/SoundAsset.h"
+#include "Asset/Sound/SoundAssetImporter.h"
+
 #include "Serialization/YAML/YAMLWriter.h"
 #include "Serialization/YAML/YAMLReader.h"
 
@@ -87,13 +90,11 @@ namespace Sphynx
 		// Register Asset types (Texture, Sprite...)
 		REGISTER_ASSETTYPE(Texture, TextureAssetImporter, ".png", ".jpg", ".jpeg"); // NOTE: add more extensions if needed
 		REGISTER_ASSETTYPE(Font, FontAssetImporter, ".ttf");
-
 		REGISTER_ASSETTYPE(Scene, SceneAssetImporter);
-
 		REGISTER_ASSETTYPE(Sprite, SpriteAssetImporter);
 		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
-
 		REGISTER_ASSETTYPE(Prefab, PrefabAssetImporter);
+		REGISTER_ASSETTYPE(Sound, SoundAssetImporter, ".mp3", ".wav");
 
 		// load all managed assets into the asset registry
 		YAMLReader reader{ s_ContextPath / ASSET_REGISTRY_FILEPATH };
@@ -116,13 +117,11 @@ namespace Sphynx
 		UnloadAssets();
 
 		// Unregister Asset types
+		UNREGISTER_ASSETTYPE(Sound);
 		UNREGISTER_ASSETTYPE(Prefab);
-
 		UNREGISTER_ASSETTYPE(Spritesheet);
 		UNREGISTER_ASSETTYPE(Sprite);
-
 		UNREGISTER_ASSETTYPE(Scene);
-
 		UNREGISTER_ASSETTYPE(Font);
 		UNREGISTER_ASSETTYPE(Texture); 
 

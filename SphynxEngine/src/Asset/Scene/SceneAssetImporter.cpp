@@ -1,7 +1,7 @@
 #include "spxpch.h"
 #include "SceneAssetImporter.h"
+
 #include "Asset/AssetManager.h"
-#include "Asset/AssetMetadata.h"
 #include "SceneAsset.h"
 
 #include "Serialization/Scene/SceneSerializer.h"
