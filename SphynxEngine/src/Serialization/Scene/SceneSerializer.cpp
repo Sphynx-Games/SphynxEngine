@@ -3,6 +3,7 @@
 #include "Serialization/Writer.h"
 #include "Scene/Scene.h"
 #include "Scene/Actor.h"
+#include "Scene/PrefabActor.h"
 #include "Component/Components.h"
 #include "Logging/Log.h"
 #include "Serialization/Reflection/ReflectionSerializer.h"
@@ -20,6 +21,11 @@ namespace Sphynx
 		{
 			using namespace Reflection;
 			Actor* actor = static_cast<Actor*>(data);
+			if (dynamic_cast<PrefabActor*>(actor))
+			{
+
+			}
+
 			// UUID
 			{
 				SPX_CORE_ASSERT(actor->HasComponent<UUIDComponent>(), "Actor should have a UUIDComponent");

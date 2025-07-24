@@ -14,6 +14,7 @@ namespace Sphynx
 	class HashMap
 	{
 	public:
+		using hasher = typename std::unordered_map<TKey, TValue>::hasher;
 		using key_type = typename std::unordered_map<TKey, TValue>::key_type;
 		using mapped_type = typename std::unordered_map<TKey, TValue>::mapped_type;
 		using Iterator = typename std::unordered_map<TKey, TValue>::iterator;
@@ -150,9 +151,10 @@ namespace Sphynx
 	};
 
 	template <typename TKey, typename TValue>
-	class SPHYNX_API Map
+	class Map
 	{
 	public:
+		using key_compare = typename std::map<TKey, TValue>::key_compare;
 		using key_type = typename std::map<TKey, TValue>::key_type;
 		using mapped_type = typename std::map<TKey, TValue>::mapped_type;
 		using Iterator = typename std::map<TKey, TValue>::iterator;

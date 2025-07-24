@@ -8,6 +8,11 @@
 #include "PropertyDrawer/PropertyDrawerManager.h"
 
 
+#include "Reflection/PropertyComparator.h"
+#include "Math/Vector.h"
+#include "Container/Array.h"
+
+
 Sphynx::Application* CreateApplication()
 {
 	return new Sphynx::EditorApplication();
@@ -33,6 +38,22 @@ namespace Sphynx
 		m_EditorLayer = new EditorLayer();
 
 		PushLayer(m_EditorLayer);
+
+
+		Map<int, std::string> source;
+		source[3] = "JA";
+		source[5] = "Hola";
+
+		Map<int, std::string> target;
+		target[3] = "JA";
+		target[4] = "Holade";
+
+		/*Transform source{{1.0f, 2.0f, 3.0f}, {1.0f, 2.0f, 3.0f}, {1.0f, 2.0f, 3.0f}};
+		Transform target{ { 1.0f, -200.0f, 3.0f }, { 1.0f, 2.0f, 3.0f }, { 1.0f, 2.0f, 3.0f } };*/
+
+		Reflection::PropertyComparator comparator{ &target, Reflection::GetClass<decltype(target)>() };
+
+		Reflection::PropertyTree::Traverse(Reflection::GetClass<decltype(source)>(), &source, comparator);
 	}
 
 	void EditorApplication::Run()

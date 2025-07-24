@@ -43,11 +43,16 @@ namespace Sphynx
 			bool IsProtected() const;
 			bool IsPrivate() const;
 
-			ValueType GetValueType() const;
 			bool IsValue() const;
 			bool IsRValueReference() const;
 			bool IsLValueReference() const;
 			bool IsPointer() const;
+
+			template<typename T>
+			bool HasAttribute() const;
+
+			template<typename T>
+			const T* GetAttribute() const;
 
 			const Type& Type;
 			const char* Name;
@@ -59,5 +64,25 @@ namespace Sphynx
 
 			std::vector<Attribute*> Attributes;
 		};
+		
+		template<typename T>
+		inline bool Property::HasAttribute() const 
+		{ 
+			return GetAttribute<T>() != nullptr; 
+		}
+		
+		template<typename T>
+		inline const T* Property::GetAttribute() const
+		{
+			size_t AttributesCount = Attributes.size();
+			for (size_t i = 0; i < AttributesCount; ++i)
+			{
+				// TODO: change this ugly dynamic_cast
+				if (const T* attr = dynamic_cast<const T*>(Attributes[i]))
+					return attr;
+			}
+
+			return nullptr;
+		}
 	}
 }

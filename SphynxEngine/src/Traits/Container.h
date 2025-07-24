@@ -72,5 +72,16 @@ namespace Sphynx
 		template<typename T>
 		using container_const_iterator_type_t = typename container_const_iterator_type<T>::type;
 
+		template<typename T, typename = void>
+		struct is_container_key_hashable : std::false_type {};
+
+		template<typename T>
+		struct is_container_key_hashable<T, std::void_t<typename T::hasher>> : std::true_type{};
+
+		template<typename T, typename = void>
+		struct is_container_key_comparable : std::false_type {};
+
+		template<typename T>
+		struct is_container_key_comparable<T, std::void_t<typename T::key_compare>> : std::true_type {};
 	}
 }

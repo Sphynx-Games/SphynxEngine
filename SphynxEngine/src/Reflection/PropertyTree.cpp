@@ -93,8 +93,11 @@ namespace Sphynx
 						const Type& rType = indexedCollection->GetValueType();
 						std::string indexStr = std::to_string(i);
 
-						const Property fakeProperty{ rType, indexStr.c_str(), 0 };
-						PropertyTree tree{ rType, indexedCollection->Get(m_Addr, i), TraversalParams{m_Params} };
+						void* valueAddr = indexedCollection->Get(m_Addr, i);
+						const size_t offset = std::distance((std::byte*)m_Addr, (std::byte*)valueAddr);
+
+						const Property fakeProperty{ rType, indexStr.c_str(), offset };
+						PropertyTree tree{ rType, valueAddr, TraversalParams{m_Params} };
 						tree.Traverse(visitor, &fakeProperty);
 					}
 
@@ -116,15 +119,22 @@ namespace Sphynx
 						{
 							const Type& rType = associativeCollection->GetKeyType();
 
-							const Property fakeProperty{ rType, rType.Name, 0 };
-							PropertyTree tree{ rType, (void*)associativeCollection->GetKey(m_Addr, i), TraversalParams{m_Params} };
+							void* keyAddr = (void*)associativeCollection->GetKey(m_Addr, i);
+							const size_t offset = std::distance((std::byte*)m_Addr, (std::byte*)keyAddr);
+
+							const Property fakeProperty{ rType, rType.Name, offset };
+							PropertyTree tree{ rType, keyAddr, TraversalParams{m_Params} };
 							tree.Traverse(visitor, &fakeProperty);
 						}
 						{
 							const Type& rType = associativeCollection->GetValueType();
-							const Property fakeProperty{ rType, rType.Name, 0 };
 
-							PropertyTree tree{ associativeCollection->GetValueType(), (void*)associativeCollection->GetValue(m_Addr, i), TraversalParams{m_Params} };
+							void* valueAddr = (void*)associativeCollection->GetValue(m_Addr, i);
+							const size_t offset = std::distance((std::byte*)m_Addr, (std::byte*)valueAddr);
+
+							const Property fakeProperty{ rType, rType.Name, offset };
+
+							PropertyTree tree{ associativeCollection->GetValueType(), valueAddr, TraversalParams{m_Params} };
 							tree.Traverse(visitor, &fakeProperty);
 						}
 					}

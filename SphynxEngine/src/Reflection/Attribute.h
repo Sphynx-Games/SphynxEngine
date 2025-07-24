@@ -38,7 +38,7 @@ namespace Sphynx
 			{
 				using TAccessFunction = void* (*)(void*, uint64_t);
 				using TConstAccessFunction = const void* (*)(const void*, uint64_t);
-				using TSizeFunction = size_t (*)(const void*);
+				using TSizeFunction = size_t(*)(const void*);
 				using TAddFunction = void* (*)(void*);
 
 			public:
@@ -73,8 +73,10 @@ namespace Sphynx
 				using TAccessFunction = void* (*)(void*, const void*);
 				using TConstAccessFunction = const void* (*)(const void*, const void*);
 				using TKeyAccessFunction = void* (*)(const void*, uint64_t);
-				using TSizeFunction = size_t (*)(const void*);
+				using TSizeFunction = size_t(*)(const void*);
 				using TAddFunction = void* (*)(void*, const void*, const void*);
+				using TCompareKeyFunction = bool(*)(const void*, const void*);
+				using THasKeyFunction = bool(*)(const void*, const void*);
 			public:
 				template<typename TCollection>
 				AssociativeCollection(::Sphynx::Reflection::details::Tag<TCollection>) :
@@ -84,12 +86,38 @@ namespace Sphynx
 					m_ConstAccessFunction([](const void* obj, const void* key) -> const void* { return &(*static_cast<const TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)]; }),
 					m_KeyAccessFunction([](const void* obj, uint64_t index) -> void* { return (void*)(&(*std::next(static_cast<const TCollection*>(obj)->cbegin(), index))); }),
 					m_SizeFunction([](const void* obj) -> size_t { return static_cast<const TCollection*>(obj)->Size(); }),
-					m_AddFunction([](void* obj, const void* key, const void* value) -> void* 
-						{ 
+					m_AddFunction([](void* obj, const void* key, const void* value) -> void*
+						{
 							static_cast<TCollection*>(obj)->Add(
-								*static_cast<const typename TCollection::key_type*>(key), 
-								*static_cast<const typename TCollection::mapped_type*>(value)); 
+								*static_cast<const typename TCollection::key_type*>(key),
+								*static_cast<const typename TCollection::mapped_type*>(value));
 							return &(*static_cast<TCollection*>(obj))[*static_cast<const typename TCollection::key_type*>(key)];
+						}),
+					m_CompareKeysFunction([](const void* keyA, const void* keyB) -> bool
+						{ 
+							if constexpr (::Sphynx::Traits::is_container_key_hashable<TCollection>::value)
+							{
+								return TCollection::hasher{}(*static_cast<const typename TCollection::key_type*>(keyA)) ==
+									TCollection::hasher{}(*static_cast<const typename TCollection::key_type*>(keyB));
+							}
+							else if constexpr (::Sphynx::Traits::is_container_key_comparable<TCollection>::value)
+							{
+								return *static_cast<const typename TCollection::key_type*>(keyA) == 
+									*static_cast<const typename TCollection::key_type*>(keyB);
+							}
+							else
+							{
+								static_assert(false, "Not implemented");
+							}
+
+							return false;
+						}),
+					m_HasKeyFunction([](const void* obj, const void* key) -> bool 
+						{ 
+							return std::find_if(static_cast<const TCollection*>(obj)->cbegin(), static_cast<const TCollection*>(obj)->cend(), [&](const auto& p)
+								{
+									return *static_cast<const typename TCollection::key_type*>((void*)&p) == *static_cast<const typename TCollection::key_type*>(key);
+								}) != static_cast<const TCollection*>(obj)->cend();
 						})
 				{}
 
@@ -100,10 +128,15 @@ namespace Sphynx
 				inline void* Get(void* obj, const void* key) const { return m_AccessFunction(obj, key); }
 				inline const void* Get(const void* obj, const void* key) const { return m_ConstAccessFunction(obj, key); }
 				inline const void* GetKey(const void* obj, uint64_t index) const { return m_KeyAccessFunction(obj, index); }
+				inline void* GetKey(void* obj, uint64_t index) const { return m_KeyAccessFunction(obj, index); }
 				inline const void* GetValue(const void* obj, uint64_t index) const { return Get(obj, GetKey(obj, index)); }
+				inline void* GetValue(void* obj, uint64_t index) const { return Get(obj, GetKey(obj, index)); }
 				inline const size_t GetSize(const void* obj) const { return m_SizeFunction(obj); }
 
 				inline void* Add(void* obj, const void* key, const void* value) const { return m_AddFunction(obj, key, value); };
+
+				inline bool CompareKeys(const void* keyA, const void* keyB) const { return m_CompareKeysFunction(keyA, keyB); }
+				inline bool ContainsKey(const void* obj, const void* key) const { return m_HasKeyFunction(obj, key); }
 
 			private:
 				const Type& m_KeyType;
@@ -113,6 +146,8 @@ namespace Sphynx
 				TKeyAccessFunction m_KeyAccessFunction;
 				TSizeFunction m_SizeFunction;
 				TAddFunction m_AddFunction;
+				TCompareKeyFunction m_CompareKeysFunction;
+				THasKeyFunction m_HasKeyFunction;
 			};
 
 			// Plain Old Data Attribute

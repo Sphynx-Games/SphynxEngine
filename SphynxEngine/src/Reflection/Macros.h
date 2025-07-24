@@ -101,12 +101,12 @@
 		} \
 	}; \
 	template<typename... T> \
-	_API inline const Class& GetClassImpl(Tag<::_Class<T...>>) \
+	/*_API*/ inline const Class& GetClassImpl(Tag<::_Class<T...>>) \
 	{ \
 		return ClassImplWrapper<::_Class<T...>>::GetClassImpl(Tag<::_Class<T...>>{}); \
 	} \
 	template<typename... T> \
-	_API inline const Type& GetTypeImpl(Tag<::_Class<T...>>) \
+	/*_API*/ inline const Type& GetTypeImpl(Tag<::_Class<T...>>) \
 	{ \
 		return GetClassImpl(Tag<::_Class<T...>>{}); \
 	} \
