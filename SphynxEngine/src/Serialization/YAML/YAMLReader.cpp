@@ -180,6 +180,11 @@ namespace Sphynx
 		SPX_CORE_ASSERT(m_Node->IsSequence(), "Current node is not a sequence!");
 	}
 
+	bool YAMLReader::IsMap() const
+	{
+		return m_Node->IsMap();
+	}
+
 	size_t YAMLReader::PushMap() const
 	{
 		SPX_CORE_ASSERT(m_Node->IsMap(), "Current node is not a map!");

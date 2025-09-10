@@ -4,6 +4,7 @@
 #include "PropertyTree.h"
 #include "Core/Delegate.h"
 #include "Container/Pair.h"
+#include "Container/Array.h"
 
 #include <stack>
 
@@ -13,6 +14,27 @@ namespace Sphynx
 	namespace Reflection
 	{
 		struct Class;
+
+		struct PropertyNode
+		{
+			enum NodeType
+			{
+				IndexedCollection,
+				AssociativeCollection,
+				NonCollection
+			};
+
+			const Reflection::Property* Property;
+			void* Address;
+			NodeType Type;
+			std::vector<Reflection::Property> CollectionProperties;
+			std::vector<std::string> IndexedCollectionPropertyNames;
+
+			// only used in associative collections
+			bool VisitingKey;
+			void* CollectionAddress;
+			const Reflection::Property* ValueProperty;
+		};
 
 		enum PropertyDiffType
 		{
@@ -25,12 +47,13 @@ namespace Sphynx
 
 		struct SPHYNX_API PropertyDiffInfo
 		{
-			PropertyDiffInfo(const Reflection::Property* sourceProperty, void* sourceData, const Reflection::Property* targetProperty, void* targetData, PropertyDiffType type) :
+			PropertyDiffInfo(const Reflection::Property* sourceProperty, void* sourceData, const Reflection::Property* targetProperty, void* targetData, PropertyDiffType type, const Array<PropertyNode>& targetStack) :
 				SourceProperty(sourceProperty),
 				SourceData(sourceData),
 				TargetProperty(targetProperty),
 				TargetData(targetData),
-				Type(type)
+				Type(type),
+				TargetStack(targetStack)
 			{}
 
 			const Reflection::Property* SourceProperty;
@@ -38,31 +61,11 @@ namespace Sphynx
 			const Reflection::Property* TargetProperty;
 			void* TargetData;
 			PropertyDiffType Type;
+			const Array<PropertyNode>& TargetStack;
 		};
 
 		class SPHYNX_API PropertyComparator : public IPropertyTreeVisitor
 		{
-			struct PropertyNode
-			{
-				enum NodeType
-				{
-					IndexedCollection,
-					AssociativeCollection,
-					NonCollection
-				};
-
-				const Reflection::Property* Property;
-				void* Address;
-				NodeType Type;
-				std::vector<Reflection::Property> CollectionProperties;
-				std::vector<std::string> IndexedCollectionPropertyNames;
-
-				// only used in associative collections
-				bool VisitingKey;
-				void* CollectionAddress;
-				const Reflection::Property* ValueProperty;
-			};
-
 		public:
 			PropertyComparator(void* target, const Class& reflectionClass);
 
@@ -115,7 +118,7 @@ namespace Sphynx
 
 		private:
 			Reflection::Property m_RootProperty;
-			std::stack<PropertyNode> m_TargetsStack;
+			Array<PropertyNode> m_TargetsStack;
 
 		};
 

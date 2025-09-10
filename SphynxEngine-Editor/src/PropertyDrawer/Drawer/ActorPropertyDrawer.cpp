@@ -25,6 +25,9 @@ namespace Sphynx
 		ImGui::Separator();
 		// TODO: add component button
 
+		Array<const Reflection::Class*> componentTypesToAdd;
+		PropertyViewer propertyViewer{};
+
 		// Show components
 		for (const Reflection::Class* cClass : ComponentRegistry::GetComponents())
 		{
@@ -35,8 +38,37 @@ namespace Sphynx
 			{
 				void* component = ComponentRegistry::InvokeGetComponent(*cClass, *actor, false);
 				Reflection::PropertyTree tree{ *cClass, component };
-				tree.Traverse(PropertyViewer{});
+				tree.Traverse(propertyViewer);
 			}
+			else
+			{
+				componentTypesToAdd.Add(cClass);
+			}
+		}
+
+		// Add component option
+		if (ImGui::BeginPopupContextWindow("DetailsPanel_ContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup))
+		{
+			if (ImGui::BeginMenu("New component"))
+			{
+				for (const auto& t : componentTypesToAdd)
+				{
+					std::string compName = t->Name;
+					size_t pos = compName.find("::") + 2;
+					compName = compName.substr(pos);
+					if (ImGui::MenuItem(compName.c_str()))
+					{
+						ComponentRegistry::InvokeAddComponent(*t, *actor);
+					}
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndPopup();
+		}
+
+		if (propertyViewer.InvisibleClass != nullptr)
+		{
+			ComponentRegistry::InvokeRemoveComponent(*propertyViewer.InvisibleClass, *actor);
 		}
 	}
 }

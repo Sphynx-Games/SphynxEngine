@@ -122,7 +122,7 @@ namespace Sphynx
 			const Reflection::Property* foundProperty = FindSimilarProperty(GetTopPropertyNode(), property);
 			if (foundProperty == nullptr)
 			{
-				OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()) });
+				OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()), m_TargetsStack });
 				return;
 			}
 
@@ -130,7 +130,7 @@ namespace Sphynx
 			void* targetAddress = reinterpret_cast<std::byte*>(GetTopPropertyNode().Address) + foundProperty->Offset;
 			if (rEnum.GetValue((const void*)targetAddress) != rEnum.GetValue((const void*)data))
 			{
-				OnPropertyDiffFound.Broadcast({ property, data, foundProperty, targetAddress, PropertyDiffType::DIFFERENT_VALUE });
+				OnPropertyDiffFound.Broadcast({ property, data, foundProperty, targetAddress, PropertyDiffType::DIFFERENT_VALUE, m_TargetsStack });
 			}
 		}
 
@@ -144,7 +144,7 @@ namespace Sphynx
 			const Reflection::Property* foundProperty = FindSimilarProperty(GetTopPropertyNode(), property);
 			if (foundProperty == nullptr)
 			{
-				OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()) });
+				OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()), m_TargetsStack });
 				return false;
 			}
 
@@ -160,14 +160,14 @@ namespace Sphynx
 				const Reflection::Property* foundProperty = FindSimilarProperty(GetTopPropertyNode(), property);
 				if (foundProperty == nullptr)
 				{
-					OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()) });
+					OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()), m_TargetsStack });
 					return false;
 				}
 
 				PushPropertyNode(foundProperty);
 			}
 
-			PropertyComparator::PropertyNode& propertyNode = m_TargetsStack.top();
+			PropertyNode& propertyNode = GetTopPropertyNode();
 			const size_t size = collection.GetSize(propertyNode.Address);
 			propertyNode.CollectionProperties.reserve(size);
 			propertyNode.IndexedCollectionPropertyNames.reserve(size);
@@ -190,14 +190,14 @@ namespace Sphynx
 				const Reflection::Property* foundProperty = FindSimilarProperty(GetTopPropertyNode(), property);
 				if (foundProperty == nullptr)
 				{
-					OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()) });
+					OnPropertyDiffFound.Broadcast({ property, data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()), m_TargetsStack });
 					return false;
 				}
 
 				PushPropertyNode(foundProperty);
 			}
 
-			PropertyComparator::PropertyNode& propertyNode = m_TargetsStack.top();
+			PropertyNode& propertyNode = GetTopPropertyNode();
 			propertyNode.VisitingKey = true;
 			propertyNode.CollectionAddress = data;
 			const size_t size = collection.GetSize(propertyNode.Address);
@@ -227,7 +227,7 @@ namespace Sphynx
 		void PropertyComparator::OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection)
 		{
 			// check if there are any additional properties not found visited
-			PropertyComparator::PropertyNode& propertyNode = m_TargetsStack.top();
+			PropertyNode& propertyNode = GetTopPropertyNode();
 			const void* sourceCollectionAddress = (std::byte*)data + property->Offset;
 			void* targetCollectionAddress = propertyNode.Address;
 			const size_t sourceSize = collection.GetSize(sourceCollectionAddress);
@@ -235,7 +235,7 @@ namespace Sphynx
 
 			for (size_t i = sourceSize; i < targetSize; ++i)
 			{
-				OnPropertyDiffFound.Broadcast({ nullptr, nullptr, &propertyNode.CollectionProperties[i], collection.Get(targetCollectionAddress, i), PropertyDiffType::SOURCE_VALUE_PROPERTY_NOT_FOUND});
+				OnPropertyDiffFound.Broadcast({ nullptr, nullptr, &propertyNode.CollectionProperties[i], collection.Get(targetCollectionAddress, i), PropertyDiffType::SOURCE_VALUE_PROPERTY_NOT_FOUND, m_TargetsStack });
 			}
 
 			if (IsRootNode(property))
@@ -248,7 +248,7 @@ namespace Sphynx
 		void PropertyComparator::OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection)
 		{
 			// check if there are any additional properties not found visited
-			PropertyComparator::PropertyNode& propertyNode = m_TargetsStack.top();
+			PropertyNode& propertyNode = GetTopPropertyNode();
 			const void* sourceCollectionAddress = (std::byte*)data + property->Offset;
 			void* targetCollectionAddress = propertyNode.Address;
 			const size_t targetSize = collection.GetSize(targetCollectionAddress);
@@ -257,7 +257,7 @@ namespace Sphynx
 			{
 				if (!collection.ContainsKey(sourceCollectionAddress, collection.GetKey(targetCollectionAddress, i)))
 				{
-					OnPropertyDiffFound.Broadcast({ nullptr, nullptr, &propertyNode.CollectionProperties[i], collection.GetKey(targetCollectionAddress, i), PropertyDiffType::SOURCE_KEY_PROPERTY_NOT_FOUND });
+					OnPropertyDiffFound.Broadcast({ nullptr, nullptr, &propertyNode.CollectionProperties[i], collection.GetKey(targetCollectionAddress, i), PropertyDiffType::SOURCE_KEY_PROPERTY_NOT_FOUND, m_TargetsStack });
 				}
 			}
 
@@ -268,14 +268,14 @@ namespace Sphynx
 			PopPropertyNode();
 		}
 
-		const PropertyComparator::PropertyNode& PropertyComparator::GetTopPropertyNode() const
+		const PropertyNode& PropertyComparator::GetTopPropertyNode() const
 		{
-			return m_TargetsStack.top();
+			return m_TargetsStack[m_TargetsStack.Size() - 1];
 		}
 
-		PropertyComparator::PropertyNode& PropertyComparator::GetTopPropertyNode()
+		PropertyNode& PropertyComparator::GetTopPropertyNode()
 		{
-			return m_TargetsStack.top();
+			return m_TargetsStack[m_TargetsStack.Size() - 1];
 		}
 
 		bool PropertyComparator::IsRootNode(const Reflection::Property* property) const
@@ -302,12 +302,12 @@ namespace Sphynx
 				else if (reflectionClass.HasAttribute<CommonAttribute::AssociativeCollection>()) nodeType = PropertyNode::NodeType::AssociativeCollection;
 			}
 
-			m_TargetsStack.push({ property, targetAddress, nodeType });
+			m_TargetsStack.Add({ property, targetAddress, nodeType });
 		}
 
 		void PropertyComparator::PopPropertyNode()
 		{
-			m_TargetsStack.pop();
+			m_TargetsStack.RemoveAt(m_TargetsStack.Size() - 1);
 		}
 
 		PropertyDiffType PropertyComparator::GetPropertyNotFoundType(const PropertyNode& propertyNode, bool source)
@@ -407,7 +407,7 @@ namespace Sphynx
 			const Reflection::Property* foundProperty = FindSimilarProperty(GetTopPropertyNode(), property);
 			if (foundProperty == nullptr)
 			{
-				OnPropertyDiffFound.Broadcast({ property, &data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()) });
+				OnPropertyDiffFound.Broadcast({ property, &data, nullptr, nullptr, GetPropertyNotFoundType(GetTopPropertyNode()), m_TargetsStack });
 				return;
 			}
 			std::byte* targetBytePointer = reinterpret_cast<std::byte*>(GetTopPropertyNode().Address);
@@ -415,7 +415,7 @@ namespace Sphynx
 			T* value = reinterpret_cast<T*>(targetBytePointer);
 			if (*value != data)
 			{
-				OnPropertyDiffFound.Broadcast({ property, &data, foundProperty, GetTopPropertyNode().Address, PropertyDiffType::DIFFERENT_VALUE });
+				OnPropertyDiffFound.Broadcast({ property, &data, foundProperty, GetTopPropertyNode().Address, PropertyDiffType::DIFFERENT_VALUE, m_TargetsStack });
 			}
 		}
 	}

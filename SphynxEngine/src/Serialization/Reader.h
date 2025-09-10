@@ -40,6 +40,7 @@
 	void PushIndex(size_t index) const; \
 	void PopIndex() const; \
 	\
+	bool IsMap() const; \
 	size_t PushMap() const; \
 	void PopMap() const; \
 	void PushKey(size_t index) const; \
@@ -84,6 +85,7 @@ namespace Sphynx
 			m_ReadWStrFunc([](void* reader, std::wstring& v) { static_cast<TReader*>(reader)->Read(v); }),
 			m_ReadPathFunc([](void* reader, std::filesystem::path& v) { static_cast<TReader*>(reader)->Read(v); }),
 			m_ReadBinaryFunc([](void* reader, void* v, size_t size) { static_cast<TReader*>(reader)->Read(v, size); }),
+			m_IsMapFunc([](void* reader) { return static_cast<TReader*>(reader)->IsMap(); }),
 			m_PushMapFunc([](void* reader) { return static_cast<TReader*>(reader)->PushMap(); }),
 			m_PopMapFunc([](void* reader) { static_cast<TReader*>(reader)->PopMap(); }),
 			m_PushKeyFunc([](void* reader, size_t index) { static_cast<TReader*>(reader)->PushKey(index); }),
@@ -128,6 +130,7 @@ namespace Sphynx
 		void (*m_ReadPathFunc)(void*, std::filesystem::path&);
 		void (*m_ReadBinaryFunc)(void*, void*, size_t);
 
+		bool(*m_IsMapFunc)(void*);
 		size_t(*m_PushMapFunc)(void*);
 		void (*m_PopMapFunc)(void*);
 		void (*m_PushKeyFunc)(void*, size_t);

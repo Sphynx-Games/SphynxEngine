@@ -19,6 +19,8 @@
 #include "Asset/Scene/SceneAsset.h"
 #include "ProjectEditor.h"
 #include "PrefabEditor.h"
+#include "Scene/EditorSceneSerializer.h"
+#include "Scene/EditorSceneDeserializer.h"
 
 // TODO: remove
 #include <Sphynx.h>
@@ -272,7 +274,7 @@ namespace Sphynx
 		m_SceneToEdit = {};
 
 		YAMLReader reader{ m_LastOpenedScenePath };
-		SceneDeserializer deserializer{ m_SceneToEdit, reader };
+		EditorSceneDeserializer deserializer{ m_SceneToEdit, reader };
 		deserializer.Deserialize();
 
 		/*Prefab prefab = Prefab();
@@ -289,7 +291,7 @@ namespace Sphynx
 	void SceneEditor::SaveScene()
 	{
 		YAMLWriter writer{ m_LastOpenedScenePath };
-		SceneSerializer serializer{ m_SceneToEdit, writer };
+		EditorSceneSerializer serializer{ m_SceneToEdit, writer };
 		serializer.Serialize();
 	}
 
@@ -312,7 +314,7 @@ namespace Sphynx
 		// Important to have this in a scope to close any opened files
 		{
 			YAMLWriter writer{ metadata.Path };
-			SceneSerializer serializer{ m_SceneToEdit, writer };
+			EditorSceneSerializer serializer{ m_SceneToEdit, writer };
 			serializer.Serialize();
 		}
 

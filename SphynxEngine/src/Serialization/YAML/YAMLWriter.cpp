@@ -112,6 +112,12 @@ namespace Sphynx
 
 	void YAMLWriter::Write(const void* v, size_t size)
 	{
+		if (v == nullptr && size == 0)
+		{
+			*m_Emitter << YAML::LowerNull << YAML::Null;
+			return;
+		}
+
 		SPX_CORE_ASSERT(false, "Binary is not supported!");
 	}
 

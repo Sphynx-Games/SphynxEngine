@@ -142,6 +142,12 @@ namespace Sphynx
 		m_PopIndexFunc(m_Reader);
 	}
 
+	bool Reader::IsMap() const
+	{
+		SPX_CORE_ASSERT(m_IsMapFunc != nullptr, "Read function pointer not valid!");
+		return m_IsMapFunc(m_Reader);
+	}
+
 	size_t Reader::PushMap() const
 	{
 		SPX_CORE_ASSERT(m_PushMapFunc != nullptr, "Read function pointer not valid!");

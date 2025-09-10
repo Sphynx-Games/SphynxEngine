@@ -3,7 +3,6 @@
 #include "Serialization/Writer.h"
 #include "Scene/Scene.h"
 #include "Scene/Actor.h"
-#include "Scene/PrefabActor.h"
 #include "Component/Components.h"
 #include "Logging/Log.h"
 #include "Serialization/Reflection/ReflectionSerializer.h"
@@ -13,18 +12,14 @@ namespace Sphynx
 {
 	namespace Utils
 	{
-		static void ActorTraversal(
-			Reflection::PropertyTree& tree, 
-			const Reflection::Property* property, 
-			void* data, 
+		void ActorCoreTraversal(
+			Reflection::PropertyTree& tree,
+			const Reflection::Property* property,
+			void* data,
 			Reflection::IPropertyTreeVisitor& visitor)
 		{
 			using namespace Reflection;
 			Actor* actor = static_cast<Actor*>(data);
-			if (dynamic_cast<PrefabActor*>(actor))
-			{
-
-			}
 
 			// UUID
 			{
@@ -46,6 +41,19 @@ namespace Sphynx
 				PropertyTree mTree{ property.Type, (void*)&nameComponent->Name };
 				mTree.Traverse(visitor, &property);
 			}
+		}
+
+		void ActorTraversal(
+			Reflection::PropertyTree& tree, 
+			const Reflection::Property* property, 
+			void* data, 
+			Reflection::IPropertyTreeVisitor& visitor)
+		{
+			using namespace Reflection;
+			Actor* actor = static_cast<Actor*>(data);
+
+			ActorCoreTraversal(tree, property, data, visitor);
+
 			// Components
 			{
 				Array<const Reflection::Class*> actorComponents;

@@ -20,12 +20,18 @@ namespace Sphynx
 	public:
 		SceneDeserializer(Scene& scene, Reader&& reader);
 
-		void Deserialize();
+		virtual void Deserialize();
+
+	protected:
+		size_t DeserializeSceneProperties();
+		//void DeserializeCoreActorComponents(UUID& uuid, std::string& name);
+		void DeserializeActor();
+		void EndDeserialize();
 
 	private:
 		void DeserializeComponent(const Reflection::Class& componentClass, Actor& actor);
 
-	private:
+	protected:
 		Scene& m_Scene;
 		const Reader& m_Reader;
 	};

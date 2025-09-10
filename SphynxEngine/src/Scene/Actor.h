@@ -37,6 +37,8 @@ namespace Sphynx
 
 		static void CloneComponents(const Actor& source, Actor& target);
 
+		inline Scene* GetScene() const { return m_Scene; }
+
 	public:
 		inline operator uint32_t() const { return m_EntityID; }
 

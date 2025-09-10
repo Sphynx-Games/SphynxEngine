@@ -295,8 +295,16 @@ namespace Sphynx
 		if (label == nullptr) label = property->Name;
 		else label += 1;
 
-		const bool result = ImGui::CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen);
+		bool visible = true;
+		const bool result = ImGui::CollapsingHeader(label, &visible, ImGuiTreeNodeFlags_DefaultOpen);
 		ImGui::Indent();
+
+		if (!visible)
+		{
+			// TODO: send command to delete this property when command system is implemented
+			InvisibleClass = &static_cast<const Reflection::Class&>(property->Type);
+		}
+
 		return result;
 	}
 

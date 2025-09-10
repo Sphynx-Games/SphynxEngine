@@ -23,7 +23,7 @@ namespace Sphynx
 	public:
 		void Serialize();
 
-	private:
+	protected:
 		virtual void Visit(const Reflection::Property* property, bool& data) override;
 		virtual void Visit(const Reflection::Property* property, char& data) override;
 		virtual void Visit(const Reflection::Property* property, signed char& data) override;
@@ -58,8 +58,14 @@ namespace Sphynx
 		virtual void OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection) override;
 		virtual void OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection) override;
 
-	private:
+	protected:
 		const Scene& m_Scene;
 		Writer& m_Writer;
 	};
+
+	namespace Utils
+	{
+		SPHYNX_API void ActorCoreTraversal(Reflection::PropertyTree& tree, const Reflection::Property* property, void* data, Reflection::IPropertyTreeVisitor& visitor);
+		SPHYNX_API void ActorTraversal(Reflection::PropertyTree& tree, const Reflection::Property* property, void* data, Reflection::IPropertyTreeVisitor& visitor);
+	}
 }

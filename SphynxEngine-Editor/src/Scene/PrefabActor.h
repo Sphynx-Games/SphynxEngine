@@ -19,9 +19,16 @@ namespace Sphynx
 			m_Prefab(nullptr)
 		{}
 
+		inline Prefab* GetPrefab() const { return m_Prefab; }
+
 	private:
 		Prefab* m_Prefab;
 
 		friend class EditorScene;
 	};
 }
+
+
+#include "Reflection/Reflection.h"
+
+SPX_REFLECT_CLASS(Sphynx::PrefabActor, )
