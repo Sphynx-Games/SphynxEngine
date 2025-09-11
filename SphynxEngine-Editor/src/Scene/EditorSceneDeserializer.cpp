@@ -50,7 +50,7 @@ namespace Sphynx
 		std::string key;
 		m_Reader.Read(1, key, actor.GetComponent<UUIDComponent>().UUID);
 		SPX_CORE_ASSERT(key == "UUID");
-		m_Reader.Read(2, key, actor.AddComponent<NameComponent>().Name);
+		m_Reader.Read(2, key, actor.GetComponent<NameComponent>().Name);
 		SPX_CORE_ASSERT(key == "Name");
 
 		m_Reader.PushKey(3);
@@ -106,6 +106,7 @@ namespace Sphynx
 			if (!m_Reader.IsMap())
 			{
 				ComponentRegistry::InvokeRemoveComponent(componentClass, actor);
+				return;
 			}
 		}
 		else

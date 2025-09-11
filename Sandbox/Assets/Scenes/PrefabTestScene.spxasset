@@ -1,0 +1,291 @@
+Sphynx::EditorScene:
+  m_UUID: 1e5df57e-b589-4304-82d0-09b77f6de562
+  m_Name: PrefabTestScene.spxasset
+  m_Actors:
+    - UUID: 91f08106-c04a-431c-a8df-47922d12f36e
+      Name: Camera
+      Components:
+        - Sphynx::CameraComponent:
+            IsMainCamera: true
+            m_ProjectionMode: ORTHOGRAPHIC
+            m_CameraInfo:
+              Near: 0.01
+              Far: 10000
+              HeightUnits: 8
+              FieldOfView: 60
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 1
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - ExampleScriptComponent:
+            m_Num: 104743
+    - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
+      Name: Sprite
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::SpriteRendererComponent:
+            Sprite: 02012b08-9545-4b36-8add-9409cab4b103
+            Tint:
+              R: 0
+              G: 0
+              B: 255
+              A: 255
+    - UUID: 15f846ad-52ea-40f7-912f-ec002c8f87f0
+      Name: Quad
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::BoxRendererComponent:
+            DrawMode: WIREFRAME
+            Size:
+              X: 1
+              Y: 1
+            Pivot:
+              X: 0.5
+              Y: 0.5
+            Color:
+              R: 255
+              G: 255
+              B: 255
+              A: 255
+    - UUID: d4aeb8fc-933a-43a5-b3c3-f595f0a51bbf
+      Name: Line
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+        - Sphynx::LineRendererComponent:
+            Point1:
+              X: 0
+              Y: 0
+            Point2:
+              X: 1
+              Y: 0
+            LineWidth: 1
+            Color:
+              R: 0
+              G: 255
+              B: 0
+              A: 255
+    - UUID: 25f15a7e-ff8e-42d3-82d8-1d30a8507142
+      Name: Box 1
+      Components:
+        - Sphynx::BoxCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 1
+            m_Offset:
+              X: 0
+              Y: 1
+            m_Trigger: false
+            m_Debug: true
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: -2
+                Z: 0
+              Scale:
+                X: 5
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
+    - UUID: 3e0dad55-3dee-493d-8cbf-d74f3091dbfc
+      Name: Box 2
+      Components:
+        - Sphynx::BoxCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 1
+            m_Offset:
+              X: 0
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 0
+              Scale:
+                X: 0.5
+                Y: 0.5
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 45
+    - UUID: 1909a282-4de0-4594-81ad-8361792dfeb2
+      Name: Sphere 1
+      Components:
+        - Sphynx::CircleCollider2DComponent:
+            m_Radius: 1
+            m_Offset:
+              X: 0
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0.5
+                Y: 3
+                Z: 0
+              Scale:
+                X: 0.5
+                Y: 0.5
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 35
+    - UUID: 37e01166-f78c-40a1-a324-b290816373b0
+      Name: Capsule 1
+      Components:
+        - Sphynx::CapsuleCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 2
+            m_Offset:
+              X: 1.5
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: -1.5
+                Y: 1
+                Z: 0
+              Scale:
+                X: 2
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: -10
+    - Prefab: cc5e9169-14ce-48fd-8e40-b93f57f6fa91
+      UUID: e57c6a9d-582c-4584-bfb3-9f313f3940a8
+      Name: MyPrefab
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 13.9
+              Scale:
+                Y: 17.4
+        - Sphynx::SpriteRendererComponent: null
+        - Sphynx::LineRendererComponent:
+            Point1:
+              X: -16.7
+              Y: 0
+            Point2:
+              X: 0
+              Y: -0.4
+            LineWidth: 1
+            Color:
+              R: 255
+              G: 0
+              B: 0
+              A: 255
+    - Prefab: cc5e9169-14ce-48fd-8e40-b93f57f6fa91
+      UUID: b32d42b6-b36e-4579-87ae-e4b138225c2d
+      Name: Puta
+      Components:
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: -1.1
+                Y: -1.3
+              Scale:
+                X: 2
+                Y: 0.9
+              Rotation:
+                Y: -48.8
+                Z: 44.8
+        - Sphynx::SpriteRendererComponent:
+            Tint:
+              R: 0
+              G: 255
+              B: 0
