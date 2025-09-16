@@ -29,7 +29,7 @@ namespace Sphynx
 		inline SoundModeFlags GetSoundModeFlags() const { return m_SoundMode; }
 		void SetSoundModeFlags(SoundModeFlags flags);
 		float GetVolume() const;
-		float SetVolume() const;
+		void SetVolume(float volume);
 
 		inline SoundInstanceData* GetData() const { return m_Data; }
 

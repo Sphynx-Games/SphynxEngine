@@ -27,13 +27,14 @@ namespace Sphynx
 	{
 		m_Sound = nullptr;
 		delete m_Data;
+		m_Data = nullptr;
 	}
 
 #ifdef SPX_SOUND_FMOD
 
 	void SoundInstance::SetSoundModeFlags(SoundModeFlags flags)
 	{
-		if (m_Data->Channel != nullptr)
+		if (m_Data != nullptr && m_Data->Channel != nullptr)
 		{
 			int mode = FMOD_DEFAULT | FMOD_OPENMEMORY;
 			if (flags != SoundModeFlag::SOUND_DEFAULT)
@@ -51,7 +52,7 @@ namespace Sphynx
 
 	float SoundInstance::GetVolume() const
 	{
-		if (m_Data->Channel != nullptr)
+		if (m_Data != nullptr && m_Data->Channel != nullptr)
 		{
 			float volume;
 			m_Data->Channel->getVolume(&volume);
@@ -63,9 +64,12 @@ namespace Sphynx
 		}
 	}
 
-	float SoundInstance::SetVolume() const
+	void SoundInstance::SetVolume(float volume)
 	{
-		return 0.0f;
+		if (m_Data != nullptr && m_Data->Channel != nullptr)
+		{
+			m_Data->Channel->setVolume(volume);
+		}		
 	}
 
 #else
