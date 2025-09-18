@@ -105,7 +105,6 @@ namespace Sphynx
 
 		if (!std::filesystem::exists(m_CurrentDirectory))
 		{
-			ImGui::End();
 			return;
 		}
 

@@ -38,9 +38,14 @@ namespace Sphynx
 		virtual void OnAfterVisitEnum(const Reflection::Property* property, void* data) override;
 		virtual void OnBeforeVisitClass(const Reflection::Property* property, void* data) override;
 		virtual void OnAfterVisitClass(const Reflection::Property* property, void* data) override;
+		virtual void OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection) override;
+		virtual void OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection) override;
 
 	public:
 		const Reflection::Class* InvisibleClass = nullptr; // TODO: remove this
+
+	private:
+		bool m_IsIndexedCollectionViewerOpened;
 
 	};
 }

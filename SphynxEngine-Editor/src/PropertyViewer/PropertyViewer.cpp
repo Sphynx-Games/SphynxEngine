@@ -5,6 +5,7 @@
 #include "PropertyDrawer/PropertyDrawerManager.h"
 #include "PropertyDrawer/PropertyDrawer.h"
 #include "Asset/AssetMetadata.h"
+#include "imgui_internal.h"
 
 
 namespace Sphynx
@@ -318,10 +319,67 @@ namespace Sphynx
 
 	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
-		//if (property->IsPointer()) return false;
+		if (property->IsPointer()) return false;
 
-		ImGui::LabelText(LABEL(property->Name), "Not implemented");
-		return false;
+		IPropertyDrawer* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
+		if (propertyDrawer)
+		{
+			propertyDrawer->Draw(*property, data);
+			return false;
+		}
+
+		const size_t count = collection.GetSize(data);
+
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen 
+			| ImGuiTreeNodeFlags_FramePadding 
+			| ImGuiTreeNodeFlags_OpenOnArrow 
+			| ImGuiTreeNodeFlags_SpanAvailWidth
+			| ImGuiTreeNodeFlags_AllowOverlap;
+
+		// This is done to offset the arrow so the label is align with other labels
+		ImGuiContext& g = *ImGui::GetCurrentContext();
+		const ImGuiStyle& style = g.Style;
+		const bool display_frame = (flags & ImGuiTreeNodeFlags_Framed) != 0;
+		const float padding = (display_frame || (flags & ImGuiTreeNodeFlags_FramePadding)) ? style.FramePadding.x : style.FramePadding.x;
+		const float text_offset_x = g.FontSize + (display_frame ? padding * 3 : padding * 2);   // Collapsing arrow width + Spacing
+
+
+		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0, 0, 0, 0));
+
+		const float prevCursorPosX = ImGui::GetCursorPosX();
+		ImGui::SetCursorPosX(prevCursorPosX - text_offset_x);
+		m_IsIndexedCollectionViewerOpened = ImGui::TreeNodeEx(property->Name, flags);
+		ImGui::SetCursorPosX(prevCursorPosX);
+
+		ImGui::PopStyleColor(3);
+
+		float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+		float buttonSize = ImGui::GetFrameHeight();
+		float totalButtonWidth = buttonSize * 2 + spacing; // 2 buttons for now
+
+		float x = ImGui::GetContentRegionMax().x - totalButtonWidth;
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(x);
+
+		if (ImGui::SmallButton("+"))
+		{
+			collection.Add(data);
+		}
+
+		ImGui::SameLine();
+		
+		if (count == 0) ImGui::BeginDisabled();
+		if (ImGui::SmallButton("-"))
+		{
+			collection.RemoveAt(data, collection.GetSize(data) - 1);
+		}
+		if (count == 0) ImGui::EndDisabled();
+
+		ImGui::Indent();
+
+		return m_IsIndexedCollectionViewerOpened;
 	}
 
 	void PropertyViewer::OnBeforeVisitEnum(const Reflection::Property* property, void* data)
@@ -353,6 +411,32 @@ namespace Sphynx
 		if (propertyDrawer == nullptr)
 		{
 			ImGui::Unindent();
+		}
+
+		ImGui::PopID();
+	}
+
+	void PropertyViewer::OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
+	{
+		if (property->IsPointer()) return;
+
+		ImGui::PushID(property->Name);
+	}
+
+	void PropertyViewer::OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
+	{
+		if (property->IsPointer()) return;
+
+		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
+		if (propertyDrawer == nullptr)
+		{
+			ImGui::Unindent();
+		}
+
+		if (m_IsIndexedCollectionViewerOpened)
+		{
+			ImGui::TreePop();
+			m_IsIndexedCollectionViewerOpened = false;
 		}
 
 		ImGui::PopID();

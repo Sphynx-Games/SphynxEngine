@@ -40,6 +40,7 @@ namespace Sphynx
 				using TConstAccessFunction = const void* (*)(const void*, uint64_t);
 				using TSizeFunction = size_t(*)(const void*);
 				using TAddFunction = void* (*)(void*);
+				using TRemoveAtFunction = void (*)(void*, uint64_t);
 
 			public:
 				template<typename TCollection>
@@ -48,7 +49,8 @@ namespace Sphynx
 					m_AccessFunction([](void* obj, uint64_t index) -> void* { return &(*static_cast<TCollection*>(obj))[index]; }),
 					m_ConstAccessFunction([](const void* obj, uint64_t index) -> const void* { return &(*static_cast<const TCollection*>(obj))[index]; }),
 					m_SizeFunction([](const void* obj) -> size_t { return static_cast<const TCollection*>(obj)->Size(); }),
-					m_AddFunction([](void* obj) -> void* { return &(static_cast<TCollection*>(obj)->Emplace()); })
+					m_AddFunction([](void* obj) -> void* { return &(static_cast<TCollection*>(obj)->Emplace()); }),
+					m_RemoveAtFunction([](void* obj, uint64_t index) -> void { static_cast<TCollection*>(obj)->RemoveAt(index); })
 				{}
 
 			public:
@@ -58,7 +60,8 @@ namespace Sphynx
 				inline const void* Get(const void* obj, uint64_t index) const { return m_ConstAccessFunction(obj, index); }
 				inline const size_t GetSize(const void* obj) const { return m_SizeFunction(obj); }
 
-				inline void* Add(void* obj) const { return m_AddFunction(obj); };
+				inline void* Add(void* obj) const { return m_AddFunction(obj); }
+				inline void RemoveAt(void* obj, uint64_t index) const { return m_RemoveAtFunction(obj, index); }
 
 			private:
 				const Type& m_ValueType;
@@ -66,6 +69,7 @@ namespace Sphynx
 				TConstAccessFunction m_ConstAccessFunction;
 				TSizeFunction m_SizeFunction;
 				TAddFunction m_AddFunction;
+				TRemoveAtFunction m_RemoveAtFunction;
 			};
 
 			class SPHYNX_API AssociativeCollection : public ::Sphynx::Reflection::Attribute

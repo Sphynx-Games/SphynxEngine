@@ -3,6 +3,8 @@
 #include <Component/ScriptComponent.h>
 #include <Logging/Log.h>
 #include "Sandbox.h"
+#include "Container/Array.h"
+#include "Asset/AssetMetadata.h"
 
 
 class SANDBOX_API ExampleScriptComponent : public Sphynx::ScriptComponent
@@ -27,7 +29,7 @@ public:
 
 	virtual void Update(float deltaTime) override
 	{
-		SPX_LOG_DEBUG("Num = {}", m_Num);
+		//SPX_LOG_DEBUG("Num = {}", m_Num);
 		++m_Num;
 
 		Sphynx::ScriptComponent::Update(deltaTime);
@@ -35,6 +37,7 @@ public:
 
 private:
 	uint32_t m_Num;
+	Sphynx::Array<Sphynx::AssetHandle> m_Handles;
 };
 
 #include "Reflection/Reflection.h"
@@ -45,5 +48,6 @@ SPX_REFLECT_INHERITANCE(Sphynx::ScriptComponent)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
 SPX_REFLECT_PROPERTY(m_Num)
+SPX_REFLECT_PROPERTY(m_Handles)
 
 SPX_REFLECT_CLASS_END(ExampleScriptComponent, SANDBOX_API)
