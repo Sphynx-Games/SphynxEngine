@@ -6,6 +6,7 @@
 #include "Component/Components.h"
 #include "Logging/Log.h"
 #include "Serialization/Reflection/ReflectionSerializer.h"
+#include <charconv>
 
 
 namespace Sphynx
@@ -211,8 +212,15 @@ namespace Sphynx
 			return true;
 		}
 
-		m_Writer.PushKey();
-		m_Writer.Write(property->Name);
+		int value = 0;
+		auto [ptr, ec] = std::from_chars(property->Name, property->Name + strlen(property->Name), value);
+		bool isIndex = ec == std::errc() && ptr == property->Name + strlen(property->Name);
+
+		if (!isIndex)
+		{
+			m_Writer.PushKey();
+			m_Writer.Write(property->Name);
+		}
 
 		/*
 		using CustomSerializer = ::Sphynx::Serialization::CustomSerializer<TWriter>;

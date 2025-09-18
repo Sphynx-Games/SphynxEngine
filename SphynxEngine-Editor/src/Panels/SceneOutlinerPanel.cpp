@@ -29,6 +29,7 @@ namespace Sphynx
 	void SceneOutlinerPanel::SetContext(Scene* scene)
 	{
 		m_Scene = scene;
+		m_SelectedActor = {};
 	}
 
 	const Actor& SceneOutlinerPanel::GetSelectedActor() const
