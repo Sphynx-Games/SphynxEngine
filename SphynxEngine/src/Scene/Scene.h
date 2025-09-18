@@ -16,6 +16,7 @@ namespace Sphynx
 	class SPHYNX_API Scene
 	{
 		SPX_REFLECT_GENERATED_BODY()
+
 	public:
 		Scene();
 		Scene(std::string name);
@@ -38,6 +39,8 @@ namespace Sphynx
 		Array<Actor> GetActorsByComponent() const;
 		template<typename T>
 		Array<T*> GetComponents() const;
+		template <typename... Components>
+		Array<std::tuple<Components*...>> GetTupledComponents() const;
 
 		const std::string& GetName() const { return m_Name; }
 		void SetName(const std::string& name) { m_Name = name; }
@@ -86,6 +89,18 @@ namespace Sphynx
 		{
 			auto& component = view.get<T>(entity);
 			result.Add(const_cast<T*>(&component));
+		}
+		return result;
+	}
+
+	template <typename... Components>
+	Array<std::tuple<Components*...>> Scene::GetTupledComponents() const
+	{
+		Array<std::tuple<Components*...>> result;
+		auto view = m_Registry.view<Components...>();
+		for (auto entity : view)
+		{
+			result.Add(std::make_tuple(const_cast<Components*>(&view.get<Components>(entity))...));
 		}
 		return result;
 	}

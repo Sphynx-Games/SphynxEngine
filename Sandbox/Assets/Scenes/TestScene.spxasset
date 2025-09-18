@@ -1,24 +1,10 @@
-Scene:
+Sphynx::EditorScene:
   m_UUID: 1e5df57e-b589-4304-82d0-09b77f6de562
   m_Name: TestScene
   m_Actors:
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36e
       Name: Camera
       Components:
-        - Sphynx::TransformComponent:
-            Transform:
-              Position:
-                X: 0
-                Y: 0
-                Z: 1
-              Scale:
-                X: 1
-                Y: 1
-                Z: 1
-              Rotation:
-                X: 0
-                Y: 0
-                Z: 0
         - Sphynx::CameraComponent:
             IsMainCamera: true
             m_ProjectionMode: ORTHOGRAPHIC
@@ -27,11 +13,39 @@ Scene:
               Far: 10000
               HeightUnits: 8
               FieldOfView: 60
+        - Sphynx::TransformComponent:
+            Transform:
+              Position:
+                X: 0
+                Y: 0
+                Z: 1
+              Scale:
+                X: 1
+                Y: 1
+                Z: 1
+              Rotation:
+                X: 0
+                Y: 0
+                Z: 0
         - ExampleScriptComponent:
-            m_Num: 0
+            m_Num: 26138
+            m_Handles: []
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
       Name: Sprite
       Components:
+        - Sphynx::AnimationComponent:
+            Sprites:
+              - 02012b08-9545-4b36-8add-9409cab4b103
+              - 7382b6a5-de3e-4b89-a58f-c8c90069e07c
+            Duration: 1
+            Loop: false
+        - Sphynx::SpriteRendererComponent:
+            Sprite: 02012b08-9545-4b36-8add-9409cab4b103
+            Tint:
+              R: 0
+              G: 0
+              B: 255
+              A: 255
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -46,13 +60,6 @@ Scene:
                 X: 0
                 Y: 0
                 Z: 0
-        - Sphynx::SpriteRendererComponent:
-            Sprite: 02012b08-9545-4b36-8add-9409cab4b103
-            Tint:
-              R: 0
-              G: 0
-              B: 255
-              A: 255
     - UUID: 15f846ad-52ea-40f7-912f-ec002c8f87f0
       Name: Quad
       Components:
@@ -116,6 +123,15 @@ Scene:
     - UUID: 25f15a7e-ff8e-42d3-82d8-1d30a8507142
       Name: Box 1
       Components:
+        - Sphynx::BoxCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 1
+            m_Offset:
+              X: 0
+              Y: 1
+            m_Trigger: false
+            m_Debug: true
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -130,18 +146,28 @@ Scene:
                 X: 0
                 Y: 0
                 Z: 0
+    - UUID: 3e0dad55-3dee-493d-8cbf-d74f3091dbfc
+      Name: Box 2
+      Components:
         - Sphynx::BoxCollider2DComponent:
             m_Size:
               X: 1
               Y: 1
             m_Offset:
               X: 0
-              Y: 1
+              Y: 0
             m_Trigger: false
             m_Debug: true
-    - UUID: 3e0dad55-3dee-493d-8cbf-d74f3091dbfc
-      Name: Box 2
-      Components:
+        - Sphynx::Rigidbody2DComponent:
+            m_Enabled: true
+            m_Type: DYNAMIC
+            m_LinearVelocity:
+              X: 0
+              Y: 0
+            m_AngularVelocity: 0
+            m_LinearDamping: 0
+            m_AngularDamping: 0
+            m_GravityScale: 1
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -156,6 +182,16 @@ Scene:
                 X: 0
                 Y: 0
                 Z: 45
+    - UUID: 1909a282-4de0-4594-81ad-8361792dfeb2
+      Name: Sphere 1
+      Components:
+        - Sphynx::CircleCollider2DComponent:
+            m_Radius: 1
+            m_Offset:
+              X: 0
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
         - Sphynx::Rigidbody2DComponent:
             m_Enabled: true
             m_Type: DYNAMIC
@@ -166,18 +202,6 @@ Scene:
             m_LinearDamping: 0
             m_AngularDamping: 0
             m_GravityScale: 1
-        - Sphynx::BoxCollider2DComponent:
-            m_Size:
-              X: 1
-              Y: 1
-            m_Offset:
-              X: 0
-              Y: 0
-            m_Trigger: false
-            m_Debug: true
-    - UUID: 1909a282-4de0-4594-81ad-8361792dfeb2
-      Name: Sphere 1
-      Components:
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -192,6 +216,18 @@ Scene:
                 X: 0
                 Y: 0
                 Z: 35
+    - UUID: 37e01166-f78c-40a1-a324-b290816373b0
+      Name: Capsule 1
+      Components:
+        - Sphynx::CapsuleCollider2DComponent:
+            m_Size:
+              X: 1
+              Y: 2
+            m_Offset:
+              X: 1.5
+              Y: 0
+            m_Trigger: false
+            m_Debug: true
         - Sphynx::Rigidbody2DComponent:
             m_Enabled: true
             m_Type: DYNAMIC
@@ -202,16 +238,6 @@ Scene:
             m_LinearDamping: 0
             m_AngularDamping: 0
             m_GravityScale: 1
-        - Sphynx::CircleCollider2DComponent:
-            m_Radius: 1
-            m_Offset:
-              X: 0
-              Y: 0
-            m_Trigger: false
-            m_Debug: true
-    - UUID: 37e01166-f78c-40a1-a324-b290816373b0
-      Name: Capsule 1
-      Components:
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -226,22 +252,3 @@ Scene:
                 X: 0
                 Y: 0
                 Z: -10
-        - Sphynx::Rigidbody2DComponent:
-            m_Enabled: true
-            m_Type: DYNAMIC
-            m_LinearVelocity:
-              X: 0
-              Y: 0
-            m_AngularVelocity: 0
-            m_LinearDamping: 0
-            m_AngularDamping: 0
-            m_GravityScale: 1
-        - Sphynx::CapsuleCollider2DComponent:
-            m_Size:
-              X: 1
-              Y: 2
-            m_Offset:
-              X: 1.5
-              Y: 0
-            m_Trigger: false
-            m_Debug: true

@@ -9,21 +9,29 @@
 
 namespace Sphynx
 {
+	class PhysicsWorld2D;
+	class Rigidbody2D;
+	struct RigidbodyDef;
+	class BoxCollider2D;
+	class CircleCollider2D;
+	class CapsuleCollider2D;
+	class Collider2D;
+
 	class SPHYNX_API Physics2D
 	{
 	public:
 		static void Init();
 		static void Shutdown();
 
-		static class PhysicsWorld2D* CreatePhysicsWorld(Vector2f gravity = WorldGravity);
+		static PhysicsWorld2D* CreatePhysicsWorld(Vector2f gravity = WorldGravity);
 		static void DestroyPhysicsWorld(PhysicsWorld2D* physicsWorld);
 
-		static class Rigidbody2D* CreateRigidbody(const struct RigidbodyDef& rigidbodyDef);
+		static Rigidbody2D* CreateRigidbody(const RigidbodyDef& rigidbodyDef);
 		static void DestroyRigidbody(Rigidbody2D* rigidbody);
 
-		static class BoxCollider2D* CreateBoxCollider(Vector2f size = { 1.0f, 1.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
-		static class CircleCollider2D* CreateCircleCollider(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
-		static class CapsuleCollider2D* CreateCapsuleCollider(Vector2f size = { 1.0f, 1.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+		static BoxCollider2D* CreateBoxCollider(Vector2f size = { 1.0f, 1.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+		static CircleCollider2D* CreateCircleCollider(float radius = 0.5f, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
+		static CapsuleCollider2D* CreateCapsuleCollider(Vector2f size = { 1.0f, 1.0f }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
 		static void DestroyCollider(class Collider2D* collider);
 
 		static void AddRigidbody(PhysicsWorld2D* physicsWorld, Rigidbody2D* rigidbody); // to physicWorld

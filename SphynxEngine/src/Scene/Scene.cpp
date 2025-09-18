@@ -17,6 +17,7 @@
 #include "Renderer/Window.h"
 #include "Component/ComponentRegistry.h"
 #include "Scripting/ScriptingManager.h"
+#include "Animation/Animation2D.h"
 
 #include "Sound/SoundManager.h"
 #include "Sound/Sound.h"
@@ -115,11 +116,15 @@ namespace Sphynx
 
 		InitPhysics();
 
+		Animation2D::Init(this);
+
+		// TODO: Remove this
 		AssetHandle handle = AssetManager::GetAssetHandleFromPath("Assets\\Sounds\\enemyDeath.spxasset");
 		std::shared_ptr<Asset<Sound>> sound = AssetManager::GetAsset<Sound>(handle);
 
 		soundInstance = SoundManager::CreateSound(sound->Asset);
 		SoundManager::PlaySound(soundInstance);
+		// ------------------
 		
 		m_HasBegunPlay = true;
 	}
@@ -131,6 +136,8 @@ namespace Sphynx
 		m_HasBegunPlay = false;
 
 		delete soundInstance;
+
+		Animation2D::Shutdown();
 
 		if (m_PhysicsWorld != nullptr)
 		{
@@ -146,6 +153,8 @@ namespace Sphynx
 		{
 			Physics2D::Step(m_PhysicsWorld, deltaTime);
 		}
+
+		Animation2D::Update(deltaTime);
 
 		// update ScriptComponents
 		ScriptingManager::Update(*this, deltaTime);
