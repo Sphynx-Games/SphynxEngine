@@ -3,6 +3,7 @@
 
 #include <Reflection/Reflection.h>
 #include <imgui.h>
+#include <imgui_internal.h>
 
 
 namespace Sphynx
@@ -18,6 +19,10 @@ namespace Sphynx
 			ImGui::PushID(prop.Name);
 			drawer->Draw(prop, (std::byte*)data + prop.Offset);
 			ImGui::PopID();
+			if (ImGui::GetCurrentTable())
+			{
+				ImGui::TableNextRow();
+			}
 		}
 	}
 }

@@ -6,14 +6,12 @@
 
 namespace Sphynx
 {
-	void AssetHandlePropertyDrawer::Draw(const Reflection::Property& property, void* data)
+	void AssetHandlePropertyDrawer::DrawWidget(const Reflection::Property& property, void* data)
 	{
 		AssetHandle* assetHandle = static_cast<AssetHandle*>(data);
 		std::string selectedPath = *assetHandle != AssetHandle::Invalid
 			? AssetManager::GetAssetMetadata(*assetHandle).Path.stem().string()
 			: "";
-
-		IPropertyDrawer::DrawDefaultLabel(property);
 
 		if (ImGui::BeginCombo("##", selectedPath.c_str()))
 		{

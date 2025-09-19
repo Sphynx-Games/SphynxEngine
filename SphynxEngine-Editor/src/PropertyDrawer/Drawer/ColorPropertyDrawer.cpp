@@ -5,12 +5,8 @@
 
 namespace Sphynx
 {
-	void ColorPropertyDrawer::Draw(const Reflection::Property& property, void* data)
+	void ColorPropertyDrawer::DrawWidget(const Reflection::Property& property, void* data)
 	{
-		// Draw label
-		IPropertyDrawer::DrawDefaultLabel(property);
-
-		// Draw value
 		Color* pColor = static_cast<Color*>(data);
 		float color[4] =
 		{

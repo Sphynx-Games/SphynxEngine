@@ -1,12 +1,31 @@
 #include "PropertyDrawer.h"
 #include <xutility>
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <string>
 
 
 namespace Sphynx
 {
 	std::vector<IPropertyDrawer*>* IPropertyDrawer::s_Registry = nullptr;
+
+	void IPropertyDrawer::DrawLabel(const Reflection::Property& property, void* data)
+	{
+		IPropertyDrawer::DrawDefaultLabel(property);
+	}
+
+	void IPropertyDrawer::DrawWidget(const Reflection::Property& property, void* data)
+	{
+		ImGui::Text("Not implemented");
+	}
+
+	void IPropertyDrawer::Draw(const Reflection::Property& property, void* data)
+	{
+		ImGui::TableSetColumnIndex(0);
+		DrawLabel(property, data);
+		ImGui::TableSetColumnIndex(1);
+		DrawWidget(property, data);
+	}
 
 	void IPropertyDrawer::DrawDefaultLabel(const Reflection::Property& property)
 	{

@@ -11,7 +11,9 @@ namespace Sphynx
 	public:
 		virtual ~IPropertyDrawer() = default;
 
-		virtual void Draw(const Reflection::Property& property, void* data) = 0;
+		virtual void DrawLabel(const Reflection::Property& property, void* data);
+		virtual void DrawWidget(const Reflection::Property& property, void* data);
+		virtual void Draw(const Reflection::Property& property, void* data);
 		virtual const Reflection::Type& GetType() const = 0;
 		static void DrawDefaultLabel(const Reflection::Property& property);
 		static void DrawDefaultLabel(const char* label);

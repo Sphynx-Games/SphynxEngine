@@ -19,12 +19,49 @@ namespace Sphynx
 		return labelStr;
 	}
 
+	PropertyViewer::PropertyViewer() :
+		m_IsTableSetup(false),
+		m_IsIndexedCollectionViewerOpened(false)
+	{
+	}
+
+	PropertyViewer::~PropertyViewer()
+	{
+	}
+
+	void PropertyViewer::SetupTable()
+	{
+		SPX_CORE_ASSERT(m_IsTableSetup == false, "You should call FinishTable() before setting it up again");
+
+		ImGui::PushOverrideID(ImHashStr("PropertiesTable"));
+		m_IsTableSetup = ImGui::BeginTable("##properties", 2, ImGuiTableFlags_Resizable);
+		if (m_IsTableSetup)
+		{
+			ImGui::TableSetupColumn("Property", ImGuiTableColumnFlags_WidthFixed);
+			ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch, 2.0f);
+		}
+		else
+		{
+			ImGui::PopID();
+		}
+	}
+
+	void PropertyViewer::FinishTable()
+	{
+		SPX_CORE_ASSERT(m_IsTableSetup == true, "You should call SetupTable() before finishing it up again");
+		ImGui::EndTable();
+		ImGui::PopID();
+		m_IsTableSetup = false;
+	}
+
 	void PropertyViewer::Visit(const Reflection::Property* property, bool& data)
 	{
 		if (property->IsPointer()) return;
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		bool buffer = data;
 		if (ImGui::Checkbox(LABEL(property->Name), &buffer))
 		{
@@ -36,8 +73,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		const size_t size = 1;
 		char buffer = data;
 		if (ImGui::InputText(LABEL(property->Name), &buffer, size))
@@ -50,8 +89,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		ImGui::LabelText(LABEL(property->Name), "Not implemented");
 	}
 
@@ -59,8 +100,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		const size_t size = 1;
 		char buffer = static_cast<char>(data);
 		if (ImGui::InputText(LABEL(property->Name), &buffer, size))
@@ -73,8 +116,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		short buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_S16, &buffer))
 		{
@@ -86,8 +131,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		int buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_S32, &buffer))
 		{
@@ -99,8 +146,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		if constexpr (sizeof(long) == 32)
 		{
 			Visit(property, (int32_t&)data);
@@ -115,8 +164,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		long long buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_S64, &buffer))
 		{
@@ -128,8 +179,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		float buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Float, &buffer))
 		{
@@ -141,8 +194,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		double buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Double, &buffer))
 		{
@@ -154,8 +209,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		// FIXME: no support for long double
 		double buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Double, &buffer))
@@ -168,8 +225,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		unsigned char buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U8, &buffer))
 		{
@@ -181,8 +240,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		unsigned short buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U16, &buffer))
 		{
@@ -194,8 +255,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		unsigned int buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U32, &buffer))
 		{
@@ -207,8 +270,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		if constexpr (sizeof(unsigned long) == 32)
 		{
 			Visit(property, (uint32_t&)data);
@@ -223,8 +288,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		unsigned long long buffer = data;
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U64, &buffer))
 		{
@@ -236,8 +303,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		ImGui::LabelText(LABEL(property->Name), "Not implemented");
 	}
 
@@ -245,8 +314,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		ImGui::LabelText(LABEL(property->Name), "Not implemented");
 	}
 
@@ -254,8 +325,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		ImGui::LabelText(LABEL(property->Name), "Not implemented");
 	}
 
@@ -263,8 +336,10 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
+		if(m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->Type);
 		const char* currentValue = rEnum.GetName((const void*)data).c_str();
 		if (ImGui::BeginCombo(LABEL(property->Name), currentValue))
@@ -288,6 +363,7 @@ namespace Sphynx
 		IPropertyDrawer* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
 		if (propertyDrawer)
 		{
+			if (m_IsTableSetup) ImGui::TableNextColumn();
 			propertyDrawer->Draw(*property, data);
 			return false;
 		}
@@ -296,8 +372,16 @@ namespace Sphynx
 		if (label == nullptr) label = property->Name;
 		else label += 1;
 
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen;
 		bool visible = true;
-		const bool result = ImGui::CollapsingHeader(label, &visible, ImGuiTreeNodeFlags_DefaultOpen);
+		const bool result = ImGui::CollapsingHeader(label, &visible, flags);
+
+		// If root property then do begin table
+		if (property->Name == property->Type.Name && result && !m_IsTableSetup)
+		{
+			SetupTable();
+		}
+
 		ImGui::Indent();
 
 		if (!visible)
@@ -317,6 +401,196 @@ namespace Sphynx
 		return false;
 	}
 
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, bool& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, char& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, signed char& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, wchar_t& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, short& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, int& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, long& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, long long& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, float& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, double& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, long double& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned char& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned short& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned int& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned long& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned long long& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, ::std::string& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, ::std::wstring& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
+	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, ::std::filesystem::path& data)
+	{
+		if (property->IsPointer()) return;
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextRow();
+		}
+	}
+
 	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
 		if (property->IsPointer()) return false;
@@ -330,9 +604,9 @@ namespace Sphynx
 
 		const size_t count = collection.GetSize(data);
 
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen 
-			| ImGuiTreeNodeFlags_FramePadding 
-			| ImGuiTreeNodeFlags_OpenOnArrow 
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen
+			| ImGuiTreeNodeFlags_FramePadding
+			| ImGuiTreeNodeFlags_OpenOnArrow
 			| ImGuiTreeNodeFlags_SpanAvailWidth
 			| ImGuiTreeNodeFlags_AllowOverlap;
 
@@ -343,10 +617,15 @@ namespace Sphynx
 		const float padding = (display_frame || (flags & ImGuiTreeNodeFlags_FramePadding)) ? style.FramePadding.x : style.FramePadding.x;
 		const float text_offset_x = g.FontSize + (display_frame ? padding * 3 : padding * 2);   // Collapsing arrow width + Spacing
 
-
 		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0, 0, 0, 0));
+
+		if (m_IsTableSetup)
+		{
+			ImGui::TableNextColumn();
+			flags |= ImGuiTreeNodeFlags_SpanAllColumns;
+		}
 
 		const float prevCursorPosX = ImGui::GetCursorPosX();
 		ImGui::SetCursorPosX(prevCursorPosX - text_offset_x);
@@ -359,8 +638,10 @@ namespace Sphynx
 		float buttonSize = ImGui::GetFrameHeight();
 		float totalButtonWidth = buttonSize * 2 + spacing; // 2 buttons for now
 
+		if (m_IsTableSetup) ImGui::TableNextColumn();
+		else ImGui::SameLine();
+
 		float x = ImGui::GetContentRegionMax().x - totalButtonWidth;
-		ImGui::SameLine();
 		ImGui::SetCursorPosX(x);
 
 		if (ImGui::SmallButton("+"))
@@ -369,7 +650,7 @@ namespace Sphynx
 		}
 
 		ImGui::SameLine();
-		
+
 		if (count == 0) ImGui::BeginDisabled();
 		if (ImGui::SmallButton("-"))
 		{
@@ -411,6 +692,15 @@ namespace Sphynx
 		if (propertyDrawer == nullptr)
 		{
 			ImGui::Unindent();
+		}
+
+		// If root property then do begin table
+		if (property->Name == property->Type.Name)
+		{
+			if (m_IsTableSetup)
+			{
+				FinishTable();
+			}
 		}
 
 		ImGui::PopID();

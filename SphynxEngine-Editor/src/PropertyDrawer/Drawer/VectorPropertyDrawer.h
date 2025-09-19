@@ -25,7 +25,7 @@ namespace Sphynx
 	class _Type##PropertyDrawer : public PropertyDrawer<_Type##PropertyDrawer, _Type> \
 	{ \
 	private: \
-		virtual void Draw(const Reflection::Property& property, void* data) override final; \
+		virtual void DrawWidget(const Reflection::Property& property, void* data) override final; \
 	};
 
 	DEFINE_VECTOR_PROPERTY_DRAWERS()

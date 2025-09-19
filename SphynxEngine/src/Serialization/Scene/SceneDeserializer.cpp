@@ -41,7 +41,7 @@ namespace Sphynx
 		SPX_CORE_ASSERT(size == 1);
 		m_Reader.PushKey(0);
 		m_Reader.Read(key);
-		SPX_CORE_ASSERT(key == "Scene");
+		SPX_CORE_ASSERT(key == "Sphynx::EditorScene");
 		m_Reader.PopKey();
 
 		m_Reader.PushValue(0);
