@@ -22,6 +22,9 @@
 #include "Asset/Sound/SoundAsset.h"
 #include "Asset/Sound/SoundAssetImporter.h"
 
+#include "Asset/Animation/AnimationAsset.h"
+#include "Asset/Animation/AnimationAssetImporter.h"
+
 #include "Serialization/YAML/YAMLWriter.h"
 #include "Serialization/YAML/YAMLReader.h"
 
@@ -95,6 +98,7 @@ namespace Sphynx
 		REGISTER_ASSETTYPE(Spritesheet, SpritesheetAssetImporter);
 		REGISTER_ASSETTYPE(Prefab, PrefabAssetImporter);
 		REGISTER_ASSETTYPE(Sound, SoundAssetImporter, ".mp3", ".wav");
+		REGISTER_ASSETTYPE(Animation2D, AnimationAssetImporter);
 
 		// load all managed assets into the asset registry
 		YAMLReader reader{ s_ContextPath / ASSET_REGISTRY_FILEPATH };
@@ -117,6 +121,7 @@ namespace Sphynx
 		UnloadAssets();
 
 		// Unregister Asset types
+		UNREGISTER_ASSETTYPE(Animation2D);
 		UNREGISTER_ASSETTYPE(Sound);
 		UNREGISTER_ASSETTYPE(Prefab);
 		UNREGISTER_ASSETTYPE(Spritesheet);

@@ -1,10 +1,8 @@
 #pragma once
 
-//#include "Asset/AssetManager.h"
 #include "Core/Core.h"
 #include "Asset/Asset.h"
 #include "Renderer/Font.h"
-//#include "FontAssetImporter.h"
 
 #include <filesystem>
 

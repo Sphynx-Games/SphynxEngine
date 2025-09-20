@@ -3,7 +3,6 @@
 #include "Core/Core.h"
 #include "Asset/Asset.h"
 #include "Scene/Scene.h"
-//#include "SceneAssetImporter.h"
 
 
 namespace Sphynx

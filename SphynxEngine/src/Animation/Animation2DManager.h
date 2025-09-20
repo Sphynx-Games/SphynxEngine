@@ -16,7 +16,7 @@ namespace Sphynx
 		SpriteRendererComponent* SpriteComponent;
 	};
 
-	struct SPHYNX_API Animation2D
+	struct SPHYNX_API Animation2DManager
 	{
 	public:
 		static void Init(Scene* scene);

@@ -14,11 +14,11 @@ namespace Sphynx
 		COMPONENT_COMMON_BODY(AnimationComponent);
 
 	public:
-		AnimationComponent(Array<AssetHandle>& sprites, float duration, bool loop = false) :
-			Sprites(sprites), Duration(duration), Loop(loop) {}
+		AnimationComponent(AssetHandle animation, float duration, bool loop = false) :
+			Animation(animation), Duration(duration), Loop(loop) {}
 
 	public:
-		Array<AssetHandle> Sprites;
+		AssetHandle Animation;
 		float Duration;
 		bool Loop;
 	};
@@ -31,7 +31,7 @@ namespace Sphynx
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::AnimationComponent, SPHYNX_API)
 SPX_REFLECT_ATTRIBUTE(InternalComponent);
 
-SPX_REFLECT_PROPERTY(Sprites)
+SPX_REFLECT_PROPERTY(Animation)
 SPX_REFLECT_PROPERTY(Duration)
 SPX_REFLECT_PROPERTY(Loop)
 
