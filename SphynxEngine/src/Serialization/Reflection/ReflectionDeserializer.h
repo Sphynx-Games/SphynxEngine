@@ -158,7 +158,7 @@ namespace Sphynx
 
 				const Reflection::Property& property = *it;
 				reader.PushValue(i);
-				ReflectionDeserializer::Deserialize((std::byte*)obj + property.Offset, property.Type, reader);
+				ReflectionDeserializer::Deserialize((std::byte*)obj + property.Offset, property.GetType(), reader);
 				reader.PopValue();
 			}
 			reader.PopMap();

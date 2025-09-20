@@ -7,39 +7,40 @@ namespace Sphynx
 	namespace Reflection
 	{
 		Property::Property(const ::Sphynx::Reflection::Type& type, const char* name, size_t offset) :
-			Type(type),
+			QualifiedType({ type, 0, ValueType::VALUE, 0 }),
 			Name(name),
 			Offset(offset),
-			Qualifiers(0),
 			AccessSpecifier(AccessSpecifier::PUBLIC),
-			ValueType(ValueType::VALUE),
-			PointerIndirectionCount(0),
+			Attributes()
+		{
+
+		}
+
+		Property::Property(const ::Sphynx::Reflection::QualifiedType& qualifiedType, const char* name, size_t offset) :
+			QualifiedType(qualifiedType),
+			Name(name),
+			Offset(offset),
+			AccessSpecifier(AccessSpecifier::PUBLIC),
 			Attributes()
 		{
 
 		}
 
 		Property::Property(const Property& other) :
-			Type(other.Type),
+			QualifiedType(other.QualifiedType),
 			Name(other.Name),
 			Offset(other.Offset),
-			Qualifiers(other.Qualifiers),
 			AccessSpecifier(other.AccessSpecifier),
-			ValueType(other.ValueType),
-			PointerIndirectionCount(other.PointerIndirectionCount),
 			Attributes(other.Attributes)
 		{
 
 		}
 
 		Property::Property(Property&& other) noexcept :
-			Type(other.Type),
+			QualifiedType(other.QualifiedType),
 			Name(other.Name),
 			Offset(std::move(other.Offset)),
-			Qualifiers(std::move(other.Qualifiers)),
 			AccessSpecifier(std::move(other.AccessSpecifier)),
-			ValueType(std::move(other.ValueType)),
-			PointerIndirectionCount(std::move(other.PointerIndirectionCount)),
 			Attributes(std::move(other.Attributes))
 		{
 
@@ -49,13 +50,17 @@ namespace Sphynx
 		{
 			Name = nullptr;
 			Offset = 0;
-			Qualifiers = 0;
 			Attributes.clear();
 		}
 
-		bool Property::HasQualifier(Qualifier qualifier) const
+		const Type& Property::GetType() const
 		{
-			return (Qualifiers & static_cast<typename std::underlying_type<Qualifier>::type>(qualifier)) != 0;
+			return QualifiedType.Type;
+		}
+
+		bool Property::HasQualifier(Qualifier::Value qualifier) const
+		{
+			return (QualifiedType.Qualifiers & static_cast<Qualifier::Mask>(qualifier)) != 0;
 		}
 
 		bool Property::IsConstant() const
@@ -85,22 +90,28 @@ namespace Sphynx
 
 		bool Property::IsValue() const
 		{
-			return ValueType == ValueType::VALUE;
+			return QualifiedType.ValueType == ValueType::VALUE;
 		}
 
 		bool Property::IsRValueReference() const
 		{
-			return ValueType == ValueType::RVALUE_REFERENCE;
+			return QualifiedType.ValueType == ValueType::RVALUE_REFERENCE;
 		}
 
 		bool Property::IsLValueReference() const
 		{
-			return ValueType == ValueType::LVALUE_REFERENCE;
+			return QualifiedType.ValueType == ValueType::LVALUE_REFERENCE;
 		}
 
 		bool Property::IsPointer() const
 		{
-			return PointerIndirectionCount > 0;
+			return QualifiedType.PointerIndirectionCount > 0;
 		}
+
+		size_t Property::GetPointerIndirection() const
+		{
+			return QualifiedType.PointerIndirectionCount;
+		}
+
 	}
 }

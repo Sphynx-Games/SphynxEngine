@@ -152,7 +152,7 @@ namespace Sphynx
 				// Write property content recursively
 				{
 					writer.PushValue();
-					ReflectionSerializer::Serialize((const std::byte*)obj + property.Offset, property.Type, writer);
+					ReflectionSerializer::Serialize((const std::byte*)obj + property.Offset, property.GetType(), writer);
 				}
 			}
 			writer.PopMap();

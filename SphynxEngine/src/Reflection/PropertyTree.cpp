@@ -37,10 +37,10 @@ namespace Sphynx
 
 					Property fakeProperty{ *property };
 					fakeProperty.Offset = 0;
-					--fakeProperty.PointerIndirectionCount;
+					--fakeProperty.QualifiedType.PointerIndirectionCount;
 					void* addr = (void*)(*(uintptr_t*)((std::byte*)m_Addr + property->Offset));
 
-					PropertyTree tree{ fakeProperty.Type, addr, TraversalParams{m_Params} };
+					PropertyTree tree{ fakeProperty.GetType(), addr, TraversalParams{m_Params} };
 					tree.Traverse(visitor, &fakeProperty);
 				};
 
@@ -83,7 +83,7 @@ namespace Sphynx
 					const bool skip = !visitor.VisitClass(property, m_Addr, *indexedCollection) || property->IsPointer();
 					TryTraverseIfPointer(property);
 
-					auto it = m_Params.CustomTraversal.find(&property->Type);
+					auto it = m_Params.CustomTraversal.find(&property->GetType());
 					if (it != m_Params.CustomTraversal.end())
 					{
 						(*it).second(*this, property, m_Addr, visitor);
@@ -109,7 +109,7 @@ namespace Sphynx
 					const bool skip = !visitor.VisitClass(property, m_Addr, *associativeCollection) || property->IsPointer();
 					TryTraverseIfPointer(property);
 
-					auto it = m_Params.CustomTraversal.find(&property->Type);
+					auto it = m_Params.CustomTraversal.find(&property->GetType());
 					if (it != m_Params.CustomTraversal.end())
 					{
 						(*it).second(*this, property, m_Addr, visitor);
@@ -149,14 +149,14 @@ namespace Sphynx
 
 					if (!skip)
 					{
-						auto it = m_Params.CustomTraversal.find(&property->Type);
+						auto it = m_Params.CustomTraversal.find(&property->GetType());
 						if (it != m_Params.CustomTraversal.end())
 						{
 							(*it).second(*this, property, m_Addr, visitor);
 						}
 						else for (const Property& cProperty : rClass)
 						{
-							PropertyTree tree{ cProperty.Type, (std::byte*)m_Addr + cProperty.Offset, TraversalParams{m_Params} };
+							PropertyTree tree{ cProperty.GetType(), (std::byte*)m_Addr + cProperty.Offset, TraversalParams{m_Params}};
 							tree.Traverse(visitor, &cProperty);
 						}
 					}

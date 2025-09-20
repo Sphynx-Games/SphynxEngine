@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "AccessSpecifier.h"
+#include "QualifiedType.h"
 #include <vector>
 #include <cstdint>
 
@@ -15,27 +16,15 @@ namespace Sphynx
 
 		struct SPHYNX_API Property
 		{
-			enum class SPHYNX_API Qualifier : uint8_t
-			{
-				NONE		= 0,
-				CONSTANT	= 1 << 0,
-				VOLATILE	= 1 << 1,
-				//MUTABLE 	= 1 << 2,
-			};
-
-			enum class SPHYNX_API ValueType : uint8_t
-			{
-				VALUE,
-				LVALUE_REFERENCE,
-				RVALUE_REFERENCE,
-			};
-
 			Property(const Type& type, const char* name, size_t offset);
+			Property(const QualifiedType& qualifiedType, const char* name, size_t offset);
 			Property(const Property& other);
 			Property(Property&& other) noexcept;
 			~Property();
 
-			bool HasQualifier(Qualifier qualifier) const;
+			const Type& GetType() const;
+
+			bool HasQualifier(Qualifier::Value qualifier) const;
 			bool IsConstant() const;
 			bool IsVolatile() const;
 
@@ -48,19 +37,18 @@ namespace Sphynx
 			bool IsLValueReference() const;
 			bool IsPointer() const;
 
+			size_t GetPointerIndirection() const;
+
 			template<typename T>
 			bool HasAttribute() const;
 
 			template<typename T>
 			const T* GetAttribute() const;
 
-			const Type& Type;
+			QualifiedType QualifiedType;
 			const char* Name;
 			size_t Offset;
-			uint8_t Qualifiers;
 			AccessSpecifier AccessSpecifier;
-			ValueType ValueType;
-			size_t PointerIndirectionCount;
 
 			std::vector<Attribute*> Attributes;
 		};

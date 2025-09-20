@@ -29,7 +29,7 @@ namespace Sphynx
 
 				const size_t offset = std::distance((std::byte*)data, (std::byte*)&uuidComponent->UUID);
 				const Property property{ GetType<UUID>(), "UUID", offset };
-				PropertyTree mTree{ property.Type, (void*)&uuidComponent->UUID };
+				PropertyTree mTree{ property.GetType(), (void*)&uuidComponent->UUID};
 				mTree.Traverse(visitor, &property);
 			}
 			// Name
@@ -39,7 +39,7 @@ namespace Sphynx
 
 				const size_t offset = std::distance((std::byte*)data, (std::byte*)&nameComponent->Name);
 				const Property property{ GetType<std::string>(), "Name", offset };
-				PropertyTree mTree{ property.Type, (void*)&nameComponent->Name };
+				PropertyTree mTree{ property.GetType(), (void*)&nameComponent->Name};
 				mTree.Traverse(visitor, &property);
 			}
 		}
@@ -80,7 +80,7 @@ namespace Sphynx
 					void* component = ComponentRegistry::InvokeGetComponent(componentClass, *actor, false);
 					size_t offset = std::distance((std::byte*)component, (std::byte*)data);
 					const Property fakeProperty{ componentClass, componentClass.Name, offset };
-					PropertyTree mTree{ fakeProperty.Type, component };
+					PropertyTree mTree{ fakeProperty.GetType(), component};
 					mTree.Traverse(visitor, &fakeProperty);
 				}
 
@@ -199,13 +199,13 @@ namespace Sphynx
 
 	void SceneSerializer::VisitEnum(const Reflection::Property* property, void* data)
 	{
-		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->Type);
+		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->GetType());
 		m_Writer.Write(property->Name, rEnum.GetName((const void*)data));
 	}
 
 	bool SceneSerializer::VisitClass(const Reflection::Property* property, void* data)
 	{
-		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->Type);
+		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->GetType());
 		if (&rClass == &Reflection::GetClass<Actor>())
 		{
 			m_Writer.PushMap();
@@ -232,7 +232,7 @@ namespace Sphynx
 		*/
 
 		// TODO: bring back custom serializers
-		if (&Reflection::GetClass<UUID>() == &property->Type)
+		if (&Reflection::GetClass<UUID>() == &property->GetType())
 		{
 			UUID* uuid = static_cast<UUID*>(data);
 			m_Writer.Write(UUID::ToString(*uuid));
@@ -291,7 +291,7 @@ namespace Sphynx
 
 	void SceneSerializer::OnBeforeVisitClass(const Reflection::Property* property, void* data)
 	{
-		if (property->Name == property->Type.Name)
+		if (property->Name == property->GetType().Name)
 		{
 			m_Writer.PushMap();
 		}
@@ -299,7 +299,7 @@ namespace Sphynx
 
 	void SceneSerializer::OnAfterVisitClass(const Reflection::Property* property, void* data)
 	{
-		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->Type);
+		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->GetType());
 		if (&rClass == &Reflection::GetClass<Actor>())
 		{
 			m_Writer.PopMap();
@@ -312,7 +312,7 @@ namespace Sphynx
 			return;
 		}
 		*/
-		if (&Reflection::GetClass<UUID>() == &property->Type)
+		if (&Reflection::GetClass<UUID>() == &property->GetType())
 		{
 			return;
 		}
@@ -328,7 +328,7 @@ namespace Sphynx
 
 		m_Writer.PopMap();
 
-		if (property->Name == property->Type.Name)
+		if (property->Name == property->GetType().Name)
 		{
 			m_Writer.PopMap();
 		}

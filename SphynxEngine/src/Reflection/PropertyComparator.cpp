@@ -10,7 +10,7 @@ namespace Sphynx
 		{
 			bool IsPropertyTypeClassOrStruct(const Reflection::Property* property)
 			{
-				return property->Type.Kind == Reflection::TypeKind::CLASS || property->Type.Kind == Reflection::TypeKind::STRUCT;
+				return property->GetType().Kind == Reflection::TypeKind::CLASS || property->GetType().Kind == Reflection::TypeKind::STRUCT;
 			}
 		}
 
@@ -126,7 +126,7 @@ namespace Sphynx
 				return;
 			}
 
-			const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->Type);
+			const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->GetType());
 			void* targetAddress = reinterpret_cast<std::byte*>(GetTopPropertyNode().Address) + foundProperty->Offset;
 			if (rEnum.GetValue((const void*)targetAddress) != rEnum.GetValue((const void*)data))
 			{
@@ -297,7 +297,7 @@ namespace Sphynx
 			PropertyNode::NodeType nodeType = PropertyNode::NodeType::NonCollection;
 			if (Utils::IsPropertyTypeClassOrStruct(property))
 			{
-				const Reflection::Class& reflectionClass = static_cast<const Reflection::Class&>(property->Type);
+				const Reflection::Class& reflectionClass = static_cast<const Reflection::Class&>(property->GetType());
 				if (reflectionClass.HasAttribute<CommonAttribute::IndexedCollection>()) nodeType = PropertyNode::NodeType::IndexedCollection;
 				else if (reflectionClass.HasAttribute<CommonAttribute::AssociativeCollection>()) nodeType = PropertyNode::NodeType::AssociativeCollection;
 			}
@@ -326,18 +326,18 @@ namespace Sphynx
 		{
 			SPX_CORE_ASSERT(Utils::IsPropertyTypeClassOrStruct(propertyNode.Property), "PropertyNode Type must be a class or a struct to perform this operation!!");
 
-			const Reflection::Class& reflectionClass = static_cast<const Reflection::Class&>(propertyNode.Property->Type);
+			const Reflection::Class& reflectionClass = static_cast<const Reflection::Class&>(propertyNode.Property->GetType());
 
 			if (propertyNode.Type == PropertyNode::NonCollection)
 			{
 				for (const Reflection::Property& p : reflectionClass)
 				{
-					if (&p.Type == &property->Type
+					if (&p.GetType() == &property->GetType()
 						&& p.Name == property->Name
-						&& p.ValueType == property->ValueType
+						&& p.QualifiedType.ValueType == property->QualifiedType.ValueType
 						&& p.Offset == property->Offset
-						&& p.Qualifiers == property->Qualifiers
-						&& p.PointerIndirectionCount == property->PointerIndirectionCount)
+						&& p.QualifiedType.Qualifiers == property->QualifiedType.Qualifiers
+						&& p.GetPointerIndirection() == property->GetPointerIndirection())
 					{
 						return &p;
 					}
@@ -347,11 +347,11 @@ namespace Sphynx
 			{
 				for (const Reflection::Property& p : propertyNode.CollectionProperties)
 				{
-					if (&p.Type == &property->Type
+					if (&p.GetType() == &property->GetType()
 						&& !std::strcmp(p.Name, property->Name)
-						&& p.ValueType == property->ValueType
-						&& p.Qualifiers == property->Qualifiers
-						&& p.PointerIndirectionCount == property->PointerIndirectionCount)
+						&& p.QualifiedType.ValueType == property->QualifiedType.ValueType
+						&& p.QualifiedType.Qualifiers == property->QualifiedType.Qualifiers
+						&& p.GetPointerIndirection() == property->GetPointerIndirection())
 					{
 						return &p;
 					}
@@ -372,7 +372,7 @@ namespace Sphynx
 					for (size_t i = 0; i < propertyNode.CollectionProperties.size(); i += 2)
 					{
 						const Reflection::Property& keyProperty = propertyNode.CollectionProperties[i];
-						if (&keyProperty.Type == &property->Type &&
+						if (&keyProperty.GetType() == &property->GetType() &&
 							keyProperty.Name == property->Name)
 						{
 							const bool keyFound = collection->CompareKeys(

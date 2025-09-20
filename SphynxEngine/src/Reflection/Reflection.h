@@ -51,18 +51,21 @@ namespace Sphynx
 		template<typename T>
 		inline const Type& GetType()
 		{
+			static_assert(!std::is_pointer<T>::value, "Cannot invoke GetType() with a pointer type");
 			return details::GetTypeImpl(details::Tag<T>{});
 		}
 
 		template<typename T>
 		inline const Class& GetClass()
 		{
+			static_assert(!std::is_pointer<T>::value, "Cannot invoke GetClass() with a pointer type");
 			return details::GetClassImpl(details::Tag<T>{});
 		}
 
 		template<typename T>
 		inline const Enum& GetEnum()
 		{
+			static_assert(!std::is_pointer<T>::value, "Cannot invoke GetEnum() with a pointer type");
 			return details::GetEnumImpl(details::Tag<T>{});
 		}
 
