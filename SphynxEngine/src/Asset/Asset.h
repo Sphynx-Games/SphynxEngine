@@ -21,6 +21,7 @@ namespace Sphynx
 		const Reflection::Type* Type = nullptr;
 
 		bool operator==(const AssetType& other) const;
+		bool operator!=(const AssetType& other) const;
 		bool operator<(const AssetType& other) const;
 
 	private:

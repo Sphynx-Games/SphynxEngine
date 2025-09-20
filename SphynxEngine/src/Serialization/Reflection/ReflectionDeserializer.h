@@ -109,7 +109,7 @@ namespace Sphynx
 			for (size_t i = 0; i < collectionSize; ++i)
 			{
 				reader.PushIndex(i);
-				ReflectionDeserializer::Deserialize(indexedCollection->Add(obj), indexedCollection->GetValueType(), reader);
+				ReflectionDeserializer::Deserialize(indexedCollection->Add(obj), indexedCollection->GetValueType(), reader); // NOTE: we are assuming no pointers
 				reader.PopIndex();
 			}
 			reader.PopSequence();

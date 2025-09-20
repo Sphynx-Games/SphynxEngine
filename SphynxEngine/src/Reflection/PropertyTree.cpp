@@ -90,14 +90,13 @@ namespace Sphynx
 					}
 					else for (size_t i = 0; !skip && i < indexedCollection->GetSize(m_Addr); ++i)
 					{
-						const Type& rType = indexedCollection->GetValueType();
-						std::string indexStr = std::to_string(i);
-
 						void* valueAddr = indexedCollection->Get(m_Addr, i);
 						const size_t offset = std::distance((std::byte*)m_Addr, (std::byte*)valueAddr);
 
-						const Property fakeProperty{ rType, indexStr.c_str(), offset };
-						PropertyTree tree{ rType, valueAddr, TraversalParams{m_Params} };
+						const std::string indexStr = std::to_string(i);
+						const Property fakeProperty{ indexedCollection->GetQualifiedValueType(), indexStr.c_str(), offset };
+
+						PropertyTree tree{ fakeProperty.GetType(), valueAddr, TraversalParams{m_Params} };
 						tree.Traverse(visitor, &fakeProperty);
 					}
 
@@ -144,11 +143,15 @@ namespace Sphynx
 				else
 				{
 					visitor.OnBeforeVisitClass(property, m_Addr);
-					const bool skip = !visitor.VisitClass(property, m_Addr) || property->IsPointer();
-					TryTraverseIfPointer(property);
-
-					if (!skip)
+					const bool skip = !visitor.VisitClass(property, m_Addr);
+					if (!skip && property->IsPointer())
 					{
+						TryTraverseIfPointer(property);
+					}
+
+					if (!skip && !property->IsPointer())
+					{
+						TryTraverseIfPointer(property);
 						auto it = m_Params.CustomTraversal.find(&property->GetType());
 						if (it != m_Params.CustomTraversal.end())
 						{

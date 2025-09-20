@@ -108,7 +108,7 @@ namespace Sphynx
 			writer.PushSequence();
 			for (size_t i = 0; i < collectionSize; ++i)
 			{
-				ReflectionSerializer::Serialize(indexedCollection->Get(obj, i), indexedCollection->GetValueType(), writer);
+				ReflectionSerializer::Serialize(indexedCollection->Get(obj, i), indexedCollection->GetValueType(), writer); // NOTE: we are assuming no pointers
 			}
 			writer.PopSequence();
 		}

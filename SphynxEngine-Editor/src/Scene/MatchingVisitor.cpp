@@ -166,6 +166,6 @@ namespace Sphynx
 
 	bool MatchingVisitor::MatchFound(const Reflection::Property* property, void* data)
 	{
-		return m_Tree.ContainsKey({property, data}) || (property->Name == property->Type.Name && !m_Tree.IsEmpty()) /*Is Root Property*/;
+		return m_Tree.ContainsKey({property, data}) || (property->Name == property->GetType().Name && !m_Tree.IsEmpty()) /*Is Root Property*/;
 	}
 }

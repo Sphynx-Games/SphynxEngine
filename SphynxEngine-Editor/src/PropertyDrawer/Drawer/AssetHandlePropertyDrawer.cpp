@@ -2,6 +2,7 @@
 
 #include <Asset/AssetManager.h>
 #include <imgui.h>
+#include "Attribute/AssetHandleType.h"
 
 
 namespace Sphynx
@@ -15,10 +16,12 @@ namespace Sphynx
 
 		if (ImGui::BeginCombo("##", selectedPath.c_str()))
 		{
-			// TODO: filter by attribute if possible
-			const auto& registry = AssetManager::GetRegistry();
+			// TODO: maybe a better way to filter out instead of looping through all assets
+			const EditorAttribute::AssetHandleType* assetHandleType = property.GetAttribute<EditorAttribute::AssetHandleType>();
 			for (const auto& [handle, metadata] : AssetManager::GetRegistry())
 			{
+				if (assetHandleType != nullptr && metadata.Type != assetHandleType->Type) continue;
+
 				if (ImGui::Selectable(metadata.Path.stem().string().c_str(), handle == *assetHandle))
 				{
 					*assetHandle = metadata.Handle;

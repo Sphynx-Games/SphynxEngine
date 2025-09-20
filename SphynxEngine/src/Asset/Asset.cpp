@@ -15,6 +15,11 @@ namespace Sphynx
 		return Type == other.Type;
 	}
 
+	bool AssetType::operator!=(const AssetType& other) const
+	{
+		return !(Type == other.Type);
+	}
+
 	bool AssetType::operator<(const AssetType& other) const
 	{
 		return Type < other.Type;

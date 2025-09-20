@@ -6,6 +6,8 @@
 #include "PropertyDrawer/PropertyDrawer.h"
 #include "Asset/AssetMetadata.h"
 #include "imgui_internal.h"
+#include "Asset/AssetManager.h"
+#include "Attribute/AssetHandleType.h"
 
 
 namespace Sphynx
@@ -146,7 +148,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -164,7 +166,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -179,7 +181,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -194,7 +196,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -209,7 +211,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -225,7 +227,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -240,7 +242,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -255,7 +257,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -270,7 +272,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -288,7 +290,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -303,7 +305,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -314,7 +316,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -325,7 +327,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -336,11 +338,11 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		if(m_IsTableSetup) ImGui::TableNextColumn();
+		if (m_IsTableSetup) ImGui::TableNextColumn();
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->Type);
+		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->GetType());
 		const char* currentValue = rEnum.GetName((const void*)data).c_str();
 		if (ImGui::BeginCombo(LABEL(property->Name), currentValue))
 		{
@@ -358,9 +360,38 @@ namespace Sphynx
 
 	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data)
 	{
-		if (property->IsPointer()) return false;
+		if (property->IsPointer())
+		{
+			// TODO: this can be done in a generic way via attributes
+			// check if it is an asset type
+			if (property->GetPointerIndirection() == 1 && AssetManager::IsAssetTypeRegistered({ &property->GetType() }))
+			{
+				// treat as assethandle
+				// TODO: consider inserting property node in tree instead
+				uintptr_t& assetPtr = (*(uintptr_t*)data);
+				AssetHandle assetHandle = assetPtr != 0 ? AssetManager::GetAssetHandleFromAddress((void*)assetPtr) : AssetHandle::Invalid;
+				AssetHandle prevAssetHandle = assetHandle;
 
-		IPropertyDrawer* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
+				Reflection::Property fakeProperty{ Reflection::GetType<AssetHandle>(), property->Name, 0 };
+				EditorAttribute::AssetHandleType assetHandleType{ Sphynx::AssetType{ &property->GetType() } };
+				fakeProperty.Attributes.push_back(&assetHandleType);
+				Reflection::PropertyTree propertyTree{ fakeProperty.GetType(), &assetHandle };
+				propertyTree.Traverse(*this, &fakeProperty);
+
+				if (prevAssetHandle != assetHandle)
+				{
+					auto asset = AssetManager::GetAsset(assetHandle);
+					if (asset != nullptr)
+					{
+						assetPtr = (uintptr_t)asset->GetRawAsset();
+					}
+				}
+			}
+
+			return false;
+		}
+
+		IPropertyDrawer* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
 		if (propertyDrawer)
 		{
 			if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -377,7 +408,7 @@ namespace Sphynx
 		const bool result = ImGui::CollapsingHeader(label, &visible, flags);
 
 		// If root property then do begin table
-		if (property->Name == property->Type.Name && result && !m_IsTableSetup)
+		if (property->Name == property->GetType().Name && result && !m_IsTableSetup)
 		{
 			SetupTable();
 		}
@@ -387,7 +418,7 @@ namespace Sphynx
 		if (!visible)
 		{
 			// TODO: send command to delete this property when command system is implemented
-			InvisibleClass = &static_cast<const Reflection::Class&>(property->Type);
+			InvisibleClass = &static_cast<const Reflection::Class&>(property->GetType());
 		}
 
 		return result;
@@ -595,7 +626,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return false;
 
-		IPropertyDrawer* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
+		IPropertyDrawer* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
 		if (propertyDrawer)
 		{
 			propertyDrawer->Draw(*property, data);
@@ -688,14 +719,14 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
+		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
 		if (propertyDrawer == nullptr)
 		{
 			ImGui::Unindent();
 		}
 
 		// If root property then do begin table
-		if (property->Name == property->Type.Name)
+		if (property->Name == property->GetType().Name)
 		{
 			if (m_IsTableSetup)
 			{
@@ -717,7 +748,7 @@ namespace Sphynx
 	{
 		if (property->IsPointer()) return;
 
-		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->Type);
+		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
 		if (propertyDrawer == nullptr)
 		{
 			ImGui::Unindent();

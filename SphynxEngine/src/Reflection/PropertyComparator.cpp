@@ -177,7 +177,7 @@ namespace Sphynx
 			{
 				const std::string& name = propertyNode.IndexedCollectionPropertyNames.emplace_back(std::to_string(i));
 				const std::byte* elemAddress = (std::byte*)collection.Get(propertyNode.Address, i);
-				propertyNode.CollectionProperties.emplace_back(collection.GetValueType(), name.c_str(), std::distance(collectionAddress, elemAddress));
+				propertyNode.CollectionProperties.emplace_back(collection.GetQualifiedValueType(), name.c_str(), std::distance(collectionAddress, elemAddress));
 			}
 
 			return true;

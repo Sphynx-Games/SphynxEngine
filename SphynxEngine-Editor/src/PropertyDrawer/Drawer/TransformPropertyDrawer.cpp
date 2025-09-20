@@ -15,7 +15,7 @@ namespace Sphynx
 		const Reflection::Class& cClass = Reflection::GetClass<Transform>();
 		for (const Reflection::Property& prop : cClass)
 		{
-			IPropertyDrawer* drawer = PropertyDrawerManager::GetDrawer(prop.Type);
+			IPropertyDrawer* drawer = PropertyDrawerManager::GetDrawer(prop.GetType());
 			ImGui::PushID(prop.Name);
 			drawer->Draw(prop, (std::byte*)data + prop.Offset);
 			ImGui::PopID();

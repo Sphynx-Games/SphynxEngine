@@ -63,7 +63,7 @@ namespace Sphynx
 				SPX_CORE_ASSERT(prefabHandle != AssetHandle::Invalid, "Prefab asset handle is invalid!!");
 
 				const Property property{ GetType<AssetHandle>(), "Prefab", 0 };
-				PropertyTree mTree{ property.Type, (void*)&prefabHandle };
+				PropertyTree mTree{ property.GetType(), (void*)&prefabHandle};
 				mTree.Traverse(visitor, &property);
 			}
 
@@ -110,14 +110,14 @@ namespace Sphynx
 							{
 								size_t offset = std::distance((std::byte*)componentActor, (std::byte*)data);
 								const Property fakeProperty{ *cClass, cClass->Name, offset };
-								PropertyTree mTree{ fakeProperty.Type, componentActor };
+								PropertyTree mTree{ fakeProperty.GetType(), componentActor};
 								mTree.Traverse(visitor, &fakeProperty);
 							}
 						}
 						else if (prefabHasComponent)
 						{
 							const Property fakeProperty{ *cClass, cClass->Name, 0 };
-							PropertyTree mTree{ fakeProperty.Type, nullptr };
+							PropertyTree mTree{ fakeProperty.GetType(), nullptr};
 							mTree.Traverse(visitor, &fakeProperty);
 						}
 					}

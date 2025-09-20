@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "QualifiedType.h"
 #include <cstdint>
 
 
@@ -45,16 +46,35 @@ namespace Sphynx
 			public:
 				template<typename TCollection>
 				IndexedCollection(::Sphynx::Reflection::details::Tag<TCollection>) :
-					m_ValueType(GetType<typename TCollection::value_type>()),
+					m_QualifiedValueType{
+						Reflection::GetType<typename ::Sphynx::Traits::remove_pointers<typename std::remove_reference<typename std::remove_cv<typename TCollection::value_type>::type>::type>::type>(),
+						Qualifier::NONE,
+						ValueType::VALUE,
+						::Sphynx::Traits::pointer_indirection_count<typename TCollection::value_type>::value
+					},
 					m_AccessFunction([](void* obj, uint64_t index) -> void* { return &(*static_cast<TCollection*>(obj))[index]; }),
 					m_ConstAccessFunction([](const void* obj, uint64_t index) -> const void* { return &(*static_cast<const TCollection*>(obj))[index]; }),
 					m_SizeFunction([](const void* obj) -> size_t { return static_cast<const TCollection*>(obj)->Size(); }),
 					m_AddFunction([](void* obj) -> void* { return &(static_cast<TCollection*>(obj)->Emplace()); }),
 					m_RemoveAtFunction([](void* obj, uint64_t index) -> void { static_cast<TCollection*>(obj)->RemoveAt(index); })
-				{}
+				{
+					// Qualifier
+					m_QualifiedValueType.Qualifiers =
+						((std::is_const<typename TCollection::value_type>::value ? 1 : 0) * static_cast<Qualifier::Mask>(Qualifier::CONSTANT)) |
+						((std::is_volatile<typename TCollection::value_type>::value ? 1 : 0) * static_cast<Qualifier::Mask>(Qualifier::VOLATILE));
+
+					// ValueType
+					if constexpr (std::is_lvalue_reference<typename TCollection::value_type>::value)
+						m_QualifiedValueType.ValueType = ValueType::LVALUE_REFERENCE;
+					else if constexpr (std::is_rvalue_reference<typename TCollection::value_type>::value)
+						m_QualifiedValueType.ValueType = ValueType::RVALUE_REFERENCE;
+					else
+						m_QualifiedValueType.ValueType = ValueType::VALUE;
+				}
 
 			public:
-				inline const Type& GetValueType() const { return m_ValueType; }
+				inline const QualifiedType& GetQualifiedValueType() const { return m_QualifiedValueType; }
+				inline const Type& GetValueType() const { return m_QualifiedValueType.Type; }
 
 				inline void* Get(void* obj, uint64_t index) const { return m_AccessFunction(obj, index); }
 				inline const void* Get(const void* obj, uint64_t index) const { return m_ConstAccessFunction(obj, index); }
@@ -64,7 +84,7 @@ namespace Sphynx
 				inline void RemoveAt(void* obj, uint64_t index) const { return m_RemoveAtFunction(obj, index); }
 
 			private:
-				const Type& m_ValueType;
+				QualifiedType m_QualifiedValueType;
 				TAccessFunction m_AccessFunction;
 				TConstAccessFunction m_ConstAccessFunction;
 				TSizeFunction m_SizeFunction;
