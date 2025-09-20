@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Core/Core.h"
 
 namespace Sphynx
 {
-	enum PlaybackState
+	enum SPHYNX_API PlaybackState
 	{
 		PLAYING, PAUSED, STOPPED
 	};

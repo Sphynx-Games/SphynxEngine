@@ -1,17 +1,24 @@
 #pragma once
 
 #include "Base/Editor.h"
-#include "Utils/PlaybackState.h"
-#include "Scene/Scene.h"
 #include "EditorCameraController.h"
 #include "ProjectInfo.h"
-#include "Core/Delegate.h"
 #include "Scene/EditorScene.h"
+#include <Scene/Scene.h>
+#include <Core/Delegate.h>
+#include <Utils/PlaybackState.h>
 
 
 namespace Sphynx
 {
 	class EditorLayer;
+	class SceneToolbar;
+	class SceneOutlinerPanel;
+	class ContentBrowserPanel;
+	class ViewportPanel;
+	class DetailsPanel;
+	class Framebuffer;
+
 
 	class SceneEditor : public Editor
 	{
@@ -49,13 +56,13 @@ namespace Sphynx
 		DelegateHandle m_EditPrefabHandle;
 
 		EditorLayer* m_EditorLayer;
-		class SceneToolbar* m_SceneToolbar;
-		class SceneOutlinerPanel* m_SceneOutlinerPanel;
-		class ContentBrowserPanel* m_ContentBrowserPanel;
-		class ViewportPanel* m_ViewportPanel;
-		class DetailsPanel* m_DetailsPanel;
+		SceneToolbar* m_SceneToolbar;
+		SceneOutlinerPanel* m_SceneOutlinerPanel;
+		ContentBrowserPanel* m_ContentBrowserPanel;
+		ViewportPanel* m_ViewportPanel;
+		DetailsPanel* m_DetailsPanel;
 
-		class Framebuffer* m_Framebuffer;
+		Framebuffer* m_Framebuffer;
 		EditorCameraController m_CameraController;
 
 		std::filesystem::path m_LastOpenedScenePath;

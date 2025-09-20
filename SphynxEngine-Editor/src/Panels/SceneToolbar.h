@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Base/Toolbar.h"
-#include "Utils/PlaybackState.h"
+#include <Utils/PlaybackState.h>
 
 
 namespace Sphynx

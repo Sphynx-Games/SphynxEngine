@@ -37,6 +37,7 @@ Sphynx::EditorScene:
             Animation: cc5e9169-14ce-48fd-8e40-b93f57f6fa97
             Duration: 1
             Loop: false
+            PlayOnBegin: true
         - Sphynx::SpriteRendererComponent:
             Sprite: 02012b08-9545-4b36-8add-9409cab4b103
             Tint:

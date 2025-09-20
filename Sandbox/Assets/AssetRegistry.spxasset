@@ -96,13 +96,13 @@ cc5e9169-14ce-48fd-8e40-b93f57f6fa92:
   Type: Sphynx::Sound
   Path: Assets\Sounds\enemyDeath.spxasset
   Dependencies: []
-cc5e9169-14ce-48fd-8e40-b93f57f6fa98:
-  Handle: cc5e9169-14ce-48fd-8e40-b93f57f6fa98
-  Type: Sphynx::Texture
-  Path: Assets\Textures\enemy_scaled5x.spxasset
-  Dependencies: []
 cc5e9169-14ce-48fd-8e40-b93f57f6fa97:
   Handle: cc5e9169-14ce-48fd-8e40-b93f57f6fa97
   Type: Sphynx::Animation2D
   Path: Assets\Textures\enemyAnimation.spxasset
+  Dependencies: []
+cc5e9169-14ce-48fd-8e40-b93f57f6fa98:
+  Handle: cc5e9169-14ce-48fd-8e40-b93f57f6fa98
+  Type: Sphynx::Texture
+  Path: Assets\Textures\enemy_scaled5x.spxasset
   Dependencies: []

@@ -24,6 +24,10 @@ namespace Sphynx
 
 		static void Update(float deltaTime);
 
+		static void PlayAnimation(AnimationComponent* component);
+		static void PauseAnimation(AnimationComponent* component);
+		static void StopAnimation(AnimationComponent* component);
+
 	private:
 		inline static HashMap<AnimationComponent*, AnimationData> s_AnimationComponents = {}; // TimeElapsed
 	};
