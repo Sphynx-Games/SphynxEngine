@@ -142,6 +142,17 @@ namespace Sphynx
 		m_PopIndexFunc(m_Reader);
 	}
 
+	bool Reader::FindKey(const char* key, size_t& index) const
+	{
+		SPX_CORE_ASSERT(m_FindKeyFunc != nullptr, "Read function pointer not valid!");
+		return m_FindKeyFunc(m_Reader, key, index);
+	}
+
+	bool Reader::IsNull() const
+	{
+		return m_IsNullFunc(m_Reader);
+	}
+
 	bool Reader::IsMap() const
 	{
 		SPX_CORE_ASSERT(m_IsMapFunc != nullptr, "Read function pointer not valid!");

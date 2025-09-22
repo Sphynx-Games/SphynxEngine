@@ -66,6 +66,6 @@ namespace Sphynx
 	namespace Utils
 	{
 		SPHYNX_API void ActorCoreTraversal(Reflection::PropertyTree& tree, const Reflection::Property* property, void* data, Reflection::IPropertyTreeVisitor& visitor);
-		SPHYNX_API void ActorTraversal(Reflection::PropertyTree& tree, const Reflection::Property* property, void* data, Reflection::IPropertyTreeVisitor& visitor);
+		SPHYNX_API void ActorSerializeTraversal(Reflection::PropertyTree& tree, const Reflection::Property* property, void* data, Reflection::IPropertyTreeVisitor& visitor);
 	}
 }

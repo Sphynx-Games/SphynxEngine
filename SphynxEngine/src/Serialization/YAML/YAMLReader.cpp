@@ -204,6 +204,28 @@ namespace Sphynx
 		SPX_CORE_ASSERT(m_Stack.size() >= 1, "Node stack should have at least one element!");
 	}
 
+	bool YAMLReader::FindKey(const char* key, size_t& index) const
+	{
+		auto it = std::find_if(m_Node->begin(), m_Node->end(), [&](const auto& node) 
+			{
+				std::string str = node.first.as<std::string>();
+				return !strcmp(key, str.c_str());
+			});
+
+		if (it != m_Node->end())
+		{
+			index = std::distance(m_Node->begin(), it);
+			return true;
+		}
+
+		return false;
+	}
+
+	bool YAMLReader::IsNull() const
+	{
+		return m_Node->IsNull();
+	}
+
 	bool YAMLReader::SupportsBinary() const
 	{
 		return false;

@@ -38,7 +38,7 @@ namespace Sphynx
 			HashMap<Pair<const Reflection::Property*, void*>, Array<Pair<const Reflection::Property*, void*>>> DiffTree;
 		};
 
-		static void EditorActorTraversal(
+		void EditorActorSerializeTraversal(
 			Reflection::PropertyTree& tree,
 			const Reflection::Property* property,
 			void* data,
@@ -52,7 +52,7 @@ namespace Sphynx
 			auto it = std::find_if(scene->GetPrefabActors().begin(), scene->GetPrefabActors().end(), [&](const PrefabActor& prefabActor) { return *actor == prefabActor; });
 			if (it == scene->GetPrefabActors().end())
 			{
-				ActorTraversal(tree, property, data, visitor);
+				ActorSerializeTraversal(tree, property, data, visitor);
 				return;
 			}			
 
@@ -134,6 +134,27 @@ namespace Sphynx
 
 	bool EditorSceneSerializer::VisitClass(const Reflection::Property* property, void* data)
 	{
+		if (property->IsPointer())
+		{
+			// TODO: this can be done in a generic way via attributes
+			// check if it is an asset type
+			if (property->GetPointerIndirection() == 1 && AssetManager::IsAssetTypeRegistered({ &property->GetType() }))
+			{
+				// treat as assethandle
+				// TODO: consider inserting property node in tree instead
+				uintptr_t& assetPtr = (*(uintptr_t*)data);
+				AssetHandle assetHandle = assetPtr != 0 ? AssetManager::GetAssetHandleFromAddress((void*)assetPtr) : AssetHandle::Invalid;
+				
+				Reflection::Property fakeProperty{ Reflection::GetType<AssetHandle>(), property->Name, 0 };
+				Reflection::PropertyTree propertyTree{ fakeProperty.GetType(), &assetHandle };
+				propertyTree.Traverse(*this, &fakeProperty);
+
+				return false;
+			}
+
+			return false;
+		}
+
 		if (data == nullptr)
 		{
 			m_Writer.PushMap();
@@ -160,6 +181,17 @@ namespace Sphynx
 	void EditorSceneSerializer::OnAfterVisitClass(const Reflection::Property* property, void* data)
 	{
 		if (data == nullptr) return;
+
+		if (property->IsPointer())
+		{
+			// TODO: this can be done in a generic way via attributes
+			// check if it is an asset type
+			if (property->GetPointerIndirection() == 1 && AssetManager::IsAssetTypeRegistered({ &property->GetType() }))
+			{
+				return;
+			}
+		}
+
 		SceneSerializer::OnAfterVisitClass(property, data);
 	}
 
@@ -167,7 +199,7 @@ namespace Sphynx
 	{
 		using namespace Reflection;
 		PropertyTree::TraversalParams params;
-		params.CustomTraversal[&GetClass<Actor>()] = &Utils::EditorActorTraversal;
+		params.CustomTraversal[&GetClass<Actor>()] = &Utils::EditorActorSerializeTraversal;
 		PropertyTree::Traverse(GetClass<EditorScene>(), (void*)&m_Scene, *this, std::move(params));
 	}
 }

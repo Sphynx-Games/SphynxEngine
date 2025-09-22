@@ -12,13 +12,24 @@ namespace Sphynx
 	class EditorSceneDeserializer : public SceneDeserializer
 	{
 	public:
+
+	public:
 		EditorSceneDeserializer(EditorScene& scene, Reader&& reader);
 
-		virtual void Deserialize() override;
+	protected:
+		virtual bool VisitClass(const Reflection::Property* property, void* data) override;
+		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection) override;
 
-	private:
-		void DeserializePrefabActor(Prefab* prefab);
-		void DeserializePrefabComponent(const Reflection::Class& componentClass, Actor& actor);
+		virtual void OnBeforeVisitClass(const Reflection::Property* property, void* data) override;
+		virtual void OnAfterVisitClass(const Reflection::Property* property, void* data) override;
+
+	public:
+		void Deserialize();
+
+		void SetPrefabComponentsProperty(const Reflection::Property* property);
+
+	protected:
+		const Reflection::Property* m_PrefabEditorComponentsProperty;
 
 	};
 }

@@ -47,6 +47,8 @@
 	void PopKey() const; \
 	void PushValue(size_t index) const; \
 	void PopValue() const; \
+	bool FindKey(const char* key, size_t& index) const; \
+	bool IsNull() const; \
 	\
 	bool SupportsBinary() const
 
@@ -96,6 +98,8 @@ namespace Sphynx
 			m_PopSequenceFunc([](void* reader) { static_cast<TReader*>(reader)->PopSequence(); }),
 			m_PushIndexFunc([](void* reader, size_t index) { static_cast<TReader*>(reader)->PushIndex(index); }),
 			m_PopIndexFunc([](void* reader) { static_cast<TReader*>(reader)->PopIndex(); }),
+			m_FindKeyFunc([](void* reader, const char* key, size_t& index) -> bool { return static_cast<TReader*>(reader)->FindKey(key, index); }),
+			m_IsNullFunc([](void* reader) -> bool { return static_cast<TReader*>(reader)->IsNull(); }),
 			m_SupportsBinary(reader.SupportsBinary())
 		{
 
@@ -141,6 +145,8 @@ namespace Sphynx
 		void (*m_PopSequenceFunc)(void*);
 		void (*m_PushIndexFunc)(void*, size_t);
 		void (*m_PopIndexFunc)(void*);
+		bool (*m_FindKeyFunc)(void*, const char*, size_t&);
+		bool (*m_IsNullFunc)(void*);
 
 		bool m_SupportsBinary;
 

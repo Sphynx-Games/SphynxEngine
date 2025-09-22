@@ -44,7 +44,7 @@ namespace Sphynx
 			}
 		}
 
-		void ActorTraversal(
+		void ActorSerializeTraversal(
 			Reflection::PropertyTree& tree, 
 			const Reflection::Property* property, 
 			void* data, 
@@ -92,13 +92,14 @@ namespace Sphynx
 	SceneSerializer::SceneSerializer(const Scene& scene, Writer&& writer) :
 		m_Scene(scene),
 		m_Writer(writer)
-	{}
+	{
+	}
 
 	void SceneSerializer::Serialize()
 	{
 		using namespace Reflection;
 		PropertyTree::TraversalParams params;
-		params.CustomTraversal[&GetClass<Actor>()] = &Utils::ActorTraversal;
+		params.CustomTraversal[&GetClass<Actor>()] = &Utils::ActorSerializeTraversal;
 		PropertyTree::Traverse(GetClass<Scene>(), (void*)&m_Scene, *this, std::move(params));
 	}
 
@@ -356,5 +357,4 @@ namespace Sphynx
 
 		m_Writer.PopMap();
 	}
-
 }
