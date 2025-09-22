@@ -18,19 +18,19 @@ namespace Sphynx
 	public:
 		inline size_t GetNumComponents() const { return m_numComponents; }
 
-		template<typename Component, typename... Args>
-		Component& AddComponent(Args&&... args);
+		template<typename T, typename... Args>
+		T& AddComponent(Args&&... args);
 
-		template<typename Component>
+		template<typename T>
 		void RemoveComponent();
 
-		template<typename Component>
-		Component* TryGetComponent() const;
+		template<typename T>
+		T* TryGetComponent() const;
 
-		template<typename Component>
-		Component& GetComponent() const;
+		template<typename T>
+		T& GetComponent() const;
 
-		template<typename Component>
+		template<typename T>
 		bool HasComponent() const;
 
 		bool IsValid() const;
@@ -51,49 +51,63 @@ namespace Sphynx
 		friend class SceneDeserializer;
 	};
 
-	template<typename Component, typename... Args>
-	inline Component& Actor::AddComponent(Args&&... args)
+	template<typename T, typename... Args>
+	inline T& Actor::AddComponent(Args&&... args)
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
-		SPX_CORE_ASSERT(!HasComponent<Component>(), "Component is already in actor");
+		SPX_CORE_ASSERT(!HasComponent<T>(), "Component is already in actor");
 		++m_numComponents;
-		return m_Scene->m_Registry.emplace<Component>(static_cast<entt::entity>(m_EntityID), std::forward<Args>(args)...);
+		T& component = m_Scene->m_Registry.emplace<T>(static_cast<entt::entity>(m_EntityID), std::forward<Args>(args)...);
+		
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		if (m_Scene->m_OnAddComponentDelegates.ContainsKey(reflectionClass))
+		{
+			m_Scene->m_OnAddComponentDelegates[reflectionClass].Broadcast(&component, this);
+		}
+		return component;
 	}
 
-	template<typename Component>
+	template<typename T>
 	inline void Actor::RemoveComponent()
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
-		SPX_CORE_ASSERT(HasComponent<Component>(), "Component is not in actor");
+		SPX_CORE_ASSERT(HasComponent<T>(), "Component is not in actor");
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		if (m_Scene->m_OnRemoveComponentDelegates.ContainsKey(reflectionClass))
+		{
+			T& component = m_Scene->m_Registry.get<T>(static_cast<entt::entity>(m_EntityID));
+			m_Scene->m_OnRemoveComponentDelegates[reflectionClass].Broadcast(&component, this);
+		}
+
 		--m_numComponents;
-		m_Scene->m_Registry.remove<Component>(static_cast<entt::entity>(m_EntityID));
+		m_Scene->m_Registry.remove<T>(static_cast<entt::entity>(m_EntityID));
 	}
 
-	template<typename Component>
-	inline Component* Actor::TryGetComponent() const
+	template<typename T>
+	inline T* Actor::TryGetComponent() const
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
-		if (HasComponent<Component>())
+		if (HasComponent<T>())
 		{
-			return &m_Scene->m_Registry.get<Component>(static_cast<entt::entity>(m_EntityID));
+			return &m_Scene->m_Registry.get<T>(static_cast<entt::entity>(m_EntityID));
 		}
 
 		return nullptr;
 	}
 
-	template<typename Component>
-	inline Component& Actor::GetComponent() const
+	template<typename T>
+	inline T& Actor::GetComponent() const
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
-		SPX_CORE_ASSERT(HasComponent<Component>(), "Component is not in actor");
-		return m_Scene->m_Registry.get<Component>(static_cast<entt::entity>(m_EntityID));
+		SPX_CORE_ASSERT(HasComponent<T>(), "Component is not in actor");
+		return m_Scene->m_Registry.get<T>(static_cast<entt::entity>(m_EntityID));
 	}
 
-	template<typename Component>
+	template<typename T>
 	inline bool Actor::HasComponent() const
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
-		return m_Scene->m_Registry.all_of<Component>(static_cast<entt::entity>(m_EntityID));
+		return m_Scene->m_Registry.all_of<T>(static_cast<entt::entity>(m_EntityID));
 	}
 
 }

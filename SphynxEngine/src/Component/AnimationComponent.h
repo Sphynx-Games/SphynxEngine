@@ -16,17 +16,13 @@ namespace Sphynx
 		COMPONENT_COMMON_BODY(AnimationComponent);
 
 	public:
-		AnimationComponent(AssetHandle animation, float duration, bool loop = false, bool playOnBegin = false) :
+		AnimationComponent(AssetHandle animation, float duration = 1.0f, bool loop = false, bool playOnBegin = false) :
 			Animation(animation),
 			Duration(duration),
 			Loop(loop),
+			PlayOnBegin(playOnBegin),
 			m_PlaybackState(PlaybackState::STOPPED)
-		{
-			if (playOnBegin)
-			{
-				m_PlaybackState = PlaybackState::PLAYING;
-			}
-		}
+		{}
 
 		void Play() { Animation2DManager::PlayAnimation(this); }
 		void Pause() { Animation2DManager::PauseAnimation(this); }

@@ -66,7 +66,9 @@ namespace Sphynx
 		m_HasBegunPlay(false),
 		m_Registry(),
 		m_Actors(),
-		m_PhysicsWorld(nullptr)
+		m_PhysicsWorld(nullptr),
+		m_OnAddComponentDelegates(),
+		m_OnRemoveComponentDelegates()
 	{
 	}
 
@@ -76,7 +78,9 @@ namespace Sphynx
 		m_HasBegunPlay(false),
 		m_Registry(),
 		m_Actors(),
-		m_PhysicsWorld(nullptr)
+		m_PhysicsWorld(nullptr),
+		m_OnAddComponentDelegates(),
+		m_OnRemoveComponentDelegates()
 	{
 	}
 
@@ -86,7 +90,9 @@ namespace Sphynx
 		m_HasBegunPlay(false),
 		m_Registry(),
 		m_Actors(),
-		m_PhysicsWorld(nullptr)
+		m_PhysicsWorld(nullptr),
+		m_OnAddComponentDelegates(other.m_OnAddComponentDelegates),
+		m_OnRemoveComponentDelegates(other.m_OnRemoveComponentDelegates)
 	{
 		CloneRegistry(other);
 	}
@@ -104,6 +110,8 @@ namespace Sphynx
 		m_PhysicsWorld = nullptr;
 		m_Registry.clear();
 		m_Actors.RemoveAll();
+		m_OnAddComponentDelegates = other.m_OnAddComponentDelegates;
+		m_OnRemoveComponentDelegates = other.m_OnRemoveComponentDelegates;
 		CloneRegistry(other);
 		return *this;
 	}

@@ -5,8 +5,9 @@
 #include "Math/Transform.h"
 #include "Actor.h"
 #include "Container/Array.h"
-
-#include "Reflection/Reflection.h"
+#include "Container/Map.h"
+#include "Core/Delegate.h"
+#include "Reflection/Class.h"
 
 #include "entt/entt.hpp"
 
@@ -27,7 +28,7 @@ namespace Sphynx
 
 	public:
 		void BeginPlay();
-		bool HasBegunPlay() { return m_HasBegunPlay; }
+		inline bool HasBegunPlay() { return m_HasBegunPlay; }
 		void EndPlay();
 		void Update(float deltaTime);
 
@@ -42,8 +43,22 @@ namespace Sphynx
 		template <typename... Components>
 		Array<std::tuple<Components*...>> GetTupledComponents() const;
 
-		const std::string& GetName() const { return m_Name; }
-		void SetName(const std::string& name) { m_Name = name; }
+		inline const std::string& GetName() const { return m_Name; }
+		inline void SetName(const std::string& name) { m_Name = name; }
+
+		template<typename T, typename Func>
+		DelegateHandle SubscribeOnAddComponent(const Func& f);
+		template<typename T, typename UMethod, typename U>
+		DelegateHandle SubscribeOnAddComponent(U* object, UMethod method);
+		template<typename T>
+		void UnsubscribeOnAddComponent(DelegateHandle handle);
+
+		template<typename T, typename Func>
+		DelegateHandle SubscribeOnRemoveComponent(const Func& f);
+		template<typename T, typename UMethod, typename U>
+		DelegateHandle SubscribeOnRemoveComponent(U* object, UMethod method);
+		template<typename T>
+		void UnsubscribeOnRemoveComponent(DelegateHandle handle);
 
 	private:
 		void InitPhysics();
@@ -61,6 +76,9 @@ namespace Sphynx
 		Array<Actor> m_Actors;
 
 		class PhysicsWorld2D* m_PhysicsWorld;
+
+		HashMap<const Reflection::Class*, MulticastDelegate<void(void*, Actor*)>> m_OnAddComponentDelegates;
+		HashMap<const Reflection::Class*, MulticastDelegate<void(void*, Actor*)>> m_OnRemoveComponentDelegates;
 
 		friend class Actor;
 		friend class SceneSerializer;
@@ -94,7 +112,7 @@ namespace Sphynx
 	}
 
 	template <typename... Components>
-	Array<std::tuple<Components*...>> Scene::GetTupledComponents() const
+	inline Array<std::tuple<Components*...>> Scene::GetTupledComponents() const
 	{
 		Array<std::tuple<Components*...>> result;
 		auto view = m_Registry.view<Components...>();
@@ -103,6 +121,66 @@ namespace Sphynx
 			result.Add(std::make_tuple(const_cast<Components*>(&view.get<Components>(entity))...));
 		}
 		return result;
+	}
+
+	template<typename T, typename Func>
+	inline DelegateHandle Scene::SubscribeOnAddComponent(const Func& f)
+	{
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		if (!m_OnAddComponentDelegates.ContainsKey(reflectionClass))
+		{
+			m_OnAddComponentDelegates.Add(reflectionClass, MulticastDelegate<void(void*, Actor*)>());
+		}
+		return m_OnAddComponentDelegates[reflectionClass].Bind(f);
+	}
+
+	template<typename T, typename UMethod, typename U>
+	inline DelegateHandle Scene::SubscribeOnAddComponent(U* object, UMethod method)
+	{
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		if (!m_OnAddComponentDelegates.ContainsKey(reflectionClass))
+		{
+			m_OnAddComponentDelegates.Add(reflectionClass, MulticastDelegate<void(void*, Actor*)>());
+		}
+		return m_OnAddComponentDelegates[reflectionClass].Bind(object, method);
+	}
+
+	template<typename T>
+	inline void Scene::UnsubscribeOnAddComponent(DelegateHandle handle)
+	{
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		SPX_CORE_ASSERT(m_OnAddComponentDelegates.ContainsKey(reflectionClass), "Class not present!!");
+		m_OnAddComponentDelegates[reflectionClass].Unbind(handle);
+	}
+
+	template<typename T, typename Func>
+	inline DelegateHandle Scene::SubscribeOnRemoveComponent(const Func& f)
+	{
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		if (!m_OnRemoveComponentDelegates.ContainsKey(reflectionClass))
+		{
+			m_OnRemoveComponentDelegates.Add(reflectionClass, MulticastDelegate<void(void*, Actor*)>());
+		}
+		return m_OnRemoveComponentDelegates[reflectionClass].Bind(f);
+	}
+
+	template<typename T, typename UMethod, typename U>
+	inline DelegateHandle Scene::SubscribeOnRemoveComponent(U* object, UMethod method)
+	{
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		if (!m_OnRemoveComponentDelegates.ContainsKey(reflectionClass))
+		{
+			m_OnRemoveComponentDelegates.Add(reflectionClass, MulticastDelegate<void(void*, Actor*)>());
+		}
+		return m_OnRemoveComponentDelegates[reflectionClass].Bind(object, method);
+	}
+
+	template<typename T>
+	inline void Scene::UnsubscribeOnRemoveComponent(DelegateHandle handle)
+	{
+		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
+		SPX_CORE_ASSERT(m_OnRemoveComponentDelegates.ContainsKey(reflectionClass), "Class not present!!");
+		m_OnRemoveComponentDelegates[reflectionClass].Unbind(handle);
 	}
 
 }
