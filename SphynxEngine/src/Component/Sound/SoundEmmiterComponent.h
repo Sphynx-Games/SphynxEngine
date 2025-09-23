@@ -2,12 +2,11 @@
 
 #include "Core/Core.h"
 #include "Component/Common.h"
-#include "Asset/Asset.h"
+#include "Sound/Sound.h"
 
 
 namespace Sphynx
 {
-	class Sound;
 	class SoundInstance;
 
 	struct SPHYNX_API SoundEmmiterComponent
@@ -16,17 +15,17 @@ namespace Sphynx
 		SPX_REFLECT_GENERATED_BODY()
 
 	public:
-		SoundEmmiterComponent(AssetHandle sound, float volume = 1.0f, bool loop = false);
+		SoundEmmiterComponent(Sound* sound, float volume = 1.0f, bool loop = false);
 
 		void PlaySound();
 		void PauseSound();
 		void StopSound();
 
-		inline AssetHandle GetSound() const { return m_Sound; }
+		inline const Sound* GetSound() const { return m_Sound; }
 		inline float GetVolume() const { return m_Volume; }
 		inline bool GetLoop() const { return m_Loop; }
 
-		void SetSound(AssetHandle sound);
+		void SetSound(Sound* sound);
 		void SetVolume(float volume);
 		void SetLoop(bool loop);
 
@@ -34,7 +33,7 @@ namespace Sphynx
 		void CreateSoundInstance();
 
 	private:
-		AssetHandle m_Sound;
+		Sound* m_Sound;
 		float m_Volume;
 		bool m_Loop;
 		SoundInstance* m_SoundInstance;

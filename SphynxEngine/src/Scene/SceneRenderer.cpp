@@ -38,11 +38,9 @@ namespace Sphynx
 		for (entt::entity entity : spriteGroup)
 		{
 			auto [spriteRenderer, transform] = spriteGroup.get<SpriteRendererComponent, TransformComponent>(entity);
-
-			std::shared_ptr<Asset<Sprite>> sprite = AssetManager::GetAsset<Sprite>(spriteRenderer.Sprite);
-			if (sprite != nullptr && sprite->Asset != nullptr)
+			if (spriteRenderer.Sprite != nullptr)
 			{
-				Renderer2D::DrawSprite(*sprite->Asset, transform.Transform, spriteRenderer.Tint);
+				Renderer2D::DrawSprite(*spriteRenderer.Sprite, transform.Transform, spriteRenderer.Tint);
 			}
 			else
 			{

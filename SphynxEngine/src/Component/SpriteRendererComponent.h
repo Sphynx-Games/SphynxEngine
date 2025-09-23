@@ -4,22 +4,21 @@
 #include "Common.h"
 #include "Math/Color.h"
 #include "Asset/Asset.h"
+#include "Renderer/Sprite.h"
 
 
 namespace Sphynx
 {
-	class Sprite;
-
 	struct SPHYNX_API SpriteRendererComponent
 	{
 		COMPONENT_COMMON_BODY(SpriteRendererComponent);
 
 	public:
-		SpriteRendererComponent(AssetHandle sprite, Color tint = Color::White) :
+		SpriteRendererComponent(Sprite* sprite, Color tint = Color::White) :
 			Sprite(sprite), Tint(tint) {}
 
 	public:
-		AssetHandle Sprite;
+		Sprite* Sprite;
 		Color Tint;
 
 	};

@@ -38,10 +38,6 @@ namespace Sphynx
 		s_Scene->UnsubscribeOnAddComponent<SpriteRendererComponent>(s_OnCreateSpriteHandle);
 		s_Scene->UnsubscribeOnRemoveComponent<SpriteRendererComponent>(s_OnDestroySpriteHandle);
 
-		/*for (auto& [animComp, data] : s_AnimationComponents)
-		{
-			animComp->m_PlaybackState = PlaybackState::STOPPED;
-		}*/
 		s_AnimationComponents.RemoveAll();
 		s_Scene = nullptr;
 	}

@@ -10,6 +10,10 @@
 
 namespace Sphynx
 {
+	namespace Reflection
+	{
+		struct Class;
+	}
 	struct ContentItem;
 	struct AssetMetadata;
 	class Prefab;
@@ -32,7 +36,7 @@ namespace Sphynx
 		void RenderContentItem_AssetContextMenu(const ContentItem& contentItem);
 
 		void RenderContentItem_CreateSpriteOption(const AssetMetadata& metadata);
-		void RenderContentItem_EditPrefabOption(const AssetMetadata& metadata);
+		void RenderContentItem_EditOption(const AssetMetadata& metadata);
 		
 		void RenderContentItem_CommonOptions(const std::filesystem::path& path);
 		void RenderContentItem_RenameOption(const std::filesystem::path& path);
@@ -42,7 +46,8 @@ namespace Sphynx
 		void DeleteContentItem(const std::filesystem::path& path);
 
 	public:
-		inline static MulticastDelegate<void(Prefab* prefab)> OnPrefabEdit;
+		inline static MulticastDelegate<void(Prefab*)> OnPrefabEdit;
+		inline static MulticastDelegate<void(const Reflection::Class&, void*)> OnGenericAssetEdit;
 
 	private:
 		std::filesystem::path m_CurrentDirectory;

@@ -21,14 +21,6 @@ namespace Sphynx
 		virtual void RenderGUI() override;
 
 	private:
-		void RenderCameraComponent();
-		void RenderSpriteRendererComponent();
-		void RenderBoxRendererComponent();
-		void RenderLineRendererComponent();
-		void RenderRigidbody2DComponent();
-		void RenderBoxCollider2DComponent();
-		void RenderCircleCollider2DComponent();
-		void RenderCapsuleCollider2DComponent();
 		void RenderComponent_ContextMenu(const char* label, const Reflection::Class& reflectionClass);
 
 	private:

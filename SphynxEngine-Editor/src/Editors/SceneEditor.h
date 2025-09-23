@@ -11,6 +11,10 @@
 
 namespace Sphynx
 {
+	namespace
+	{
+		struct Class;
+	}
 	class EditorLayer;
 	class SceneToolbar;
 	class SceneOutlinerPanel;
@@ -37,6 +41,7 @@ namespace Sphynx
 	private:
 		void ManageProjectOpened(const ProjectInfo& projectInfo);
 		void OpenPrefabEditor(Prefab* prefab);
+		void OpenPropertyEditor(const Reflection::Class& reflectionClass, void* object);
 
 		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
@@ -54,6 +59,7 @@ namespace Sphynx
 	private:
 		DelegateHandle m_OpenedProjectHandle;
 		DelegateHandle m_EditPrefabHandle;
+		DelegateHandle m_EditGenericAssetHandle;
 
 		EditorLayer* m_EditorLayer;
 		SceneToolbar* m_SceneToolbar;

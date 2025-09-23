@@ -19,6 +19,7 @@
 #include "Asset/Scene/SceneAsset.h"
 #include "ProjectEditor.h"
 #include "PrefabEditor.h"
+#include "PropertyEditor.h"
 #include "Scene/EditorSceneSerializer.h"
 #include "Scene/EditorSceneDeserializer.h"
 
@@ -42,6 +43,7 @@ namespace Sphynx
 		Editor("SceneEditor"),
 		m_OpenedProjectHandle(),
 		m_EditPrefabHandle(),
+		m_EditGenericAssetHandle(),
 		m_EditorLayer(editorLayer),
 		m_SceneToolbar(new SceneToolbar()),
 		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
@@ -60,6 +62,7 @@ namespace Sphynx
 	{
 		m_OpenedProjectHandle = ProjectEditor::OnProjectOpened.Bind(this, &SceneEditor::ManageProjectOpened);
 		m_EditPrefabHandle = m_ContentBrowserPanel->OnPrefabEdit.Bind(this, &SceneEditor::OpenPrefabEditor);
+		m_EditGenericAssetHandle = m_ContentBrowserPanel->OnGenericAssetEdit.Bind(this, &SceneEditor::OpenPropertyEditor);
 
 		SetToolbar(m_SceneToolbar);
 		AddWidget(m_SceneOutlinerPanel);
@@ -264,6 +267,13 @@ namespace Sphynx
 		PrefabEditor* prefabEditor = new PrefabEditor(prefab);
 		m_EditorLayer->AddEditor(prefabEditor);
 		m_EditorLayer->SetActiveEditor(prefabEditor);
+	}
+
+	void SceneEditor::OpenPropertyEditor(const Reflection::Class& reflectionClass, void* object)
+	{
+		PropertyEditor* propertyEditor = new PropertyEditor(reflectionClass, object);
+		m_EditorLayer->AddEditor(propertyEditor);
+		m_EditorLayer->SetActiveEditor(propertyEditor);
 	}
 
 	void SceneEditor::OpenScene(const std::filesystem::path& path)

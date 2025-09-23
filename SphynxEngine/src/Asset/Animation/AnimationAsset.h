@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "Asset/Asset.h"
 #include "Container/Array.h"
+#include "Renderer/Sprite.h"
 
 
 namespace Sphynx
@@ -11,10 +12,10 @@ namespace Sphynx
 	{
 	public:
 		Animation2D() : Sprites() {}
-		Animation2D(Array<AssetHandle>& sprites) : Sprites(sprites) {}
+		Animation2D(const Array<Sprite*>& sprites) : Sprites(sprites) {}
 
 	public:
-		Array<AssetHandle> Sprites;
+		Array<Sprite*> Sprites;
 	};
 
 	struct SPHYNX_API Animation2DAssetMetadata
@@ -29,13 +30,9 @@ namespace Sphynx
 #include "Reflection/Reflection.h"
 
 SPX_REFLECT_CLASS_BEGIN(Sphynx::Animation2D, SPHYNX_API)
-
 SPX_REFLECT_PROPERTY(Sprites)
-
 SPX_REFLECT_CLASS_END(Sphynx::Animation2D, SPHYNX_API)
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::Animation2DAssetMetadata, SPHYNX_API)
-
 SPX_REFLECT_PROPERTY(Sprites)
-
 SPX_REFLECT_STRUCT_END(Sphynx::Animation2DAssetMetadata, SPHYNX_API)

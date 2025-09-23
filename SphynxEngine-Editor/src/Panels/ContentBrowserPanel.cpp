@@ -304,7 +304,7 @@ namespace Sphynx
 			m_SelectedContentItem->CopyValues(contentItem);
 
 			RenderContentItem_CreateSpriteOption(metadata);
-			RenderContentItem_EditPrefabOption(metadata);
+			RenderContentItem_EditOption(metadata);
 
 			RenderContentItem_CommonOptions(contentItem.RelativePath);
 			ImGui::EndPopup();
@@ -339,17 +339,21 @@ namespace Sphynx
 		}
 	}
 
-	void ContentBrowserPanel::RenderContentItem_EditPrefabOption(const AssetMetadata& metadata)
+	void ContentBrowserPanel::RenderContentItem_EditOption(const AssetMetadata& metadata)
 	{
-		if (metadata.Type == TypeToAssetType<Prefab>::Value()) // TYPE_TO_ASSETTYPE(Prefab)
+		if (ImGui::MenuItem("Edit"))
 		{
-			if (ImGui::MenuItem("Edit prefab"))
+			if (metadata.Type == TypeToAssetType<Prefab>::Value()) // TYPE_TO_ASSETTYPE(Prefab)
 			{
 				std::shared_ptr<Asset<Prefab>> prefab = AssetManager::GetAsset<Prefab>(metadata.Handle);
 				OnPrefabEdit.Broadcast(prefab->Asset);
-
-				ImGui::CloseCurrentPopup();
 			}
+			else
+			{
+				std::shared_ptr<IAsset> asset = AssetManager::GetAsset(metadata.Handle);
+				OnGenericAssetEdit.Broadcast(static_cast<const Reflection::Class&>(*metadata.Type.Type), asset->GetRawAsset());
+			}
+			ImGui::CloseCurrentPopup();
 		}
 	}
 

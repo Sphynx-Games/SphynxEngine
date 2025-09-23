@@ -3,8 +3,7 @@
 #include "Core/Core.h"
 #include "Math/Vector.h"
 #include "Container/Array.h"
-//#include "Asset/Asset.h"
-
+#include "Renderer/Texture.h"
 #include "Reflection/Reflection.h"
 
 #include <cstdint>

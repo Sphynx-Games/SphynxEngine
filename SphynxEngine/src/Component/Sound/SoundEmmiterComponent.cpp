@@ -1,15 +1,13 @@
 #pragma once
 
 #include "SoundEmmiterComponent.h"
-#include "Sound/Sound.h"
 #include "Sound/SoundInstance.h"
 #include "Sound/SoundManager.h"
-#include "Asset/AssetManager.h"
 
 
 namespace Sphynx
 {
-	SoundEmmiterComponent::SoundEmmiterComponent(AssetHandle sound, float volume, bool loop) :
+	SoundEmmiterComponent::SoundEmmiterComponent(Sound* sound, float volume, bool loop) :
 		m_Sound(sound),
 		m_Volume(volume),
 		m_Loop(loop),
@@ -33,7 +31,7 @@ namespace Sphynx
 		SoundManager::StopSound(m_SoundInstance);
 	}
 
-	void SoundEmmiterComponent::SetSound(AssetHandle sound)
+	void SoundEmmiterComponent::SetSound(Sound* sound)
 	{
 		if (m_Sound != sound)
 		{
@@ -72,8 +70,7 @@ namespace Sphynx
 		{
 			flags |= SoundModeFlag::SOUND_LOOP;
 		}
-		std::shared_ptr<Asset<Sound>> soundAsset = AssetManager::GetAsset<Sound>(m_Sound);
-		m_SoundInstance = SoundManager::CreateSound(soundAsset->Asset, flags);
+		m_SoundInstance = SoundManager::CreateSound(m_Sound, flags);
 		m_Volume = (m_Volume - 0.0f) / (1.0f - 0.0f);
 		m_SoundInstance->SetVolume(m_Volume);
 	}

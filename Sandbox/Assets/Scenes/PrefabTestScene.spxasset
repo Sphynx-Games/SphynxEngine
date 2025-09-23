@@ -28,10 +28,18 @@ Sphynx::EditorScene:
                 Y: 0
                 Z: 0
         - ExampleScriptComponent:
-            m_Num: 104743
+            m_Num: 154447
+            m_Handles: []
     - UUID: 91f08106-c04a-431c-a8df-47922d12f36f
       Name: Sprite
       Components:
+        - Sphynx::SpriteRendererComponent:
+            Sprite: 02012b08-9545-4b36-8add-9409cab4b103
+            Tint:
+              R: 255
+              G: 255
+              B: 255
+              A: 255
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -46,13 +54,6 @@ Sphynx::EditorScene:
                 X: 0
                 Y: 0
                 Z: 0
-        - Sphynx::SpriteRendererComponent:
-            Sprite: 02012b08-9545-4b36-8add-9409cab4b103
-            Tint:
-              R: 0
-              G: 0
-              B: 255
-              A: 255
     - UUID: 15f846ad-52ea-40f7-912f-ec002c8f87f0
       Name: Quad
       Components:
@@ -249,13 +250,13 @@ Sphynx::EditorScene:
       UUID: e57c6a9d-582c-4584-bfb3-9f313f3940a8
       Name: MyPrefab
       Components:
+        - Sphynx::SpriteRendererComponent: null
         - Sphynx::TransformComponent:
             Transform:
               Position:
                 X: 13.9
               Scale:
                 Y: 17.4
-        - Sphynx::SpriteRendererComponent: null
         - Sphynx::LineRendererComponent:
             Point1:
               X: -16.7
@@ -273,6 +274,11 @@ Sphynx::EditorScene:
       UUID: b32d42b6-b36e-4579-87ae-e4b138225c2d
       Name: Puta
       Components:
+        - Sphynx::SpriteRendererComponent:
+            Tint:
+              R: 0
+              G: 255
+              B: 0
         - Sphynx::TransformComponent:
             Transform:
               Position:
@@ -284,8 +290,3 @@ Sphynx::EditorScene:
               Rotation:
                 Y: -48.8
                 Z: 44.8
-        - Sphynx::SpriteRendererComponent:
-            Tint:
-              R: 0
-              G: 255
-              B: 0
