@@ -13,7 +13,7 @@ Aditionally, an **in-engine custom editor** interface is implemented using **Dea
 
 - 🧩 **Modular Architecture** – Engine systems are independent and loosely coupled, promoting flexibility and maintainability.
 
-- ⚙️ **CMake-Based Build System** – External dependencies (Box2D, SDL2, EnTT, etc.) are managed via CMake.
+- ⚙️ **CMake-Based Build System** – External dependencies (Box2D, SDL3, EnTT, etc.) are managed via CMake.
 
 - 🧠 **Entity-Component-System (ECS)** – Built on EnTT, providing a clean and efficient data-oriented design.
 
