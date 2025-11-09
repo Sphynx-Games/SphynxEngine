@@ -4,8 +4,9 @@
 #include "Asset/AssetManager.h"
 #include "PrefabAsset.h"
 
-#include "Serialization/Prefab/PrefabSerializer.h"
-#include "Serialization/Prefab/PrefabDeserializer.h"
+#include "Serialization/Actor/ActorSerializer.h"
+#include "Serialization/Actor/ActorDeserializer.h"
+#include "Component/NameComponent.h"
 
 
 namespace Sphynx
@@ -21,8 +22,9 @@ namespace Sphynx
 		SPX_CORE_LOG_TRACE("Loading prefab {}", metadata.Path.string().c_str());
 
 		Prefab* prefab = new Prefab();
+		prefab->AddComponent<NameComponent>();
 		YAMLReader reader{ metadata.Path };
-		PrefabDeserializer deserializer{ *prefab, reader };
+		ActorDeserializer deserializer{ *prefab, Reflection::GetClass<Prefab>(), reader };
 		deserializer.Deserialize();
 
 		std::shared_ptr<Asset<Prefab>> asset = std::make_shared<Asset<Prefab>>();
@@ -40,7 +42,7 @@ namespace Sphynx
 		std::shared_ptr<Asset<Prefab>> prefabAsset = AssetManager::GetAsset<Prefab>(metadata.Handle);
 
 		YAMLWriter writer{ metadata.Path };
-		PrefabSerializer serializer{ *prefabAsset->Asset, writer };
+		ActorSerializer serializer{ *prefabAsset->Asset, Reflection::GetClass<Prefab>(), writer };
 		serializer.Serialize();
 	}
 }

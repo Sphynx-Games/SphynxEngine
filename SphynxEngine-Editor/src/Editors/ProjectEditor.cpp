@@ -69,7 +69,7 @@ namespace Sphynx
 		ProjectInfo projectInfo = {};
 
 		YAMLReader reader{ path };
-		ReflectionDeserializer deserializer{ projectInfo, reader };
+		ReflectionDeserializer deserializer{ &projectInfo, Reflection::GetType<decltype(projectInfo)>(), reader };
 		deserializer.Deserialize();
 
 		// Load {projectInfo.Name}.dll and broadcast delegate

@@ -56,6 +56,7 @@ namespace Sphynx
 		Writer() = delete;
 		Writer(Writer&& other) = delete;
 		Writer& operator=(Writer&& other) = delete;
+		Writer(const Writer& other) = default;
 
 		template<typename TWriter,
 			typename = std::enable_if_t<!std::is_same_v<

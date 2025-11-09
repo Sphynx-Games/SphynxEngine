@@ -7,26 +7,23 @@
 namespace Sphynx
 {
 	class EditorScene;
-	class Prefab;
 
 	class EditorSceneDeserializer : public SceneDeserializer
 	{
 	public:
-
-	public:
 		EditorSceneDeserializer(EditorScene& scene, Reader&& reader);
+		virtual ~EditorSceneDeserializer();
 
 	protected:
-		virtual bool VisitClass(const Reflection::Property* property, void* data) override;
+		static void EditorActorDeserializeTraversal(Reflection::PropertyTree& tree, const Reflection::Property* property, void* data, Reflection::IPropertyTreeVisitor& visitor);
 		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection) override;
-
-		virtual void OnBeforeVisitClass(const Reflection::Property* property, void* data) override;
-		virtual void OnAfterVisitClass(const Reflection::Property* property, void* data) override;
 
 	public:
 		void Deserialize();
 
-		void SetPrefabComponentsProperty(const Reflection::Property* property);
+	private:
+		void VisitEditorActors(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection);
+		void VisitPrefabComponent(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection);
 
 	protected:
 		const Reflection::Property* m_PrefabEditorComponentsProperty;

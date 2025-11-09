@@ -7,7 +7,6 @@
 #include <Component/UUIDComponent.h>
 #include <Component/NameComponent.h>
 #include <Component/TransformComponent.h>
-#include <Serialization/Prefab/PrefabDeserializer.h>
 #include <Asset/AssetManager.h>
 #include <Asset/Prefab/PrefabAsset.h>
 

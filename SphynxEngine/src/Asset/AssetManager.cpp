@@ -104,7 +104,8 @@ namespace Sphynx
 		YAMLReader reader{ s_ContextPath / ASSET_REGISTRY_FILEPATH };
 		if (reader.IsValid())
 		{
-			ReflectionDeserializer::Deserialize(s_Registry, reader);
+			ReflectionDeserializer deserializer{ &s_Registry, Reflection::GetType<decltype(s_Registry)>(), reader, false };
+			deserializer.Deserialize();
 		}
 	}
 

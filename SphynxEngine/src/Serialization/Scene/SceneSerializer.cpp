@@ -7,6 +7,7 @@
 #include "Logging/Log.h"
 #include "Serialization/Reflection/ReflectionSerializer.h"
 #include <charconv>
+#include "Asset/AssetManager.h"
 
 
 namespace Sphynx
@@ -101,6 +102,13 @@ namespace Sphynx
 		PropertyTree::TraversalParams params;
 		params.CustomTraversal[&GetClass<Actor>()] = &Utils::ActorSerializeTraversal;
 		PropertyTree::Traverse(GetClass<Scene>(), (void*)&m_Scene, *this, std::move(params));
+	}
+
+	void SceneSerializer::ConfigurePropertyTree(Reflection::PropertyTree& tree, const Reflection::Type& type)
+	{
+		using namespace Reflection;
+		auto& params = tree.GetTraversalParams();
+		params.CustomTraversal[&type] = &Utils::ActorSerializeTraversal;
 	}
 
 	void SceneSerializer::Visit(const Reflection::Property* property, bool& data)
@@ -206,6 +214,27 @@ namespace Sphynx
 
 	bool SceneSerializer::VisitClass(const Reflection::Property* property, void* data)
 	{
+		if (property->IsPointer())
+		{
+			// TODO: this can be done in a generic way via attributes
+			// check if it is an asset type
+			if (property->GetPointerIndirection() == 1 && AssetManager::IsAssetTypeRegistered({ &property->GetType() }))
+			{
+				// treat as assethandle
+				// TODO: consider inserting property node in tree instead
+				uintptr_t& assetPtr = (*(uintptr_t*)data);
+				AssetHandle assetHandle = assetPtr != 0 ? AssetManager::GetAssetHandleFromAddress((void*)assetPtr) : AssetHandle::Invalid;
+
+				Reflection::Property fakeProperty{ Reflection::GetType<AssetHandle>(), property->Name, 0 };
+				Reflection::PropertyTree propertyTree{ fakeProperty.GetType(), &assetHandle };
+				propertyTree.Traverse(*this, &fakeProperty);
+
+				return false;
+			}
+
+			return false;
+		}
+
 		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->GetType());
 		if (&rClass == &Reflection::GetClass<Actor>())
 		{
@@ -300,12 +329,18 @@ namespace Sphynx
 
 	void SceneSerializer::OnAfterVisitClass(const Reflection::Property* property, void* data)
 	{
+		if (property->IsPointer())
+		{
+			return;
+		}
+
 		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->GetType());
 		if (&rClass == &Reflection::GetClass<Actor>())
 		{
 			m_Writer.PopMap();
 			return;
 		}
+
 		/*
 		using CustomSerializer = ::Sphynx::Serialization::CustomSerializer<TWriter>;
 		if (const CustomSerializer* serializer = rClass.GetAttribute<CustomSerializer>())

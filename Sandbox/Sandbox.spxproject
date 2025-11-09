@@ -1,2 +1,3 @@
-Name: Sandbox
-InitialScene: Assets\Scenes\TestScene.spxasset
+Sphynx::ProjectInfo:
+    Name: Sandbox
+    InitialScene: Assets\Scenes\TestScene.spxasset

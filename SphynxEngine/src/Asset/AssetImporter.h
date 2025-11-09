@@ -47,7 +47,7 @@ namespace Sphynx
 		static AssetMetadataHeader DeserializeAssetHeader(const Reader& reader)
 		{
 			AssetMetadataHeader header;
-			ReflectionDeserializer headerDeserializer(header, reader);
+			ReflectionDeserializer headerDeserializer{ &header, Reflection::GetType<decltype(header)>(), reader };
 			headerDeserializer.Deserialize();
 
 			SPX_CORE_ASSERT(header.SphynxAsset == SPHYNX_ASSET_HEADER, "The file is not recognised as an Sphynx Asset!!");
@@ -59,7 +59,7 @@ namespace Sphynx
 		static T DeserializeAssetMetadata(const Reader& reader)
 		{
 			T specificMetadata;
-			ReflectionDeserializer deserializer(specificMetadata, reader);
+			ReflectionDeserializer deserializer{ &specificMetadata, Reflection::GetType<decltype(specificMetadata)>(), reader };
 			deserializer.Deserialize();
 
 			return specificMetadata;

@@ -59,6 +59,9 @@ namespace Sphynx
 			void Traverse(IPropertyTreeVisitor& visitor);
 			void Traverse(IPropertyTreeVisitor& visitor, const Property* property);
 
+			inline const TraversalParams& GetTraversalParams() const { return m_Params; }
+			inline TraversalParams& GetTraversalParams() { return m_Params; }
+
 		private:
 			const Type& m_Type;
 			void* m_Addr;

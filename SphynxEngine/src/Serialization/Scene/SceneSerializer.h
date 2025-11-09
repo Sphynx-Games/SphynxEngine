@@ -22,6 +22,7 @@ namespace Sphynx
 
 	public:
 		void Serialize();
+		static void ConfigurePropertyTree(Reflection::PropertyTree& tree, const Reflection::Type& type);
 
 	protected:
 		virtual void Visit(const Reflection::Property* property, bool& data) override;

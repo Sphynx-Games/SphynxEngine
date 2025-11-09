@@ -6,10 +6,11 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API PrefabSerializer
+	class SPHYNX_API ActorSerializer
 	{
 	public:
-		PrefabSerializer(const class Prefab& prefab, class Writer&& writer);
+		ActorSerializer(const class Actor& actor, class Writer&& writer);
+		ActorSerializer(const class Actor& actor, const Reflection::Class& cClass, class Writer&& writer);
 
 		void Serialize();
 
@@ -17,7 +18,8 @@ namespace Sphynx
 		void SerializeComponent(const Reflection::Class& componentClass);
 
 	private:
-		const Prefab& m_Prefab;
+		const Actor& m_Actor;
+		const Reflection::Type& m_Type;
 		Writer& m_Writer;
 	};
 }

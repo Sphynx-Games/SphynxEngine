@@ -130,7 +130,7 @@ namespace Sphynx
 							{
 								const Type& rType = associativeCollection->GetKeyType();
 
-								void* keyAddr = (void*)associativeCollection->GetKey(m_Addr, i);
+								void* keyAddr = (void*)associativeCollection->GetKey((const void*)m_Addr, i);
 								const size_t offset = std::distance((std::byte*)m_Addr, (std::byte*)keyAddr);
 
 								const Property fakeProperty{ rType, rType.Name, offset };
@@ -140,12 +140,12 @@ namespace Sphynx
 							{
 								const Type& rType = associativeCollection->GetValueType();
 
-								void* valueAddr = (void*)associativeCollection->GetValue(m_Addr, i);
+								void* valueAddr = (void*)associativeCollection->GetValue((const void*)m_Addr, i);
 								const size_t offset = std::distance((std::byte*)m_Addr, (std::byte*)valueAddr);
 
 								const Property fakeProperty{ rType, rType.Name, offset };
 
-								PropertyTree tree{ associativeCollection->GetValueType(), valueAddr, TraversalParams{m_Params} };
+								PropertyTree tree{ rType, valueAddr, TraversalParams{m_Params} };
 								tree.Traverse(visitor, &fakeProperty);
 							}
 						}

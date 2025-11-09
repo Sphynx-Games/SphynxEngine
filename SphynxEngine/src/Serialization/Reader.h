@@ -61,6 +61,7 @@ namespace Sphynx
 		Reader() = delete;
 		Reader(Reader&& other) = delete;
 		Reader& operator=(Reader&& other) = delete;
+		Reader(const Reader& other) = default;
 
 		template<typename TReader, 
 			typename = std::enable_if_t<!std::is_same_v<

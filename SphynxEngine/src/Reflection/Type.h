@@ -144,6 +144,11 @@ namespace Sphynx
 				}
 			}
 
+			friend bool operator==(const Type& lhs, const Type& rhs)
+			{
+				return &lhs == &rhs;
+			}
+
 		public:
 			const char* Name;
 			size_t Size;
