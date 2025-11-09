@@ -13,7 +13,7 @@ namespace Sphynx
 	class PrefabEditor : public Editor
 	{
 	public:
-		PrefabEditor(Prefab* prefab);
+		PrefabEditor(const char* name, Prefab* prefab);
 		virtual ~PrefabEditor();
 
 	protected:
