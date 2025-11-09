@@ -8,8 +8,9 @@ namespace Sphynx
 	void Panel::PreRenderGUI()
 	{
 		Widget::PreRenderGUI();
+
 		std::string labelAndID{ GetName() };
-		labelAndID += ("###" + std::to_string(GetID()));
+		labelAndID += ("##" + std::to_string(GetID()));
 		m_CanRender = ImGui::Begin(labelAndID.c_str());
 	}
 

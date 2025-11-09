@@ -28,8 +28,9 @@ namespace Sphynx
 			Number(number),
 			AbsolutePath(absolutePath),
 			RelativePath(std::filesystem::relative(AbsolutePath, s_AssetsPath)),
-			Filename(RelativePath.filename().string())
-		{}
+			Filename(RelativePath.filename())
+		{
+		}
 
 		void CopyValues(const ContentItem& item)
 		{
@@ -51,7 +52,7 @@ namespace Sphynx
 		int Number = -1;
 		std::filesystem::path AbsolutePath;
 		std::filesystem::path RelativePath;
-		std::string Filename;
+		std::filesystem::path Filename;
 	};
 
 
@@ -227,7 +228,7 @@ namespace Sphynx
 		bool pressed = ImGui::SelectableItemWithImageAndText(
 			m_SelectedContentItem->Number,
 			contentItem.Number,
-			contentItem.Filename,
+			contentItem.Filename.string(),
 			(ImTextureID)texture->GetNativeTexture(),
 			buttonSize,
 			tintColor,
@@ -253,7 +254,7 @@ namespace Sphynx
 		ImGui::SelectableItemWithImageAndTextInput(
 			m_SelectedContentItem->Number,
 			contentItem.Number,
-			contentItem.Filename,
+			contentItem.Filename.string(),
 			m_RenameBuffer,
 			sizeof(m_RenameBuffer) / sizeof(char),
 			(ImTextureID)texture->GetNativeTexture(),
@@ -286,7 +287,7 @@ namespace Sphynx
 
 	void ContentBrowserPanel::RenderContentItem_ContextMenu(const ContentItem& contentItem)
 	{
-		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
+		if (ImGui::BeginPopupContextItem(contentItem.Filename.string().c_str()))
 		{
 			m_SelectedContentItem->CopyValues(contentItem);
 
@@ -299,12 +300,14 @@ namespace Sphynx
 	{
 		const AssetMetadata& metadata = AssetManager::GetAssetMetadataFromPath(s_AssetsPath / contentItem.RelativePath);
 
-		if (ImGui::BeginPopupContextItem(contentItem.Filename.c_str()))
+		if (ImGui::BeginPopupContextItem(contentItem.Filename.string().c_str()))
 		{
 			m_SelectedContentItem->CopyValues(contentItem);
 
 			RenderContentItem_CreateSpriteOption(metadata);
-			RenderContentItem_EditOption(metadata);
+			std::filesystem::path name = contentItem.Filename;
+			name.replace_extension();
+			RenderContentItem_EditOption(name.string(), metadata);
 
 			RenderContentItem_CommonOptions(contentItem.RelativePath);
 			ImGui::EndPopup();
@@ -339,40 +342,21 @@ namespace Sphynx
 		}
 	}
 
-	void ContentBrowserPanel::RenderContentItem_EditOption(const AssetMetadata& metadata)
+	void ContentBrowserPanel::RenderContentItem_EditOption(const std::string& name, const AssetMetadata& metadata)
 	{
 		if (ImGui::MenuItem("Edit"))
 		{
-			if (metadata.Type == TypeToAssetType<Prefab>::Value()) // TYPE_TO_ASSETTYPE(Prefab)
-			{
-				std::shared_ptr<Asset<Prefab>> prefab = AssetManager::GetAsset<Prefab>(metadata.Handle);
-				OnPrefabEdit.Broadcast(prefab->Asset);
-			}
-			else
-			{
-				std::shared_ptr<IAsset> asset = AssetManager::GetAsset(metadata.Handle);
-				OnGenericAssetEdit.Broadcast(static_cast<const Reflection::Class&>(*metadata.Type.Type), asset->GetRawAsset());
-			}
+			OnAssetEdit.Broadcast(name, metadata);
 			ImGui::CloseCurrentPopup();
 		}
 	}
 
 	void ContentBrowserPanel::RenderContentItem_CommonOptions(const std::filesystem::path& path)
 	{
-		RenderContentItem_RenameOption(path);
-		RenderContentItem_DeleteOption(path);
-	}
-
-	void ContentBrowserPanel::RenderContentItem_RenameOption(const std::filesystem::path& path)
-	{
 		if (ImGui::MenuItem("Rename"))
 		{
 			m_PathToRename = path;
 		}
-	}
-
-	void ContentBrowserPanel::RenderContentItem_DeleteOption(const std::filesystem::path& path)
-	{
 		if (ImGui::MenuItem("Delete"))
 		{
 			DeleteContentItem(path);

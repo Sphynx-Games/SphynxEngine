@@ -6,15 +6,14 @@
 #include "Scene/EditorScene.h"
 #include <Scene/Scene.h>
 #include <Core/Delegate.h>
+#include <Container/Map.h>
+#include <Container/Pair.h>
+#include <Asset/Asset.h>
 #include <Utils/PlaybackState.h>
 
 
 namespace Sphynx
 {
-	namespace
-	{
-		struct Class;
-	}
 	class EditorLayer;
 	class SceneToolbar;
 	class SceneOutlinerPanel;
@@ -22,6 +21,7 @@ namespace Sphynx
 	class ViewportPanel;
 	class DetailsPanel;
 	class Framebuffer;
+	struct AssetMetadata;
 
 
 	class SceneEditor : public Editor
@@ -40,8 +40,7 @@ namespace Sphynx
 
 	private:
 		void ManageProjectOpened(const ProjectInfo& projectInfo);
-		void OpenPrefabEditor(Prefab* prefab);
-		void OpenPropertyEditor(const Reflection::Class& reflectionClass, void* object);
+		void OpenAssetEditor(const std::string& name, const AssetMetadata& metadata);
 
 		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
@@ -58,8 +57,7 @@ namespace Sphynx
 
 	private:
 		DelegateHandle m_OpenedProjectHandle;
-		DelegateHandle m_EditPrefabHandle;
-		DelegateHandle m_EditGenericAssetHandle;
+		DelegateHandle m_EditAssetHandle;
 
 		EditorLayer* m_EditorLayer;
 		SceneToolbar* m_SceneToolbar;
@@ -70,6 +68,8 @@ namespace Sphynx
 
 		Framebuffer* m_Framebuffer;
 		EditorCameraController m_CameraController;
+
+		HashMap<AssetHandle, Pair<Editor*, std::string>> m_AssetEditors;
 
 		std::filesystem::path m_LastOpenedScenePath;
 		EditorScene m_SceneToEdit;

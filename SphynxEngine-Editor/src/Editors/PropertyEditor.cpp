@@ -15,8 +15,8 @@
 
 namespace Sphynx
 {
-	PropertyEditor::PropertyEditor(const Reflection::Class& reflectionClass, void* object) :
-		Editor("PropertyEditor"),
+	PropertyEditor::PropertyEditor(const char* name, const Reflection::Class& reflectionClass, void* object) :
+		Editor(name),
 		m_ReflectionClass(reflectionClass),
 		m_Object(object)
 	{}
@@ -29,6 +29,8 @@ namespace Sphynx
 		const bool bIsWindowDocked = window != nullptr && window->DockNodeIsVisible;
 		ImGuiWindowFlags flags = 0;
 		flags |= !bIsWindowDocked * ImGuiWindowFlags_MenuBar;
+
+		if (m_ID != 0) ImGui::PushID(m_ID);
 
 		const bool visible = ImGui::Begin(GetName(), nullptr, flags);
 		if (visible)
@@ -61,6 +63,8 @@ namespace Sphynx
 			}
 		}
 		ImGui::End();
+
+		if (m_ID != 0) ImGui::PopID();
 
 		// This will append menu bar items into the parents menu bar
 		// But only if the window has not shown them already

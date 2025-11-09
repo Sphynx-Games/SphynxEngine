@@ -16,7 +16,7 @@ namespace Sphynx
 	class PropertyEditor : public Editor
 	{
 	public:
-		PropertyEditor(const Reflection::Class& reflectionClass, void* object);
+		PropertyEditor(const char* name, const Reflection::Class& reflectionClass, void* object);
 		virtual ~PropertyEditor();
 
 	protected:

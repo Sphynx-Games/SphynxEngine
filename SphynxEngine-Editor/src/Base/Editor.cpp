@@ -8,7 +8,8 @@ namespace Sphynx
 {
 	Editor::Editor(const char* name, Widget* parent) :
 		Widget(name, parent),
-		m_Toolbar()
+		m_Toolbar(),
+		m_ID(0)
 	{
 	}
 
@@ -22,6 +23,11 @@ namespace Sphynx
 		m_Toolbar = toolbar;
 	}
 
+	void Editor::SetOverrideID(WidgetID id)
+	{
+		m_ID = id;
+	}
+
 	void Editor::RenderGUI()
 	{
 		const ImGuiWindow* window = ImGui::FindWindowByName(GetName());
@@ -29,9 +35,13 @@ namespace Sphynx
 		ImGuiWindowFlags flags = 0;
 		flags |= !bIsWindowDocked * ImGuiWindowFlags_MenuBar;
 
+		if (m_ID != 0) ImGui::PushOverrideID(m_ID);
+
 		const bool visible = ImGui::Begin(GetName(), nullptr, flags);
+		ImGui::PushID(GetName());
 		if (visible)
 		{
+
 			// Render Menu Bar
 			if (ImGui::BeginMenuBar())
 			{
@@ -59,7 +69,10 @@ namespace Sphynx
 				widget->PostRenderGUI();
 			}
 		}
+		ImGui::PopID();
 		ImGui::End();
+
+		if (m_ID != 0) ImGui::PopID();
 
 		// This will append menu bar items into the parents menu bar
 		// But only if the window has not shown them already

@@ -36,18 +36,14 @@ namespace Sphynx
 		void RenderContentItem_AssetContextMenu(const ContentItem& contentItem);
 
 		void RenderContentItem_CreateSpriteOption(const AssetMetadata& metadata);
-		void RenderContentItem_EditOption(const AssetMetadata& metadata);
-		
+		void RenderContentItem_EditOption(const std::string& name, const AssetMetadata& metadata);
 		void RenderContentItem_CommonOptions(const std::filesystem::path& path);
-		void RenderContentItem_RenameOption(const std::filesystem::path& path);
-		void RenderContentItem_DeleteOption(const std::filesystem::path& path);
 
 		bool IsRenaming(const std::filesystem::path& path);
 		void DeleteContentItem(const std::filesystem::path& path);
 
 	public:
-		inline static MulticastDelegate<void(Prefab*)> OnPrefabEdit;
-		inline static MulticastDelegate<void(const Reflection::Class&, void*)> OnGenericAssetEdit;
+		inline static MulticastDelegate<void(const std::string&, const AssetMetadata&)> OnAssetEdit;
 
 	private:
 		std::filesystem::path m_CurrentDirectory;

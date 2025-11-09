@@ -18,6 +18,7 @@ namespace Sphynx
 
 	public:
 		void SetToolbar(Toolbar* toolbar);
+		void SetOverrideID(WidgetID id);
 
 	protected:
 		virtual void PreRenderGUI() override {}
@@ -30,5 +31,6 @@ namespace Sphynx
 
 	protected:
 		Toolbar* m_Toolbar;
+		WidgetID m_ID;
 	};
 }

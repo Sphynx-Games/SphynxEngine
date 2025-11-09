@@ -18,8 +18,8 @@
 
 namespace Sphynx
 {
-	PrefabEditor::PrefabEditor(Prefab* prefab) :
-		Editor("PrefabEditor"),
+	PrefabEditor::PrefabEditor(const char* name, Prefab* prefab) :
+		Editor(name),
 		m_SceneOutlinerPanel(new SceneOutlinerPanel()),
 		m_ViewportPanel(new ViewportPanel()),
 		m_DetailsPanel(new DetailsPanel()),

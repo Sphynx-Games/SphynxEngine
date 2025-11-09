@@ -1,5 +1,9 @@
 # SphynxEngine
 
+> ### ***⚠️ Disclaimer***: *This project is intended for **learning purposes only**.*
+> This project must not be used for developing commercial games without acquiring the proper licenses of the libraries used as dependencies.
+***
+
 SphynxEngine is a **C++ game engine** project aimed at **cross-platform** development, with a strong focus on **modularity** and system independence. The architecture is built around the **Entity-Component-System (ECS)** model, enabling scalable and flexible game logic.
 
 The engine integrates several external libraries such as **Box2D**, **SDL3**, and **EnTT**, all managed cleanly through **CMake** for portability and maintainability.
@@ -18,10 +22,6 @@ Aditionally, an **in-engine custom editor** interface is implemented using **Dea
 - 🧠 **Entity-Component-System (ECS)** – Built on EnTT, providing a clean and efficient data-oriented design.
 
 - 🎨 **In-Engine Editor** – Custom built-in editor implemented with Dear ImGui for real-time scene manipulation and debugging.
-
-
-> ### ***⚠️ Disclaimer***: *This project is intended for **learning purposes only**.*
-> This project must not be used for developing commercial games without acquiring the proper licenses of the libraries used as dependencies.
 
 
 ## **📂 Project Structure**
