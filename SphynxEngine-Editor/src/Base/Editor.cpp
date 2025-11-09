@@ -9,7 +9,9 @@ namespace Sphynx
 	Editor::Editor(const char* name, Widget* parent) :
 		Widget(name, parent),
 		m_Toolbar(),
-		m_ID(0)
+		m_ID(0),
+		m_IsClosable(true),
+		m_ShouldClose(false)
 	{
 	}
 
@@ -28,6 +30,21 @@ namespace Sphynx
 		m_ID = id;
 	}
 
+	void Editor::SetIsClosable(bool isClosable)
+	{
+		m_IsClosable = isClosable;
+	}
+
+	bool Editor::GetIsClosable() const
+	{
+		return m_IsClosable;
+	}
+
+	bool Editor::GetShouldClose() const
+	{
+		return m_ShouldClose;
+	}
+
 	void Editor::RenderGUI()
 	{
 		const ImGuiWindow* window = ImGui::FindWindowByName(GetName());
@@ -37,7 +54,14 @@ namespace Sphynx
 
 		if (m_ID != 0) ImGui::PushOverrideID(m_ID);
 
-		const bool visible = ImGui::Begin(GetName(), nullptr, flags);
+		bool isOpen = true;
+		bool* pOpen = m_IsClosable ? &isOpen : nullptr;
+		const bool visible = ImGui::Begin(GetName(), pOpen, flags);
+		if(m_IsClosable && !m_ShouldClose)
+		{
+			m_ShouldClose = !isOpen;
+		}
+
 		ImGui::PushID(GetName());
 		if (visible)
 		{

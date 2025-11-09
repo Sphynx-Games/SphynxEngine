@@ -32,7 +32,14 @@ namespace Sphynx
 
 		if (m_ID != 0) ImGui::PushID(m_ID);
 
-		const bool visible = ImGui::Begin(GetName(), nullptr, flags);
+		bool isOpen = true;
+		bool* pOpen = m_IsClosable ? &isOpen : nullptr;
+		const bool visible = ImGui::Begin(GetName(), pOpen, flags);
+		if (m_IsClosable && !m_ShouldClose)
+		{
+			m_ShouldClose = !isOpen;
+		}
+
 		if (visible)
 		{
 			// Render Menu Bar

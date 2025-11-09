@@ -9,7 +9,11 @@
 #include "Base/Widget.h"
 #include "Editors/SceneEditor.h"
 #include "Editors/ProjectEditor.h"
-//#include "Editors/PrefabEditor.h"
+#include "Editors/AssetEditor.h"
+
+#include <Core/Application.h>
+#include <Asset/AssetMetadata.h>
+#include <Asset/AssetManager.h>
 
 #include <imgui.h>
 
@@ -18,7 +22,8 @@ namespace Sphynx
 {
 	EditorLayer::EditorLayer() :
 		m_BlockEventsEnabled(true),
-		m_Editors({ new SceneEditor(this), new ProjectEditor() }),
+		m_AssetEditor(new AssetEditor()),
+		m_Editors({ new SceneEditor(this), new ProjectEditor(), m_AssetEditor }),
 		m_ActiveEditor(m_Editors[0]) // TODO: this is not being used right now
 	{
 	}
@@ -29,7 +34,7 @@ namespace Sphynx
 		{
 			delete editor;
 		}
-		m_Editors.clear();
+		m_Editors.RemoveAll();
 
 		m_ActiveEditor = nullptr;
 	}
@@ -86,6 +91,24 @@ namespace Sphynx
 		for (Widget* widget : m_Editors)
 		{
 			widget->PostRenderUpdate(deltaTime);
+		}
+
+		// delete closed editors
+		// TODO: Be careful when deleting the active editor
+		std::vector<Editor*> closedEditors;
+		closedEditors.reserve(m_Editors.Size());
+		for (Editor* editor : m_Editors)
+		{
+			if (editor->GetShouldClose())
+			{
+				closedEditors.push_back(editor);
+			}
+		}
+		for (Editor* editor : closedEditors)
+		{
+			editor->OnClose.Broadcast();
+			RemoveEditor(editor);
+			delete editor;
 		}
 	}
 
@@ -200,7 +223,7 @@ namespace Sphynx
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		const size_t num = m_Editors.size();
+		const size_t num = m_Editors.Size();
 		for (int i = 0; i < num; ++i)
 		{
 			Widget* widget = m_Editors[i];
@@ -249,15 +272,17 @@ namespace Sphynx
 
 	void EditorLayer::AddEditor(Editor* editor)
 	{
-		m_Editors.push_back(editor);
+		m_Editors.Add(editor);
 	}
 
 	void EditorLayer::RemoveEditor(Editor* editor)
 	{
-		auto it = std::find(m_Editors.begin(), m_Editors.end(), editor);
-		if (it == m_Editors.end()) return;
+		m_Editors.Remove(editor);
+	}
 
-		m_Editors.erase(it);
+	AssetEditor* EditorLayer::GetAssetEditor() const
+	{
+		return m_AssetEditor;
 	}
 
 	void EditorLayer::SetActiveEditor(Editor* editor)

@@ -3,6 +3,7 @@
 #include "Base/Widget.h"
 #include <vector>
 #include <string>
+#include <Core/Delegate.h>
 
 
 namespace Sphynx
@@ -19,6 +20,10 @@ namespace Sphynx
 	public:
 		void SetToolbar(Toolbar* toolbar);
 		void SetOverrideID(WidgetID id);
+		void SetIsClosable(bool isClosable);
+
+		bool GetIsClosable() const;
+		bool GetShouldClose() const;
 
 	protected:
 		virtual void PreRenderGUI() override {}
@@ -29,8 +34,13 @@ namespace Sphynx
 		virtual bool HasMenuBar() const { return false; }
 		virtual void RenderMenuBar() {}
 
+	public:
+		MulticastDelegate<void()> OnClose;
+
 	protected:
 		Toolbar* m_Toolbar;
 		WidgetID m_ID;
+		bool m_IsClosable;
+		bool m_ShouldClose;
 	};
 }

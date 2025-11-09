@@ -3,7 +3,6 @@
 #include "Base/Panel.h"
 #include <Math/Vector.h>
 #include <Math/Color.h>
-#include <Core/Delegate.h>
 
 #include <filesystem>
 
@@ -41,9 +40,6 @@ namespace Sphynx
 
 		bool IsRenaming(const std::filesystem::path& path);
 		void DeleteContentItem(const std::filesystem::path& path);
-
-	public:
-		inline static MulticastDelegate<void(const std::string&, const AssetMetadata&)> OnAssetEdit;
 
 	private:
 		std::filesystem::path m_CurrentDirectory;

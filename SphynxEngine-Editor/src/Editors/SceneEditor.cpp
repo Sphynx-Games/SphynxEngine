@@ -49,7 +49,6 @@ namespace Sphynx
 		m_DetailsPanel(new DetailsPanel()),
 		m_Framebuffer(nullptr),
 		m_CameraController(),
-		m_AssetEditors(),
 		m_LastOpenedScenePath(),
 		m_SceneToEdit(),
 		m_SceneToPlay(),
@@ -59,9 +58,9 @@ namespace Sphynx
 		m_SceneNameBuffer()
 	{
 		m_OpenedProjectHandle = ProjectEditor::OnProjectOpened.Bind(this, &SceneEditor::ManageProjectOpened);
-		m_EditAssetHandle = m_ContentBrowserPanel->OnAssetEdit.Bind(this, &SceneEditor::OpenAssetEditor);
 
 		SetToolbar(m_SceneToolbar);
+		SetIsClosable(false);
 		AddWidget(m_SceneOutlinerPanel);
 		AddWidget(m_ContentBrowserPanel);
 		AddWidget(m_ViewportPanel);
@@ -114,7 +113,6 @@ namespace Sphynx
 	SceneEditor::~SceneEditor()
 	{
 		ProjectEditor::OnProjectOpened.Unbind(m_OpenedProjectHandle);
-		m_ContentBrowserPanel->OnAssetEdit.Unbind(m_EditAssetHandle);
 
 		if (m_ActiveScene != nullptr)
 		{
@@ -257,37 +255,6 @@ namespace Sphynx
 	void SceneEditor::ManageProjectOpened(const ProjectInfo& projectInfo)
 	{
 		OpenScene(projectInfo.InitialScene);
-	}
-
-	void SceneEditor::OpenAssetEditor(const std::string& name, const AssetMetadata& metadata)
-	{
-		if (m_AssetEditors.ContainsKey(metadata.Handle))
-		{
-			m_EditorLayer->SetActiveEditor(m_AssetEditors[metadata.Handle].First);
-			return;
-		}
-
-		m_AssetEditors.Add(metadata.Handle, {nullptr, ""});
-
-		std::string& editorName = m_AssetEditors[metadata.Handle].Second;
-		editorName = name;
-
-		Editor*& assetEditor = m_AssetEditors[metadata.Handle].First;
-		if (metadata.Type == TypeToAssetType<Prefab>::Value()) // TYPE_TO_ASSETTYPE(Prefab)
-		{
-			std::shared_ptr<Asset<Prefab>> prefab = AssetManager::GetAsset<Prefab>(metadata.Handle);
-			assetEditor = new PrefabEditor(editorName.c_str(), prefab->Asset);
-		}
-		else
-		{
-			std::shared_ptr<IAsset> asset = AssetManager::GetAsset(metadata.Handle);
-			assetEditor = new PropertyEditor(editorName.c_str(), static_cast<const Reflection::Class&>(*metadata.Type.Type), asset->GetRawAsset());
-		}
-
-		WidgetID id = std::hash<UUID>()(metadata.Handle);
-		assetEditor->SetOverrideID(id);
-		m_EditorLayer->AddEditor(assetEditor);
-		m_EditorLayer->SetActiveEditor(assetEditor);
 	}
 
 	void SceneEditor::OpenScene(const std::filesystem::path& path)

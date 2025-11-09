@@ -6,6 +6,7 @@
 namespace Sphynx
 {
 	class Editor;
+	class AssetEditor;
 	class Event;
 
 	class EditorLayer final : public Layer
@@ -29,11 +30,14 @@ namespace Sphynx
 		void AddEditor(Editor* editor);
 		void RemoveEditor(Editor* editor);
 
+		AssetEditor* GetAssetEditor() const;
 		void SetActiveEditor(Editor* editor);
 
 	protected:
 		bool m_BlockEventsEnabled;
-		std::vector<Editor*> m_Editors;
+
+		AssetEditor* m_AssetEditor;
+		Array<Editor*> m_Editors;
 
 		Editor* m_ActiveEditor;
 	};

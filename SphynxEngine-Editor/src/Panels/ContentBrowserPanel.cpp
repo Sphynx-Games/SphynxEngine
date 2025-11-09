@@ -11,6 +11,7 @@
 #include <Input/Keycode.h>
 #include "Dialogs/FileDialog.h"
 #include "ImGuiExtra.h"
+#include "EditorApplication.h"
 
 #include <imgui.h>
 
@@ -346,7 +347,7 @@ namespace Sphynx
 	{
 		if (ImGui::MenuItem("Edit"))
 		{
-			OnAssetEdit.Broadcast(name, metadata);
+			EditorApplication::GetInstance()->OpenAssetEditor(name, metadata);
 			ImGui::CloseCurrentPopup();
 		}
 	}

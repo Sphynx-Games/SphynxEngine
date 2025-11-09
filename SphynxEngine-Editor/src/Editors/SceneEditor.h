@@ -69,8 +69,6 @@ namespace Sphynx
 		Framebuffer* m_Framebuffer;
 		EditorCameraController m_CameraController;
 
-		HashMap<AssetHandle, Pair<Editor*, std::string>> m_AssetEditors;
-
 		std::filesystem::path m_LastOpenedScenePath;
 		EditorScene m_SceneToEdit;
 		Scene m_SceneToPlay;

@@ -2,15 +2,14 @@
 #include "EditorApplication.h"
 #include "Base/Resources.h"
 #include "EditorLayer.h"
+#include "PropertyDrawer/PropertyDrawerManager.h"
+#include "Editors/AssetEditor.h"
 
 #include <Core/EntryPoint.h>
 #include <Command/CommandManager.h>
-#include "PropertyDrawer/PropertyDrawerManager.h"
-
-
-#include "Reflection/PropertyComparator.h"
-#include "Math/Vector.h"
-#include "Container/Array.h"
+#include <Reflection/PropertyComparator.h>
+#include <Math/Vector.h>
+#include <Container/Array.h>
 
 
 Sphynx::Application* CreateApplication()
@@ -23,6 +22,11 @@ namespace Sphynx
 	EditorApplication::EditorApplication() :
 		m_EditorLayer(nullptr)
 	{
+	}
+
+	EditorApplication* EditorApplication::GetInstance()
+	{
+		return static_cast<EditorApplication*>(Application::GetInstance());
 	}
 
 	void EditorApplication::Init(const HashMap<std::string, Array<std::string>>& commandArguments)
@@ -55,5 +59,10 @@ namespace Sphynx
 		Resources::Shutdown();
 
 		Application::Shutdown();
+	}
+
+	void EditorApplication::OpenAssetEditor(const std::string& name, const AssetMetadata& metadata)
+	{
+		m_EditorLayer->GetAssetEditor()->OpenAssetEditor(name, metadata, m_EditorLayer);
 	}
 }

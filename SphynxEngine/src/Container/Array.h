@@ -35,6 +35,11 @@ namespace Sphynx
 			other.RemoveAll();
 		}
 
+		Array(std::initializer_list<T> init)
+		{
+			m_Array = init;
+		}
+
 		~Array() = default;
 
 		inline void Add(const T& value) { m_Array.push_back(value); }
@@ -72,7 +77,7 @@ namespace Sphynx
 		{
 			auto it = std::find(m_Array.begin(), m_Array.end(), value);
 
-			// If element is found found, erase it 
+			// If element is found, erase it 
 			if (it != m_Array.end())
 			{
 				m_Array.erase(it);
