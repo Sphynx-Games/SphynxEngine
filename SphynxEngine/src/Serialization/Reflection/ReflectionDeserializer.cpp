@@ -228,7 +228,7 @@ namespace Sphynx
 		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->GetType());
 		std::string tmpData{};
 		m_Reader.Read(tmpData);
-		rEnum.SetName(data, tmpData);
+		rEnum.SetName(data, tmpData.c_str());
 	}
 
 	bool ReflectionDeserializer::VisitClass(const Reflection::Property* property, void* data)

@@ -9,7 +9,7 @@ struct ID3D11ShaderResourceView;
 
 namespace Sphynx
 {
-	class SPHYNX_API D3D11Texture : public Texture
+	class /*SPHYNX_API*/ D3D11Texture : public Texture
 	{
 	public:
 		D3D11Texture(const std::string& path);

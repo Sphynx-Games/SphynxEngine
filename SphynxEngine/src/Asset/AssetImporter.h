@@ -103,11 +103,5 @@ namespace Sphynx
 			ReflectionSerializer::Serialize(specificMetadata, writer);
 			writer.PopSequence();
 		}
-
-	private:
-		static HashMap<AssetType, AssetImportFunction> s_AssetImportFunctions;
-		static HashMap<AssetType, AssetLoadFunction> s_AssetLoadFunctions;
-		static HashMap<AssetType, AssetSaveFunction> s_AssetSaveFunctions;
-
 	};
 }

@@ -33,7 +33,7 @@ namespace Sphynx
 		std::filesystem::path RelativePath;
 	};
 
-	struct SPHYNX_API FontAssetMetadata
+	struct /*SPHYNX_API*/ FontAssetMetadata
 	{
 		std::filesystem::path RelativePath;
 	};

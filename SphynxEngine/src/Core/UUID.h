@@ -27,7 +27,7 @@ namespace Sphynx
 		friend SPHYNX_API bool operator<(const UUID& lhs, const UUID& rhs);
 
 	private:
-		std::array<uint8_t, 16> m_Data;
+		std::array<uint8_t, 16> m_Data{ 0 };
 
 	public:
 		static const UUID Invalid;

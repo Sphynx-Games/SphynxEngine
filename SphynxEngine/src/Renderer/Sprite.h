@@ -66,7 +66,7 @@ namespace Sphynx
 		static Spritesheet* Create(Texture* texture, int rows, int columns);
 
 	private:
-		Texture* m_Texture;
+		Texture* m_Texture{ nullptr };
 		Array<Sprite*> m_Sprites;
 
 		friend class SpriteAssetImporter;

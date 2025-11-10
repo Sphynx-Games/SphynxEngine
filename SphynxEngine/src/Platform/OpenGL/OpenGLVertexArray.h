@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API OpenGLVertexArray : public VertexArray
+	class /*SPHYNX_API*/ OpenGLVertexArray : public VertexArray
 	{
 	public:
 		OpenGLVertexArray();

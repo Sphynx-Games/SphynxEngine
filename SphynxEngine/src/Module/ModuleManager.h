@@ -23,8 +23,5 @@ namespace Sphynx
 
 		static void* GetModule(const ModuleHandle& handle);
 		static const HashMap<ModuleHandle, void*>& GetAllModules();
-
-	private:
-		inline static HashMap<ModuleHandle, void*> s_LoadedModules = {};
 	};
 }

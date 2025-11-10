@@ -107,7 +107,7 @@ namespace Sphynx
 			return *this;
 		}
 
-		Array& operator = (Array&& other)
+		Array& operator = (Array&& other) noexcept
 		{
 			RemoveAll();
 			m_Array = std::move(other.m_Array);

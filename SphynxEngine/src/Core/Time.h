@@ -25,11 +25,5 @@ namespace Sphynx
 		static float GetScaledSeconds();
 		static float GetScaledMilliseconds();
 
-	private:
-		static std::chrono::steady_clock::time_point s_LastTime;
-		static float s_DeltaTime;
-		static float s_TimeScale;
-
-		static bool s_IsInitialized;
 	};
 }

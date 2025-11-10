@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API OpenGLVertexBuffer : public VertexBuffer
+	class /*SPHYNX_API*/ OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(void* vertices, size_t size, const BufferLayout& layout);
@@ -23,7 +23,7 @@ namespace Sphynx
 		BufferLayout m_Layout;
 	};
 
-	class SPHYNX_API OpenGLIndexBuffer : public IndexBuffer
+	class /*SPHYNX_API*/ OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
 		OpenGLIndexBuffer(uint32_t* indices, uint32_t count);

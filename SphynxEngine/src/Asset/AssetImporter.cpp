@@ -4,9 +4,12 @@
 
 namespace Sphynx
 {
-	HashMap<AssetType, AssetImportFunction> AssetImporter::s_AssetImportFunctions = {};
-	HashMap<AssetType, AssetLoadFunction> AssetImporter::s_AssetLoadFunctions = {};
-	HashMap<AssetType, AssetSaveFunction> AssetImporter::s_AssetSaveFunctions = {};
+	namespace
+	{
+		static HashMap<AssetType, AssetImportFunction> s_AssetImportFunctions;
+		static HashMap<AssetType, AssetLoadFunction> s_AssetLoadFunctions;
+		static HashMap<AssetType, AssetSaveFunction> s_AssetSaveFunctions;
+	}
 
 	std::shared_ptr<IAsset> AssetImporter::Import(const AssetMetadata& metadata, const std::filesystem::path& path)
 	{

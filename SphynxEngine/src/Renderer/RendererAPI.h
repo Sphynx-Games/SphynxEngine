@@ -13,7 +13,7 @@ namespace Sphynx
 	class Sprite;
 	class Font;
 	
-	class RendererAPI
+	class SPHYNX_API RendererAPI
 	{
 	public:
 		enum class API

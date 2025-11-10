@@ -37,7 +37,10 @@ public:
 
 private:
 	uint32_t m_Num;
-	Sphynx::Array<Sphynx::AssetHandle> m_Handles;
+	struct
+	{
+		Sphynx::Array<Sphynx::AssetHandle> m_Handles;
+	};
 };
 
 #include "Reflection/Reflection.h"

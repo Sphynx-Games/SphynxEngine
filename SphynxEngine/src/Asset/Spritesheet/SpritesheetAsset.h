@@ -11,7 +11,7 @@
 
 namespace Sphynx
 {
-	struct SPHYNX_API SpritesheetAssetMetadata
+	struct /*SPHYNX_API*/ SpritesheetAssetMetadata
 	{
 		HashMap<AssetHandle, SpriteAssetMetadata> SpritesData;
 	};

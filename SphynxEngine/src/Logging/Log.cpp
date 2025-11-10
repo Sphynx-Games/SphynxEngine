@@ -8,9 +8,6 @@
 
 namespace Sphynx
 {
-	SPHYNX_API std::shared_ptr<spdlog::logger> Log::m_CoreLogger;
-	SPHYNX_API std::shared_ptr<spdlog::logger> Log::m_ClientLogger;
-
 	void Log::Init()
 	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");

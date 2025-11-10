@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	class SoundSystemData;
+	struct SoundSystemData;
 	class Sound;
 
 	class SPHYNX_API SoundSystem

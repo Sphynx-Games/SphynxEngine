@@ -28,7 +28,7 @@ namespace Sphynx
 		virtual void Shutdown();
 
 		virtual void HandleEvent(class Event& event);
-		
+
 		inline const HashMap<std::string, Array<std::string>>& GetCommandArguments() { return m_CommandArguments; }
 
 		void PushLayer(Layer* layer);
@@ -49,10 +49,13 @@ namespace Sphynx
 		static Application* s_Application;
 
 	private:
-		bool m_IsRunning;
-		std::unique_ptr<Window> m_Window;
-		LayerStack m_LayerStack;
-		HashMap<std::string, Array<std::string>> m_CommandArguments;
+		struct
+		{
+			bool m_IsRunning;
+			std::unique_ptr<Window> m_Window;
+			LayerStack m_LayerStack;
+			HashMap<std::string, Array<std::string>> m_CommandArguments;
+		};
 
 	};
 

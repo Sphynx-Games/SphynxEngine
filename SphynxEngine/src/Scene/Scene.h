@@ -13,7 +13,7 @@
 
 
 namespace Sphynx
-{	
+{
 	class SPHYNX_API Scene
 	{
 		SPX_REFLECT_GENERATED_BODY()
@@ -68,17 +68,17 @@ namespace Sphynx
 
 	protected:
 		UUID m_UUID;
-		std::string m_Name;
-
-		bool m_HasBegunPlay;
-
-		entt::registry m_Registry;
-		Array<Actor> m_Actors;
+		struct
+		{
+			std::string m_Name;
+			bool m_HasBegunPlay;
+			entt::registry m_Registry;
+			Array<Actor> m_Actors;
+			HashMap<const Reflection::Class*, MulticastDelegate<void(void*, Actor*)>> m_OnAddComponentDelegates;
+			HashMap<const Reflection::Class*, MulticastDelegate<void(void*, Actor*)>> m_OnRemoveComponentDelegates;
+		};
 
 		class PhysicsWorld2D* m_PhysicsWorld;
-
-		HashMap<const Reflection::Class*, MulticastDelegate<void(void*, Actor*)>> m_OnAddComponentDelegates;
-		HashMap<const Reflection::Class*, MulticastDelegate<void(void*, Actor*)>> m_OnRemoveComponentDelegates;
 
 		friend class Actor;
 		friend class SceneSerializer;

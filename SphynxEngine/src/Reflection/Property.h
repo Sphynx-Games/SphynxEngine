@@ -50,15 +50,18 @@ namespace Sphynx
 			size_t Offset;
 			AccessSpecifier AccessSpecifier;
 
-			std::vector<Attribute*> Attributes;
+			struct
+			{
+				std::vector<Attribute*> Attributes;
+			};
 		};
-		
+
 		template<typename T>
-		inline bool Property::HasAttribute() const 
-		{ 
-			return GetAttribute<T>() != nullptr; 
+		inline bool Property::HasAttribute() const
+		{
+			return GetAttribute<T>() != nullptr;
 		}
-		
+
 		template<typename T>
 		inline const T* Property::GetAttribute() const
 		{

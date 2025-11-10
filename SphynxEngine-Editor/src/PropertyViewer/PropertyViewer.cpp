@@ -343,12 +343,12 @@ namespace Sphynx
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
 		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->GetType());
-		const char* currentValue = rEnum.GetName((const void*)data).c_str();
+		const char* currentValue = rEnum.GetName((const void*)data);
 		if (ImGui::BeginCombo(LABEL(property->Name), currentValue))
 		{
 			for (const Reflection::Enum::Entry& entry : rEnum)
 			{
-				const char* optionName = entry.Name.c_str();
+				const char* optionName = entry.Name;
 				if (ImGui::Selectable(optionName, false))
 				{
 					rEnum.SetValue(data, entry.Value);

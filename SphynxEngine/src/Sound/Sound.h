@@ -23,9 +23,12 @@ namespace Sphynx
 		inline SoundData* GetData() const { return m_Data; }
 
 	private:
-		std::vector<std::byte> m_Buffer;
-
 		SoundData* m_Data;
+		struct
+		{
+			std::vector<std::byte> m_Buffer;
+		};
+
 	};
 
 	class SPHYNX_API SoundLoader

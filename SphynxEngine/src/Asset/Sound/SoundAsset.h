@@ -33,7 +33,7 @@ namespace Sphynx
 		std::filesystem::path RelativePath;
 	};
 
-	struct SPHYNX_API SoundAssetMetadata
+	struct /*SPHYNX_API*/ SoundAssetMetadata
 	{
 		std::filesystem::path RelativePath;
 	};

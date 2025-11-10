@@ -71,7 +71,7 @@ namespace Sphynx
 
 			// calculate and change current sprite
 			float animProgress = data.TimeElapsed / component->Duration;
-			uint32_t spriteIndex = static_cast<uint32_t>(animProgress * animation->Sprites.Size());
+			uint64_t spriteIndex = static_cast<uint64_t>(animProgress * animation->Sprites.Size());
 			if (spriteIndex >= animation->Sprites.Size())
 			{
 				spriteIndex = animation->Sprites.Size() - 1;

@@ -26,9 +26,12 @@ namespace Sphynx
 		void Pop() const;
 
 	protected:
-		std::ifstream m_File;
-		mutable std::shared_ptr<YAML::Node> m_Node;
-		mutable std::stack<std::shared_ptr<YAML::Node>> m_Stack;
+		struct // this will avoid DLL export warnings
+		{
+			std::ifstream m_File;
+			mutable std::shared_ptr<YAML::Node> m_Node;
+			mutable std::stack<std::shared_ptr<YAML::Node>> m_Stack;
+		};
 
 	};
 }

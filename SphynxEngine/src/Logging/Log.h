@@ -9,11 +9,11 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API Log
+	class /*SPHYNX_API*/ Log
 	{
 	public:
-		static void Init();
-		static void Shutdown();
+		SPHYNX_API static void Init();
+		SPHYNX_API static void Shutdown();
 
 		/* Engine logging API */
 		template<typename... Args>
@@ -54,8 +54,8 @@ namespace Sphynx
 		static void ClientFatal(Args&&... args);
 
 	private:
-		static std::shared_ptr<spdlog::logger> m_CoreLogger;
-		static std::shared_ptr<spdlog::logger> m_ClientLogger;
+		inline static std::shared_ptr<spdlog::logger> m_CoreLogger{};
+		inline static std::shared_ptr<spdlog::logger> m_ClientLogger{};
 
 	};
 

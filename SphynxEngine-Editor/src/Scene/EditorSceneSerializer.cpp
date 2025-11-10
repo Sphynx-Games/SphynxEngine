@@ -23,8 +23,8 @@ namespace Sphynx
 				switch (info.Type)
 				{
 				case Reflection::PropertyDiffType::DIFFERENT_VALUE:
-					int stackSize = info.TargetStack.Size();
-					for (int i = 0; i < stackSize - 1; ++i)
+					size_t stackSize = info.TargetStack.Size();
+					for (size_t i = 0; i < stackSize - 1; ++i)
 					{
 						DiffTree[{info.TargetStack[i].Property, nullptr}].Add({info.TargetStack[i + 1].Property, nullptr});
 					}

@@ -8,17 +8,17 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API Animation2D
+	class /*SPHYNX_API*/ Animation2D
 	{
 	public:
-		Animation2D() : Sprites() {}
-		Animation2D(const Array<Sprite*>& sprites) : Sprites(sprites) {}
+		SPHYNX_API Animation2D() : Sprites() {}
+		SPHYNX_API Animation2D(const Array<Sprite*>& sprites) : Sprites(sprites) {}
 
 	public:
 		Array<Sprite*> Sprites;
 	};
 
-	struct SPHYNX_API Animation2DAssetMetadata
+	struct /*SPHYNX_API*/ Animation2DAssetMetadata
 	{
 		Array<AssetHandle> Sprites;
 	};

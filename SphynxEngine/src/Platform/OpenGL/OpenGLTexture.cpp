@@ -37,7 +37,7 @@ namespace Sphynx
 
 	void* OpenGLTexture::GetNativeTexture() const
 	{
-		return (void*)m_RendererID;
+		return reinterpret_cast<void*>(static_cast<uintptr_t>(m_RendererID));
 	}
 
 	//void OpenGLTexture::SetData(void* data)

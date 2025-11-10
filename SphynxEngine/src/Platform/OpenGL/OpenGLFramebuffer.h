@@ -6,7 +6,7 @@
 
 namespace Sphynx
 {
-	class SPHYNX_API OpenGLFramebuffer : public Framebuffer
+	class /*SPHYNX_API*/ OpenGLFramebuffer : public Framebuffer
 	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpecification& spec);
@@ -22,8 +22,8 @@ namespace Sphynx
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, uint32_t value) override;
 
-		virtual void* GetColorAttachment(uint32_t index = 0) const override { return (void*)m_ColorAttachments[index]; }
-		virtual void* GetDepthAttachment() const override { return (void*)m_DepthAttachment; }
+		virtual void* GetColorAttachment(uint32_t index = 0) const override { return reinterpret_cast<void*>(static_cast<uintptr_t>(m_ColorAttachments[index])); }
+		virtual void* GetDepthAttachment() const override { return reinterpret_cast<void*>(static_cast<uintptr_t>(m_DepthAttachment)); }
 
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 	private:

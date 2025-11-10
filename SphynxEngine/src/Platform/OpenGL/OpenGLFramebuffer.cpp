@@ -15,9 +15,9 @@ namespace Sphynx
 			return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		}
 
-		static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count)
+		static void CreateTextures(bool multisampled, uint32_t* outID, size_t count)
 		{
-			glCreateTextures(TextureTarget(multisampled), count, outID);
+			glCreateTextures(TextureTarget(multisampled), static_cast<GLsizei>(count), outID);
 		}
 
 		static void BindTexture(bool multisampled, uint32_t id)
@@ -25,7 +25,7 @@ namespace Sphynx
 			glBindTexture(TextureTarget(multisampled), id);
 		}
 
-		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
+		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, size_t index)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
@@ -43,7 +43,7 @@ namespace Sphynx
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			}
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, static_cast<GLenum>(GL_COLOR_ATTACHMENT0 + index), TextureTarget(multisampled), id, 0);
 		}
 
 		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
@@ -107,7 +107,7 @@ namespace Sphynx
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
 		glDeleteFramebuffers(1, &m_RendererID);
-		glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+		glDeleteTextures(static_cast<GLsizei>(m_ColorAttachments.size()), m_ColorAttachments.data());
 		glDeleteTextures(1, &m_DepthAttachment);
 	}
 
@@ -116,7 +116,7 @@ namespace Sphynx
 		if (m_RendererID)
 		{
 			glDeleteFramebuffers(1, &m_RendererID);
-			glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+			glDeleteTextures(static_cast<GLsizei>(m_ColorAttachments.size()), m_ColorAttachments.data());
 			glDeleteTextures(1, &m_DepthAttachment);
 
 			m_ColorAttachments.clear();
@@ -169,7 +169,7 @@ namespace Sphynx
 			}
 
 			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-			glDrawBuffers(m_ColorAttachments.size(), buffers);
+			glDrawBuffers(static_cast<GLsizei>(m_ColorAttachments.size()), buffers);
 		}
 		else if (m_ColorAttachments.empty())
 		{

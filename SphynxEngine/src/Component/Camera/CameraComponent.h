@@ -45,7 +45,10 @@ namespace Sphynx
 		CameraProjectionMode m_ProjectionMode;
 		CameraInfo m_CameraInfo;
 
-		glm::mat4 m_ProjectionMatrix;
+		struct
+		{
+			glm::mat4 m_ProjectionMatrix;
+		};
 	};
 }
 

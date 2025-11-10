@@ -50,8 +50,5 @@ namespace Sphynx
 		inline static uint32_t WorldVelocityIterations = 8;
 		inline static uint32_t WorldPositionIterations = 3;
 
-	private:
-		inline static HashMap<PhysicsWorld2D*, Set<Rigidbody2D*>> s_PhysicsWorldToRigidbodies = {};
-		inline static HashMap<Rigidbody2D*, Set<Collider2D*>> s_RigidbodyToColliders = {};
 	};
 }

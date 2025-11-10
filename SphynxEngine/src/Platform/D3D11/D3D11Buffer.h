@@ -8,7 +8,7 @@ struct ID3D11Buffer;
 
 namespace Sphynx
 {
-	class SPHYNX_API D3D11VertexBuffer : public VertexBuffer
+	class /*SPHYNX_API*/ D3D11VertexBuffer : public VertexBuffer
 	{
 	public:
 		D3D11VertexBuffer(void* vertices, size_t size, const BufferLayout& layout);
@@ -33,7 +33,7 @@ namespace Sphynx
 		ID3D11Buffer* m_VertexBuffer;
 	};
 
-	class SPHYNX_API D3D11IndexBuffer : public IndexBuffer
+	class /*SPHYNX_API*/ D3D11IndexBuffer : public IndexBuffer
 	{
 	public:
 		D3D11IndexBuffer(uint32_t* indices, uint32_t count);

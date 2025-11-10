@@ -37,8 +37,5 @@ namespace Sphynx
 	private:
 		static const std::string* GetCommandRealName(const std::string& name);
 
-	private:
-		inline static HashMap<std::string, struct Command*> s_Commands = {};
-		inline static HashMap<std::string, std::string> s_Alias = {};
 	};
 }

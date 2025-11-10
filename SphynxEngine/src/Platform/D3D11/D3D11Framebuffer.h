@@ -10,7 +10,7 @@ struct ID3D11ShaderResourceView;
 
 namespace Sphynx
 {
-	class SPHYNX_API D3D11Framebuffer : public Framebuffer
+	class /*SPHYNX_API*/ D3D11Framebuffer : public Framebuffer
 	{
 	public:
 		D3D11Framebuffer(const FramebufferSpecification& spec);

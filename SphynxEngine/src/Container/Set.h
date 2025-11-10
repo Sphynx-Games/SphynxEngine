@@ -8,7 +8,7 @@
 namespace Sphynx
 {
 	template <typename T>
-	class SPHYNX_API Set
+	class /*SPHYNX_API*/ Set
 	{
 	public:
 		using Iterator = typename std::unordered_set<T>::iterator;
@@ -114,5 +114,6 @@ namespace Sphynx
 
 	private:
 		std::unordered_set<T> m_Set;
+
 	};
 }

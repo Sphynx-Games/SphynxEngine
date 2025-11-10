@@ -28,7 +28,10 @@ namespace Sphynx
 			static void Unregister(const Type& (*typeFunc)());
 
 		private:
-			std::vector<const Type& (*)()> m_TypeFunctions;
+			struct 
+			{
+				std::vector<const Type& (*)()> m_TypeFunctions;
+			};
 
 		private:
 			template<typename T>

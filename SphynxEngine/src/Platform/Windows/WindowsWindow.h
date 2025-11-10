@@ -39,7 +39,10 @@ namespace Sphynx
 
 	private:
 		WindowParams m_Params;
-		EventCallbackFunction m_CallbackFunction;
+		struct
+		{
+			EventCallbackFunction m_CallbackFunction;
+		};
 
 		SDL_Window* m_Window;
 		HWND m_WindowHandle;

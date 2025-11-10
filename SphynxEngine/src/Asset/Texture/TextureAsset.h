@@ -33,7 +33,7 @@ namespace Sphynx
 		std::filesystem::path RelativePath;
 	};
 
-	struct SPHYNX_API TextureAssetMetadata
+	struct /*SPHYNX_API*/ TextureAssetMetadata
 	{
 		std::filesystem::path RelativePath;
 	};

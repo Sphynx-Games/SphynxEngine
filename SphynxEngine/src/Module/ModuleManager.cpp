@@ -8,6 +8,11 @@
 
 namespace Sphynx
 {
+	namespace
+	{
+		static HashMap<ModuleHandle, void*> s_LoadedModules{};
+	}
+
 	ModuleHandle ModuleManager::LoadModule(const std::filesystem::path& path)
 	{
 		HMODULE module = NULL;

@@ -33,7 +33,7 @@ namespace Sphynx
 		// TODO: filtering/wrap
 	};
 
-	struct SPHYNX_API FramebufferAttachmentSpecification
+	struct /*SPHYNX_API*/ FramebufferAttachmentSpecification
 	{
 		FramebufferAttachmentSpecification() = default;
 		FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
@@ -42,7 +42,7 @@ namespace Sphynx
 		std::vector<FramebufferTextureSpecification> Attachments;
 	};
 
-	struct SPHYNX_API FramebufferSpecification
+	struct /*SPHYNX_API*/ FramebufferSpecification
 	{
 		uint32_t Width = 0;
 		uint32_t Height = 0;

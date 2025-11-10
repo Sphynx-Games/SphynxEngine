@@ -44,7 +44,7 @@ namespace Sphynx
 		virtual bool VisitClass(const Reflection::Property* property, void* data) override;
 		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection) override;
 		virtual bool VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection) override;
-		
+
 		virtual void OnBeforeVisit(const Reflection::Property* property, bool& data) override;
 		virtual void OnAfterVisit(const Reflection::Property* property, bool& data) override;
 		virtual void OnBeforeVisit(const Reflection::Property* property, char& data) override;
@@ -131,7 +131,10 @@ namespace Sphynx
 		bool m_IsRootPropertyVisitEnabled;
 
 		bool m_ShouldContinue;
-		std::stack<Node> m_VisitedProperties;
+		struct
+		{
+			std::stack<Node> m_VisitedProperties;
+		};
 
 	};
 }

@@ -13,10 +13,16 @@ namespace Sphynx
 
 	public:
 		NameComponent(const std::string& name) :
-			Name(name) {}
+			Name(name)
+		{
+
+		}
 
 	public:
-		std::string Name;
+		struct
+		{
+			std::string Name;
+		};
 
 	};
 }

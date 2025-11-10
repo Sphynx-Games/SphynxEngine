@@ -7,7 +7,7 @@
 #define INSTANTIATE(_Type) template SPHYNX_API const ::Sphynx::Reflection::Type& GetType<_Type>();
 #define X(_Type) \
 namespace details { \
-template<> struct SPHYNX_API ClassImplWrapper<_Type> { \
+template<> struct /*SPHYNX_API*/ ClassImplWrapper<_Type> { \
 		inline static TypeRegister<_Type> s_TypeRegister{}; \
 }; \
 SPHYNX_API const ::Sphynx::Reflection::Type& GetTypeImpl(Tag<_Type>) \
@@ -314,7 +314,7 @@ namespace Sphynx
 			if (buffer[0] != '\"' || buffer[size - 1] != '\"') return false;
 
 			value.resize(size - 2);
-			const int result = std::mbstowcs(value.data(), buffer + 1, size - 2);
+			const size_t result = std::mbstowcs(value.data(), buffer + 1, size - 2);
 			return result >= 0 && result < size;
 		}
 		

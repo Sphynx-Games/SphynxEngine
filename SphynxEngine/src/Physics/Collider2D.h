@@ -47,9 +47,12 @@ namespace Sphynx
 		void Detach();
 
 	public:
-		MulticastDelegate<void(const Contact2D&)> OnBeginOverlap;
-		MulticastDelegate<void(const Contact2D&)> OnEndOverlap;
-		MulticastDelegate<void(const Contact2D&)> OnHit;
+		struct
+		{
+			MulticastDelegate<void(const Contact2D&)> OnBeginOverlap;
+			MulticastDelegate<void(const Contact2D&)> OnEndOverlap;
+			MulticastDelegate<void(const Contact2D&)> OnHit;
+		};
 
 	protected:
 		Vector2f m_Offset;
@@ -57,8 +60,10 @@ namespace Sphynx
 		PhysicsWorld2D* m_PhysicsWorld;
 		Rigidbody2D* m_Rigidbody;
 		Collider2DData* m_Data;
-
-		Set<Collider2D*> m_Overlaps;
+		struct
+		{
+			Set<Collider2D*> m_Overlaps;
+		};
 
 		friend class Physics2D;
 		friend class PhysicsWorld2D;
@@ -105,7 +110,7 @@ namespace Sphynx
 	{
 	public:
 		CapsuleCollider2D(Vector2f size = { 1.0, 1.0 }, Vector2f offset = { 0.0f, 0.0f }, bool isTrigger = false);
-		
+
 		inline Vector2f GetSize() const { return m_Size; }
 		inline void SetSize(Vector2f size) { m_Size = size; }
 

@@ -8,6 +8,13 @@
 
 namespace Sphynx
 {
+	struct Command;
+	namespace
+	{
+		inline static HashMap<std::string, Command*> s_Commands{};
+		inline static HashMap<std::string, std::string> s_Alias{};
+	}
+
 	struct Command
 	{
 	public:

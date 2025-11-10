@@ -5,7 +5,7 @@ namespace Sphynx
 {
 	namespace Reflection
 	{
-		Enum::Entry::Entry(const std::string& name, int64_t value) :
+		Enum::Entry::Entry(const char* name, int64_t value) :
 			Name(name),
 			Value(value),
 			Attributes()
@@ -66,7 +66,7 @@ namespace Sphynx
 			m_SetValueFunc(addr, value);
 		}
 
-		const std::string& Enum::GetName(const void* addr) const
+		const char* Enum::GetName(const void* addr) const
 		{
 			int64_t value = GetValue(addr);
 			auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Value == value; });
@@ -75,9 +75,9 @@ namespace Sphynx
 			return it->Name;
 		}
 
-		void Enum::SetName(void* addr, const std::string& name) const
+		void Enum::SetName(void* addr, const char* name) const
 		{
-			auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Name == name; });
+			auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return !strcmp(entry.Name, name); });
 			SPX_CORE_ASSERT(it != Values + Count);
 
 			SetValue(addr, it->Value);

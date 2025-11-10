@@ -18,8 +18,8 @@ namespace Sphynx
 			Sprite(sprite), Tint(tint) {}
 
 	public:
-		Sprite* Sprite;
-		Color Tint;
+		Sprite* Sprite{ nullptr };
+		Color Tint{ Color::White };
 
 	};
 }

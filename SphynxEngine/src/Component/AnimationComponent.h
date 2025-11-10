@@ -6,6 +6,7 @@
 #include "Asset/Asset.h"
 #include "Utils/PlaybackState.h"
 #include "Animation/Animation2DManager.h"
+#include "Reflection/Reflection.h"
 
 
 namespace Sphynx

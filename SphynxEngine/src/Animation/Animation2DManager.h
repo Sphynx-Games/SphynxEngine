@@ -12,23 +12,23 @@ namespace Sphynx
 	struct AnimationComponent;
 	struct SpriteRendererComponent;
 
-	struct AnimationData
+	struct SPHYNX_API AnimationData
 	{
 		float TimeElapsed;
 		SpriteRendererComponent* SpriteComponent;
 	};
 
-	struct SPHYNX_API Animation2DManager
+	class /*SPHYNX_API*/ Animation2DManager
 	{
 	public:
-		static void Init(Scene* scene);
-		static void Shutdown();
+		SPHYNX_API static void Init(Scene* scene);
+		SPHYNX_API static void Shutdown();
 
-		static void Update(float deltaTime);
+		SPHYNX_API static void Update(float deltaTime);
 
-		static void PlayAnimation(AnimationComponent* component);
-		static void PauseAnimation(AnimationComponent* component);
-		static void StopAnimation(AnimationComponent* component);
+		SPHYNX_API static void PlayAnimation(AnimationComponent* component);
+		SPHYNX_API static void PauseAnimation(AnimationComponent* component);
+		SPHYNX_API static void StopAnimation(AnimationComponent* component);
 
 	private:
 		static void OnCreateAnimationComponent(void* component, Actor* actor);

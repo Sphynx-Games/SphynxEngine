@@ -23,8 +23,11 @@ namespace Sphynx
 		inline bool IsValid() const { return m_File.is_open(); }
 
 	protected:
-		std::ofstream m_File;
-		std::unique_ptr<YAML::Emitter> m_Emitter;
+		struct // this will avoid DLL export warnings
+		{
+			std::ofstream m_File;
+			std::unique_ptr<YAML::Emitter> m_Emitter;
+		};
 
 	};
 }

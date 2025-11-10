@@ -8,10 +8,9 @@ namespace Sphynx
 {
 	namespace Reflection
 	{
-		class Class;
+		struct Class;
 	}
 	class Event;
-
 
 	class PropertyEditor : public Editor
 	{

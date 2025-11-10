@@ -23,7 +23,7 @@ namespace Sphynx
 
 	struct AssetMetadata
 	{
-		AssetHandle Handle;
+		AssetHandle Handle{ AssetHandle::Invalid };
 		AssetType Type;
 		std::filesystem::path Path;
 		Array<AssetHandle> Dependencies;

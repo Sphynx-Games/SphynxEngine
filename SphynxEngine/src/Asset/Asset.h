@@ -30,8 +30,8 @@ namespace Sphynx
 
 	struct SPHYNX_API IAsset
 	{
-		AssetHandle Handle;
-		AssetType Type;
+		AssetHandle Handle{ AssetHandle::Invalid };
+		AssetType Type{};
 
 		virtual ~IAsset() = default;
 		virtual void* GetRawAsset() const = 0;

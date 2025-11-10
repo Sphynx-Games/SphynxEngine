@@ -11,7 +11,7 @@ struct ID3D11InputLayout;
 
 namespace Sphynx
 {
-	class SPHYNX_API D3D11Shader : public Shader
+	class /*SPHYNX_API*/ D3D11Shader : public Shader
 	{
 	public:
 		D3D11Shader(const std::string& filepath);

@@ -18,15 +18,18 @@ namespace Sphynx
 		public:
 			struct SPHYNX_API Entry
 			{
-				Entry(const std::string& name, int64_t value);
+				Entry(const char* name, int64_t value);
 				Entry(const Entry& other);
 				Entry(Entry&& other);
 				~Entry();
 
-				std::string Name;
+				const char* Name;
 				int64_t Value;
 
-				std::vector<Attribute*> Attributes;
+				struct
+				{
+					std::vector<Attribute*> Attributes;
+				};
 			};
 
 			template<typename T>
@@ -39,7 +42,8 @@ namespace Sphynx
 				AttributesCount(attributesCount),
 				m_GetValueFunc([](const void* addr) -> int64_t { return *((T*)addr); }),
 				m_SetValueFunc([](void* addr, int64_t value) -> void { *((T*)addr) = (T)value; })
-			{}
+			{
+			}
 
 			const Entry* begin();
 			const Entry* begin() const;
@@ -61,10 +65,10 @@ namespace Sphynx
 			}
 
 			void SetValue(void* addr, int64_t value) const;
-			const std::string& GetName(const void* addr) const;
+			const char* GetName(const void* addr) const;
 
 			template<typename T>
-			const std::string& GetName(T e) const
+			const char* GetName(T e) const
 			{
 				SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
@@ -75,7 +79,7 @@ namespace Sphynx
 				return it->Name;
 			}
 
-			void SetName(void* addr, const std::string& name) const;
+			void SetName(void* addr, const char* name) const;
 
 		public:
 			const Type& UnderlyingType;
@@ -87,7 +91,7 @@ namespace Sphynx
 			size_t AttributesCount;
 
 		private:
-			int64_t (*m_GetValueFunc)(const void*);
+			int64_t(*m_GetValueFunc)(const void*);
 			void (*m_SetValueFunc)(void*, int64_t);
 		};
 	}

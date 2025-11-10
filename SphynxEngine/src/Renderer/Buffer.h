@@ -36,7 +36,7 @@ namespace Sphynx
 		return 0;
 	}
 
-	struct SPHYNX_API LayoutElement
+	struct /*SPHYNX_API*/ LayoutElement
 	{
 		std::string Name;
 		DataType Type;
@@ -76,7 +76,7 @@ namespace Sphynx
 
 	};
 
-	class SPHYNX_API BufferLayout
+	class /*SPHYNX_API*/ BufferLayout
 	{
 	public:
 		BufferLayout(const std::initializer_list<LayoutElement>& elements) :

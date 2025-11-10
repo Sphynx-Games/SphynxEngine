@@ -168,7 +168,7 @@ namespace Sphynx
 			m_Map = other.m_Map;
 		}
 
-		Map(Map&& other)
+		Map(Map&& other) noexcept
 		{
 			m_Map = std::move(other.m_Map);
 			other.RemoveAll();

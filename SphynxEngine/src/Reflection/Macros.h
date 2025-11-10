@@ -58,7 +58,7 @@
 
 #define SPX_REFLECT_TEMPLATE_CLASS_BEGIN(_Class, _API) \
 	namespace Sphynx { namespace Reflection { namespace details { \
-	template<typename ...T> struct _API ClassImplWrapper<::_Class<T...>> { \
+	template<typename ...T> struct /*_API*/ ClassImplWrapper<::_Class<T...>> { \
 		inline static TypeRegister<::_Class<T...>> s_TypeRegister{}; \
 		static const Class& GetClassImpl(Tag<::_Class<T...>>) \
 		{ \
@@ -299,7 +299,7 @@
 
 #define SPX_REFLECT_ENUM_VALUE_BEGIN(_Value) \
 	{ \
-		Entries.push_back(::Sphynx::Reflection::Enum::Entry{ std::string(#_Value) ,(int64_t)context_enum::_Value }); \
+		Entries.push_back(::Sphynx::Reflection::Enum::Entry{ #_Value ,(int64_t)context_enum::_Value }); \
 		Values.push_back((int64_t)context_enum::_Value); \
 		[[maybe_unused]] auto& Entry = *(Entries.end() - 1); \
 		[[maybe_unused]] auto& Attributes = Entry.Attributes;

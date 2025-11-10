@@ -9,6 +9,12 @@
 
 namespace Sphynx
 {
+	namespace
+	{
+		static HashMap<PhysicsWorld2D*, Set<Rigidbody2D*>> s_PhysicsWorldToRigidbodies{};
+		static HashMap<Rigidbody2D*, Set<Collider2D*>> s_RigidbodyToColliders{};
+	}
+
 	void Physics2D::Init()
 	{
 		s_PhysicsWorldToRigidbodies.Add(nullptr, Set<Rigidbody2D*>());
@@ -74,7 +80,7 @@ namespace Sphynx
 			DestroyRigidbody(rigidbody);
 		}
 		worldRigidbodies.RemoveAll();
-		
+
 		s_PhysicsWorldToRigidbodies.Remove(physicsWorld);
 		delete physicsWorld;
 	}
@@ -95,7 +101,7 @@ namespace Sphynx
 		if (s_PhysicsWorldToRigidbodies[rigidbody->GetPhysicsWorld()].Contains(rigidbody))
 		{
 			s_PhysicsWorldToRigidbodies[rigidbody->GetPhysicsWorld()].Remove(rigidbody);
-		}		
+		}
 
 		for (auto collider : s_RigidbodyToColliders[rigidbody])
 		{
@@ -198,7 +204,7 @@ namespace Sphynx
 			collider->m_PhysicsWorld = nullptr;
 			collider->m_Rigidbody = nullptr;
 		}
-		
+
 		s_RigidbodyToColliders[rigidbody].Remove(collider);
 		s_RigidbodyToColliders[nullptr].Add(collider);
 	}

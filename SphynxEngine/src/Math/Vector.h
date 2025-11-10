@@ -66,12 +66,12 @@ namespace Sphynx
 		static const Vector2T Down;
 	};
 
-	template<typename T> inline const Vector2T<T> Vector2T<T>::Zero{ 0, 0 };
-	template<typename T> inline const Vector2T<T> Vector2T<T>::Identity{ 1, 1 };
-	template<typename T> inline const Vector2T<T> Vector2T<T>::Right{ 1, 0 };
-	template<typename T> inline const Vector2T<T> Vector2T<T>::Left{ -1, 0 };
-	template<typename T> inline const Vector2T<T> Vector2T<T>::Up{ 0, 1 };
-	template<typename T> inline const Vector2T<T> Vector2T<T>::Down{ 0, -1 };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Zero		{ static_cast<T>( 0), static_cast<T>( 0) };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Identity	{ static_cast<T>( 1), static_cast<T>( 1) };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Right	{ static_cast<T>( 1), static_cast<T>( 0) };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Left		{ static_cast<T>(-1), static_cast<T>( 0) };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Up		{ static_cast<T>( 0), static_cast<T>( 1) };
+	template<typename T> inline const Vector2T<T> Vector2T<T>::Down		{ static_cast<T>( 0), static_cast<T>(-1) };
 
 	template <typename T>
 	struct /*SPHYNX_API*/ Vector3T
@@ -137,14 +137,14 @@ namespace Sphynx
 		static const Vector3T Backward;
 	};
 
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Zero{ 0, 0, 0 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Identity{ 1, 1, 1 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Right{ 1, 0, 0 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Left{ -1, 0, 0 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Up{ 0, 1, 0 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Down{ 0, -1, 0 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Forward{ 0, 0, 1 };
-	template<typename T> inline const Vector3T<T> Vector3T<T>::Backward{ 0, 0, -1 };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Zero		{ static_cast<T>( 0), static_cast<T>( 0), static_cast<T>( 0) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Identity	{ static_cast<T>( 1), static_cast<T>( 1), static_cast<T>( 1) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Right	{ static_cast<T>( 1), static_cast<T>( 0), static_cast<T>( 0) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Left		{ static_cast<T>(-1), static_cast<T>( 0), static_cast<T>( 0) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Up		{ static_cast<T>( 0), static_cast<T>( 1), static_cast<T>( 0) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Down		{ static_cast<T>( 0), static_cast<T>(-1), static_cast<T>( 0) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Forward	{ static_cast<T>( 0), static_cast<T>( 0), static_cast<T>( 1) };
+	template<typename T> inline const Vector3T<T> Vector3T<T>::Backward	{ static_cast<T>( 0), static_cast<T>( 0), static_cast<T>(-1) };
 
 	template <typename T>
 	struct /*SPHYNX_API*/ Vector4T
@@ -204,20 +204,32 @@ namespace Sphynx
 		}
 	};
 
-	typedef Vector2T<int32_t> Vector2i;
-	typedef Vector2T<uint32_t> Vector2u;
-	typedef Vector2T<float> Vector2f;
-	typedef Vector2T<double> Vector2d;
+	template struct SPHYNX_API Vector2T<int32_t>;
+	typedef SPHYNX_API Vector2T<int32_t> Vector2i;
+	template struct SPHYNX_API Vector2T<uint32_t>;
+	typedef SPHYNX_API Vector2T<uint32_t> Vector2u;
+	template struct SPHYNX_API Vector2T<float>;
+	typedef SPHYNX_API Vector2T<float> Vector2f;
+	template struct SPHYNX_API Vector2T<double>;
+	typedef SPHYNX_API Vector2T<double> Vector2d;
 
-	typedef Vector3T<int32_t> Vector3i;
-	typedef Vector3T<uint32_t> Vector3u;
-	typedef Vector3T<float> Vector3f;
-	typedef Vector3T<double> Vector3d;
+	template struct SPHYNX_API Vector3T<int32_t>;
+	typedef SPHYNX_API Vector3T<int32_t> Vector3i;
+	template struct SPHYNX_API Vector3T<uint32_t>;
+	typedef SPHYNX_API Vector3T<uint32_t> Vector3u;
+	template struct SPHYNX_API Vector3T<float>;
+	typedef SPHYNX_API Vector3T<float> Vector3f;
+	template struct SPHYNX_API Vector3T<double>;
+	typedef SPHYNX_API Vector3T<double> Vector3d;
 
-	typedef Vector4T<int32_t> Vector4i;
-	typedef Vector4T<uint32_t> Vector4u;
-	typedef Vector4T<float> Vector4f;
-	typedef Vector4T<double> Vector4d;
+	template struct SPHYNX_API Vector4T<int32_t>;
+	typedef SPHYNX_API Vector4T<int32_t> Vector4i;
+	template struct SPHYNX_API Vector4T<uint32_t>;
+	typedef SPHYNX_API Vector4T<uint32_t> Vector4u;
+	template struct SPHYNX_API Vector4T<float>;
+	typedef SPHYNX_API Vector4T<float> Vector4f;
+	template struct SPHYNX_API Vector4T<double>;
+	typedef SPHYNX_API Vector4T<double> Vector4d;
 }
 
 #include "Reflection/Reflection.h"

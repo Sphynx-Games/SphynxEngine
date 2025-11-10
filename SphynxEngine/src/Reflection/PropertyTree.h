@@ -49,7 +49,10 @@ namespace Sphynx
 		public:
 			struct SPHYNX_API TraversalParams
 			{
-				std::unordered_map<const Type*, void(*)(PropertyTree&, const Property*, void*, IPropertyTreeVisitor&)> CustomTraversal{};
+				struct
+				{
+					std::unordered_map<const Type*, void(*)(PropertyTree&, const Property*, void*, IPropertyTreeVisitor&)> CustomTraversal{};
+				};
 			};
 		public:
 			PropertyTree(const Type& type, void* addr, TraversalParams&& params = {});

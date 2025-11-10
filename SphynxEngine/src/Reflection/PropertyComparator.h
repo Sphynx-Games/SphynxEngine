@@ -54,7 +54,8 @@ namespace Sphynx
 				TargetData(targetData),
 				Type(type),
 				TargetStack(targetStack)
-			{}
+			{
+			}
 
 			const Reflection::Property* SourceProperty;
 			void* SourceData;
@@ -114,11 +115,17 @@ namespace Sphynx
 			PropertyDiffType GetPropertyNotFoundType(const PropertyNode& propertyNode, bool source = false); // true = source, false = target
 
 		public:
-			MulticastDelegate<void(const PropertyDiffInfo&)> OnPropertyDiffFound;
+			struct
+			{
+				MulticastDelegate<void(const PropertyDiffInfo&)> OnPropertyDiffFound;
+			};
 
 		private:
 			Reflection::Property m_RootProperty;
-			Array<PropertyNode> m_TargetsStack;
+			struct
+			{
+				Array<PropertyNode> m_TargetsStack;
+			};
 
 		};
 
