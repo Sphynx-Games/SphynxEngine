@@ -32,7 +32,7 @@ add_library(Sandbox SHARED "${SNBSOURCES}")
 
 # Set target sources
 target_sources(Sandbox PRIVATE ${SNBSOURCES})
-
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 target_link_libraries(Sandbox PRIVATE SphynxEngine)
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_BUILD_MODULE)

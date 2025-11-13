@@ -10,6 +10,8 @@ namespace Sphynx
 		static void Init();
 		static void Shutdown();
 
+		static void BeginPlay(const class Scene& scene);
 		static void Update(const class Scene& scene, float deltaTime);
+		static void EndPlay(const Scene& scene);
 	};
 }

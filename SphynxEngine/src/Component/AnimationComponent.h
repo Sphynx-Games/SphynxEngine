@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Component/Common.h"
 #include "Container/Array.h"
-#include "Asset/Asset.h"
+#include "Asset/Animation/AnimationAsset.h"
 #include "Utils/PlaybackState.h"
 #include "Animation/Animation2DManager.h"
 #include "Reflection/Reflection.h"
@@ -17,7 +17,7 @@ namespace Sphynx
 		COMPONENT_COMMON_BODY(AnimationComponent);
 
 	public:
-		AnimationComponent(AssetHandle animation, float duration = 1.0f, bool loop = false, bool playOnBegin = false) :
+		AnimationComponent(Animation2D* animation, float duration = 1.0f, bool loop = false, bool playOnBegin = false) :
 			Animation(animation),
 			Duration(duration),
 			Loop(loop),
@@ -30,7 +30,7 @@ namespace Sphynx
 		void Stop() { Animation2DManager::StopAnimation(this); }
 
 	public:
-		AssetHandle Animation;
+		Animation2D* Animation;
 		float Duration;
 		bool Loop;
 		bool PlayOnBegin;

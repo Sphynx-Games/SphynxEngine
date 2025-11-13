@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Sandbox.h"
 #include <Component/ScriptComponent.h>
 #include <Logging/Log.h>
-#include "Sandbox.h"
 #include "Container/Array.h"
 #include "Asset/AssetMetadata.h"
 

@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "Common.h"
+#include "Scene/Actor.h"
 
 
 namespace Sphynx
@@ -14,15 +15,20 @@ namespace Sphynx
 	public:
 		ScriptComponent();
 
-	public:
+		inline bool HasBegunPlay() const { return m_HasBegunPlay; }
+		inline Actor* GetActor() const { return m_Actor; }
+
+	protected:
 		virtual void BeginPlay();
 		virtual void EndPlay();
 		virtual void Update(float deltaTime);
 
-		inline bool HasBegunPlay() const { return m_HasBegunPlay; }
-
 	private:
 		bool m_HasBegunPlay;
+		Actor* m_Actor;
+
+		friend class Actor;
+		friend class ScriptingManager;
 	};
 }
 

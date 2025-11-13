@@ -19,6 +19,22 @@ namespace Sphynx
 		Vector2T(T value) : X(value), Y(value) {}
 		Vector2T(T x, T y) : X(x), Y(y) {}
 
+		template<typename U = T>
+		typename std::enable_if<std::is_floating_point<U>::value, void>::type Normalize()
+		{
+			 U length = sqrt(X * X + Y * Y);
+			if (length != 0)
+			{
+				X /= length;
+				Y /= length;
+			}
+			else
+			{
+				X = static_cast<U>(0);
+				Y = static_cast<U>(0);
+			}
+		}
+
 		friend bool operator==(const Vector2T& lhs, const Vector2T& rhs)
 		{
 			return lhs.X == rhs.X && lhs.Y == rhs.Y;

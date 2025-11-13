@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Component/ComponentRegistry.h"
 #include "Component/UUIDComponent.h"
+#include "Component/ScriptComponent.h"
 
 
 namespace Sphynx
@@ -46,5 +47,15 @@ namespace Sphynx
 				ComponentRegistry::InvokeCloneComponent(*componentClass, source, target);
 			}
 		}
+	}
+
+	void* Actor::Internal_TryGetComponent(const Reflection::Class& componentClass) const
+	{
+		return ComponentRegistry::InvokeTryGetComponent(componentClass, *this);
+	}
+
+	void* Actor::Internal_GetComponent(const Reflection::Class& componentClass) const
+	{
+		return ComponentRegistry::InvokeGetComponent(componentClass, *this);
 	}
 }

@@ -19,9 +19,11 @@
 #include "Scripting/ScriptingManager.h"
 #include "Animation/Animation2DManager.h"
 
-#include "Sound/SoundManager.h"
+// TODO: Remove this
+/*#include "Sound/SoundManager.h"
 #include "Sound/Sound.h"
-#include "Sound/SoundInstance.h"
+#include "Sound/SoundInstance.h"*/
+// ------------------
 
 
 namespace Sphynx
@@ -30,7 +32,7 @@ namespace Sphynx
 	{
 		auto& sourceRegistry = other.m_Registry;
 		auto& targetRegistry = m_Registry;
-		std::unordered_map<UUID, Actor> enttMap;
+		std::unordered_map<UUID, size_t> enttMap;
 
 		// create entities
 		auto idView = sourceRegistry.view<UUIDComponent>();
@@ -40,7 +42,7 @@ namespace Sphynx
 
 			Actor& actor = CreateActor();
 			actor.GetComponent<UUIDComponent>().UUID = uuid;
-			enttMap[uuid] = actor;
+			enttMap[uuid] = m_Actors.Size() - 1;
 		}
 
 		// copy components
@@ -54,7 +56,7 @@ namespace Sphynx
 			for (const Actor& actor : actors)
 			{
 				const UUID& uuid = actor.GetComponent<UUIDComponent>().UUID;
-				Actor targetActor = enttMap.at(uuid);
+				Actor& targetActor = m_Actors.Get(enttMap.at(uuid));
 				ComponentRegistry::InvokeCloneComponent(*componentClass, actor, targetActor);
 			}
 		}
@@ -116,7 +118,7 @@ namespace Sphynx
 		return *this;
 	}
 
-	SoundInstance* soundInstance = nullptr;
+	//SoundInstance* soundInstance = nullptr;
 
 	void Scene::BeginPlay()
 	{
@@ -127,23 +129,26 @@ namespace Sphynx
 		Animation2DManager::Init(this);
 
 		// TODO: Remove this
-		AssetHandle handle = AssetManager::GetAssetHandleFromPath("Assets\\Sounds\\enemyDeath.spxasset");
+		/*AssetHandle handle = AssetManager::GetAssetHandleFromPath("Assets\\Sounds\\enemyDeath.spxasset");
 		std::shared_ptr<Asset<Sound>> sound = AssetManager::GetAsset<Sound>(handle);
 
 		soundInstance = SoundManager::CreateSound(sound->Asset);
-		SoundManager::PlaySound(soundInstance);
+		SoundManager::PlaySound(soundInstance);*/
 		// ------------------
 		
+		ScriptingManager::BeginPlay(*this);
+
 		m_HasBegunPlay = true;
 	}
 
 	void Scene::EndPlay()
 	{
 		if (!m_HasBegunPlay) return;
-
 		m_HasBegunPlay = false;
 
-		delete soundInstance;
+		ScriptingManager::EndPlay(*this);
+
+		//delete soundInstance;
 
 		Animation2DManager::Shutdown();
 
@@ -156,6 +161,8 @@ namespace Sphynx
 
 	void Scene::Update(float deltaTime)
 	{
+		if (!m_HasBegunPlay) return;
+
 		// Simulate PHYSICS in scene
 		if (m_PhysicsWorld != nullptr)
 		{
@@ -164,7 +171,6 @@ namespace Sphynx
 
 		Animation2DManager::Update(deltaTime);
 
-		// update ScriptComponents
 		ScriptingManager::Update(*this, deltaTime);
 	}
 

@@ -54,8 +54,8 @@ namespace Sphynx
 		static void ClientFatal(Args&&... args);
 
 	private:
-		inline static std::shared_ptr<spdlog::logger> m_CoreLogger{};
-		inline static std::shared_ptr<spdlog::logger> m_ClientLogger{};
+		SPHYNX_API inline static std::shared_ptr<spdlog::logger> m_CoreLogger{};
+		SPHYNX_API inline static std::shared_ptr<spdlog::logger> m_ClientLogger{};
 
 	};
 

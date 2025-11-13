@@ -6,7 +6,12 @@
 
 namespace Sphynx
 {
+	namespace Reflection
+	{
+		struct Class;
+	}
 	class Scene;
+	class ScriptComponent;
 
 	class SPHYNX_API Actor
 	{
@@ -39,6 +44,16 @@ namespace Sphynx
 
 		inline Scene* GetScene() const { return m_Scene; }
 
+	private:
+		void* Internal_TryGetComponent(const Reflection::Class& componentClass) const;
+		void* Internal_GetComponent(const Reflection::Class& componentClass) const;
+
+		template<typename T>
+		T* Internal_TryGetComponent() const;
+
+		template<typename T>
+		T& Internal_GetComponent() const;
+
 	public:
 		inline operator uint32_t() const { return m_EntityID; }
 
@@ -49,6 +64,7 @@ namespace Sphynx
 
 		friend class SceneSerializer;
 		friend class SceneDeserializer;
+		friend class ComponentRegistry;
 	};
 
 	template<typename T, typename... Args>
@@ -58,6 +74,10 @@ namespace Sphynx
 		SPX_CORE_ASSERT(!HasComponent<T>(), "Component is already in actor");
 		++m_numComponents;
 		T& component = m_Scene->m_Registry.emplace<T>(static_cast<entt::entity>(m_EntityID), std::forward<Args>(args)...);
+		if constexpr (std::is_base_of_v<ScriptComponent, T>)
+		{
+			static_cast<ScriptComponent&>(component).m_Actor = this;
+		}
 		
 		const Reflection::Class* reflectionClass = &Reflection::GetClass<T>();
 		if (m_Scene->m_OnAddComponentDelegates.ContainsKey(reflectionClass))
@@ -86,6 +106,13 @@ namespace Sphynx
 	template<typename T>
 	inline T* Actor::TryGetComponent() const
 	{
+		void* component = Internal_TryGetComponent(Reflection::GetClass<T>());
+		return static_cast<T*>(component);
+	}
+
+	template<typename T>
+	inline T* Actor::Internal_TryGetComponent() const
+	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		if (HasComponent<T>())
 		{
@@ -97,6 +124,13 @@ namespace Sphynx
 
 	template<typename T>
 	inline T& Actor::GetComponent() const
+	{
+		void* component = Internal_GetComponent(Reflection::GetClass<T>());
+		return *static_cast<T*>(component);
+	}
+
+	template<typename T>
+	inline T& Actor::Internal_GetComponent() const
 	{
 		SPX_CORE_ASSERT(m_Scene != nullptr, "Actor has not a valid scene");
 		SPX_CORE_ASSERT(HasComponent<T>(), "Component is not in actor");

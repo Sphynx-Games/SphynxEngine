@@ -26,7 +26,7 @@ namespace Sphynx
 		bool GetShouldClose() const;
 
 	protected:
-		virtual void PreRenderGUI() override {}
+		virtual void PreRenderGUI() override;
 		virtual void RenderGUI() override;
 		virtual void PostRenderGUI() override {}
 
@@ -40,6 +40,7 @@ namespace Sphynx
 	protected:
 		Toolbar* m_Toolbar;
 		WidgetID m_ID;
+		bool m_StartedRendering;
 		bool m_IsClosable;
 		bool m_ShouldClose;
 	};

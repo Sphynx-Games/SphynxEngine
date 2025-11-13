@@ -10,6 +10,7 @@ namespace Sphynx
 		Widget(name, parent),
 		m_Toolbar(),
 		m_ID(0),
+		m_StartedRendering(false),
 		m_IsClosable(true),
 		m_ShouldClose(false)
 	{
@@ -43,6 +44,19 @@ namespace Sphynx
 	bool Editor::GetShouldClose() const
 	{
 		return m_ShouldClose;
+	}
+
+	void Editor::PreRenderGUI()
+	{
+		// dock window to main window dock space
+		const ImGuiWindow* window = ImGui::FindWindowByName(GetName());
+		if (!m_StartedRendering && window != nullptr)
+		{
+			ImGuiID id = ImGui::GetID("EditorDockSpace");
+			ImGuiID dock_id = ImGui::DockBuilderGetCentralNode(id)->ID;
+			ImGui::DockBuilderDockWindow(GetName(), dock_id);
+			m_StartedRendering = true;
+		}
 	}
 
 	void Editor::RenderGUI()

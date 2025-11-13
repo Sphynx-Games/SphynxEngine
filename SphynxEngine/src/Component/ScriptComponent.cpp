@@ -1,22 +1,25 @@
 #include "ScriptComponent.h"
+#include "Scripting/ScriptingManager.h"
 
 
 namespace Sphynx
 {
-	ScriptComponent::ScriptComponent() : m_HasBegunPlay(false)
+	ScriptComponent::ScriptComponent() :
+		m_HasBegunPlay(false),
+		m_Actor(nullptr)
 	{
 	}
 
 	void ScriptComponent::BeginPlay()
 	{
-		if (m_HasBegunPlay) return;
-		m_HasBegunPlay = true;
+		//if (m_HasBegunPlay) return;
+		//m_HasBegunPlay = true;
 	}
 
 	void ScriptComponent::EndPlay()
 	{
-		if (!m_HasBegunPlay) return;
-		m_HasBegunPlay = false;
+		//if (!m_HasBegunPlay) return;
+		//m_HasBegunPlay = false;
 	}
 
 	void ScriptComponent::Update(float deltaTime)

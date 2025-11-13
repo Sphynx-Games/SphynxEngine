@@ -41,8 +41,8 @@ Sphynx::EditorScene:
         - Sphynx::SpriteRendererComponent:
             Sprite: 02012b08-9545-4b36-8add-9409cab4b103
             Tint:
-              R: 0
-              G: 0
+              R: 255
+              G: 255
               B: 255
               A: 255
         - Sphynx::TransformComponent:
@@ -59,6 +59,15 @@ Sphynx::EditorScene:
                 X: 0
                 Y: 0
                 Z: 0
+        - MovementComponent:
+            m_speed: 2
+        - PlayerCharacterComponent:
+            {}
+        - PlayerControllerComponent:
+            {}
+        - HealthComponent:
+            m_maxHealth: 100
+            m_isInvulnerable: false
     - UUID: 15f846ad-52ea-40f7-912f-ec002c8f87f0
       Name: Quad
       Components:

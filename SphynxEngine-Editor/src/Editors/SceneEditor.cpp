@@ -164,10 +164,6 @@ namespace Sphynx
 			{
 				m_ActiveScene->Update(deltaTime);
 			}
-			else
-			{
-				m_ActiveScene->Update(0.0f);
-			}
 		}
 
 		m_DetailsPanel->SetContext(m_SceneOutlinerPanel->GetSelectedActor());

@@ -52,10 +52,9 @@ namespace Sphynx
 			{
 				continue;
 			}
-			std::shared_ptr<Asset<Animation2D>> animationAsset = AssetManager::GetAsset<Animation2D>(component->Animation);
-			if (animationAsset == nullptr || animationAsset->Asset == nullptr) continue;
+			if (component->Animation == nullptr) continue;
 
-			Animation2D* animation = animationAsset->Asset;
+			Animation2D* animation = component->Animation;
 			if (!component->Loop && data.SpriteComponent->Sprite == animation->Sprites[animation->Sprites.Size() - 1])
 			{
 				StopAnimation(component);
@@ -95,10 +94,9 @@ namespace Sphynx
 		component->m_PlaybackState = PlaybackState::STOPPED;
 		if (s_AnimationComponents.ContainsKey(component))
 		{
-			Animation2D* animation = AssetManager::GetAsset<Animation2D>(component->Animation)->Asset;
 			AnimationData data = s_AnimationComponents[component];
 			data.TimeElapsed = 0.0f;
-			data.SpriteComponent->Sprite = animation->Sprites[0];
+			data.SpriteComponent->Sprite = component->Animation->Sprites[0];
 		}
 	}
 

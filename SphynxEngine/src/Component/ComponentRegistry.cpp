@@ -38,6 +38,25 @@ namespace Sphynx
 		compFunc.RemoveComponent(actor);
 	}
 
+	SPHYNX_API void* ComponentRegistry::InvokeTryGetComponent(const Reflection::Class& componentClass, const Actor& actor, bool includeSubclasses)
+	{
+		FlushDeferredRegistry();
+
+		size_t compIndex = GetComponentIndex(componentClass);
+		const ComponentFunctions& compFunc = s_ComponentFunctions.Get(compIndex);
+		void* result = compFunc.TryGetComponent(actor);
+		if (result != nullptr || !includeSubclasses) return result;
+
+		for (size_t subcompIndex : s_ComponentSubclasses[compIndex])
+		{
+			const ComponentFunctions& compFunc = s_ComponentFunctions.Get(subcompIndex);
+			void* result = compFunc.TryGetComponent(actor);
+			if (result != nullptr) return result;
+		}
+
+		return result;
+	}
+
 	void* ComponentRegistry::InvokeGetComponent(const Reflection::Class& componentClass, const Actor& actor, bool includeSubclasses)
 	{
 		FlushDeferredRegistry();

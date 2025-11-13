@@ -35,6 +35,8 @@ namespace Sphynx
 			const Property* end();
 			const Property* end() const;
 
+			bool IsSubClassOf(const Class& baseClass) const;
+
 			template<typename T>
 			bool HasAttribute() const { return GetAttribute<T>() != nullptr; }
 
