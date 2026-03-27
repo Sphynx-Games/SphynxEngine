@@ -73,6 +73,7 @@ namespace Sphynx
 		const Reflection::Class* InvisibleClass = nullptr; // TODO: remove this
 
 	private:
+		uint8_t m_IndentLevel;
 		bool m_IsTableSetup;
 		bool m_IsIndexedCollectionViewerOpened;
 

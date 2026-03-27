@@ -22,6 +22,7 @@ namespace Sphynx
 	}
 
 	PropertyViewer::PropertyViewer() :
+		m_IndentLevel(0u),
 		m_IsTableSetup(false),
 		m_IsIndexedCollectionViewerOpened(false)
 	{
@@ -41,6 +42,8 @@ namespace Sphynx
 		{
 			ImGui::TableSetupColumn("Property", ImGuiTableColumnFlags_WidthFixed);
 			ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch, 2.0f);
+			ImGui::TableUpdateLayout(ImGui::GetCurrentTable());
+			ImGui::GetCurrentTable()->Columns[0].WorkMinX += ImGui::GetStyle().IndentSpacing * (m_IndentLevel + 1u);
 		}
 		else
 		{
@@ -407,17 +410,16 @@ namespace Sphynx
 		if (label == nullptr) label = property->Name;
 		else label += 1;
 
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen;
+		const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen;
 		bool visible = true;
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetStyle().IndentSpacing * m_IndentLevel);
 		const bool result = ImGui::CollapsingHeader(label, &visible, flags);
-
-		// If root property then do begin table
-		if (property->Name == property->GetType().Name && result && !m_IsTableSetup)
+		if (result && !m_IsTableSetup)
 		{
 			SetupTable();
 		}
 
-		ImGui::Indent();
+		m_IndentLevel++;
 
 		if (!visible)
 		{
@@ -714,7 +716,7 @@ namespace Sphynx
 		}
 		if (count == 0) ImGui::EndDisabled();
 
-		ImGui::Indent();
+		m_IndentLevel++;
 
 		return m_IsIndexedCollectionViewerOpened;
 	}
@@ -740,6 +742,15 @@ namespace Sphynx
 		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
+		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
+		if (propertyDrawer == nullptr)
+		{
+			if (m_IsTableSetup)
+			{
+				FinishTable();
+			}
+		}
+
 		ImGui::PushID(property->Name);
 	}
 
@@ -751,12 +762,8 @@ namespace Sphynx
 		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
 		if (propertyDrawer == nullptr)
 		{
-			ImGui::Unindent();
-		}
+			m_IndentLevel--;
 
-		// If root property then do begin table
-		if (property->Name == property->GetType().Name)
-		{
 			if (m_IsTableSetup)
 			{
 				FinishTable();
@@ -784,7 +791,7 @@ namespace Sphynx
 		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
 		if (propertyDrawer == nullptr)
 		{
-			ImGui::Unindent();
+			m_IndentLevel--;
 		}
 
 		if (m_IsIndexedCollectionViewerOpened)
