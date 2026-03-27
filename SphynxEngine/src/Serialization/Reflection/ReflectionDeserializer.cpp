@@ -328,6 +328,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, bool& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -335,6 +337,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, bool& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -342,6 +346,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, char& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -349,6 +355,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, char& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -356,6 +364,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, signed char& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -363,6 +373,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, signed char& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -370,6 +382,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, wchar_t& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -377,6 +391,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, wchar_t& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -384,6 +400,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, short& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -391,6 +409,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, short& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -398,6 +418,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, int& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -405,6 +427,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, int& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -412,6 +436,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -419,6 +445,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -426,6 +454,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, long long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -433,6 +463,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, long long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -440,6 +472,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, float& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -447,6 +481,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, float& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -454,6 +490,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, double& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -461,6 +499,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, double& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -468,6 +508,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, long double& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -475,6 +517,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, long double& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -482,6 +526,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, unsigned char& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -489,6 +535,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, unsigned char& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -496,6 +544,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, unsigned short& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -503,6 +553,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, unsigned short& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -510,6 +562,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, unsigned int& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -517,6 +571,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, unsigned int& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -524,6 +580,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, unsigned long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -531,6 +589,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, unsigned long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -538,6 +598,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, unsigned long long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -545,6 +607,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, unsigned long long& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -552,6 +616,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, ::std::string& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -559,6 +625,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, ::std::string& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -566,6 +634,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, ::std::wstring& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -573,6 +643,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, ::std::wstring& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -580,6 +652,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisit(const Reflection::Property* property, ::std::filesystem::path& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -587,6 +661,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisit(const Reflection::Property* property, ::std::filesystem::path& data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -594,6 +670,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisitEnum(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -601,6 +679,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisitEnum(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnAfterVisitProperty(property);
@@ -608,6 +688,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisitClass(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		OnBeforeVisitProperty(property);
@@ -651,6 +733,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisitClass(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer()) return;
 
 		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(property->GetType());
@@ -698,6 +782,9 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
+
 		if (property->IsPointer()) return;
 
 		Node tmpNode{};
@@ -709,6 +796,9 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
+
 		if (property->IsPointer()) return;
 
 		m_Reader.PopSequence();
@@ -717,6 +807,9 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
+
 		if (property->IsPointer()) return;
 
 		Node tmpNode{};
@@ -727,6 +820,9 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
+
 		if (property->IsPointer()) return;
 
 		m_Reader.PopMap();
@@ -789,6 +885,8 @@ namespace Sphynx
 
 	void ReflectionDeserializer::OnAfterVisitProperty(const Reflection::Property* property, bool pop)
 	{
+		SPX_UNUSED(property);
+
 		// We need to pop this to be able to correctly check the parent node
 		auto node = m_VisitedProperties.top();
 		m_VisitedProperties.pop();

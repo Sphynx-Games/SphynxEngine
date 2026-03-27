@@ -49,13 +49,10 @@ namespace Sphynx
 		static Application* s_Application;
 
 	private:
-		struct
-		{
-			bool m_IsRunning;
-			std::unique_ptr<Window> m_Window;
-			LayerStack m_LayerStack;
-			HashMap<std::string, Array<std::string>> m_CommandArguments;
-		};
+		bool m_IsRunning;
+		std::unique_ptr<Window> m_Window;
+		LayerStack m_LayerStack;
+		HashMap<std::string, Array<std::string>> m_CommandArguments;
 
 	};
 

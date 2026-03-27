@@ -24,10 +24,7 @@ namespace Sphynx
 
 	private:
 		SoundData* m_Data;
-		struct
-		{
-			std::vector<std::byte> m_Buffer;
-		};
+		std::vector<std::byte> m_Buffer;
 
 	};
 

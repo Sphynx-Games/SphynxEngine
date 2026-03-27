@@ -14,7 +14,6 @@ namespace Sphynx
 		case RendererAPI::API::NONE: return nullptr;
 		case RendererAPI::API::OPENGL: return new OpenGLVertexArray();
 		case RendererAPI::API::D3D11: return new D3D11VertexArray();
-		default: return nullptr;
 		}
 		return nullptr;
 	}

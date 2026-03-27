@@ -22,23 +22,6 @@
 
 namespace Sphynx
 {
-#define LABEL(Label) LabelPrefix(Label)
-	static std::string LabelPrefix(const char* label)
-	{
-		float width = ImGui::CalcItemWidth();
-
-		float x = ImGui::GetCursorPosX();
-		ImGui::Text(label);
-		ImGui::SameLine();
-		ImGui::SetCursorPosX(x + width * 0.5f + ImGui::GetStyle().ItemInnerSpacing.x);
-		ImGui::SetNextItemWidth(-1);
-
-		std::string labelStr = "##";
-		labelStr += label;
-
-		return labelStr;
-	}
-
 	template<typename T>
 	void AddComponentType(Array<const Reflection::Class*>& list)
 	{
@@ -69,10 +52,11 @@ namespace Sphynx
 		if (!m_CanRender) return;
 		if (!m_Context.IsValid()) return;
 
+		PropertyViewer propertyViewer{};
 		Reflection::PropertyTree::Traverse(
 			Reflection::GetClass<Actor>(), 
 			&m_Context, 
-			PropertyViewer{}
+			propertyViewer
 		);
 	}
 

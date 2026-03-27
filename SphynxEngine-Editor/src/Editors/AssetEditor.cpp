@@ -65,7 +65,7 @@ namespace Sphynx
 			assetEditor = new PropertyEditor(editorName.c_str(), static_cast<const Reflection::Class&>(*metadata.Type.Type), asset->GetRawAsset());
 		}
 
-		Widget::WidgetID id = std::hash<UUID>()(metadata.Handle);
+		Widget::WidgetID id = static_cast<Widget::WidgetID>(std::hash<UUID>()(metadata.Handle));
 		assetEditor->SetOverrideID(id);
 		editorLayer->AddEditor(assetEditor);
 		editorLayer->SetActiveEditor(assetEditor);

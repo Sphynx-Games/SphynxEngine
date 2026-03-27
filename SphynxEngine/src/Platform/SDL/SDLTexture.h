@@ -19,7 +19,7 @@ namespace Sphynx
 		SDL_Texture* GetTexture() const { return m_Texture; }
 		virtual void* GetNativeTexture() const override { return GetTexture(); }
 
-		virtual void Bind(uint32_t slot = 0) const override {};
+		virtual void Bind(uint32_t slot = 0) const override { SPX_UNUSED(slot); };
 		virtual void Unbind() const override {};
 
 	private:

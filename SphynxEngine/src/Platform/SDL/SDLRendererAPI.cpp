@@ -158,7 +158,6 @@ namespace Sphynx
 		indices.reserve((numSegments + 1) * 3); // plus one to count the center
 
 		// compute points and indices
-		float circumference = radius * (float)Math::TAU;
 		float alpha = (float)Math::TAU / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
 		{
@@ -180,6 +179,7 @@ namespace Sphynx
 
 	void SDLRendererAPI::DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color)
 	{
+		SPX_UNUSED(color);
 		ChangeToSphynxCoords(position, m_Window);
 		SDL_FRect rect = { (float)position.X, (float)position.Y, (float)size.X, (float)size.Y };
 
@@ -189,6 +189,7 @@ namespace Sphynx
 
 	void SDLRendererAPI::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
 	{
+		SPX_UNUSED(color);
 		Vector2i spritePosition = sprite.GetPosition();
 
 		ChangeToSphynxCoords(position, m_Window);
@@ -331,7 +332,6 @@ namespace Sphynx
 		indices.reserve((numSegments + 1) * 3); // plus one to count the center
 
 		// compute points and indices
-		float circumference = radius * (float)Math::TAU;
 		float alpha = (float)Math::TAU / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
 		{

@@ -91,6 +91,7 @@ namespace Sphynx
 		ImGuiTreeNodeFlags flags = ((m_SelectedActor == actor) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Leaf;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)&actor.GetComponent<UUIDComponent>().UUID, flags, label.c_str());
+		SPX_UNUSED(opened);
 		if (ImGui::IsItemClicked())
 		{
 			m_SelectedActor = actor;

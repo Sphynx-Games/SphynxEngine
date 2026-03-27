@@ -50,7 +50,8 @@
 	{ \
 		return GetClassImpl(Tag<::_Class>{}); \
 	} \
-}}}
+}}} \
+SPX_INTERNAL_REGISTER_TYPEID(::_Class)
 
 #define SPX_REFLECT_CLASS(_Class, _API) \
 	SPX_REFLECT_CLASS_BEGIN(_Class, _API) \
@@ -295,7 +296,8 @@
 		inline Iterator begin() const { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data(); } \
 		inline Iterator end() { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
 		inline Iterator end() const { return ::Sphynx::Reflection::details::EnumStorage<::_Enum>::Instance->Values.data() + ::Sphynx::Reflection::details::EnumStorage<_Enum>::Instance->Values.size(); } \
-	};
+	}; \
+	SPX_INTERNAL_REGISTER_TYPEID(::_Enum)
 
 #define SPX_REFLECT_ENUM_VALUE_BEGIN(_Value) \
 	{ \
@@ -319,6 +321,8 @@
 #define SPX_REFLECT_ATTRIBUTE_INTERNAL(Attr, ...) \
 	{ \
 		using namespace ::Sphynx::Reflection::CommonAttribute; \
+		static_assert(::Sphynx::Reflection::TypeID<Attr>::ID != 0, \
+			"Attribute '" #Attr "' must be registered with SPX_REGISTER_ATTRIBUTE"); \
 		static Attr s_Attribute = ::Sphynx::Reflection::details::CreateAttribute<Attr, context_type>( ##__VA_ARGS__ ); \
 		Attributes.push_back(&s_Attribute); \
 	}

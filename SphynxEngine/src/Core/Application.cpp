@@ -70,11 +70,13 @@ namespace Sphynx
 				EventDispatcher dispatcher(event);
 				dispatcher.Dispatch<WindowClosedEvent>([&](WindowClosedEvent& windowClosedEvent)
 					{
+						SPX_UNUSED(windowClosedEvent);
 						Quit();
 						return true;
 					});
 				dispatcher.Dispatch<WindowResizedEvent>([](WindowResizedEvent& windowResizeEvent)
 					{
+						SPX_UNUSED(windowResizeEvent);
 						// TODO: tell the renderer that the windows was resized
 						return false;
 					});

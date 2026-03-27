@@ -55,7 +55,7 @@ namespace Sphynx
 		if (m_Loop == loop) return;
 
 		m_Loop = loop;
-		SoundModeFlags flags;
+		SoundModeFlags flags = SoundModeFlag::SOUND_DEFAULT;
 		if (m_Loop)
 		{
 			flags = SoundModeFlag::SOUND_LOOP;

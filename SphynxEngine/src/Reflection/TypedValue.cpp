@@ -117,7 +117,6 @@ namespace Sphynx
 
 		void TypedValue::ToString(const TypedValue& typedValue, char* buffer, size_t size)
 		{
-			bool result = false;
 			const bool fitsInBuffer = typedValue.m_Type->Size <= sizeof(typedValue.m_Buffer);
 			void* buff = fitsInBuffer ? (void*)typedValue.m_Buffer : (void*)&typedValue.m_Buffer;
 

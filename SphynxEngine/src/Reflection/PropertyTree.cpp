@@ -66,7 +66,6 @@ namespace Sphynx
 			}
 			else if (m_Type.Kind == TypeKind::ENUM)
 			{
-				const Enum& rEnum = static_cast<const Enum&>(m_Type);
 				visitor.OnBeforeVisitEnum(property, m_Addr);
 				visitor.VisitEnum(property, m_Addr);
 				TryTraverseIfPointer(property);

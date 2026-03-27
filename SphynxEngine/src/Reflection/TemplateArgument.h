@@ -8,7 +8,9 @@ namespace Sphynx
 {
 	namespace Reflection
 	{
+		/* forward declarations */
 		struct Type;
+		template<typename T> const Type& GetType();
 
 		struct SPHYNX_API TemplateArgument
 		{
@@ -44,7 +46,8 @@ namespace Sphynx
 							return ::Sphynx::Reflection::ValueType::VALUE;
 					}();
 
-				return {
+				return QualifiedType
+				{
 					::Sphynx::Reflection::GetType<cleared_property_type>(),
 					qualifierMask,
 					valueType,

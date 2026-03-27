@@ -11,11 +11,14 @@ namespace Sphynx
 
 	void IPropertyDrawer::DrawLabel(const Reflection::Property& property, void* data)
 	{
+		SPX_UNUSED(data);
 		IPropertyDrawer::DrawDefaultLabel(property);
 	}
 
 	void IPropertyDrawer::DrawWidget(const Reflection::Property& property, void* data)
 	{
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
 		ImGui::Text("Not implemented");
 	}
 

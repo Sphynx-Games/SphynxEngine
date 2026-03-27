@@ -40,6 +40,7 @@ namespace Sphynx
 	void YAMLReader::Read(wchar_t& v) const
 	{
 		SPX_CORE_ASSERT(false, "wchat_t is not supported!");
+		SPX_UNUSED(v);
 		//v = m_Node->as<wchar_t>();
 	}
 
@@ -96,12 +97,14 @@ namespace Sphynx
 	void YAMLReader::Read(char* v) const
 	{
 		SPX_CORE_ASSERT(false, "c-style string is not supported!");
+		SPX_UNUSED(v);
 		//v = m_Node->as<char*>();
 	}
 
 	void YAMLReader::Read(wchar_t* v) const
 	{
 		SPX_CORE_ASSERT(false, "c-style wstring is not supported!");
+		SPX_UNUSED(v);
 		//v = m_Node->as<wchar_t*>();
 	}
 
@@ -113,6 +116,7 @@ namespace Sphynx
 	void YAMLReader::Read(std::wstring& v) const
 	{
 		SPX_CORE_ASSERT(false, "wstring is not supported!");
+		SPX_UNUSED(v);
 		//v = m_Node->as<std::wstring>();
 	}
 
@@ -125,6 +129,8 @@ namespace Sphynx
 	void YAMLReader::Read(void* v, size_t size) const
 	{
 		SPX_CORE_ASSERT(false, "Binary is not supported!");
+		SPX_UNUSED(v);
+		SPX_UNUSED(size);
 	}
 
 	void YAMLReader::PushIndex(size_t index) const

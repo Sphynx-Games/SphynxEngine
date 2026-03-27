@@ -28,20 +28,21 @@ namespace Sphynx
 			virtual bool VisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) = 0;
 			
 			// Visit events
-			#define X(_Type)	virtual void OnBeforeVisit(const Property* property, _Type& data) {}; \
-								virtual void OnAfterVisit(const Property* property, _Type& data) {};
+			#define X(_Type)	virtual void OnBeforeVisit(const Property* property, _Type& data) { (void)property; (void)data; }; \
+								virtual void OnAfterVisit(const Property* property, _Type& data) { (void)property; (void)data; };
 			TYPES()
 			SPECIAL_TYPES()
 			#undef X
 
-			virtual void OnBeforeVisitEnum(const Property* property, void* data) {};
-			virtual void OnAfterVisitEnum(const Property* property, void* data) {};
-			virtual void OnBeforeVisitClass(const Property* property, void* data) {};
-			virtual void OnAfterVisitClass(const Property* property, void* data) {};
-			virtual void OnBeforeVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) {};
-			virtual void OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) {};
-			virtual void OnBeforeVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) {};
-			virtual void OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) {};
+			virtual void OnBeforeVisitEnum(const Property* property, void* data) { (void)property; (void)data; };
+			virtual void OnAfterVisitEnum(const Property* property, void* data) { (void)property; (void)data; };
+			virtual void OnBeforeVisitClass(const Property* property, void* data) { (void)property; (void)data; };
+			virtual void OnAfterVisitClass(const Property* property, void* data) { (void)property; (void)data; };
+			virtual void OnBeforeVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) { (void)property; (void)data; (void)collection; };
+			virtual void OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::IndexedCollection& collection) { (void)property; (void)data; (void)collection;
+			};
+			virtual void OnBeforeVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) { (void)property; (void)data; (void)collection; };
+			virtual void OnAfterVisitClass(const Property* property, void* data, const CommonAttribute::AssociativeCollection& collection) { (void)property; (void)data; (void)collection; };
 		};
 
 		class SPHYNX_API PropertyTree
@@ -49,10 +50,7 @@ namespace Sphynx
 		public:
 			struct SPHYNX_API TraversalParams
 			{
-				struct
-				{
-					std::unordered_map<const Type*, void(*)(PropertyTree&, const Property*, void*, IPropertyTreeVisitor&)> CustomTraversal{};
-				};
+				std::unordered_map<const Type*, void(*)(PropertyTree&, const Property*, void*, IPropertyTreeVisitor&)> CustomTraversal{};
 			};
 		public:
 			PropertyTree(const Type& type, void* addr, TraversalParams&& params = {});

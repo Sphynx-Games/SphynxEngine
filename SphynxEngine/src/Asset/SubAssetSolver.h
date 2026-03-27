@@ -8,6 +8,6 @@ namespace Sphynx
 	template<typename T>
 	struct SPHYNX_API SubAssetSolver
 	{
-		void operator()(const T& t, AssetMetadata& metadata) {}
+		void operator()(const T& t, AssetMetadata& metadata) { SPX_UNUSED(t); SPX_UNUSED(metadata); }
 	};
 }

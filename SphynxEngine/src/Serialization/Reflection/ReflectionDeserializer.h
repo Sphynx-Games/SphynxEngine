@@ -131,10 +131,7 @@ namespace Sphynx
 		bool m_IsRootPropertyVisitEnabled;
 
 		bool m_ShouldContinue;
-		struct
-		{
-			std::stack<Node> m_VisitedProperties;
-		};
+		std::stack<Node> m_VisitedProperties;
 
 	};
 }

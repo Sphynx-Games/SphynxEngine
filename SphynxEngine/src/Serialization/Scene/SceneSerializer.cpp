@@ -20,6 +20,9 @@ namespace Sphynx
 			void* data,
 			Reflection::IPropertyTreeVisitor& visitor)
 		{
+			SPX_UNUSED(tree);
+			SPX_UNUSED(property);
+
 			using namespace Reflection;
 			Actor* actor = static_cast<Actor*>(data);
 
@@ -29,9 +32,9 @@ namespace Sphynx
 				const UUIDComponent* uuidComponent = actor->TryGetComponent<UUIDComponent>();
 
 				const size_t offset = std::distance((std::byte*)data, (std::byte*)&uuidComponent->UUID);
-				const Property property{ GetType<UUID>(), "UUID", offset };
-				PropertyTree mTree{ property.GetType(), (void*)&uuidComponent->UUID};
-				mTree.Traverse(visitor, &property);
+				const Property uuidCompProperty{ GetType<UUID>(), "UUID", offset };
+				PropertyTree mTree{ uuidCompProperty.GetType(), (void*)&uuidComponent->UUID};
+				mTree.Traverse(visitor, &uuidCompProperty);
 			}
 			// Name
 			{
@@ -39,9 +42,9 @@ namespace Sphynx
 				const NameComponent* nameComponent = actor->TryGetComponent<NameComponent>();
 
 				const size_t offset = std::distance((std::byte*)data, (std::byte*)&nameComponent->Name);
-				const Property property{ GetType<std::string>(), "Name", offset };
-				PropertyTree mTree{ property.GetType(), (void*)&nameComponent->Name};
-				mTree.Traverse(visitor, &property);
+				const Property nameCompProperty{ GetType<std::string>(), "Name", offset };
+				PropertyTree mTree{ nameCompProperty.GetType(), (void*)&nameComponent->Name};
+				mTree.Traverse(visitor, &nameCompProperty);
 			}
 		}
 
@@ -70,10 +73,10 @@ namespace Sphynx
 					}
 				}
 				const Reflection::Class& cClass = GetClass<Array<uintptr_t>>();
-				const Property property{ cClass, "Components", 0 };
+				const Property compProperty{ cClass, "Components", 0 };
 				const CommonAttribute::IndexedCollection* collection = cClass.GetAttribute<CommonAttribute::IndexedCollection>();
-				visitor.OnBeforeVisitClass(&property, &actorComponents, *collection);
-				const bool skip = !visitor.VisitClass(&property, &actorComponents, *collection);
+				visitor.OnBeforeVisitClass(&compProperty, &actorComponents, *collection);
+				const bool skip = !visitor.VisitClass(&compProperty, &actorComponents, *collection);
 
 				for (size_t i = 0; !skip && i < actorComponents.Size(); ++i)
 				{
@@ -85,7 +88,7 @@ namespace Sphynx
 					mTree.Traverse(visitor, &fakeProperty);
 				}
 
-				visitor.OnAfterVisitClass(&property, &actorComponents, *collection);
+				visitor.OnAfterVisitClass(&compProperty, &actorComponents, *collection);
 			}
 		}
 	}
@@ -286,6 +289,9 @@ namespace Sphynx
 
 	bool SceneSerializer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+
 		m_Writer.PushKey();
 		m_Writer.Write(property->Name);
 		m_Writer.PushValue();
@@ -298,6 +304,9 @@ namespace Sphynx
 
 	bool SceneSerializer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+
 		m_Writer.PushKey();
 		m_Writer.Write(property->Name);
 		m_Writer.PushValue();
@@ -311,16 +320,20 @@ namespace Sphynx
 
 	void SceneSerializer::OnBeforeVisitEnum(const Reflection::Property* property, void* data)
 	{
-
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
 	}
 
 	void SceneSerializer::OnAfterVisitEnum(const Reflection::Property* property, void* data)
 	{
-
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
 	}
 
 	void SceneSerializer::OnBeforeVisitClass(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->Name == property->GetType().Name)
 		{
 			m_Writer.PushMap();
@@ -329,6 +342,8 @@ namespace Sphynx
 
 	void SceneSerializer::OnAfterVisitClass(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
+
 		if (property->IsPointer())
 		{
 			return;
@@ -372,21 +387,30 @@ namespace Sphynx
 
 	void SceneSerializer::OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
-
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 	}
 
 	void SceneSerializer::OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 		m_Writer.PopSequence();
 	}
 
 	void SceneSerializer::OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
-
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 	}
 
 	void SceneSerializer::OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
+		SPX_UNUSED(property);
+
 		size_t collectionSize = collection.GetSize(data);
 		if (collectionSize == 0) return;
 

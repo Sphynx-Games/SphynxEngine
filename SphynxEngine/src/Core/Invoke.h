@@ -11,11 +11,11 @@ namespace Sphynx
 		typename Traits::callable_return_type<typename std::remove_reference<Functor>::type>::type
 			InvokeExpanded(Functor&& functor, void* params, std::index_sequence<I...>)
 		{
-			using args_pack_type = typename traits::callable_args_type<typename std::remove_reference<Functor>::type>::type;
+			using args_pack_type = typename Traits::callable_args_type<typename std::remove_reference<Functor>::type>::type;
 
 			return functor(
-				*reinterpret_cast<traits::args_pack_element_t<args_pack_type, I>*>(
-					(char*)params + traits::args_pack_element_offset<args_pack_type, I>::value
+				*reinterpret_cast<Traits::args_pack_element_t<args_pack_type, I>*>(
+					(char*)params + Traits::args_pack_element_offset<args_pack_type, I>::value
 					)...
 			);
 		}

@@ -65,6 +65,9 @@ namespace Sphynx
 
 		/* TODO: Gamepad */
 
+	protected:
+		virtual ~Input() = default;
+
 	private:
 		/* Instance */
 		static Input* s_Instance;

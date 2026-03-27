@@ -13,6 +13,8 @@ namespace Sphynx
 	std::shared_ptr<IAsset> SceneAssetImporter::Import(const AssetMetadata& metadata, const std::filesystem::path& path)
 	{
 		SPX_CORE_LOG_TRACE("Importing scene {}", metadata.Path.string().c_str());
+
+		SPX_UNUSED(path);
 		return Load(metadata);
 	}
 

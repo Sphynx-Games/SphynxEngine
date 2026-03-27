@@ -52,7 +52,8 @@ namespace Sphynx
 		{
 			EditorSceneDeserializer& self = static_cast<EditorSceneDeserializer&>(visitor);
 			ActorDeserializer::ConfigurePropertyTree(tree, Reflection::GetClass<Actor>());
-			ActorDeserializer::ActorDeserializeTraversal(tree, property, data, ActorDeserializer{ *static_cast<Actor*>(data), Reader{ self.m_Reader } });
+			ActorDeserializer deserializer{ *static_cast<Actor*>(data), Reader{ self.m_Reader } };
+			ActorDeserializer::ActorDeserializeTraversal(tree, property, data, deserializer);
 			return;
 		}
 
@@ -68,12 +69,12 @@ namespace Sphynx
 			prefabData.actor = actor;
 
 			const Reflection::Class& cClass = GetClass<Array<uint32_t>>();
-			const Property property{ cClass, "Components", 0 };
-			deserializer.m_PrefabEditorComponentsProperty = &property;
+			const Property compProperty{ cClass, "Components", 0 };
+			deserializer.m_PrefabEditorComponentsProperty = &compProperty;
 
 			const CommonAttribute::IndexedCollection* collection = cClass.GetAttribute<CommonAttribute::IndexedCollection>();
-			visitor.OnBeforeVisitClass(&property, &prefabData, *collection);
-			const bool skip = !visitor.VisitClass(&property, &prefabData, *collection);
+			visitor.OnBeforeVisitClass(&compProperty, &prefabData, *collection);
+			const bool skip = !visitor.VisitClass(&compProperty, &prefabData, *collection);
 
 			for (size_t i = 0; !skip && i < prefabData.components.Size(); ++i)
 			{
@@ -97,7 +98,7 @@ namespace Sphynx
 				visitor.OnAfterVisitClass(&fakeProperty, nullptr);
 			}
 
-			visitor.OnAfterVisitClass(&property, &prefabData, *collection);
+			visitor.OnAfterVisitClass(&compProperty, &prefabData, *collection);
 			deserializer.m_PrefabEditorComponentsProperty = nullptr;
 		}
 	}
@@ -133,6 +134,9 @@ namespace Sphynx
 
 	void EditorSceneDeserializer::VisitEditorActors(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 		EditorScene* scene = static_cast<EditorScene*>(&m_Scene);
 		const size_t size = GetCollectionCount();
 		for (size_t i = 0; i < size; ++i)
@@ -143,9 +147,11 @@ namespace Sphynx
 			AssetHandle prefabHandle = AssetHandle::Invalid;
 			if (isPrefabActor)
 			{
-				const Reflection::Property property{ Reflection::GetType<AssetHandle>(), "Prefab", 0 };
-				Reflection::PropertyTree mTree{ property.GetType(), &prefabHandle };
-				mTree.Traverse(EditorSceneDeserializer{ *scene, Reader{ m_Reader } }, &property);
+				const Reflection::Property prefabProperty{ Reflection::GetType<AssetHandle>(), "Prefab", 0 };
+				Reflection::PropertyTree mTree{ prefabProperty.GetType(), &prefabHandle };
+				Reader reader{ m_Reader };
+				EditorSceneDeserializer editorSceneDeserializer{ *scene, std::move(reader) };
+				mTree.Traverse(editorSceneDeserializer, &prefabProperty);
 			}
 			m_Reader.PopIndex();
 
@@ -172,7 +178,9 @@ namespace Sphynx
 
 	void EditorSceneDeserializer::VisitPrefabComponent(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
-		EditorScene* scene = static_cast<EditorScene*>(&m_Scene);
+		SPX_UNUSED(property);
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 		const size_t size = GetCollectionCount();
 		for (size_t i = 0; i < size; ++i)
 		{

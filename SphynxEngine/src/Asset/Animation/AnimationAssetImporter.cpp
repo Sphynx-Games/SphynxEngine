@@ -15,6 +15,7 @@ namespace Sphynx
 {
 	std::shared_ptr<IAsset> AnimationAssetImporter::Import(const AssetMetadata& metadata, const std::filesystem::path& path)
 	{
+		SPX_UNUSED(path);
 		SPX_CORE_LOG_TRACE("Importing animation2D: {}", metadata.Path.string().c_str());
 
 		return Load(metadata);

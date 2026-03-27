@@ -217,6 +217,7 @@ namespace Sphynx
 
 		void PropertyComparator::OnAfterVisitClass(const Reflection::Property* property, void* data)
 		{
+			SPX_UNUSED(data);
 			if (IsRootNode(property))
 			{
 				return;

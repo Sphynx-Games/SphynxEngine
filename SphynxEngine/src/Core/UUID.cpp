@@ -14,7 +14,7 @@ namespace Sphynx
 
 		UUID FromSTDUUIDToSphynxUUID(const uuids::uuid& stduuid)
 		{
-			SPX_CORE_ASSERT(sizeof(uuids::uuid) == sizeof(UUID), "UUID sizes should be equals!");
+			static_assert(sizeof(uuids::uuid) == sizeof(UUID), "UUID sizes should be equals!");
 
 			UUID uuid;
 			memcpy(&uuid, &stduuid, sizeof(stduuid));

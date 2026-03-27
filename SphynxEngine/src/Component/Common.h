@@ -25,7 +25,7 @@ namespace Sphynx
 	{
 		namespace CommonAttribute
 		{
-			class InternalComponent : public ::Sphynx::Reflection::Attribute
+			class SPHYNX_API InternalComponent : public ::Sphynx::Reflection::Attribute
 			{
 			public:
 				template<typename TComponent>
@@ -35,11 +35,9 @@ namespace Sphynx
 					deleter = &ComponentRegistry::Unregister<TComponent>;
 				}
 
-				~InternalComponent()
-				{
-					deleter();
-					deleter = nullptr;
-				}
+				~InternalComponent();
+
+				size_t GetTypeID() const override;
 
 			private:
 				void(*deleter)();
@@ -47,3 +45,5 @@ namespace Sphynx
 		}
 	}
 }
+
+SPX_REGISTER_ATTRIBUTE(Sphynx::Reflection::CommonAttribute::InternalComponent)

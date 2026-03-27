@@ -130,5 +130,6 @@ void RuntimeLayer::Update(float deltaTime)
 
 void RuntimeLayer::HandleEvent(Sphynx::Event& event)
 {
+	SPX_UNUSED(event);
 	//m_CameraController->HandleEvent(event);
 }

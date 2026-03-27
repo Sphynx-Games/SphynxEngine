@@ -68,7 +68,7 @@ namespace Sphynx
 		template<typename ArgsPack, size_t I>
 		struct args_pack_element : std::type_identity<
 			typename std::conditional<
-			0 <= I && I < args_pack_size<ArgsPack>::value,
+			/*0 <= I &&*/ I < args_pack_size<ArgsPack>::value,
 			typename std::tuple_element<I, args_pack_as_tuple_t<ArgsPack>>::type,
 			typename args_pack<>::nulltype
 			>::type

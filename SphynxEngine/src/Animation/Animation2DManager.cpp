@@ -119,6 +119,7 @@ namespace Sphynx
 
 	void Animation2DManager::OnDestroyAnimationComponent(void* component, Actor* actor)
 	{
+		SPX_UNUSED(actor);
 		AnimationComponent* animComp = static_cast<AnimationComponent*>(component);
 		s_AnimationComponents.Remove(animComp);
 	}
@@ -139,6 +140,7 @@ namespace Sphynx
 
 	void Animation2DManager::OnDestroySpriteComponent(void* component, Actor* actor)
 	{
+		SPX_UNUSED(component);
 		if (actor->HasComponent<AnimationComponent>()) // has AnimationComponent
 		{
 			AnimationComponent& animComp = actor->GetComponent<AnimationComponent>();

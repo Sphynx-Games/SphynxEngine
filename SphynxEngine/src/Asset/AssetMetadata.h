@@ -31,7 +31,7 @@ namespace Sphynx
 
 		friend bool operator==(const AssetMetadata& lhs, const AssetMetadata& rhs)
 		{
-			return lhs.Handle == lhs.Handle;
+			return lhs.Handle == rhs.Handle;
 		}
 
 		static const AssetMetadata Invalid;

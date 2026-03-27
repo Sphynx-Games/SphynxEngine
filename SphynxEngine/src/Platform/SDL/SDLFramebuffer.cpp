@@ -65,12 +65,12 @@ namespace Sphynx
 
 		m_Renderer = renderer;
 
-		for (auto spec : m_Specification.Attachments.Attachments)
+		for (auto attachment : m_Specification.Attachments.Attachments)
 		{
-			if (!Utils::IsDepthFormat(spec.TextureFormat))
-				m_ColorAttachmentSpecifications.emplace_back(spec);
+			if (!Utils::IsDepthFormat(attachment.TextureFormat))
+				m_ColorAttachmentSpecifications.emplace_back(attachment);
 			else
-				m_DepthAttachmentSpecification = spec;
+				m_DepthAttachmentSpecification = attachment;
 		}
 
 		Invalidate();

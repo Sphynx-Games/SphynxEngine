@@ -113,7 +113,8 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawPoint(Vector2i point, Color color)
 	{
-
+		SPX_UNUSED(point);
+		SPX_UNUSED(color);
 	}
 
 	void OpenGLRendererAPI::DrawLine(Vector2i point1, Vector2i point2, float lineWidth, Color color)
@@ -189,6 +190,7 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawQuad(DrawMode drawMode, Vector2i center, Vector2i size, Color color)
 	{
+		SPX_UNUSED(center); // TODO: use center
 		const float normColor[4]{ color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f };
 		const float vertex[]
 		{
@@ -232,6 +234,7 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawQuad(DrawMode drawMode, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
+		SPX_UNUSED(pivot); // TODO: use pivot
 		const float normColor[4]{ color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f };
 		const float vertex[]
 		{
@@ -315,6 +318,7 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawTriangle(DrawMode drawMode, const Transform& transform, Vector2f point1, Vector2f point2, Vector2f point3, Vector2f pivot, Color color)
 	{
+		SPX_UNUSED(pivot); // TODO: use pivot
 		const float normColor[4]{ color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f };
 		const float vertex[]
 		{
@@ -370,7 +374,6 @@ namespace Sphynx
 		vertex.emplace_back(normColor[2]);
 		vertex.emplace_back(normColor[3]);
 
-		const float circumference = radius * (float)Math::TAU;
 		const float alpha = (float)Math::TAU / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
 		{
@@ -439,7 +442,6 @@ namespace Sphynx
 		vertex.emplace_back(normColor[2]);
 		vertex.emplace_back(normColor[3]);
 
-		const float circumference = radius * (float)Math::TAU;
 		const float alpha = (float)Math::TAU / numSegments; // in radians
 		for (uint32_t i = 0; i < numSegments; ++i)
 		{
@@ -490,6 +492,7 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawTexture(const Texture& texture, Vector2i position, Vector2i size, Color color)
 	{
+		SPX_UNUSED(position); // TODO: use position
 		const float normColor[4]{ color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f };
 		const float vertex[]
 		{
@@ -538,6 +541,7 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawTexture(const Texture& texture, const Transform& transform, Vector2f size, Vector2f pivot, Color color)
 	{
+		SPX_UNUSED(pivot); // TODO: use pivot
 		const float normColor[4]{ color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f };
 		const float vertex[]
 		{
@@ -586,6 +590,11 @@ namespace Sphynx
 
 	void OpenGLRendererAPI::DrawSprite(const Sprite& sprite, Vector2i position, Vector2i size, Color color)
 	{
+		SPX_UNUSED(sprite);
+		SPX_UNUSED(position);
+		SPX_UNUSED(size);
+		SPX_UNUSED(color);
+
 		// TODO
 		SPX_CORE_ASSERT(false, "Not supported yet");
 	}
@@ -648,6 +657,13 @@ namespace Sphynx
 	void OpenGLRendererAPI::DrawText(const std::string& text, const Font& font, float size, Vector2i position, Vector2i scale, Color color)
 	{
 		// TODO
+		SPX_UNUSED(text);
+		SPX_UNUSED(font);
+		SPX_UNUSED(size);
+		SPX_UNUSED(position);
+		SPX_UNUSED(scale);
+		SPX_UNUSED(color);
+
 		SPX_CORE_ASSERT(false, "Not supported yet");
 	}
 

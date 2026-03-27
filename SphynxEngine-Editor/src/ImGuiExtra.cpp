@@ -97,7 +97,6 @@ namespace ImGui
 
 		ImGui::BeginGroup();
 
-		int num = 1;
 		std::string invisibleText = "##" + text;
 		bool pressed = ImGui::Button(invisibleText.c_str(), size);
 

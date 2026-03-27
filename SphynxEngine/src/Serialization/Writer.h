@@ -1,12 +1,8 @@
 #pragma once
 
-
 #include "Core/Core.h"
-
-#include "Serialization/Serialization.h"
-#include "Traits/Traits.h"
-
 #include <cstring>
+
 
 #define WRITER_COMMON_BODY \
 	void Write(bool v); \
@@ -96,7 +92,7 @@ namespace Sphynx
 		}
 
 		template<typename TWriter>
-		static Writer Create(const TWriter& writer) { return Writer{ writer }; }
+		static ::Sphynx::Writer Create(TWriter& writer) { return ::Sphynx::Writer{ writer }; }
 
 	public:
 		WRITER_COMMON_BODY;

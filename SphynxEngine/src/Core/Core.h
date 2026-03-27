@@ -24,5 +24,13 @@
 	#define SPHYNX_API
 #endif // SPX_BUILD_SHARED
 
+#ifndef SPX_UNUSED
+#define SPX_UNUSED(x) ((void)x)
+#endif
+
 #include "Logging/Log.h"
 #define SPX_CORE_ASSERT(Condition, ...) do { if (!(Condition)) { /* SPX_CORE_LOG_ERROR(##__VA_ARGS__); */ __debugbreak(); } } while(false)
+
+// TODO: we need to remove this warning suppressions asap
+#pragma warning( disable : 4251 )	// dll export on STL containers
+#pragma warning( disable : 4456 )	// shadowing

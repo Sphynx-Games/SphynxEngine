@@ -22,6 +22,7 @@ namespace Sphynx
 	{
 		SPX_CORE_LOG_TRACE("Importing spritesheet: {}", metadata.Path.string().c_str());
 
+		SPX_UNUSED(path);
 		return Load(metadata);
 	}
 

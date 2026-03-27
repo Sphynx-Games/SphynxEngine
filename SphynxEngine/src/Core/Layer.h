@@ -14,15 +14,13 @@ namespace Sphynx
 
 		virtual void Attach() {}
 		virtual void Detach() {}
-		virtual void Update(float deltaTime) {}
-		virtual void HandleEvent(Event& event) {}
+		virtual void Update(float deltaTime) { SPX_UNUSED(deltaTime); }
+		virtual void HandleEvent(Event& event) { SPX_UNUSED(event); }
 
 		const std::string& GetName() const { return m_DebugName; }
 
 	protected:
-		struct
-		{
-			std::string m_DebugName;
-		};
+		std::string m_DebugName;
+
 	};
 }

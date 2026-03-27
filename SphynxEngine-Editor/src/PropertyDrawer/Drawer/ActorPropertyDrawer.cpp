@@ -15,6 +15,7 @@ namespace Sphynx
 {
 	void ActorPropertyDrawer::Draw(const Reflection::Property& property, void* data)
 	{
+		SPX_UNUSED(property);
 		Actor* actor = static_cast<Actor*>(data);
 
 		// TODO: This does nothing for now

@@ -31,7 +31,6 @@ namespace Sphynx
 	void Scene::CloneRegistry(const Scene& other)
 	{
 		auto& sourceRegistry = other.m_Registry;
-		auto& targetRegistry = m_Registry;
 		std::unordered_map<UUID, size_t> enttMap;
 
 		// create entities

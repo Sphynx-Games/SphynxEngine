@@ -30,7 +30,7 @@ namespace Sphynx
 			}
 
 			// Init SDL Image
-			if (IMG_Init(~0) == 0)
+			if (IMG_Init(~0u) == 0)
 			{
 				SPX_CORE_LOG_ERROR("SDL_image could not initialize! SDL_Error: {}", SDL_GetError());
 			}

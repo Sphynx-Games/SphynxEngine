@@ -15,7 +15,6 @@ namespace Sphynx
 		case RendererAPI::API::NONE: return nullptr;
 		case RendererAPI::API::OPENGL: return new OpenGLVertexBuffer(vertices, size, layout);
 		case RendererAPI::API::D3D11: return new D3D11VertexBuffer(vertices, size, layout);
-		default: return nullptr;
 		}
 		return nullptr;
 	}
@@ -27,7 +26,6 @@ namespace Sphynx
 		case RendererAPI::API::NONE: return nullptr;
 		case RendererAPI::API::OPENGL: return new OpenGLIndexBuffer(indices, count);
 		case RendererAPI::API::D3D11: return new D3D11IndexBuffer(indices, count);
-		default: return nullptr;
 		}
 		return nullptr;
 	}

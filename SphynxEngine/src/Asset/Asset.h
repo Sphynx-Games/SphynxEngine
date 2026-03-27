@@ -73,12 +73,11 @@ struct std::hash<Sphynx::AssetType>
 
 
 #include "Reflection/Reflection.h"
+#include "Serialization/Serialization.h"
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::AssetType, SPHYNX_API)
 
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>)
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>)
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>)
-SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>)
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer)
+SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer)
 
 SPX_REFLECT_STRUCT_END(Sphynx::AssetType, SPHYNX_API)

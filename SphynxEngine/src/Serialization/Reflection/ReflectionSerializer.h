@@ -80,7 +80,7 @@ namespace Sphynx
 
 		const Reflection::Class& rClass = static_cast<const Reflection::Class&>(type);
 
-		using CustomSerializer = ::Sphynx::Serialization::CustomSerializer<TWriter>;
+		using CustomSerializer = ::Sphynx::Serialization::CustomSerializer;
 		if (const CustomSerializer* serializer = rClass.GetAttribute<CustomSerializer>())
 		{
 			serializer->Write(obj, writer);

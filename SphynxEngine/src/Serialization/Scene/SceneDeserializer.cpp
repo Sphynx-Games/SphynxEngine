@@ -33,7 +33,8 @@ namespace Sphynx
 			{
 				SceneDeserializer& self = static_cast<SceneDeserializer&>(visitor);
 				Reader reader{ self.m_Reader };
-				tree.Traverse(ActorDeserializer{ *static_cast<Actor*>(addr), std::move(reader) }, prop);
+				ActorDeserializer actorDeserializer{ *static_cast<Actor*>(addr), std::move(reader) };
+				tree.Traverse(actorDeserializer, prop);
 			};
 		PropertyTree::Traverse(GetClass<Scene>(), &m_Scene, *this, std::move(params));
 	}

@@ -11,7 +11,8 @@ namespace Sphynx
 	void TransformPropertyDrawer::Draw(const Reflection::Property& property, void* data)
 	{
 		// TODO: this will be an Attribute in the future, for now we ShowInnerValues manually
-		
+		SPX_UNUSED(property);
+
 		const Reflection::Class& cClass = Reflection::GetClass<Transform>();
 		for (const Reflection::Property& prop : cClass)
 		{

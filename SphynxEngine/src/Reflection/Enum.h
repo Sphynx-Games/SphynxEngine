@@ -26,10 +26,7 @@ namespace Sphynx
 				const char* Name;
 				int64_t Value;
 
-				struct
-				{
-					std::vector<Attribute*> Attributes;
-				};
+				std::vector<Attribute*> Attributes;
 			};
 
 			template<typename T>
@@ -55,7 +52,7 @@ namespace Sphynx
 			template<typename T>
 			int64_t GetValue(T e) const
 			{
-				SPX_CORE_ASSERT(&GetEnum<T>() == this);
+				//SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
 				int64_t value = (int64_t)e;
 				auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Value == value; });
@@ -70,7 +67,7 @@ namespace Sphynx
 			template<typename T>
 			const char* GetName(T e) const
 			{
-				SPX_CORE_ASSERT(&GetEnum<T>() == this);
+				//SPX_CORE_ASSERT(&GetEnum<T>() == this);
 
 				int64_t value = (int64_t)e;
 				auto it = std::find_if(Values, Values + Count, [&](const Entry& entry) { return entry.Value == value; });

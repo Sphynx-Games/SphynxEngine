@@ -93,12 +93,12 @@ namespace Sphynx
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		: m_Specification(spec)
 	{
-		for (auto spec : m_Specification.Attachments.Attachments)
+		for (auto attachment : m_Specification.Attachments.Attachments)
 		{
-			if (!Utils::IsDepthFormat(spec.TextureFormat))
-				m_ColorAttachmentSpecifications.emplace_back(spec);
+			if (!Utils::IsDepthFormat(attachment.TextureFormat))
+				m_ColorAttachmentSpecifications.emplace_back(attachment);
 			else
-				m_DepthAttachmentSpecification = spec;
+				m_DepthAttachmentSpecification = attachment;
 		}
 
 		Invalidate();

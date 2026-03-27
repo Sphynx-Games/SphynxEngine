@@ -3,9 +3,13 @@
 #include "Core/Core.h"
 #include "AccessSpecifier.h"
 #include "QualifiedType.h"
+#include "TypeID.h"
 #include <vector>
 #include <cstdint>
 
+
+#pragma warning(push)
+#pragma warning(disable : 4251)
 
 namespace Sphynx
 {
@@ -50,10 +54,7 @@ namespace Sphynx
 			size_t Offset;
 			AccessSpecifier AccessSpecifier;
 
-			struct
-			{
-				std::vector<Attribute*> Attributes;
-			};
+			std::vector<Attribute*> Attributes;
 		};
 
 		template<typename T>
@@ -65,15 +66,18 @@ namespace Sphynx
 		template<typename T>
 		inline const T* Property::GetAttribute() const
 		{
+			constexpr size_t targetTypeID = ::Sphynx::Reflection::TypeID<T>::ID;
+			
 			size_t AttributesCount = Attributes.size();
 			for (size_t i = 0; i < AttributesCount; ++i)
 			{
-				// TODO: change this ugly dynamic_cast
-				if (const T* attr = dynamic_cast<const T*>(Attributes[i]))
-					return attr;
+				if (Attributes[i]->GetTypeID() == targetTypeID)
+					return static_cast<const T*>(Attributes[i]);
 			}
-
+			
 			return nullptr;
 		}
 	}
 }
+
+#pragma warning(pop)

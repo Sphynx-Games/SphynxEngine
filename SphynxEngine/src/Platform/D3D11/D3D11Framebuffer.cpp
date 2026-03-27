@@ -44,12 +44,12 @@ namespace Sphynx
 		m_DepthAttachment(nullptr),
 		m_DepthAttachmentResource(nullptr)
 	{
-		for (const auto& spec : m_Specification.Attachments.Attachments)
+		for (const auto& attachment : m_Specification.Attachments.Attachments)
 		{
-			if (!Utils::IsDepthFormat(spec.TextureFormat))
-				m_ColorAttachmentSpecifications.emplace_back(spec);
+			if (!Utils::IsDepthFormat(attachment.TextureFormat))
+				m_ColorAttachmentSpecifications.emplace_back(attachment);
 			else
-				m_DepthAttachmentSpecification = spec;
+				m_DepthAttachmentSpecification = attachment;
 		}
 
 		Invalidate();
@@ -166,7 +166,7 @@ namespace Sphynx
 			srDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 			srDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			srDesc.Texture2D.MostDetailedMip = 0;
-			srDesc.Texture2D.MipLevels = -1;
+			srDesc.Texture2D.MipLevels = ~0u;
 			CHECK_D3D11_ERRORS(device->CreateShaderResourceView(depthStencilTexture, &srDesc, &m_DepthAttachmentResource));
 		}
 	}
@@ -205,6 +205,8 @@ namespace Sphynx
 		}
 
 		// TODO
+		SPX_UNUSED(x);
+		SPX_UNUSED(y);
 		int pixelData = 0;
 		return Color::FromHex(pixelData);
 	}

@@ -77,16 +77,9 @@ struct std::hash<Sphynx::UUID>
 
 #include "Reflection/Reflection.h"
 #include "Serialization/Serialization.h"
-#include "Serialization/Writer.h"
-#include "Serialization/Reader.h"
-#include "Serialization/YAML/YAMLWriter.h"
-#include "Serialization/YAML/YAMLReader.h"
-
 
 SPX_REFLECT_STRUCT_BEGIN(Sphynx::UUID, SPHYNX_API)
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::Writer>)
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::Reader>)
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer<Sphynx::YAMLWriter>)
-	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer<Sphynx::YAMLReader>)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomSerializer)
+	SPX_REFLECT_ATTRIBUTE(Sphynx::Serialization::CustomDeserializer)
 	SPX_REFLECT_ATTRIBUTE(POD)
 SPX_REFLECT_STRUCT_END(Sphynx::UUID, SPHYNX_API)

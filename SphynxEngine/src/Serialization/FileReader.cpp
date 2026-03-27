@@ -172,7 +172,7 @@ namespace Sphynx
 
 	void FileReader::PushKey(size_t index) const
 	{
-
+		SPX_UNUSED(index);
 	}
 
 	void FileReader::PopKey() const
@@ -182,7 +182,7 @@ namespace Sphynx
 
 	void FileReader::PushValue(size_t index) const
 	{
-
+		SPX_UNUSED(index);
 	}
 
 	void FileReader::PopValue() const
@@ -203,7 +203,7 @@ namespace Sphynx
 
 	void FileReader::PushIndex(size_t index) const
 	{
-
+		SPX_UNUSED(index);
 	}
 
 	void FileReader::PopIndex() const

@@ -23,6 +23,7 @@ namespace Sphynx
 			Description(description),
 			ConfigFlags(configFlags)
 		{}
+		virtual ~Command() = default;
 
 		virtual void Execute(const Array<std::string>& args) = 0;
 
@@ -42,6 +43,7 @@ namespace Sphynx
 
 		virtual void Execute(const Array<std::string>& args) override
 		{
+			SPX_UNUSED(args);
 			Function.Execute();
 		}
 

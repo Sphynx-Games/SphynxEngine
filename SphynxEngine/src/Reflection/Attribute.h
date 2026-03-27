@@ -2,8 +2,11 @@
 
 #include "Core/Core.h"
 #include "QualifiedType.h"
+#include "TypeID.h"
 #include <cstdint>
 
+
+#define SPX_REGISTER_ATTRIBUTE(_Type) SPX_INTERNAL_REGISTER_TYPEID(_Type)
 
 namespace Sphynx
 {
@@ -16,6 +19,8 @@ namespace Sphynx
 		public:
 			Attribute();
 			virtual ~Attribute();
+			
+			virtual size_t GetTypeID() const = 0;
 
 		};
 	}
@@ -83,6 +88,8 @@ namespace Sphynx
 				inline void* Add(void* obj) const { return m_AddFunction(obj); }
 				inline void RemoveAt(void* obj, uint64_t index) const { return m_RemoveAtFunction(obj, index); }
 
+				size_t GetTypeID() const override;
+
 			private:
 				QualifiedType m_QualifiedValueType;
 				TAccessFunction m_AccessFunction;
@@ -132,9 +139,8 @@ namespace Sphynx
 							else
 							{
 								static_assert(false, "Not implemented");
+								return false;
 							}
-
-							return false;
 						}),
 					m_HasKeyFunction([](const void* obj, const void* key) -> bool 
 						{ 
@@ -161,6 +167,8 @@ namespace Sphynx
 
 				inline bool CompareKeys(const void* keyA, const void* keyB) const { return m_CompareKeysFunction(keyA, keyB); }
 				inline bool ContainsKey(const void* obj, const void* key) const { return m_HasKeyFunction(obj, key); }
+
+				size_t GetTypeID() const override;
 
 			private:
 				const Type& m_KeyType;
@@ -189,6 +197,8 @@ namespace Sphynx
 			public:
 				void CopyTo(const void* source, void* dest) const;
 
+				size_t GetTypeID() const override;
+
 			private:
 				TCopyToFunction m_CopyToFunction;
 			};
@@ -198,6 +208,8 @@ namespace Sphynx
 			public:
 				Description(const char* description) :
 					m_Description(description) {};
+
+				size_t GetTypeID() const override;
 
 			private:
 				const char* m_Description;
@@ -211,6 +223,8 @@ namespace Sphynx
 					m_From(from),
 					m_To(to)
 				{};
+
+				size_t GetTypeID() const override;
 
 			private:
 				float m_From;
@@ -236,3 +250,10 @@ namespace Sphynx
 		}
 	}
 }
+
+
+SPX_REGISTER_ATTRIBUTE(Sphynx::Reflection::CommonAttribute::IndexedCollection)
+SPX_REGISTER_ATTRIBUTE(Sphynx::Reflection::CommonAttribute::AssociativeCollection)
+SPX_REGISTER_ATTRIBUTE(Sphynx::Reflection::CommonAttribute::POD)
+SPX_REGISTER_ATTRIBUTE(Sphynx::Reflection::CommonAttribute::Description)
+SPX_REGISTER_ATTRIBUTE(Sphynx::Reflection::CommonAttribute::Range)

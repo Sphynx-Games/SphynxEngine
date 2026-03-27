@@ -115,17 +115,11 @@ namespace Sphynx
 			PropertyDiffType GetPropertyNotFoundType(const PropertyNode& propertyNode, bool source = false); // true = source, false = target
 
 		public:
-			struct
-			{
-				MulticastDelegate<void(const PropertyDiffInfo&)> OnPropertyDiffFound;
-			};
+			MulticastDelegate<void(const PropertyDiffInfo&)> OnPropertyDiffFound;
 
 		private:
 			Reflection::Property m_RootProperty;
-			struct
-			{
-				Array<PropertyNode> m_TargetsStack;
-			};
+			Array<PropertyNode> m_TargetsStack;
 
 		};
 

@@ -315,7 +315,7 @@ namespace Sphynx
 
 			value.resize(size - 2);
 			const size_t result = std::mbstowcs(value.data(), buffer + 1, size - 2);
-			return result >= 0 && result < size;
+			return /*result >= 0 &&*/ result < size;
 		}
 		
 		bool ToString(const ::std::filesystem::path& value, char* buffer, size_t size)

@@ -62,9 +62,9 @@ namespace Sphynx
 				AssetHandle prefabHandle = AssetManager::GetAssetHandleFromAddress(it->GetPrefab());
 				SPX_CORE_ASSERT(prefabHandle != AssetHandle::Invalid, "Prefab asset handle is invalid!!");
 
-				const Property property{ GetType<AssetHandle>(), "Prefab", 0 };
-				PropertyTree mTree{ property.GetType(), (void*)&prefabHandle};
-				mTree.Traverse(visitor, &property);
+				const Property prefabProperty{ GetType<AssetHandle>(), "Prefab", 0 };
+				PropertyTree mTree{ prefabProperty.GetType(), (void*)&prefabHandle};
+				mTree.Traverse(visitor, &prefabProperty);
 			}
 
 			// UUID and Name Components
@@ -81,10 +81,10 @@ namespace Sphynx
 					actorComponents.Add(cClass);
 				}
 				const Reflection::Class& cClass = GetClass<Array<uintptr_t>>();
-				const Property property{ cClass, "Components", 0 };
+				const Property compProperty{ cClass, "Components", 0 };
 				const CommonAttribute::IndexedCollection* collection = cClass.GetAttribute<CommonAttribute::IndexedCollection>();
-				visitor.OnBeforeVisitClass(&property, &actorComponents, *collection);
-				const bool skip = !visitor.VisitClass(&property, &actorComponents, *collection);
+				visitor.OnBeforeVisitClass(&compProperty, &actorComponents, *collection);
+				const bool skip = !visitor.VisitClass(&compProperty, &actorComponents, *collection);
 				if (!skip)
 				{
 					for (const Reflection::Class* cClass : actorComponents)
@@ -123,7 +123,7 @@ namespace Sphynx
 					}
 				}
 
-				visitor.OnAfterVisitClass(&property, &actorComponents, *collection);
+				visitor.OnAfterVisitClass(&compProperty, &actorComponents, *collection);
 			}
 		}
 	}

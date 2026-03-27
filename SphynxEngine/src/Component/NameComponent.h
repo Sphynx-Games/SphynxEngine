@@ -19,10 +19,7 @@ namespace Sphynx
 		}
 
 	public:
-		struct
-		{
-			std::string Name;
-		};
+		std::string Name;
 
 	};
 }

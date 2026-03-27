@@ -9,6 +9,11 @@ namespace Sphynx
 	class Actor;
 	class Reader;
 
+	namespace Reflection
+	{
+		struct Class;
+	}
+
 	class SPHYNX_API ActorDeserializer : public ReflectionDeserializer
 	{
 	public:

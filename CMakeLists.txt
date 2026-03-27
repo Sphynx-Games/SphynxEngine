@@ -34,3 +34,44 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT S
 set_target_properties(Sandbox PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 set_target_properties(SphynxEngine-Runtime PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 set_target_properties(SphynxEngine-Editor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+function(enable_strict_warnings target_name)
+    if (MSVC)
+        target_compile_options(${target_name} PRIVATE
+            /W4             # Nivel alto de warnings
+            /WX             # Warnings como errores
+            /w14242         # conversiones posibles pérdida de datos
+            /w14254         # conversiones con signo
+            /w14263         # conversiones entre tipos base/derivados
+            /w14265         # conversiones entre punteros
+            /w14287         # signed/unsigned mismatch
+            /w14296         # cast C-style en expresiones
+            /w14545 /w14546 # tamaño de buffer distinto
+            /w14547 /w14549 # alineación y tamaño incorrectos
+            /w14555         # operador condicional puede perder datos
+            /w14640         # llamadas virtuales en constructores
+            /w14826         # referencias nulas
+            /w14905 /w14906 # tamaño de buffer distinto en CRT
+        )
+    else()
+        target_compile_options(${target_name} PRIVATE
+            -Wall
+            -Wextra
+            -Wconversion
+            -Wsign-conversion
+            -Wfloat-equal
+            -Wnon-virtual-dtor
+            -Wold-style-cast
+            -Wcast-align
+            -Woverloaded-virtual
+            -Wnull-dereference
+            -Wdouble-promotion
+            -Wformat=2
+            -Werror
+        )
+    endif()
+endfunction()
+
+enable_strict_warnings(SphynxEngine)
+enable_strict_warnings(SphynxEngine-Editor)
+enable_strict_warnings(SphynxEngine-Runtime)

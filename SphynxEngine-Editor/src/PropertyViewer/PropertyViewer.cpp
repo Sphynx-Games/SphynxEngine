@@ -89,6 +89,7 @@ namespace Sphynx
 
 	void PropertyViewer::Visit(const Reflection::Property* property, signed char& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -216,7 +217,7 @@ namespace Sphynx
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
 		// FIXME: no support for long double
-		double buffer = data;
+		double buffer = static_cast<double>(data);
 		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Double, &buffer))
 		{
 			data = buffer;
@@ -303,6 +304,7 @@ namespace Sphynx
 
 	void PropertyViewer::Visit(const Reflection::Property* property, ::std::string& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -314,6 +316,7 @@ namespace Sphynx
 
 	void PropertyViewer::Visit(const Reflection::Property* property, ::std::wstring& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -325,6 +328,7 @@ namespace Sphynx
 
 	void PropertyViewer::Visit(const Reflection::Property* property, ::std::filesystem::path& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
@@ -426,6 +430,8 @@ namespace Sphynx
 
 	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 		//if (property->IsPointer()) return false;
 
 		ImGui::LabelText(LABEL(property->Name), "Not implemented");
@@ -434,6 +440,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, bool& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -444,6 +451,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, char& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -454,6 +462,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, signed char& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -464,6 +473,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, wchar_t& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -474,6 +484,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, short& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -484,6 +495,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, int& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -494,6 +506,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, long& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -504,6 +517,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, long long& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -514,6 +528,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, float& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -524,6 +539,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, double& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -534,6 +550,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, long double& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -544,6 +561,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned char& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -554,6 +572,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned short& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -564,6 +583,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned int& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -574,6 +594,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned long& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -584,6 +605,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, unsigned long long& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -594,6 +616,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, ::std::string& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -604,6 +627,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, ::std::wstring& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -614,6 +638,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisit(const Reflection::Property* property, ::std::filesystem::path& data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		if (m_IsTableSetup)
@@ -696,6 +721,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisitEnum(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		ImGui::PushID(property->Name);
@@ -703,6 +729,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnAfterVisitEnum(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		ImGui::PopID();
@@ -710,6 +737,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisitClass(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		ImGui::PushID(property->Name);
@@ -717,6 +745,7 @@ namespace Sphynx
 
 	void PropertyViewer::OnAfterVisitClass(const Reflection::Property* property, void* data)
 	{
+		SPX_UNUSED(data);
 		if (property->IsPointer()) return;
 
 		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());
@@ -739,6 +768,8 @@ namespace Sphynx
 
 	void PropertyViewer::OnBeforeVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 		if (property->IsPointer()) return;
 
 		ImGui::PushID(property->Name);
@@ -746,6 +777,8 @@ namespace Sphynx
 
 	void PropertyViewer::OnAfterVisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::IndexedCollection& collection)
 	{
+		SPX_UNUSED(data);
+		SPX_UNUSED(collection);
 		if (property->IsPointer()) return;
 
 		auto* propertyDrawer = PropertyDrawerManager::GetDrawer(property->GetType());

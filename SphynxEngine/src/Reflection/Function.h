@@ -22,10 +22,7 @@ namespace Sphynx
 				const char* Name;
 				const Type& Type;
 
-				struct
-				{
-					std::vector<Attribute*> Attributes;
-				};
+				std::vector<Attribute*> Attributes;
 			};
 
 			Function(const char* name, const Type& returnType, const Parameter* params, size_t paramCount, void(*func)(void*, void*));
@@ -39,10 +36,7 @@ namespace Sphynx
 			size_t ParameterCount;
 			void(*FunctionPtr)(void*, void*);
 
-			struct
-			{
-				std::vector<Attribute*> Attributes;
-			};
+			std::vector<Attribute*> Attributes;
 		};
 
 		namespace details

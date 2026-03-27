@@ -12,11 +12,7 @@ namespace Sphynx
 	{
 		class Collider2D* OtherCollider;
 		Vector2f Normal;
-		//struct Contact2DData& Data;
 	};
-
-
-	//extern struct Collider2DData;
 
 	class SPHYNX_API Collider2D
 	{
@@ -47,12 +43,9 @@ namespace Sphynx
 		void Detach();
 
 	public:
-		struct
-		{
-			MulticastDelegate<void(const Contact2D&)> OnBeginOverlap;
-			MulticastDelegate<void(const Contact2D&)> OnEndOverlap;
-			MulticastDelegate<void(const Contact2D&)> OnHit;
-		};
+		MulticastDelegate<void(const Contact2D&)> OnBeginOverlap;
+		MulticastDelegate<void(const Contact2D&)> OnEndOverlap;
+		MulticastDelegate<void(const Contact2D&)> OnHit;
 
 	protected:
 		Vector2f m_Offset;
@@ -60,10 +53,7 @@ namespace Sphynx
 		PhysicsWorld2D* m_PhysicsWorld;
 		Rigidbody2D* m_Rigidbody;
 		Collider2DData* m_Data;
-		struct
-		{
-			Set<Collider2D*> m_Overlaps;
-		};
+		Set<Collider2D*> m_Overlaps;
 
 		friend class Physics2D;
 		friend class PhysicsWorld2D;

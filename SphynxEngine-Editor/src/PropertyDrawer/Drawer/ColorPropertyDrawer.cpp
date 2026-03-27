@@ -7,6 +7,8 @@ namespace Sphynx
 {
 	void ColorPropertyDrawer::DrawWidget(const Reflection::Property& property, void* data)
 	{
+		SPX_UNUSED(property);
+
 		Color* pColor = static_cast<Color*>(data);
 		float color[4] =
 		{

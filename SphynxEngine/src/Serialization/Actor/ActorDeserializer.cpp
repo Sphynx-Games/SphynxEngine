@@ -59,13 +59,13 @@ namespace Sphynx
 			ActorDeserializer& deserializer = static_cast<ActorDeserializer&>(visitor);
 
 			const Reflection::Class& cClass = GetClass<Array<std::string>>();
-			const Property property{ cClass, "Components", 0 };
-			deserializer.m_ComponentsProperty = &property;
+			const Property compProperty{ cClass, "Components", 0 };
+			deserializer.m_ComponentsProperty = &compProperty;
 
 			Utils::ComponentsData componentsData{ actor };
 			const CommonAttribute::IndexedCollection* collection = cClass.GetAttribute<CommonAttribute::IndexedCollection>();
-			visitor.OnBeforeVisitClass(&property, &componentsData, *collection);
-			const bool skip = !visitor.VisitClass(&property, &componentsData, *collection);
+			visitor.OnBeforeVisitClass(&compProperty, &componentsData, *collection);
+			const bool skip = !visitor.VisitClass(&compProperty, &componentsData, *collection);
 
 			// at this point, we should have all components added to the component array in order
 			// check what they are and traverse them
@@ -89,7 +89,7 @@ namespace Sphynx
 				visitor.OnAfterVisitClass(&fakeProperty, nullptr);
 			}
 
-			visitor.OnAfterVisitClass(&property, actor, *collection);
+			visitor.OnAfterVisitClass(&compProperty, actor, *collection);
 			deserializer.m_ComponentsProperty = nullptr;
 		}
 	}

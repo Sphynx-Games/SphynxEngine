@@ -21,9 +21,6 @@ namespace Sphynx
 		inline bool IsValid() const { return m_File.is_open(); }
 
 	private:
-		struct
-		{
-			mutable std::ifstream m_File;
-		};
+		mutable std::ifstream m_File;
 	};
 }

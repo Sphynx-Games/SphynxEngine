@@ -71,7 +71,7 @@ namespace Sphynx
 		m_VertexShader(nullptr),
 		m_PixelShader(nullptr),
 		m_InputLayout(nullptr),
-		m_Name()
+		m_Name(name)
 	{
 		std::unordered_map<std::string, std::string> sources;
 		sources["vertex"] = vertexSrc;
@@ -132,52 +132,62 @@ namespace Sphynx
 
 	void D3D11Shader::SetInt(const std::string& name, int32_t value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetInt2(const std::string& name, const Vector2i& value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetInt3(const std::string& name, const Vector3i& value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetInt4(const std::string& name, const Vector4i& value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetFloat(const std::string& name, float value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetFloat2(const std::string& name, const Vector2f& value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetFloat3(const std::string& name, const Vector3f& value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetFloat4(const std::string& name, const Vector4f& value) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(value);
 	}
 
 	void D3D11Shader::SetMat3(const std::string& name, const glm::mat3& matrix) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(matrix);
 	}
 
 	void D3D11Shader::SetMat4(const std::string& name, const glm::mat4& matrix) const
 	{
-
+		SPX_UNUSED(name);
+		SPX_UNUSED(matrix);
 	}
 
 	std::string D3D11Shader::ReadFile(const std::string& filepath) const

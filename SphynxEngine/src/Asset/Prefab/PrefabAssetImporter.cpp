@@ -14,6 +14,8 @@ namespace Sphynx
 	std::shared_ptr<IAsset> PrefabAssetImporter::Import(const AssetMetadata& metadata, const std::filesystem::path& path)
 	{
 		SPX_CORE_LOG_TRACE("Importing prefab {}", metadata.Path.string().c_str());
+
+		SPX_UNUSED(path);
 		return Load(metadata);
 	}
 
