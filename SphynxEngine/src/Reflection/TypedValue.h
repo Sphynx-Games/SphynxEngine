@@ -13,9 +13,9 @@ namespace Sphynx
 		{
 		protected:
 			TypedValue(const Type& type, const void* data);
-			TypedValue(TypedValue&& other) noexcept;
 
 		public:
+			TypedValue(TypedValue&& other) noexcept;
 			~TypedValue();
 
 		public:
@@ -31,6 +31,8 @@ namespace Sphynx
 			bool HasValue() const;
 			void* GetValue();
 			const void* GetValue() const;
+
+			const Type* GetType() const;
 
 			template<typename T>
 			T& GetValue();
@@ -50,14 +52,15 @@ namespace Sphynx
 		template<typename T>
 		inline TypedValue TypedValue::Create(T&& value)
 		{
-			return Create(GetType<T>(), &value);
+			using TType = std::remove_cv_t<std::remove_reference_t<T>>;
+			return Create(Reflection::GetType<TType>(), (const void*)&value);
 		}
 
 		template<typename T>
 		inline T& TypedValue::GetValue()
 		{
 			// TODO: We don't have a conversion graph yet
-			SPX_CORE_ASSERT(m_Type == &GetType<T>(), "We don't support type conversion yet");
+			SPX_CORE_ASSERT(m_Type == &Reflection::GetType<T>(), "We don't support type conversion yet");
 			void* value = GetValue();
 			return *reinterpret_cast<T*>(value);
 		}
@@ -66,7 +69,7 @@ namespace Sphynx
 		inline const T& TypedValue::GetValue() const
 		{
 			// TODO: We don't have a conversion graph yet
-			SPX_CORE_ASSERT(m_Type == &GetType<T>(), "We don't support type conversion yet");
+			SPX_CORE_ASSERT(m_Type == &Reflection::GetType<T>(), "We don't support type conversion yet");
 			const void* value = GetValue();
 			return *reinterpret_cast<const T*>(value);
 		}

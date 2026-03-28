@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Sphynx.h>
+#include <Operation/OperationManager.h>
 
 
 namespace Sphynx
@@ -33,12 +34,16 @@ namespace Sphynx
 		AssetEditor* GetAssetEditor() const;
 		void SetActiveEditor(Editor* editor);
 
+		OperationManager* GetCurrentOperationManager() const;
+
 	protected:
 		bool m_BlockEventsEnabled;
 
+		OperationManager m_OperationManager;
 		AssetEditor* m_AssetEditor;
 		Array<Editor*> m_Editors;
 
 		Editor* m_ActiveEditor;
+		OperationManager* m_CurrentOperationManager;
 	};
 }

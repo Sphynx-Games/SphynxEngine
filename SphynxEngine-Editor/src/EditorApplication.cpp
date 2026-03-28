@@ -65,4 +65,10 @@ namespace Sphynx
 	{
 		m_EditorLayer->GetAssetEditor()->OpenAssetEditor(name, metadata, m_EditorLayer);
 	}
+
+	OperationManager* EditorApplication::GetOperationManager() const
+	{
+		return m_EditorLayer->GetCurrentOperationManager();
+	}
+
 }

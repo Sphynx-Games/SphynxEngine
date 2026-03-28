@@ -107,6 +107,8 @@ namespace Sphynx
 
 			ImGui::EndMenu();
 		}
+
+		Editor::RenderMenuBar();
 	}
 
 	void PropertyEditor::SaveObject()

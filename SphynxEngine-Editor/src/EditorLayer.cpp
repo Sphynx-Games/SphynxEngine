@@ -22,16 +22,22 @@ namespace Sphynx
 {
 	EditorLayer::EditorLayer() :
 		m_BlockEventsEnabled(true),
+		m_OperationManager(),
 		m_AssetEditor(new AssetEditor()),
 		m_Editors({ new SceneEditor(this), new ProjectEditor(), m_AssetEditor }),
 		m_ActiveEditor(m_Editors[0]) // TODO: this is not being used right now
 	{
+		for (Editor* editor : m_Editors)
+		{
+			editor->SetOperationManager(&m_OperationManager);
+		}
 	}
 
 	EditorLayer::~EditorLayer()
 	{
 		for (Editor* editor : m_Editors)
 		{
+			editor->SetOperationManager(nullptr);
 			delete editor;
 		}
 		m_Editors.RemoveAll();
@@ -79,18 +85,22 @@ namespace Sphynx
 
 	void EditorLayer::Update(float deltaTime)
 	{
-		for (Widget* widget : m_Editors)
+		for (Editor* editor : m_Editors)
 		{
-			widget->PreRenderUpdate(deltaTime);
+			m_CurrentOperationManager = editor->GetOperationManager();
+			static_cast<Widget*>(editor)->PreRenderUpdate(deltaTime);
+			m_CurrentOperationManager = nullptr;
 		}
 
 		Begin();
 		RenderGUI();
 		End();
 
-		for (Widget* widget : m_Editors)
+		for (Editor* editor : m_Editors)
 		{
-			widget->PostRenderUpdate(deltaTime);
+			m_CurrentOperationManager = editor->GetOperationManager();
+			static_cast<Widget*>(editor)->PostRenderUpdate(deltaTime);
+			m_CurrentOperationManager = nullptr;
 		}
 
 		// delete closed editors
@@ -136,12 +146,14 @@ namespace Sphynx
 		// If event is already handled by ImGui, we should not broadcast it to the rest of the app
 		if (event.IsHandled()) return;
 
-		for (Widget* widget : m_Editors)
+		for (Editor* editor : m_Editors)
 		{
-			widget->HandleEvent(event);
+			m_CurrentOperationManager = editor->GetOperationManager();
+			editor->HandleEvent(event);
 			if (event.IsHandled())
 				break;
 		}
+		m_CurrentOperationManager = nullptr;
 	}
 
 	void EditorLayer::Begin()
@@ -226,10 +238,14 @@ namespace Sphynx
 		const size_t num = m_Editors.Size();
 		for (int i = 0; i < num; ++i)
 		{
+			m_CurrentOperationManager = m_Editors[i]->GetOperationManager();
+
 			Widget* widget = m_Editors[i];
 			widget->PreRenderGUI();
 			widget->RenderGUI();
 			widget->PostRenderGUI();
+
+			m_CurrentOperationManager = nullptr;
 		}
 
 		if (ImGui::BeginMenuBar())
@@ -289,4 +305,10 @@ namespace Sphynx
 	{
 		m_ActiveEditor = editor;
 	}
+
+	OperationManager* EditorLayer::GetCurrentOperationManager() const
+	{
+		return m_CurrentOperationManager;
+	}
+
 }

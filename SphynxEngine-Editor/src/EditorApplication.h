@@ -5,6 +5,9 @@
 
 namespace Sphynx
 {
+	class EditorLayer;
+	class OperationManager;
+
 	class EditorApplication : public Application
 	{
 	public:
@@ -18,9 +21,10 @@ namespace Sphynx
 		virtual void Shutdown() override;
 
 		void OpenAssetEditor(const std::string& name, const AssetMetadata& metadata);
+		OperationManager* GetOperationManager() const;
 
 	private:
-		class EditorLayer* m_EditorLayer;
+		EditorLayer* m_EditorLayer;
 
 	};
 }

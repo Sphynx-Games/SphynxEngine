@@ -10,6 +10,7 @@ namespace Sphynx
 {
 	class Event;
 	class Toolbar;
+	class OperationManager;
 
 	class Editor : public Widget
 	{
@@ -25,14 +26,18 @@ namespace Sphynx
 		bool GetIsClosable() const;
 		bool GetShouldClose() const;
 
+		OperationManager* GetOperationManager() const;
+		void SetOperationManager(OperationManager* operationManager);
+
 	protected:
 		virtual void PreRenderGUI() override;
 		virtual void RenderGUI() override;
 		virtual void PostRenderGUI() override {}
+		virtual void PostRenderUpdate(float deltaTime);
 
 		// Menu bar
 		virtual bool HasMenuBar() const { return false; }
-		virtual void RenderMenuBar() {}
+		virtual void RenderMenuBar();
 
 	public:
 		MulticastDelegate<void()> OnClose;
@@ -43,5 +48,7 @@ namespace Sphynx
 		bool m_StartedRendering;
 		bool m_IsClosable;
 		bool m_ShouldClose;
+
+		OperationManager* m_OperationManager;
 	};
 }

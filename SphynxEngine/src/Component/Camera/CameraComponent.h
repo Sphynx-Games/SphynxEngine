@@ -33,7 +33,7 @@ namespace Sphynx
 		float GetFieldOfView() const;
 		void SetFieldOfView(float fieldOfView);
 
-		const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; }
+		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
 	private:
 		void RecalculateProjectionMatrix();

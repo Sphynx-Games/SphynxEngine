@@ -95,7 +95,7 @@ namespace Sphynx
 			}
 
 			SPX_CORE_ASSERT(false, "Cannot convert {} into a value", str);
-			return TypedValue{ GetType<void>(), nullptr };
+			return TypedValue{ Reflection::GetType<void>(), nullptr };
 		}
 
 		TypedValue TypedValue::FromString(const Type& type, const char* str)
@@ -147,6 +147,11 @@ namespace Sphynx
 			const bool fitsInBuffer = m_Type->Size <= sizeof(m_Buffer);
 			void* buffer = fitsInBuffer ? (void*)m_Buffer : (void*)&m_Buffer;
 			return buffer;
+		}
+
+		const Type* TypedValue::GetType() const
+		{
+			return m_Type;
 		}
 
 		TypedValue& TypedValue::operator=(TypedValue&& other) noexcept

@@ -53,6 +53,8 @@ namespace Sphynx
 
 			ImGui::EndMenu();
 		}
+
+		Editor::RenderMenuBar();
 	}
 
 	void ProjectEditor::OpenProject(const std::filesystem::path& path)

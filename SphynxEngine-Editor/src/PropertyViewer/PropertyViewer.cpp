@@ -8,19 +8,14 @@
 #include "imgui_internal.h"
 #include "Asset/AssetManager.h"
 #include "Attribute/AssetHandleType.h"
+#include "Operation/Operation.h"
+#include "Reflection/TypedValue.h"
+#include "EditorApplication.h"
+#include "Operation/OperationManager.h"
 
 
 namespace Sphynx
 {
-#define LABEL(Label) LabelPrefix(Label).c_str()
-	static std::string LabelPrefix(const char* label)
-	{
-		std::string labelStr = "##";
-		labelStr += label;
-
-		return labelStr;
-	}
-
 	PropertyViewer::PropertyViewer() :
 		m_IndentLevel(0u),
 		m_IsTableSetup(false),
@@ -67,11 +62,7 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		bool buffer = data;
-		if (ImGui::Checkbox(LABEL(property->Name), &buffer))
-		{
-			data = buffer;
-		}
+		IPropertyDrawer::DrawCheckbox(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, char& data)
@@ -84,7 +75,9 @@ namespace Sphynx
 		if (m_IsTableSetup) ImGui::TableNextColumn();
 		const size_t size = 1;
 		char buffer = data;
-		if (ImGui::InputText(LABEL(property->Name), &buffer, size))
+		std::string label{ "##" };
+		label += property->Name;
+		if (ImGui::InputText(label.c_str(), &buffer, size))
 		{
 			data = buffer;
 		}
@@ -99,7 +92,7 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		ImGui::LabelText(LABEL(property->Name), "Not implemented");
+		ImGui::LabelText("##Not implemented", "Not implemented");
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, wchar_t& data)
@@ -112,9 +105,11 @@ namespace Sphynx
 		if (m_IsTableSetup) ImGui::TableNextColumn();
 		const size_t size = 1;
 		char buffer = static_cast<char>(data);
-		if (ImGui::InputText(LABEL(property->Name), &buffer, size))
+		std::string label{ "##" };
+		label += property->Name;
+		if (ImGui::InputText(label.c_str(), &buffer, size))
 		{
-			data = static_cast<wchar_t>(buffer);
+			data = buffer;
 		}
 	}
 
@@ -126,11 +121,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		short buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_S16, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, int& data)
@@ -141,11 +133,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		int buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_S32, &buffer))
-		{
-			data = buffer;
-		}
+		
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, long& data)
@@ -174,11 +163,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		long long buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_S64, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, float& data)
@@ -189,11 +175,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		float buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Float, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, double& data)
@@ -204,11 +187,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		double buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Double, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, long double& data)
@@ -221,10 +201,8 @@ namespace Sphynx
 		if (m_IsTableSetup) ImGui::TableNextColumn();
 		// FIXME: no support for long double
 		double buffer = static_cast<double>(data);
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_Double, &buffer))
-		{
-			data = buffer;
-		}
+		IPropertyDrawer::DrawDragScalar(*property, buffer);
+		data = buffer;
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, unsigned char& data)
@@ -235,11 +213,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		unsigned char buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U8, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, unsigned short& data)
@@ -250,11 +225,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		unsigned short buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U16, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, unsigned int& data)
@@ -265,11 +237,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		unsigned int buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U32, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, unsigned long& data)
@@ -298,11 +267,8 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		unsigned long long buffer = data;
-		if (ImGui::DragScalar(LABEL(property->Name), ImGuiDataType_U64, &buffer))
-		{
-			data = buffer;
-		}
+
+		IPropertyDrawer::DrawDragScalar(*property, data);
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, ::std::string& data)
@@ -314,7 +280,7 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		ImGui::LabelText(LABEL(property->Name), "Not implemented");
+		ImGui::LabelText("##Not implemented", "Not implemented");
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, ::std::wstring& data)
@@ -326,7 +292,7 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		ImGui::LabelText(LABEL(property->Name), "Not implemented");
+		ImGui::LabelText("##Not implemented", "Not implemented");
 	}
 
 	void PropertyViewer::Visit(const Reflection::Property* property, ::std::filesystem::path& data)
@@ -338,7 +304,7 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		ImGui::LabelText(LABEL(property->Name), "Not implemented");
+		ImGui::LabelText("##Not implemented", "Not implemented");
 	}
 
 	void PropertyViewer::VisitEnum(const Reflection::Property* property, void* data)
@@ -349,20 +315,7 @@ namespace Sphynx
 		IPropertyDrawer::DrawDefaultLabel(*property);
 
 		if (m_IsTableSetup) ImGui::TableNextColumn();
-		const Reflection::Enum& rEnum = static_cast<const Reflection::Enum&>(property->GetType());
-		const char* currentValue = rEnum.GetName((const void*)data);
-		if (ImGui::BeginCombo(LABEL(property->Name), currentValue))
-		{
-			for (const Reflection::Enum::Entry& entry : rEnum)
-			{
-				const char* optionName = entry.Name;
-				if (ImGui::Selectable(optionName, false))
-				{
-					rEnum.SetValue(data, entry.Value);
-				}
-			}
-			ImGui::EndCombo();
-		}
+		IPropertyDrawer::DrawEnum(*property, data);
 	}
 
 	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data)
@@ -432,11 +385,12 @@ namespace Sphynx
 
 	bool PropertyViewer::VisitClass(const Reflection::Property* property, void* data, const Reflection::CommonAttribute::AssociativeCollection& collection)
 	{
+		SPX_UNUSED(property);
 		SPX_UNUSED(data);
 		SPX_UNUSED(collection);
 		//if (property->IsPointer()) return false;
 
-		ImGui::LabelText(LABEL(property->Name), "Not implemented");
+		ImGui::LabelText("##Not implemented", "Not implemented");
 		return false;
 	}
 

@@ -17,6 +17,10 @@ namespace Sphynx
 		virtual const Reflection::Type& GetType() const = 0;
 		static void DrawDefaultLabel(const Reflection::Property& property);
 		static void DrawDefaultLabel(const char* label);
+		static void DrawCheckbox(const Reflection::Property& property, bool& value);
+		template<typename TScalar>
+		static void DrawDragScalar(const Reflection::Property& property, TScalar& value);
+		static void DrawEnum(const Reflection::Property& property, void* data);
 
 	private:
 		struct RegisterImpl

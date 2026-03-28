@@ -1,6 +1,7 @@
 #include "spxpch.h"
 #include "Editor.h"
 #include "Toolbar.h"
+#include "Operation/OperationManager.h"
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -12,13 +13,15 @@ namespace Sphynx
 		m_ID(0),
 		m_StartedRendering(false),
 		m_IsClosable(true),
-		m_ShouldClose(false)
+		m_ShouldClose(false),
+		m_OperationManager(nullptr)
 	{
 	}
 
 	Editor::~Editor()
 	{
 		delete m_Toolbar;
+		delete m_OperationManager;
 	}
 
 	void Editor::SetToolbar(Toolbar* toolbar)
@@ -44,6 +47,16 @@ namespace Sphynx
 	bool Editor::GetShouldClose() const
 	{
 		return m_ShouldClose;
+	}
+
+	OperationManager* Editor::GetOperationManager() const
+	{
+		return m_OperationManager;
+	}
+
+	void Editor::SetOperationManager(OperationManager* operationManager)
+	{
+		m_OperationManager = operationManager;
 	}
 
 	void Editor::PreRenderGUI()
@@ -123,4 +136,32 @@ namespace Sphynx
 			}
 		}
 	}
+
+	void Editor::PostRenderUpdate(float deltaTime)
+	{
+		Widget::PostRenderUpdate(deltaTime);
+
+		if (m_OperationManager != nullptr)
+		{
+			m_OperationManager->Update();
+		}
+	}
+
+	void Editor::RenderMenuBar()
+	{
+		if (m_OperationManager != nullptr && ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL + Z", nullptr, m_OperationManager->CanUndo()))
+			{
+				m_OperationManager->Undo();
+			}
+			if (ImGui::MenuItem("Redo", "CTRL + Y", nullptr, m_OperationManager->CanRedo()))
+			{
+				m_OperationManager->Redo();
+			}
+
+			ImGui::EndMenu();
+		}
+	}
+
 }

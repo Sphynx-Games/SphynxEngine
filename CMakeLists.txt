@@ -40,11 +40,13 @@ function(enable_strict_warnings target_name)
         target_compile_options(${target_name} PRIVATE
             /W4             # Nivel alto de warnings
             /WX             # Warnings como errores
+            # /permissive-    # Modo estricto C++ (similar a -pedantic)
             /w14242         # conversiones posibles pérdida de datos
             /w14254         # conversiones con signo
             /w14263         # conversiones entre tipos base/derivados
             /w14265         # conversiones entre punteros
             /w14287         # signed/unsigned mismatch
+            # /we4289         # inicialización sospechosa (shadow)
             /w14296         # cast C-style en expresiones
             /w14545 /w14546 # tamaño de buffer distinto
             /w14547 /w14549 # alineación y tamaño incorrectos
@@ -57,8 +59,10 @@ function(enable_strict_warnings target_name)
         target_compile_options(${target_name} PRIVATE
             -Wall
             -Wextra
+            # -Wpedantic
             -Wconversion
             -Wsign-conversion
+            # -Wshadow
             -Wfloat-equal
             -Wnon-virtual-dtor
             -Wold-style-cast
