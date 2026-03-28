@@ -35,7 +35,7 @@ target_sources(SphynxEngine-Editor PRIVATE ${CPPSOURCES})
 target_include_directories(SphynxEngine-Editor PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 # Set target link libs
-target_link_libraries(SphynxEngine-Editor SphynxEngine)
+target_link_libraries(SphynxEngine-Editor SphynxEngine vendor-headers SDL3::SDL3 imgui)
 
 target_compile_definitions(SphynxEngine-Editor PRIVATE SPHYNX_EDITOR_BUILD)
 

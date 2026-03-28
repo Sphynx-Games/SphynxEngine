@@ -38,7 +38,7 @@ endif()
 # Set target sources
 target_sources(${PROJECT_NAME} PRIVATE ${SPXSOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
-target_link_libraries(${PROJECT_NAME} PUBLIC vendor)
+target_link_libraries(${PROJECT_NAME} PRIVATE vendor)
 
 # Set Precompiled Header
 target_precompile_headers(${PROJECT_NAME} PRIVATE "src/spxpch.h")

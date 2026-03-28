@@ -73,6 +73,7 @@ namespace Sphynx
 
 	void ViewportPanel::PostRenderUpdate(float deltaTime)
 	{
+		SPX_UNUSED(deltaTime);
 		CheckFramebufferSizeValidity();
 	}
 

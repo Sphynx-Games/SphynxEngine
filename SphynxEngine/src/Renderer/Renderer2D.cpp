@@ -67,6 +67,11 @@ namespace Sphynx
 		s_RendererConfig.DrawMode = drawMode;
 	}
 
+	void Renderer2D::Clear()
+	{
+		s_RendererAPI->Clear(s_RendererConfig.ClearColor);
+	}
+
 	void Renderer2D::DrawPoint(Vector2i point, Color color)
 	{
 		s_RendererAPI->DrawPoint(point, color);

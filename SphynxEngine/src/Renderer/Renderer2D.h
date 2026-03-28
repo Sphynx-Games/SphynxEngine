@@ -30,6 +30,7 @@ namespace Sphynx
 		static Vector2i GetViewportSize();
 		static void SetClearColor(Color color);
 		static void SetDrawMode(DrawMode drawMode);
+		static void Clear();
 
 		/* Screen space draw commands */
 		static void DrawPoint(Vector2i point, Color color = Color::White);

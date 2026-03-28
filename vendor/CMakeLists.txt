@@ -38,9 +38,6 @@ target_include_directories(imgui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
 target_include_directories(imgui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/")
 target_include_directories(imgui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/")
 
-# Create interface (all libraries will be linked to "vendor" interface), so the main project can only link to vendor
-add_library(vendor INTERFACE)
-
 # Add directories of the different libraries
 # Add UUID Library
 set(UUID_BUILD_TESTS OFF)
@@ -102,13 +99,17 @@ set_property(TARGET glad PROPERTY FOLDER vendor/glad)
 set_property(TARGET stb_image PROPERTY FOLDER vendor/stb_image)
 set_all_targets_in_folder(FMOD vendor/FMOD)
 
+# Create interface (all libraries will be linked to "vendor-libs" interface)
+add_library(vendor-libs INTERFACE)
+
 # Link to the diferent libraries
-target_link_libraries(vendor INTERFACE
+target_link_libraries(vendor-libs INTERFACE
 	stduuid
 	SDL3::SDL3
 	SDL3_image::SDL3_image
 	SDL3_ttf::SDL3_ttf
 	glm::glm
+	glm-header-only
 	spdlog::spdlog
 	EnTT::EnTT
 	box2d
@@ -118,3 +119,24 @@ target_link_libraries(vendor INTERFACE
 	stb_image
 	FMOD
 )
+
+# Create interface (all headers will be linked to "vendor-header" interface)
+add_library(vendor-headers INTERFACE)
+get_target_property(LIBS_IN_VENDOR_LIBS vendor-libs INTERFACE_LINK_LIBRARIES)
+
+foreach(lib IN LISTS LIBS_IN_VENDOR_LIBS)
+	if(TARGET ${lib})
+		# message(STATUS "Processing include directories for: ${lib}")
+		get_target_property(INCLUDES ${lib} INTERFACE_INCLUDE_DIRECTORIES)
+
+		if(INCLUDES)
+			# message(STATUS "Appending directories for: ${INCLUDES}")
+			target_include_directories(vendor-headers INTERFACE ${INCLUDES})
+		endif()
+	endif()
+endforeach()
+target_link_libraries(vendor-headers INTERFACE glm-header-only)
+
+# Create interface (all libs and headers will be linked to "vendor" interface)
+add_library(vendor INTERFACE)
+target_link_libraries(vendor INTERFACE vendor-headers vendor-libs)

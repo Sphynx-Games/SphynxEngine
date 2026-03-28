@@ -34,7 +34,7 @@ target_sources(SphynxEngine-Runtime PRIVATE ${CPPSOURCES})
 target_include_directories(SphynxEngine-Runtime PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 # Set target link libs (SphynxEnginea and Sandbox)
-target_link_libraries(SphynxEngine-Runtime PRIVATE SphynxEngine Sandbox)
+target_link_libraries(SphynxEngine-Runtime PRIVATE SphynxEngine Sandbox vendor-headers)
 
 target_compile_definitions(SphynxEngine-Runtime  PRIVATE SPHYNX_RUNTIME_BUILD)
 
