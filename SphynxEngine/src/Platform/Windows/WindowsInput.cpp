@@ -62,18 +62,18 @@ namespace Sphynx
 
 	bool WindowsInput::IsMouseButtonPressedImpl(int32_t button)
 	{
-		return !(m_PrevMouseState & SDL_BUTTON(button)) && IsMouseButtonDownImpl(button);
+		return !(m_PrevMouseState & SDL_BUTTON_MASK(button)) && IsMouseButtonDownImpl(button);
 	}
 
 	bool WindowsInput::IsMouseButtonReleasedImpl(int32_t button)
 	{
-		return (m_PrevMouseState & SDL_BUTTON(button)) && !IsMouseButtonDownImpl(button);
+		return (m_PrevMouseState & SDL_BUTTON_MASK(button)) && !IsMouseButtonDownImpl(button);
 	}
 
 	bool WindowsInput::IsMouseButtonDownImpl(int32_t button)
 	{
 		uint32_t state = SDL_GetMouseState(nullptr, nullptr);
-		return state & SDL_BUTTON(button);
+		return state & SDL_BUTTON_MASK(button);
 	}
 
 	bool WindowsInput::IsMouseButtonUpImpl(int32_t button)
